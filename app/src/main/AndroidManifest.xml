@@ -123,10 +123,14 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.swift.dating.ui.loginScreen.LoginActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNew"
+            />
         <activity
             android:name="com.swift.dating.ui.splashScreen.SplashActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNew"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

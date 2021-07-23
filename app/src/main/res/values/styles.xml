@@ -12,9 +12,18 @@
         <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="actionMenuTextColor">@color/colorPrimary</item>
-
-
     </style>
+
+
+    <!-- Base application theme. -->
+    <style name="AppThemeNew" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
 
     <style name="activityTheme" parent="AppTheme">
         <item name="android:windowFullscreen">false</item>

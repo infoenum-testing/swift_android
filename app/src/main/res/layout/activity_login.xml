@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradientbg">
+    android:background="@drawable/bg_red">
 
     <ImageView
         android:id="@+id/ivLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_50sdp"
-        android:src="@drawable/appiconwhite"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="@dimen/_40sdp"
+        android:src="@drawable/logo_white"
+        app:layout_constraintBottom_toTopOf="@+id/login_button_fb"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,17 +38,29 @@
         android:layout_height="@dimen/_40sdp"
         android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_15sdp"
         android:background="@drawable/facebookbtn"
+        android:backgroundTint="@color/pink_light"
         android:minWidth="@dimen/_200sdp"
-        android:backgroundTint="@color/white"
         android:paddingTop="@dimen/_10sdp"
         android:paddingBottom="@dimen/_10sdp"
-        android:visibility="gone"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/create_account_with_num"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvAppName">
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:src="@drawable/fb_logo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/medium"
@@ -55,7 +69,7 @@
             android:paddingEnd="@dimen/_20sdp"
             android:text="@string/loginWithFb"
             android:textAllCaps="false"
-            android:textColor="@color/primaryTextColor"
+            android:textColor="@color/white"
             android:textSize="@dimen/_14ssp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -81,9 +95,9 @@
         android:paddingBottom="@dimen/_10sdp"
         android:text="@string/continueWithEmail"
         android:textAllCaps="false"
-        android:visibility="gone"
         android:textColor="@color/white"
         android:textSize="@dimen/_14ssp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvAppName" />
@@ -92,10 +106,10 @@
         android:id="@+id/create_account_with_num"
         android:layout_width="0dp"
         android:layout_height="@dimen/_40sdp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/btnwhiteborder"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:background="@drawable/btn_white_border_new"
         android:fontFamily="@font/medium"
         android:minWidth="@dimen/_200sdp"
         android:paddingStart="@dimen/_20sdp"
@@ -106,9 +120,10 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="@dimen/_14ssp"
+        app:layout_constraintBottom_toTopOf="@+id/tvRule1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/login_button_fb" />
+
+        app:layout_constraintRight_toRightOf="parent" />
 
     <!--<TextView
         android:id="@+id/create_account"
@@ -136,25 +151,25 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_30sdp"
         android:layout_marginEnd="@dimen/_10sdp"
-        android:fontFamily="@font/medium"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:fontFamily="@font/thin"
         android:gravity="center"
         android:text="@string/weDoNotShare"
         android:textColor="@color/white"
         android:textSize="@dimen/_10ssp"
+        app:layout_constraintBottom_toTopOf="@+id/clView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_account_with_num" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_20ssp"
+        android:layout_marginBottom="@dimen/_40sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvRule1">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/tvTermOfService"

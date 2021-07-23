@@ -18,12 +18,15 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.facebook.login.LoginResult;
 import com.swift.dating.R;
 import com.swift.dating.data.network.Resource;
 import com.swift.dating.model.requestmodel.SignUpRequestModel;
@@ -38,12 +41,14 @@ import com.swift.dating.ui.homeScreen.HomeActivity;
 import com.swift.dating.ui.selfieScreen.SelfieActivity;
 import com.swift.dating.ui.welcomeScreen.WelcomeActivity;
 
+import java.util.Arrays;
+
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     TextView tvTermOfService, tvPrivacyPolicy, tvRule1;
     //TextView tvCreateAccount;
     Button create_account, create_account_with_num;
-    ConstraintLayout cl_main,login_button_fb;
+    ConstraintLayout cl_main, login_button_fb;
     CallbackManager callbackManager;
     String providerId, name, email, profilePic;
     EnterEmailViewModel model;
@@ -53,7 +58,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //   this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
         subscribeModel();
         tvTermOfService = findViewById(R.id.tvTermOfService);
@@ -68,8 +73,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         cl_main = findViewById(R.id.cl_main);
         callbackManager = CallbackManager.Factory.create();
         //tvCreateAccount.setOnClickListener(this);
-      //  login_button_fb = findViewById(R.id.login_button_fb);
-       // login_button_fb.setOnClickListener(this);
+        login_button_fb = findViewById(R.id.login_button_fb);
+        login_button_fb.setOnClickListener(this);
         create_account.setOnClickListener(this);
         create_account_with_num.setOnClickListener(this);
         tvTermOfService.setOnClickListener(this);
@@ -108,7 +113,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             sp.setIsFromNumber(false);
-        }/* else if (view.getId() == R.id.login_button_fb) {
+        } else if (view.getId() == R.id.login_button_fb) {
             LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
             LoginManager.getInstance().registerCallback(callbackManager,
                     new FacebookCallback<LoginResult>() {
@@ -131,7 +136,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             // App code
                         }
                     });
-        } *//*else if (view == btnLinkedIn) {
+        } /*else if (view == btnLinkedIn) {
             startActivityForResult(new Intent(LoginActivity.this, LinkedInWebView.class).putExtra("url",
                     "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=7884wouiik0t5j&" +
                             "redirect_uri=http://192.168.1.75:3020/api/users/callback&state=fooobar&scope=" +
@@ -248,7 +253,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     case SUCCESS:
                         hideLoading();
                         if (resource.data.getSuccess()) {
-                            Log.e("data", resource.data.getUser().getIsVerified());
+                            //Log.e("data", resource.data.getUser().getIsVerified());
                             sp.savePremium(resource.data.getUser().getIsPremium().equalsIgnoreCase("Yes"));
                             sp.saveDeluxe(resource.data.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
                             setData(resource.data);

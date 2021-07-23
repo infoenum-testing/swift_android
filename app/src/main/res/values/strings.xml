@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">BlackGentry</string>
+    <string name="app_name">Swift</string>
 
     <!--    Login-->
     <string name="loginWithFb">Continue with Facebook</string>
     <string name="continueWithEmail">Continue with email</string>
-    <string name="continueWithNumber">Continue with cell phone number</string>
+    <string name="continueWithNumber">Continue with phone number</string>
     <string name="continueWithLinkedIn">Continue with LinkedIn</string>
     <string name="weDoNotShare">By continuing, you agree to ours terms and policies.</string><!--.\n We never post to Facebook or Linkedin.-->
     <string name="termsOfService">Terms of Service </string>
@@ -62,7 +62,7 @@
     <string name="what_is_sign">What is your sign?</string>
     <string name="jobTitle">Occupation</string>
     <string name="myJobTitleIs">What is your occupation?</string>
-    <string name="facebook_app_id">2749591848461723</string>
+    <string name="facebook_app_id">2841062159443728</string>
     <string name="fb_login_protocol_scheme">fb2749591848461723</string>
 
     <string name="notification_channel_id">BlackGentry_01</string>
@@ -628,6 +628,7 @@
     <string name="direct_msg_message_popup">Note: Direct Messages are messages sent to  users that you have not matched with. You can still send likes and match with users in order to communicate.</string>
     <string name="restore_deluxe_txt"><u>Already paid for Deluxe? Restore Purchase.</u></string>
     <string name="restore_premium_txt"><u>Already paid for Premium? Restore Purchase.</u></string>
+    <!--App secret: 8b06af16f5d8d10e309c497a7569baac-->
 
 
 </resources>

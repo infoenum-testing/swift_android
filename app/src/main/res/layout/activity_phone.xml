@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLAY"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rootLAY"
-    tools:context=".dating.ui.emailScreen.PhoneActivity">
+    tools:context=".ui.emailScreen.PhoneActivity">
 
     <ScrollView
         android:id="@+id/sView"
@@ -33,54 +33,84 @@
                 android:padding="5dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/back"
-                android:tint="@color/colorPrimary"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/pink" />
+
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_50sdp"
+                android:src="@drawable/phone_new_img"
+                app:layout_constraintBottom_toTopOf="@+id/tv_mobile_number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_cross" />
 
             <TextView
                 android:id="@+id/tv_mobile_number"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_100sdp"
+                android:layout_marginTop="50dp"
                 android:layout_marginEnd="@dimen/_20sdp"
-                android:fontFamily="@font/medium"
-                android:text="My Cell Phone Number is"
-                android:textColor="@color/primaryTextColor"
-                android:textSize="@dimen/_20ssp"
+                android:fontFamily="@font/bold"
+                android:gravity="center"
+                android:text="My Phone Number is"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_17ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-            <com.hbb20.CountryCodePicker
-                android:id="@+id/cc_picker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:ccp_defaultNameCode="US"
-                app:ccp_showFlag="false"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_mobile_number" />
+                app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
-            <EditText
-                android:id="@+id/et_phone"
-                android:layout_width="0dp"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20sdp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="10dp"
-                android:fontFamily="@font/medium"
-                android:hint="Enter Your Cell Phone Number"
-                android:imeOptions="actionDone"
-                android:inputType="phone"
-                android:lines="1"
-                android:maxLength="50"
-                android:textColor="@color/primaryTextColor"
-                android:textColorHint="@color/primaryTextColor"
-                android:textSize="@dimen/_12sdp"
-                android:visibility="visible"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@drawable/edit_txt_bg"
+                android:gravity="center"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/cc_picker"
-                app:layout_constraintTop_toBottomOf="@+id/tv_mobile_number" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_mobile_number">
 
+                <com.hbb20.CountryCodePicker
+                    android:id="@+id/cc_picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center"
+                    app:ccp_arrowColor="@color/pink"
+                    app:ccp_contentColor="@color/pink"
+                    app:ccp_defaultNameCode="US"
+                    app:ccp_showFlag="false"
+                    app:ccp_showFullName="false"
+                    app:ccp_showNameCode="false" />
+
+                <EditText
+                    android:id="@+id/et_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="10dp"
+                    android:layout_toEndOf="@+id/cc_picker"
+                    android:background="@null"
+                    android:fontFamily="@font/medium"
+                    android:hint="Enter Your Cell Phone Number"
+                    android:imeOptions="actionDone"
+                    android:inputType="phone"
+                    android:lines="1"
+                    android:maxLength="50"
+                    android:textColor="@color/pink"
+                    android:textColorHint="@color/transparent_alpha"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+            </RelativeLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
@@ -103,7 +133,9 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="@dimen/_14ssp"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

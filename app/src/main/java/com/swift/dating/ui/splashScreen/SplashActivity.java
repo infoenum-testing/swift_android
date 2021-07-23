@@ -69,8 +69,6 @@ public class SplashActivity extends BaseActivity {
             getDeviceToken();
         });
         sp.setDialogOpen(true);
-
-
     }
 
     @Override
