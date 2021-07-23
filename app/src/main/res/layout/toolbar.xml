@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--For Black Toolbar Title and Black Up arrow, your toolbar should implement following theme:
+android:theme="@style/ThemeOverlay.AppCompat.Light"
+For White Toolbar Title and White Up arrow, your toolbar should implement following theme:
+app:theme="@style/ThemeOverlay.AppCompat"-->
+<androidx.appcompat.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:minWidth="?actionBarSize"
+    android:minHeight="?attr/actionBarSize"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:layout_scrollFlags="scroll|enterAlways">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/medium"
+        android:text=""
+        android:textAllCaps="false"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="@dimen/_16ssp" />
+
+    <ImageView
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="35dp"
+        android:src="@drawable/blackgentry"
+        android:id="@+id/ivLogo"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        />
+
+    <TextView
+        android:id="@+id/tvDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:fontFamily="@font/medium"
+        android:text=""
+        android:visibility="gone"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:textAllCaps="false"
+        android:textColor="@color/facebook_color"
+        android:textSize="@dimen/_10ssp" />
+
+
+</androidx.appcompat.widget.Toolbar>
+
+
+
+
+

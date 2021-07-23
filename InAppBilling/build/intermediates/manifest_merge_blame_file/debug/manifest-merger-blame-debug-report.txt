@@ -1,0 +1,20 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.anjlab.android.iab.v3"
+4    android:versionCode="1"
+5    android:versionName="1.1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="9"
+8-->D:\Nitin_data\swift_android\InAppBilling\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="26" />
+9-->D:\Nitin_data\swift_android\InAppBilling\src\main\AndroidManifest.xml
+10
+11    <uses-permission android:name="com.android.vending.BILLING" />
+11-->D:\Nitin_data\swift_android\InAppBilling\src\main\AndroidManifest.xml:5:5-67
+11-->D:\Nitin_data\swift_android\InAppBilling\src\main\AndroidManifest.xml:5:22-64
+12
+13    <application />
+13-->D:\Nitin_data\swift_android\InAppBilling\src\main\AndroidManifest.xml:7:5-20
+14
+15</manifest>

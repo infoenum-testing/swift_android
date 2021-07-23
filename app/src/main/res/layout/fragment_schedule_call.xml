@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:id="@+id/parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/ivback"
+                android:layout_width="wrap_content"
+                android:layout_height="?android:attr/actionBarSize"
+                android:fontFamily="@font/medium"
+                android:gravity="center"
+                android:paddingStart="@dimen/_5sdp"
+                android:src="@drawable/backward_black_ic"
+                android:textSize="@dimen/_14ssp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_connections"
+                android:layout_width="wrap_content"
+                android:layout_height="?android:attr/actionBarSize"
+                android:fontFamily="@font/medium"
+                android:gravity="center"
+                android:text=""
+                android:textAllCaps="false"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/_18ssp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toStartOf="@id/iv_menu"
+                app:layout_constraintStart_toEndOf="@id/ivback"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <ImageView
+                android:id="@+id/iv_subscription"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/ic_time_token"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_connections" />
+
+            <ImageView
+                android:id="@+id/iv_menu"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:padding="@dimen/_5sdp"
+                android:src="@drawable/dots"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_connections"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_connections" />
+
+            <ProgressBar
+                android:id="@+id/pb_time_left"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/circular_shape"
+                android:indeterminate="false"
+                android:max="100"
+                android:progress="5"
+                android:progressDrawable="@drawable/circular_progress_bar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_connections" />
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/sdv_picture"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_60sdp"
+                app:actualImageResource="@drawable/ic_profile_individual"
+                app:layout_constraintBottom_toBottomOf="@id/pb_time_left"
+                app:layout_constraintEnd_toEndOf="@id/pb_time_left"
+                app:layout_constraintStart_toStartOf="@id/pb_time_left"
+                app:layout_constraintTop_toTopOf="@id/pb_time_left"
+                app:roundAsCircle="true" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:ellipsize="end"
+                android:fontFamily="@font/bold"
+                android:maxLength="30"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/_16ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pb_time_left" />
+
+            <TextView
+                android:id="@+id/tv_time_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:ellipsize="end"
+                android:fontFamily="@font/medium"
+                android:maxLength="30"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_name" />
+
+            <View
+                android:id="@+id/line"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@color/secondaryTextColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_time_left" />
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/sdv_picture_small"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:actualImageResource="@drawable/ic_profile_individual"
+                app:layout_constraintStart_toStartOf="@id/line"
+                app:layout_constraintTop_toBottomOf="@id/line"
+                app:roundAsCircle="true" />
+
+            <TextView
+                android:id="@+id/tv_your_question"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:fontFamily="@font/medium"
+                android:text=""
+                android:textColor="@color/secondaryTextColor"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintBottom_toBottomOf="@id/sdv_picture_small"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/sdv_picture_small"
+                app:layout_constraintTop_toTopOf="@id/sdv_picture_small" />
+
+            <TextView
+                android:id="@+id/tv_user_question"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_50sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/medium"
+                android:textColor="@color/secondaryTextColor"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintEnd_toEndOf="@id/tv_your_question"
+                app:layout_constraintStart_toStartOf="@id/tv_your_question"
+                app:layout_constraintTop_toBottomOf="@id/tv_your_question" />
+
+            <TextView
+                android:id="@+id/tv_user_request"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/medium"
+                android:textColor="@color/secondaryTextColor"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintEnd_toEndOf="@id/tv_your_question"
+                app:layout_constraintStart_toStartOf="@id/sdv_picture_small"
+                app:layout_constraintTop_toBottomOf="@id/tv_user_question" />
+            <Button
+                android:id="@+id/btn_sharecontact"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@drawable/gradientbtn"
+                android:fontFamily="@font/medium"
+                android:text="Share Contact"
+                android:enabled="false"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_user_request" />
+
+            <View
+                android:id="@+id/line2"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@color/secondaryTextColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_sharecontact" />
+
+            <TextView
+                android:id="@+id/tv_schedule_message"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:fontFamily="@font/bold"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@color/secondaryTextColor"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintEnd_toEndOf="@id/tv_your_question"
+                app:layout_constraintStart_toStartOf="@id/sdv_picture_small"
+                app:layout_constraintTop_toBottomOf="@id/line2" />
+
+            <Button
+                android:id="@+id/btn_accept"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@drawable/disabledbtn"
+                android:fontFamily="@font/medium"
+                android:text="Accept Time"
+                android:enabled="false"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btn_propose"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_schedule_message" />
+
+            <Button
+                android:id="@+id/btn_propose"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@drawable/gradientbtn"
+                android:fontFamily="@font/medium"
+                android:text="Propose Time"
+                android:textAllCaps="false"
+                android:enabled="false"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/btn_accept"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn_accept"
+                app:layout_constraintTop_toTopOf="@id/btn_accept" />
+
+            <ImageView
+                android:id="@+id/iv_call_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/iv_call_video"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_accept" />
+
+            <ImageView
+                android:id="@+id/iv_call_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/iv_call_audio"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/iv_call_audio"
+                app:layout_constraintTop_toTopOf="@id/iv_call_audio" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <include
+        layout="@layout/layout_bottom_sheet_menu"
+        android:visibility="gone" />
+
+    <include
+        layout="@layout/bottomsheet_timedatepicker"
+        android:visibility="gone" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

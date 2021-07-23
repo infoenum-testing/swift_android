@@ -1,0 +1,633 @@
+<resources>
+    <string name="app_name">BlackGentry</string>
+
+    <!--    Login-->
+    <string name="loginWithFb">Continue with Facebook</string>
+    <string name="continueWithEmail">Continue with email</string>
+    <string name="continueWithNumber">Continue with cell phone number</string>
+    <string name="continueWithLinkedIn">Continue with LinkedIn</string>
+    <string name="weDoNotShare">By continuing, you agree to ours terms and policies.</string><!--.\n We never post to Facebook or Linkedin.-->
+    <string name="termsOfService">Terms of Service </string>
+    <string name="crop_text">Crop</string>
+    <string name="error_image_loading">Error while loading Image, Please try again</string>
+    <string name="ok_text">OK</string>
+    <string name="camera_gallery_permission_text">For using camera and gallery, you need to enable camera and storage permission in your settings.</string>
+    <string name="location_permission_text">For using app feature, you need to enable location permission in your settings.</string>
+    <string name="proceed_text">Proceed</string>
+    <string name="exit_text">Exit</string>
+    <string name="do_you_want_to_logout_text">Do you want to Log Out?</string>
+    <string name="account_exist">Account is already exist with this email id</string>
+    <string name="yes_text">Yes</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="addPhotos">Add Photos</string>
+
+
+    <!--    EmailScreen-->
+    <string name="continue_txt">Continue</string>
+    <string name="enter_your_email">Enter your email</string>
+    <string name="my_email">My email is</string>
+    <string name="verify_txt">Verify</string>
+    <string name="resend"><u>Resend</u></string>
+    <string name="reset"><u>Reset</u></string>
+    <string name="enter_code">Enter Code</string>
+    <string name="verification_code">Verification Code</string>
+    <string name="skip">Skip</string>
+    <string name="firstName">First Name</string>
+    <string name="myNameIs">My name is</string>
+    <string name="ageAbove18Text">Must be over 18</string>
+    <string name="selectValidDateText">Select a valid date</string>
+    <string name="myBirthdayIs">My birthday is</string>
+    <string name="aboutYourself">Introduce yourself</string>
+    <string name="cityQuestion">What city do you live in?</string>
+    <string name="cityHint">Enter the city you live in</string>
+    <string name="never">Never</string>
+    <string name="often">Often</string>
+    <string name="socially">Socially</string>
+    <string name="smoke_ques">Do you smoke?</string>
+    <string name="drink_ques">Do you drink?</string>
+    <string name="education_level">What is your highest level of education?</string>
+    <string name="my_ethnicity_is">My Ethnicity is</string>
+    <string name="i_identify_as">I identify as</string>
+    <string name="man">Male</string>
+    <string name="Woman">Female</string>
+    <string name="other">Other</string>
+    <string name="showMeToMen">Show me to men</string>
+    <string name="showMeToWomen">Show me to Women</string>
+    <string name="everyone">Everyone</string>
+    <string name="Women">Women</string>
+    <string name="men">Men</string>
+    <string name="showMe">Show me</string>
+    <string name="heightQues">What is your height? </string>
+    <string name="kids_ques">Do you have kids?</string>
+    <string name="what_is_sign">What is your sign?</string>
+    <string name="jobTitle">Occupation</string>
+    <string name="myJobTitleIs">What is your occupation?</string>
+    <string name="facebook_app_id">2749591848461723</string>
+    <string name="fb_login_protocol_scheme">fb2749591848461723</string>
+
+    <string name="notification_channel_id">BlackGentry_01</string>
+    <string name="notification_channel_name">BlackGentry_app</string>
+    <string name="send_text">Send</string>
+    <string name="my_email_is">My email is</string>
+    <string name="youhaveamatch">You have a match!</string>
+    <string name="youhave48">You have 24 hours to connect with %1$s. You can chat with %2$s before the match expires.</string>
+    <string name="answer_now">Chat Now</string>
+    <string name="my_card">Profile Preview</string>
+    <string name="question_headings">Skip the small talk! Enter three questions of your choice that your matches will answer.Your questions are a way to learn more about your match.Be creative fun and keep it interesting</string>
+
+
+    <string name="welcome_to_app">Welcome to BlackGentry</string>
+    <string name="welcome_to_app_desc">At BlackGentry, we are focused on creating a quality community where you can meet ambitious and driven Black singles. Our values are important to us. We expect members to represent themselves with class and be respectful to others.\n\n
+        What makes BlackGentry Different?\n\n
+        \u2022All profiles will be reviewed and must be approved.\n
+        \u2022All members must verify their profile with a selfie during registration.\n
+        \u2022Members will have 24 hours to initiate a conversation after matching.\n
+        \u2022All members must complete a majority of their profile questions.\n\n\n\nBy using BlackGentry, you agree to our <u>terms &amp; policies</u>.\n </string>
+    <string name="process">Process</string>
+    <string name="process_desc">Swipe Match Set a date within 48 hours.Talk Exchange Contacts\n
+        You can unmatch any step of the way.Please remember to be yourself,be friendly and date Safely.</string>
+    <string name="i_understand">I Understand</string>
+    <string name="done_txt">Done</string>
+    <string name="superlikeToken">Crush Tokens</string>
+
+    <string name="superLike5">5 Crush Tokens - $6.99</string>
+    <string name="superLike25">SAVE 20%\n  25 Crush Tokens - $27.99</string>
+    <string name="superLike50">SAVE 28%\n  50 Crush Tokens - $49.99</string>
+    <string name="timeExtend1">1 Time Token - $0.99</string>
+    <string name="timeExtend3">SAVE 20%\n3 Time Tokens - $1.99 </string>
+    <string name="timeExtend5">SAVE 28%\n5 Time Tokens - $2.99</string>
+    <string name="premium1month">1 month - $9.99</string>
+    <string name="premium6month">SAVE 16%\n6 months - $29.99 </string>
+    <string name="premium12month">SAVE 33%\n12 months - $49.99 </string>
+    <string name="superLikeTerms">By clicking Continue, your payment will be charged to your Google Play account. Subscriptions will automatically renew for the same package length unless auto-renew is turned off and you cancel at least 24 hours before the end of the current period. By clicking Continue, you also agree to our Terms and Privacy Policy.</string>
+    <string name="non_refundable">\nAll purchases are final and are non-refundable.</string>
+    <string name="settings">Settings</string>
+    <string name="btn_not_now">Not now</string>
+    <string name="btn_continue">Continue</string>
+    <string name="submit">Submit</string>
+    <string name="profileedit">Edit Profile</string>
+    <string name="done">Done</string>
+    <string name="basic_info">Basic Info</string>
+    <string name="dragndrop">Drag and drop image to rearrange</string>
+    <string name="aboutme">About Me</string>
+    <string name="workneducation">Work and Education</string>
+    <string name="instagram">Instagram</string>
+    <string name="tv_showpics">Show more photos of yourself by connecting your instagram. Your username won\'t be visible.</string>
+    <string name="connect_with_insta">Connect with Instagram</string>
+    <string name="add">Add</string>
+    <string name="politics">Political Views</string>
+    <string name="ethinicity">Ethinicity</string>
+    <string name="exercise">Exercise</string>
+    <string name="smoke">Smoke</string>
+    <string name="drink">Drink</string>
+    <string name="kids">Kids</string>
+    <string name="height">Height</string>
+    <string name="no_match_found">You have seen everyone within your criteria. Widen your search criteria in the settings page or check back soon. Upgrade to Deluxe to search for users and send unlimited direct messages. Even to users you have skipped.</string>
+    <string name="gotosettings">Go to Settings</string>
+    <string name="add_Premium">Get Unlimited Profile Views, Send Unlimited Likes,</string><!--Get BlackGentry Premium - Increase Your Odds-->
+    <string name="no_ad_text">Rewind Profiles &amp; Hide Ads</string><!--Unlimited profile views, rewind profiles and no ads-->
+    <string name="videe_premium">BlackGentry Premium</string>
+    <string name="no_ad_text_delux">Premium Features Plus See Who Likes You, Send Direct Messages, See Second Chance and Change Your Location</string>
+    <string name="videe_delux">BlackGentry Deluxe</string>
+    <string name="propose_tym">Propose Now</string>
+
+    <string name="basic_information">Basic Information</string>
+    <string name="location">Location</string>
+    <string name="currentlocation">Current Location</string>
+    <string name="maxDistance">Maximum Distance</string>
+    <string name="logout">Log out</string>
+    <string name="agerange">Age Range</string>
+    <string name="hideProfile">Show my profile on BlackGentry</string>
+    <string name="notification">Notifications</string>
+    <string name="newMatches">New Matches</string>
+    <string name="calls">Call Reminders</string>
+    <string name="contactUs">Help</string>
+    <string name="helpnsupport">Contact &amp; FAQ</string>
+    <string name="rateUs">Rate Us</string>
+    <string name="legal">Terms and Policies</string>
+    <string name="privacy_policy"> Privacy Policy</string>
+    <string name="licence">Licenses</string>
+    <string name="sharevidee">Refer a friend</string>
+
+    <string name="expiring_matches">Expiring Matches</string>
+    <string name="match_update">New Messages</string>
+    <string name="terms_n_service">Terms of Service</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="report">Report</string>
+    <string name="reportuser">Report User</string>
+    <string name="unmatch">Unmatch/Block</string>
+    <string name="new_matches_text">New Matches</string>
+    <string name="schedule_matches_text">Messages</string>
+    <string name="do_you_want_to_delete_text">Are you sure you want to delete your account? If you delete
+        your account, subscription cannot be restored.</string>
+    <string name="miles">Miles</string>
+    <string name="shareContact">Share Contact</string>
+    <string name="reasontoReport">Reason to Report User</string>
+    <string name="religion_ques">What is your religion?</string>
+    <string name="politics_ques">What are your political views?</string>
+    <string name="exercise_ques">Do you exercise?</string>
+    <string name="sometimes">Sometimes</string>
+    <string name="almostnever">Almost Never</string>
+    <string name="pet_ques">Do you  have pets?</string>
+    <string name="both">Both</string>
+    <string name="lookingForQuest">I am looking for</string>
+    <string name="ambitionques">What are your interests, passions or hobbies?</string>
+    <string name="pets">Pets</string>
+    <string name="sign">Sign</string>
+    <string name="my_shoolname_is">Where did you go to school?</string>
+    <string name="schoolname">School Name</string>
+    <string name="religion">Religion</string>
+    <string name="socket_not_connected_text">Socket Not Connected</string>
+    <string name="type_your_message_text">Type your message</string>
+    <string name="declined_text">Declined</string>
+    <string name="accepted_text">Accepted</string>
+    <string name="waiting_for_response_text">Waiting For Response</string>
+    <string name="cancelled_text">Cancelled</string>
+    <string name="user_invited_you_on_a_date_text">%1$s invited you on a date!</string>
+    <string name="you_accepted_declined_user_date_text">You %1$s’s Date!</string>
+    <string name="server_error_message">Something Went Wrong</string>
+    <string name="no_internet_error">No Internet</string>
+    <string name="copythisgesture">Copy This Gesture</string>
+    <string name="copythisgesture_desc">We require all profiles to selfie verify. Take a one-time selfie with your front camera and match the gesture in the picture below. We will not post your selfie on your page.
+        We only use your picture to confirm that you are you. </string>
+    <string name="imReady_text">I\'m Ready</string>
+    <string name="interest">Interests</string>
+    <string name="personalityQuestions">Personality Prompt</string>
+    <string name="updateQuestion">Replace Question</string>
+    <string name="linkedIn_txt">"\tEnter Linkedin login page. (This shall not be required). Instructions should say, “Log into your linkedin to sync your school and occupation. We highly encourage you to verify school and occupation. It is not required but greatly improves the chances of your profile being approved.” They shall have the option to enter linkedin email and password for linked in.  The occupation and school info shall be pulled from linked in and shall be placed in a section on the user’s profile. "</string>
+    <string name="lookingFor">Looking For</string>
+    <string name="waitingList">Your Profile is Pending Approval.</string>
+    <string name="waitingList_para">We believe in creating a great community for people to meet so we review all profiles. The review process can take up to 24 hours.
+        You will receive an email and app notification when the process is complete. Check back soon.</string>
+    <string name="waitingList_para2">We will review your profile will send you an email when a decision has been made.</string>
+    <string name="waitingList_para3">Click the link below to speed up the review process and get a decision within 24 hours.</string>
+    <string name="getDecision">The approval process can take up to 24 hours.</string>
+
+    <string name="client_id">289924328645210</string>
+    <string name="base_url">https://api.instagram.com/</string>
+    <string name="get_user_info_url">https://api.instagram.com/</string>
+    <string name="redirect_url">https://www.blackgentryapp.com</string>
+    <string name="selfie">Selfie</string>
+    <string name="instagramPhotos">Instagram photos</string>
+    <string name="profileIsHidden">Your Profile is hidden\n Click the button below to unhide your profile.</string>
+    <string name="unHideProfile">Unhide your profile</string>
+    <string name="restoreSubscription">Restore Subscription</string>
+    <string name="profileIdRejected">Your profile has been rejected from BlackGentry but we will like
+        you to apply again. We unfortunately do not provide specific reasons when profiles are rejected.
+        Edit your profile and make sure your profile is detailed with clear photos and reapply. We look
+        forward to you joining the BlackGentry Community.</string>
+    <string name="link_email_txt">We have found an existing account for this email id, do you want to link your account?</string>
+    <string name="resubmit_txt">Resubmit</string>
+
+    <string-array name="kidsArray">
+        <item>Don\’t have any</item>
+        <item>Have and want more</item>
+        <item>Have and don\’t want anymore</item>
+        <item>Don\’t want any</item>
+    </string-array>
+
+    <string-array name="kidsArray2">
+        <item>Don\’t have any</item>
+        <item>Have and want more</item>
+        <item>Have and don\’t want anymore</item>
+        <item>Don\’t want any</item>
+        <item>No Preference</item>
+    </string-array>
+    <string-array name="lookingArray">
+        <item>Relationship</item>
+        <item>Marriage</item>
+        <item>Something Casual</item>
+        <item>Not Sure</item>
+    </string-array>
+
+    <string-array name="monthsArray">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+
+    <string-array name="signArray">
+        <item>Aries</item>
+        <item>Taurus</item>
+        <item>Gemini</item>
+        <item>Cancer</item>
+        <item>Leo</item>
+        <item>Virgo</item>
+        <item>Libra</item>
+        <item>Scorpio</item>
+        <item>Sagittarius</item>
+        <item>Capricorn</item>
+        <item>Aquarius</item>
+        <item>Pisces</item>
+    </string-array>
+
+    <string-array name="educationArray">
+        <item>High school</item>
+        <item>Associates degree</item>
+        <item>Some college</item>
+        <item>Bachelors degree</item>
+        <item>Graduate degree</item>
+        <item>Phd/Post Doctoral degree</item>
+    </string-array>
+    <string-array name="educationArray2">
+        <item>High school</item>
+        <item>Associates degree</item>
+        <item>Some college</item>
+        <item>Bachelors degree</item>
+        <item>Graduate degree</item>
+        <item>Phd/Post Doctoral degree</item>
+        <item>No Preference</item>
+    </string-array>
+    <string-array name="relationArray">
+        <item>Relationship</item>
+        <item>Marriage</item>
+        <item>No Preference </item>
+        <item>Something Casual</item>
+        <item>Not Sure</item>
+    </string-array>
+
+    <string-array name="smokingArray">
+        <item>Socially</item>
+        <item>Often</item>
+        <item>Never</item>
+        <item>No Preference</item>
+    </string-array>
+
+    <string-array name="genderArray">
+        <item>Agender</item>
+        <item>Androgyne </item>
+        <item>Androgynous </item>
+        <item>Bigender </item>
+        <item>Cis </item>
+        <item>Cisgender </item>
+        <item>Cis Female </item>
+        <item>Cis Male </item>
+        <item>Cis Man </item>
+        <item>Cis Woman </item>
+        <item>Cisgender Female </item>
+        <item>Cisgender Male </item>
+        <item>Cisgender Man </item>
+        <item>Cisgender Woman </item>
+        <item>Female to Male </item>
+        <item>FTM </item>
+        <item>Gender Fluid </item>
+        <item>Gender Nonconforming  </item>
+        <item>Gender Questioning </item>
+        <item>Gender Variant </item>
+        <item>Genderqueer </item>
+        <item>Intersex </item>
+        <item>Male to Female  </item>
+        <item>MTF </item>
+        <item>Neither  </item>
+        <item>Neutrois </item>
+        <item>Non-binary </item>
+        <item>Other </item>
+        <item>Pangender </item>
+        <item>Trans </item>
+        <item>Trans* </item>
+        <item>Trans Female  </item>
+        <item>Trans* Female </item>
+        <item>Trans Male </item>
+        <item>Trans* Male </item>
+        <item>Trans Man </item>
+        <item>Trans* Man </item>
+        <item>Trans Person </item>
+        <item>Trans* Person </item>
+        <item>Trans Woman </item>
+        <item>Trans* Woman </item>
+        <item>Transfeminine </item>
+        <item>Transgender </item>
+        <item>Transgender Female </item>
+        <item>Transgender Male </item>
+        <item>Transgender Man </item>
+        <item>Transgender Person </item>
+        <item>Transgender Woman </item>
+        <item>Transmasculine </item>
+        <item>Transsexual </item>
+        <item>Transsexual Female </item>
+        <item>Transsexual Male </item>
+        <item>Transsexual Man </item>
+        <item>Transsexual Person </item>
+        <item>Transsexual Woman </item>
+        <item>Two-Spirit </item>
+    </string-array>
+
+    <string-array name="hoursArray">
+        <item>00</item>
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+    </string-array>
+
+    <string-array name="minArray">
+        <item>00</item>
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>32</item>
+        <item>33</item>
+        <item>34</item>
+        <item>35</item>
+        <item>36</item>
+        <item>37</item>
+        <item>38</item>
+        <item>39</item>
+        <item>40</item>
+        <item>41</item>
+        <item>42</item>
+        <item>43</item>
+        <item>44</item>
+        <item>45</item>
+        <item>46</item>
+        <item>47</item>
+        <item>48</item>
+        <item>49</item>
+        <item>50</item>
+        <item>51</item>
+        <item>52</item>
+        <item>53</item>
+        <item>54</item>
+        <item>55</item>
+        <item>56</item>
+        <item>57</item>
+        <item>58</item>
+        <item>59</item>
+    </string-array>
+
+    <string-array name="amArray">
+        <item>AM</item>
+        <item>PM</item>
+    </string-array>
+
+    <string-array name="religionArray">
+        <item>Agnostic</item>
+        <item>Atheist</item>
+        <item>Buddhist</item>
+        <item>Christian</item>
+        <item>Hindu</item>
+        <item>Jewish</item>
+        <item>Muslim</item>
+        <item>Spiritual</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="religionArray2">
+        <item>Agnostic</item>
+        <item>Atheist</item>
+        <item>Buddhist</item>
+        <item>Christian</item>
+        <item>Hindu</item>
+        <item>Jewish</item>
+        <item>Muslim</item>
+        <item>Spiritual</item>
+        <item>Other</item>
+        <item>No Preference</item>
+    </string-array>
+
+    <string-array name="politicalArray">
+        <item>Liberal</item>
+        <item>Conservative</item>
+        <item>Moderate</item>
+        <item>Apolitical</item>
+    </string-array>
+    <string-array name="politicalArray2">
+        <item>Liberal</item>
+        <item>Conservative</item>
+        <item>Moderate</item>
+        <item>Apolitical</item>
+        <item>No Preference</item>
+    </string-array>
+
+    <string-array name="questionArray">
+        <item> One thing you should know about me is</item>
+        <item> Biggest risk I have taken</item>
+        <item> One deal breaker for me is</item>
+        <item> The best way to get my attention is</item>
+        <item> Dating me is easier when you</item>
+        <item> Something my parent don’t know about me is</item>
+        <item> One reality show I would want to be on is</item>
+        <item> I take pride in</item>
+        <item> Some things that I do in my downtime are</item>
+        <item> I get very happy when</item>
+        <item> One thing that I am passionate about is</item>
+        <item> My parents would brag about you if</item>
+        <item> One city I want to travel to is</item>
+        <item> I am currently binge watching</item>
+        <item> After three drinks, I</item>
+        <item> My love language  is</item>
+        <item> My pet peeves are</item>
+        <item> A special place I like to visit mediumly</item>
+        <item> If I was to cook a special dinner, I would make</item>
+        <item> One thing you aren’t better at me at is</item>
+        <item> One thing that you should know about me is</item>
+        <item> One of my biggest weakness is</item>
+        <item> One thing I would like to know about you is</item>
+        <item> You will know that I like you if</item>
+        <item> A typical Saturday night for me</item>
+        <item> The worst job I ever had was</item>
+        <item> If I won the lottery today, I would</item>
+        <item> A random fact about me is</item>
+        <item> I were to write a book, it would be about</item>
+        <item> One of the hardest things I have ever done is</item>
+        <item> The key to making me happy is</item>
+        <item> Qualities I like in someone include</item>
+        <item> My biggest fear is</item>
+        <item> My favorite drink is</item>
+        <item> My greatest strength is</item>
+        <item> What makes me unique is</item>
+        <item> One thing that bugs me is</item>
+        <item> Most embarrassing thing that has happened to me is</item>
+        <item> The most special person in my life is</item>
+        <item> I am most proud of</item>
+        <item> My dream job would be</item>
+        <item> One musical artist that I can never get tired of is</item>
+        <item> My perfect morning would look like</item>
+        <item> One of my silliest fears include</item>
+        <item> One interesting talent that I have is</item>
+        <item> My favorite food is</item>
+        <item> My favorite ice cream flavor is</item>
+        <item> Lets debate about</item>
+        <item> The best movie I have ever seen is</item>
+        <item> One small thing that could brighten up my day is</item>
+    </string-array>
+
+    <string name="title_activity_insta_test">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="less_than_75">You must complete 75% of your profile before sending likes.</string>
+    <string name="noMatchAvailable">No matches yet. Match with some people and they will appear here.</string>
+    <string name="and"> &amp;</string>
+    <string name="you_have_active_subscription">You have an active BlackGentry Premium subscription.</string>
+    <string name="you_have_active_deluxe_subscription">You have an active BlackGentry Deluxe subscription.</string>
+    <string name="likes_subscribe_deluxe_txt">Upgrade to Deluxe to see people who have already liked you.</string><!--Upgrade to Deluxe to search for users-->
+    <string name="likes_subscribe_profile_deluxe_txt">Want a second chance? Upgrade to Deluxe and see the last 100 profiles you skipped.</string>
+    <string name="like_btn_skip_txt">See People You Skipped</string>
+    <string name="like_btn_who_like_txt">See Who Likes You</string>
+    <string name="crush_tokens_txt">Increase the odds by letting users know you already liked them. Users that you use a crush token on will see a crush symbol on your profile.</string>
+    <!--
+        <string name="premium_subheading"><![CDATA[BlackGentry Premium enables unlimited profiles send unlimited Likes, & hide ads Consider purchasing BlackGentry Deluxe to get even more features.]]></string>
+    -->
+    <string name="premium_subheading"><![CDATA[BlackGentry Premium enables unlimited profile views, sending unlimited likes & hiding ads. Consider purchasing BlackGentry Deluxe to get even more features.]]></string>
+    <string name="non_refunde_premium_txt">By clicking Continue your payment will be charged to your Google Play account. Subscriptions will automatically renew for the same package length unless auto-renew is turned off and you cancel at least 24 hours before the end of your current period. You agree to our Terms and Privacy Policy. All purchases are non-refundable.</string>
+    <string name="refer_friend_crush_toekn"><u>Click here to refer a friend and get a free crush Token</u></string>
+    <string-array name="CrushStringArray">
+        <item>Crush tokens are used to let users know that you like them.</item>
+        <item>Stand out from the crowd and like people with Crush tokens</item>
+    </string-array>
+
+    <string-array name="PremiumStringArray">
+        <item>View Unlimited Profiles.</item>
+        <item>Send Unlimited Likes</item>
+        <item>Increase Your Chances</item>
+        <item>Hide Ads</item>
+    </string-array>
+
+    <string-array name="TimeStringArray">
+        <item>Add More Time to Your Connections</item>
+        <item>Use Time Tokens to Add Another 24 Hours</item>
+    </string-array>
+
+    <string-array name="VIPStringArray">
+        <item>Use VIP tokens to skip the line and be shown to more users quicker. Each token lasts 30 minutes.</item>
+        <item>Waste less time and let more people see you</item>
+    </string-array>
+
+    <string-array name="DeluxeStringArray">
+        <item>See Who Likes You</item>
+        <item>Send Unlimited Likes</item>
+        <item>View Unlimited Profiles</item>
+        <item>See Second Chance</item>
+        <item>Send Direct Messages</item>
+        <item>Hide Ads</item>
+    </string-array>
+
+
+    <string name="crush_token_txt">Crush Token%s</string>
+    <string name="token">Token</string>
+    <string name="tokens">Tokens</string>
+
+    <plurals name="token">
+        <item quantity="one">@string/token</item>
+        <item quantity="other">@string/tokens</item>
+    </plurals>
+    <string name="title_activity_maps">Map</string>
+    <string name="premium_note_txt">Note: Premium subscription enables sending unlimited likes, enables rewind and removes ads. Deluxe subscription includes those features and also enables sending Direct Messages and searching for users.  Consider purchasing Deluxe for more features. Are you sure you want to purchase this premium subscription?</string>
+
+    <string name="vip_msg_one">Do you want to use a VIP token?</string><!--Do you want to use a VIP token?Will you like to use a VIP token? VIP tokens allows you to be a top profile in your area for 30 minutes and you will be shown to more profiles within that time.-->
+    <string name="vip_msg_two">VIP tokens allows you to be a top profile in your area for 30 minutes and you will be shown to more profiles within that time. You do not have any VIP tokens. Purchase some first.</string>
+    <string name="vip_msg_activated">VIP status activated for 30 minutes. Your profile will be shown to more people during this time. Continue swiping to increase the odds of matching.</string>
+    <string name="daily_popup_title">Have you tried BlackGentry Deluxe?</string>
+    <string name="daily_popup_msg">Deluxe lets you connect with people faster by sending direct messages, see who has liked you, and change your location.</string>
+    <string name="account_details">Account Details</string>
+    <string name="height_defualt">4\'0\" to 7\'0\"</string>
+    <string name="upgrade_txt">Upgrade</string>
+    <string name="not_now_txt">Not Now</string>
+    <string name="direct_msg_title_popup">You are out of free Direct Messages for the day. Don’t want to wait? Upgrade to Deluxe and send unlimited Direct Messages.</string>
+    <string name="direct_msg_message_popup">Note: Direct Messages are messages sent to  users that you have not matched with. You can still send likes and match with users in order to communicate.</string>
+    <string name="restore_deluxe_txt"><u>Already paid for Deluxe? Restore Purchase.</u></string>
+    <string name="restore_premium_txt"><u>Already paid for Premium? Restore Purchase.</u></string>
+
+
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="2dp">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/ivInstaPic"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_120sdp"
+        app:backgroundImage="@drawable/roundbg"
+        android:elevation="@dimen/_10sdp"
+        app:actualImageScaleType="centerCrop"
+        app:roundBottomEnd="true"
+        app:roundBottomStart="true"
+        app:roundTopEnd="true"
+        app:roundTopStart="true"
+        app:roundedCornerRadius="@dimen/_30sdp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

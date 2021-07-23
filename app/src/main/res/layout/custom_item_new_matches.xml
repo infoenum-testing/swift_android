@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <ProgressBar
+        android:id="@+id/pb_time_left"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_80sdp"
+        style= "?android:attr/progressBarStyleHorizontal"
+        android:layout_centerInParent= "true"
+        android:background= "@drawable/circular_shape"
+        android:indeterminate= "false"
+        android:max="100"
+        android:scaleX="-1"
+        android:progress="80"
+        android:progressDrawable= "@drawable/circular_progress_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/sdv_picture"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"
+        app:roundAsCircle="true"
+        android:src="@drawable/profile_unselected"
+        app:layout_constraintStart_toStartOf="@id/pb_time_left"
+        app:layout_constraintEnd_toEndOf="@id/pb_time_left"
+        app:layout_constraintTop_toTopOf="@id/pb_time_left"
+        app:layout_constraintBottom_toBottomOf="@id/pb_time_left"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/_13ssp"
+        android:layout_margin="@dimen/_5sdp"
+        android:maxLines="1"
+        android:text=""
+        android:maxLength="30"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:visibility="gone"
+        android:fontFamily="@font/medium"
+        android:textColor="@color/primaryTextColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pb_time_left"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--           11  Job Title-->
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/cljobtitle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/_20sdp"
+    android:visibility="visible"
+    android:background="@color/white"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/tvskip"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_jobtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:fontFamily="@font/semi_bold"
+        android:text="@string/ambitionques"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="@dimen/_20ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <EditText
+        android:id="@+id/etAboutMe"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:background="@drawable/koloda_card_view_background"
+        android:elevation="@dimen/_3sdp"
+        android:gravity="top"
+        android:hint="About Your Interest"
+        android:imeOptions="actionNext"
+        android:inputType="textMultiLine|textCapSentences"
+        android:minHeight="@dimen/_150sdp"
+        android:padding="@dimen/_10sdp"
+        android:maxLength="300"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_jobtitle"
+        app:layout_constraintStart_toStartOf="@+id/tv_jobtitle"
+        app:layout_constraintTop_toBottomOf="@+id/tv_jobtitle" />
+
+    <TextView
+        android:id="@+id/tvCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:text="300"
+        android:elevation="@dimen/_4sdp"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintEnd_toEndOf="@id/etAboutMe"
+        app:layout_constraintBottom_toBottomOf="@+id/etAboutMe" />
+
+    <Button
+        android:id="@+id/btn_continue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:background="@drawable/disabledbtn"
+        android:enabled="false"
+        android:fontFamily="@font/medium"
+        android:minWidth="@dimen/_200sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        android:text="@string/continue_txt"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etAboutMe" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

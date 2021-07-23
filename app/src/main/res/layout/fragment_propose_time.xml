@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cl_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.applandeo.materialcalendarview.CalendarView
+                android:id="@+id/dateBtn"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_300sdp"
+                app:abbreviationsBarColor="@color/colorPrimary"
+                app:abbreviationsLabelsColor="@color/white"
+                app:anotherMonthsDaysLabelsColor="#3658a8"
+                app:daysLabelsColor="@color/white"
+                app:headerColor="#3658a8"
+                app:pagesColor="#3658a8"
+                app:selectionColor="@color/white"
+                app:selectionLabelColor="@color/colorAccent"
+                app:todayLabelColor="@color/white"
+                app:type="one_day_picker" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_time"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:cardElevation="@dimen/_10sdp"
+            android:nestedScrollingEnabled="false"
+            app:layout_constraintEnd_toEndOf="@+id/cl_date"
+            app:layout_constraintStart_toStartOf="@+id/cl_date"
+            app:layout_constraintTop_toBottomOf="@+id/cl_date">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_date_wheel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.videe.common.wheelpicker.LoopView
+                    android:id="@+id/picker_hours"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:nestedScrollingEnabled="true"
+                    app:layout_constraintEnd_toStartOf="@id/picker_min"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.videe.common.wheelpicker.LoopView
+                    android:id="@+id/picker_min"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:nestedScrollingEnabled="false"
+                    app:layout_constraintBottom_toBottomOf="@id/picker_hours"
+                    app:layout_constraintEnd_toStartOf="@id/picker_am"
+                    app:layout_constraintStart_toEndOf="@id/picker_hours"
+                    app:layout_constraintTop_toTopOf="@id/picker_hours" />
+
+                <com.videe.common.wheelpicker.LoopView
+                    android:id="@+id/picker_am"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:nestedScrollingEnabled="false"
+                    app:layout_constraintBottom_toBottomOf="@id/picker_min"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/picker_min"
+                    app:layout_constraintTop_toTopOf="@id/picker_min" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/btn_propose"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:background="@drawable/gradientbtn"
+            android:fontFamily="@font/medium"
+            android:minWidth="@dimen/_200sdp"
+            android:paddingTop="@dimen/_10sdp"
+            android:paddingBottom="@dimen/_10sdp"
+            android:text="@string/propose_tym"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_time" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
+

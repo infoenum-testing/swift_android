@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/primaryTextColor</color>
+    <color name="colorPrimaryDark">@color/primaryTextColor</color>
+    <color name="colorAccent">@color/primaryTextColor</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent_alpha">#16000000</color>
+    <color name="primaryTextColor">#3C3454</color>
+    <color name="secondaryTextColor">#9099A1</color>
+    <color name="transparent">#00000000</color>
+    <color name="red">#F93E3E</color>
+    <color name="orange">#F9733E</color>
+    <color name="facebook_color">#166CF0</color>
+    <color name="yellow">#F5CD67</color>
+    <color name="dark_yellow">#ff9706</color>
+    <color name="light_red">#FA0303</color>
+    <color name="colorPrimaryalpha">#803C3454</color>
+    <color name="blurr_white">#36FFFFFF</color>
+    <color name="grey">#f5f5F5</color>
+</resources>

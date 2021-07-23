@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    tools:context=".dating.ui.homeScreen.CardFilterActivity">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_basicinfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/_5sdp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_10sdp">
+
+
+            <TextView
+                android:id="@+id/tv_lookingFor"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_next"
+                android:elevation="0dp"
+                android:fontFamily="@font/medium"
+                android:padding="@dimen/_5sdp"
+                android:text="Looking For"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/maxDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/medium"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/maxDistance"
+                android:textAllCaps="false"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_lookingFor" />
+
+            <TextView
+                android:id="@+id/tvDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="@font/medium"
+                android:paddingTop="@dimen/_10sdp"
+                android:textAllCaps="false"
+                android:textColor="@color/secondaryTextColor"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/maxDistance" />
+
+            <com.warkiz.widget.IndicatorSeekBar
+                android:id="@+id/seek_distance"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:isb_max="500"
+                app:isb_min="20"
+                app:isb_progress_value_float="false"
+                app:isb_seek_smoothly="true"
+                app:isb_show_indicator="none"
+                app:isb_show_thumb_text="false"
+                app:isb_show_tick_texts="false"
+                app:isb_thumb_color="@color/white"
+                app:isb_thumb_drawable="@drawable/thumb"
+                app:isb_thumb_size="@dimen/_30sdp"
+                app:isb_track_background_color="@color/quantum_grey300"
+                app:isb_track_background_size="5dp"
+                app:isb_track_progress_color="@color/primaryTextColor"
+                app:isb_track_progress_size="4dp"
+                app:isb_track_rounded_corners="true"
+                app:layout_constraintTop_toBottomOf="@+id/maxDistance" />
+
+
+            <TextView
+                android:id="@+id/agerange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/medium"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/agerange"
+                android:textAllCaps="false"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/seek_distance" />
+
+            <TextView
+                android:id="@+id/tvRange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="@font/medium"
+                android:padding="@dimen/_5sdp"
+                android:text="18-80"
+                android:textAllCaps="false"
+                android:textColor="@color/secondaryTextColor"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/agerange" />
+
+            <com.swift.dating.common.RangeSeekBar
+                android:id="@+id/sb_age"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                app:absoluteMaxValue="80"
+                app:absoluteMinValue="18"
+                app:activeColor="@color/primaryTextColor"
+                app:barHeight="3dp"
+                app:defaultColor="@color/quantum_grey300"
+                app:layout_constraintEnd_toEndOf="@id/tvRange"
+                app:layout_constraintStart_toStartOf="@id/agerange"
+                app:layout_constraintTop_toBottomOf="@id/tvRange"
+                app:textAboveThumbsColor="@color/transparent"
+                app:thumbNormal="@drawable/thumb"
+                app:thumbPressed="@drawable/thumb" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

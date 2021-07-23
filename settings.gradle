@@ -1,0 +1,2 @@
+include ':app', ':InAppBilling'
+rootProject.name='BlackGentry'

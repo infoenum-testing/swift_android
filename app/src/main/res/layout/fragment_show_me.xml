@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?><!--           4  Show Me-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/clshowme"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:paddingTop="@dimen/_20sdp"
+    android:visibility="visible"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/tvskip">
+
+    <TextView
+        android:id="@+id/tv_showme"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:fontFamily="@font/semi_bold"
+        android:text="@string/showMe"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="@dimen/_20ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/tgShowMe"
+        android:layout_width="wrap_content"
+        android:layout_height="?actionBarSize"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_30ssp"
+        android:gravity="center"
+        android:maxHeight="@dimen/_150sdp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/tv_showme"
+        app:layout_constraintTop_toBottomOf="@+id/tv_showme">
+
+        <RadioButton
+            android:id="@+id/Maletb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/toggle_selected"
+            android:button="@color/transparent"
+            android:fontFamily="@font/medium"
+            android:padding="@dimen/_10sdp"
+            android:text="@string/men"
+            android:textAllCaps="false"
+            android:textColor="@drawable/ic_select"
+            android:textSize="@dimen/_12ssp" />
+
+        <RadioButton
+            android:id="@+id/tbWomen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/toggle_selected"
+            android:button="@color/transparent"
+            android:checked="false"
+            android:fontFamily="@font/medium"
+            android:padding="@dimen/_10sdp"
+            android:text="@string/Women"
+            android:textAllCaps="false"
+            android:textColor="@drawable/ic_select"
+            android:textSize="@dimen/_12ssp" />
+
+        <RadioButton
+            android:id="@+id/everyoneTb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/toggle_selected"
+            android:button="@color/transparent"
+            android:checked="false"
+            android:fontFamily="@font/medium"
+            android:padding="@dimen/_10sdp"
+            android:text="@string/everyone"
+            android:textAllCaps="false"
+            android:textColor="@drawable/ic_select"
+            android:textSize="@dimen/_12ssp" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btn_continue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:background="@drawable/disabledbtn"
+        android:enabled="false"
+        android:fontFamily="@font/medium"
+        android:minWidth="@dimen/_200sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        android:text="@string/continue_txt"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tgShowMe" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

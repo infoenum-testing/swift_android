@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraint_verify"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    android:layout_centerVertical="true"
+    android:layout_gravity="center"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:background="@color/white"
+    android:elevation="@dimen/_15ssp"
+    android:visibility="gone">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/koloda_card_view_background">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10ssp"
+            android:elevation="@dimen/_5ssp"
+            android:padding="@dimen/_10ssp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/waiting_list_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10ssp"
+                android:fontFamily="@font/medium"
+                android:gravity="center"
+                android:drawableTop="@drawable/bg_big_ic"
+                android:text="@string/waitingList"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/_18ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/waiting_list_para1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10ssp"
+                android:fontFamily="@font/medium"
+                android:gravity="center"
+                android:text="@string/waitingList_para"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/_14ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/waiting_list_heading" />
+
+            <TextView
+                android:id="@+id/waiting_list_para2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10ssp"
+                android:fontFamily="@font/medium"
+                android:gravity="center"
+                android:visibility="gone"
+                android:text="@string/waitingList_para2"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/_14ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/waiting_list_para1" />
+
+            <TextView
+                android:id="@+id/waiting_list_para3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10ssp"
+                android:fontFamily="@font/medium"
+                android:gravity="center"
+                android:text="@string/getDecision"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/_14ssp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/waiting_list_para2" />
+
+            <Button
+                android:id="@+id/btn_continue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:background="@drawable/facebookbtn"
+                android:backgroundTint="@color/white"
+                android:elevation="@dimen/_25ssp"
+                android:enabled="true"
+                android:fontFamily="@font/medium"
+                android:minWidth="@dimen/_200sdp"
+                android:paddingStart="@dimen/_10ssp"
+                android:paddingTop="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_10ssp"
+                android:paddingBottom="@dimen/_10sdp"
+                android:text="@string/getDecision"
+                android:textAllCaps="false"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/_14ssp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/waiting_list_para3" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomSheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:layout_gravity="bottom"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/medium"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/cancel_text"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/medium"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/done_txt"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_cancel" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/quantum_grey400"
+        app:layout_constraintTop_toBottomOf="@+id/tv_cancel" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_cancel"/>
+
+    <LinearLayout
+        android:id="@+id/cl_date_wheel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_120sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+
+        app:layout_constraintEnd_toEndOf="@+id/rv_date"
+        app:layout_constraintStart_toStartOf="@+id/rv_date"
+        app:layout_constraintTop_toBottomOf="@+id/rv_date">
+
+        <com.swift.dating.common.wheelpicker.LoopView
+            android:id="@+id/picker_hours"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_weight="1"
+            android:nestedScrollingEnabled="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.swift.dating.common.wheelpicker.LoopView
+            android:id="@+id/picker_min"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_weight="1"
+            android:nestedScrollingEnabled="false" />
+
+        <com.swift.dating.common.wheelpicker.LoopView
+            android:id="@+id/picker_ampm"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:nestedScrollingEnabled="false" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clParent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <ProgressBar
+            android:id="@+id/pb_time_left"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circular_shape"
+            android:indeterminate="false"
+            android:max="100"
+            android:progressDrawable="@drawable/circular_progress_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_picture"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_60sdp"
+            android:visibility="visible"
+            app:actualImageResource="@drawable/profile_unselected"
+            app:layout_constraintBottom_toBottomOf="@id/pb_time_left"
+            app:layout_constraintEnd_toEndOf="@id/pb_time_left"
+            app:layout_constraintStart_toStartOf="@id/pb_time_left"
+            app:layout_constraintTop_toTopOf="@id/pb_time_left"
+            app:roundAsCircle="true" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/sdv_picture_1"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/dummy1"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/pb_time_left"
+            app:layout_constraintEnd_toEndOf="@id/pb_time_left"
+            app:layout_constraintStart_toStartOf="@id/pb_time_left"
+            app:layout_constraintTop_toTopOf="@id/pb_time_left"
+            app:roundAsCircle="true" />
+
+        <ImageView
+            android:id="@+id/ivUnread"
+            android:layout_width="@dimen/_15ssp"
+            android:layout_height="@dimen/_15ssp"
+            android:fontFamily="@font/medium"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:src="@drawable/reddotmatching"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="@dimen/_11ssp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/sdv_picture"
+            app:layout_constraintEnd_toEndOf="@id/sdv_picture"
+            app:layout_constraintStart_toEndOf="@+id/sdv_picture" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="40dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_call_audio"
+            app:layout_constraintStart_toEndOf="@id/pb_time_left"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:ellipsize="end"
+                android:fontFamily="@font/medium"
+                android:maxLength="30"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="  --  "
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/_13ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:ellipsize="end"
+                android:fontFamily="@font/medium"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Last Message will be shown here to check"
+                android:textColor="@color/secondaryTextColor"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintEnd_toEndOf="@id/tv_name"
+                app:layout_constraintStart_toStartOf="@id/tv_name"
+                app:layout_constraintTop_toBottomOf="@id/tv_name" />
+
+
+            <TextView
+                android:id="@+id/tv_call_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:fontFamily="@font/medium"
+                android:text=""
+                android:textColor="@color/secondaryTextColor"
+                android:textSize="@dimen/_10ssp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@id/tv_name"
+                app:layout_constraintStart_toStartOf="@id/tv_name"
+                app:layout_constraintTop_toBottomOf="@id/tv_date" />
+
+            <TextView
+                android:id="@+id/tv_call_confirmation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:background="@drawable/btn_white_border"
+                android:fontFamily="@font/bold"
+                android:paddingStart="@dimen/_5sdp"
+                android:paddingTop="@dimen/_3sdp"
+                android:paddingEnd="@dimen/_5sdp"
+                android:paddingBottom="@dimen/_3sdp"
+                android:text="Pending confirmation"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_10ssp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@id/tv_name"
+                app:layout_constraintTop_toBottomOf="@id/tv_call_status" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <ImageView
+            android:id="@+id/iv_call_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:padding="@dimen/_5sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tv_date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_name" />
+
+        <ImageView
+            android:id="@+id/iv_call_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:padding="@dimen/_5sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/iv_call_video"
+            app:layout_constraintEnd_toStartOf="@id/iv_call_video"
+            app:layout_constraintTop_toTopOf="@id/iv_call_video" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/img_blurr"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0.5"
+        android:background="@color/quantum_grey"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/clParent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

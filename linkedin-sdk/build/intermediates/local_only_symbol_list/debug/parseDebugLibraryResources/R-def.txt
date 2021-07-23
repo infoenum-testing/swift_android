@@ -1,0 +1,7 @@
+R_DEF: Internal format may change without notice
+local
+drawable ic_launcher
+string update_linkedin_app_cancel
+string update_linkedin_app_download
+string update_linkedin_app_message
+string update_linkedin_app_title

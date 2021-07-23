@@ -1,0 +1,138 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+    defaultConfig {
+        applicationId "com.swift.dating"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 33
+        versionName "2.14"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        lintOptions {
+            checkReleaseBuilds false
+            // Or, if you prefer, you can continue to check for errors in release builds,
+            // but continue the build even when errors are found:
+            abortOnError false
+        }
+    }
+    buildTypes {
+        debug {
+            versionNameSuffix "-dev"
+            /*versionNameSuffix "-stagging"*/
+            buildConfigField 'String', 'ENVIRONMENT', '"DEV"'
+            buildConfigField "String", "SERVER_URL", '"http://dev.blackgentryapp.com/"'
+        }
+        release {
+            minifyEnabled true
+           /* versionNameSuffix "-prod"*/
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', 'ENVIRONMENT', '"PROD"'
+            buildConfigField 'String', 'SERVER_URL', '"https://app.blackgentryapp.com/"'
+        }
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    testImplementation 'junit:junit:4.13'
+    implementation 'com.google.android.material:material:1.2.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'com.google.android.play:core:1.9.1'
+    //SDP Lib
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'com.intuit.ssp:ssp-android:1.0.6'
+
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.yahoo.mobile.client.android.util.rangeseekbar:rangeseekbar-library:0.1.0'
+    // OTP
+    implementation 'com.github.mukeshsolanki:android-otpview-pinview:2.0.3'
+
+    implementation 'com.github.jkwiecien:EasyImage:2.0.4'
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
+    //fresco
+    implementation 'com.facebook.fresco:fresco:2.0.0'
+
+    implementation 'com.google.firebase:firebase-messaging:21.0.1'
+    // Add the Firebase Crashlytics SDK.
+    implementation 'com.google.firebase:firebase-crashlytics:17.3.1'
+    // Recommended: Add the Google Analytics SDK.
+    implementation 'com.google.firebase:firebase-analytics:18.0.2'
+    //OKHTTP client
+    implementation 'com.squareup.okhttp3:okhttp:4.4.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.4.0'
+
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    //noinspection LifecycleAnnotationProcessorWithJava8
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.2.0"
+    // Card View
+    implementation 'androidx.cardview:cardview:1.0.0'
+    //Facebook SDK
+    implementation 'com.facebook.android:facebook-login:5.13.0'
+    //seekar
+    implementation 'com.github.warkiz.widget:indicatorseekbar:2.1.2'
+    implementation 'com.github.Mirkoddd:Range-SeekBar:1.0.9'
+
+    implementation 'com.google.android:flexbox:1.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10"
+    // Swipeable Cards
+    implementation "com.yuyakaido.android:card-stack-view:2.3.4"
+    // Calendar View
+    implementation 'com.applandeo:material-calendar-view:1.7.0'
+    implementation 'com.github.kizitonwose:CalendarView:0.3.2'
+    //Places and Location Api
+    implementation 'com.google.android.libraries.places:places:2.4.0'
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
+
+    implementation 'org.webrtc:google-webrtc:1.0.22672'
+    implementation 'org.java-websocket:Java-WebSocket:1.3.9'
+    //Top Snackbar
+    implementation 'com.androidadvance:topsnackbar:1.1.1'
+    implementation 'com.github.nisrulz:sensey:1.8.0'
+
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    //Ads library
+    implementation 'com.google.android.gms:play-services-ads:19.7.0'
+
+    implementation 'com.karumi:dexter:4.2.0'
+
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    //Compressor
+    implementation 'id.zelory:compressor:2.1.0'
+    implementation 'com.chemicalbird.android:range-seekview:0.0.4'
+
+    implementation 'com.happy.widget:dynamicviewpager:0.1.0'
+    implementation 'com.jsibbold:zoomage:1.3.1'
+    // in-app purchase library
+    implementation project(":InAppBilling")
+
+    implementation 'jp.wasabeef:blurry:2.1.1'
+    /*Pager indicator*/
+    implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:3.0.3'
+    /*Phone Country Code picker*/
+    implementation 'com.hbb20:ccp:2.4.2'
+    /*SimpleLocation*/
+    implementation 'com.github.delight-im:android-simplelocation:1.1.0'
+    /*AVi Loading*/
+    implementation 'com.wang.avi:library:2.1.3'
+}
