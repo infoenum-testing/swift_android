@@ -116,7 +116,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                             if (resource.data.getNoOfLikes() != null)
                                 sp.saveNoOfLikes(resource.data.getNoOfLikes());
                             sp.savePremium(resource.data.getUser().getIsPremium().equalsIgnoreCase("Yes"));
-                            sp.saveDeluxe(resource.data.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
+                           // sp.saveDeluxe(resource.data.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
                             sp.saveLinkedIn(!TextUtils.isEmpty(linkedinId));
                             sp.saveString(SharedPreference.userEmail, resource.data.getUser().getEmail());
                             sp.saveString(SharedPreference.userPhone, resource.data.getUser().getMobile());
@@ -128,7 +128,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                                     resource.data.getUser().getSelfiesForUser().getSelfieUrl() != null) {
                                 sp.saveSelfie(resource.data.getUser().getSelfiesForUser().getSelfieUrl());
                                 sp.saveVerified(resource.data.getUser().getIsVerified());
-                                sp.saveIsRejected(resource.data.getUser().getisRejected().equals("1"));
+                               // sp.saveIsRejected(resource.data.getUser().getisRejected().equals("1"));
                             }
                             sendIntent();
                         } else {
@@ -281,7 +281,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                 sp.saveToken("bearer " + response.getToken(), String.valueOf(response.getUser().getId()), true);
             }
             sp.savePremium(response.getUser().getIsPremium().equalsIgnoreCase("Yes"));
-            sp.saveDeluxe(response.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
+//            sp.saveDeluxe(response.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
             sp.saveLinkedIn(!TextUtils.isEmpty(linkedinId));
             sp.saveString(SharedPreference.userEmail, response.getUser().getEmail());
             sp.saveString(SharedPreference.userPhone, response.getUser().getMobile());
@@ -291,7 +291,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
             if (response.getUser().getSelfiesForUser() != null && response.getUser().getSelfiesForUser().getSelfieUrl() != null) {
                 sp.saveSelfie(response.getUser().getSelfiesForUser().getSelfieUrl());
                 sp.saveVerified(response.getUser().getIsVerified());
-                sp.saveIsRejected(response.getUser().getisRejected().equals("1"));
+             //   sp.saveIsRejected(response.getUser().getisRejected().equals("1"));
             }
             preference.setIsFromEmail(true);
             preference.setIsFromNumber(false);
@@ -345,7 +345,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                 sp.saveToken("bearer " + response.getToken(), String.valueOf(response.getUser().getProfileOfUser().getUserId()), true);
             }
             sp.savePremium(response.getUser().getIsPremium().equalsIgnoreCase("Yes"));
-            sp.saveDeluxe(response.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
+  //          sp.saveDeluxe(response.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
             sp.saveLinkedIn(!TextUtils.isEmpty(linkedinId));
 
             if (response.getImagedata() != null)
@@ -354,7 +354,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                     response.getUser().getSelfiesForUser().getSelfieUrl() != null) {
                 sp.saveSelfie(response.getUser().getSelfiesForUser().getSelfieUrl());
                 sp.saveVerified(response.getUser().getIsVerified());
-                sp.saveIsRejected(response.getUser().getisRejected().equals("1"));
+            //    sp.saveIsRejected(response.getUser().getisRejected().equals("1"));
             }
             sp.saveString(SharedPreference.userEmail, response.getUser().getEmail());
             sp.saveString(SharedPreference.userPhone, response.getUser().getMobile());

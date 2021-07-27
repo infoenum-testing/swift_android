@@ -252,9 +252,11 @@ public class VerificationResponseModel extends BaseModel {
         @SerializedName("isPremium")
         @Expose
         private String isPremium;
+/*
         @SerializedName("isDeluxe")
         @Expose
         private String isDeluxe;
+*/
         @SerializedName("isVerifiedDate")
         @Expose
         private String isVerifiedDate;
@@ -267,9 +269,9 @@ public class VerificationResponseModel extends BaseModel {
         @SerializedName("updatedAt")
         @Expose
         private String updatedAt;
-        @SerializedName("isRejected")
+/*        @SerializedName("isRejected")
         @Expose
-        private String isRejected;
+        private String isRejected;*/
         @SerializedName("otpOfUser")
         @Expose
         private OtpOfUser otpOfUser;
@@ -312,13 +314,13 @@ public class VerificationResponseModel extends BaseModel {
             this.status = status;
         }
 
-        public String getIsDeluxe() {
+/*        public String getIsDeluxe() {
             return isDeluxe;
         }
 
         public void setIsDeluxe(String isDeluxe) {
             this.isDeluxe = isDeluxe;
-        }
+        }*/
 
         public String getDeletedAt() {
             return deletedAt;
@@ -372,9 +374,9 @@ public class VerificationResponseModel extends BaseModel {
             return isVerified;
         }
 
-        public String getisRejected() {
+       /* public String getisRejected() {
             return isRejected;
-        }
+        }*/
 
         public String getIsLinkedinUser() {
             return isLinkedinUser;

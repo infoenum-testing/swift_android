@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".dating.ui.createAccountScreen.CreateAccountActivity">
+    tools:context=".ui.createAccountScreen.CreateAccountActivity">
 
     <ImageView
         android:id="@+id/ivback"
@@ -17,7 +17,8 @@
         android:src="@drawable/ic_back_btn"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/pink" />
 
     <TextView
         android:id="@+id/tvskip"

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -30,12 +32,13 @@ import com.swift.dating.ui.homeScreen.fragment.SearchFragment;
 public class GenderFragment extends BaseFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
     CreateAccountViewModel model;
-    Button btnContinue;
+    FloatingActionButton btnContinue;
     private RadioGroup tgGender, tgShowMeTo;
     private LoopView pickerGender;
     private String strGender, strShowMeTo = "";
     private int genderPos;
     private ArrayList<String> genderList = new ArrayList<>();
+    NumberPicker picker;
 
     @Override
     public int getLayoutId() {
@@ -51,11 +54,25 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
     }
 
     /**
-     ***  Method to Initialize
+     * **  Method to Initialize
      */
     private void initialize(View view) {
         btnContinue = view.findViewById(R.id.btn_continue);
-        btnContinue.setText(((CreateAccountActivity)getActivity()).btn_text);
+        picker = view.findViewById(R.id.picker);
+
+        picker.setMinValue(0);
+        picker.setMaxValue(10);
+         picker.setWrapSelectorWheel(true);
+
+        picker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                String text = "Changed from " + oldVal + " to " + newVal;
+             }
+        });
+
+
+        // btnContinue.setText(((CreateAccountActivity)getActivity()).btn_text);
         tgGender = view.findViewById(R.id.tgGender);
         tgShowMeTo = view.findViewById(R.id.tgshowMeTo);
         pickerGender = view.findViewById(R.id.picker_gender);
@@ -69,7 +86,7 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
         pickerGender.setInitPosition(genderPos);
 
 
-        if (((CreateAccountActivity) getActivity()).getUserData()!=null&&!TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getGender())) {
+        if (((CreateAccountActivity) getActivity()).getUserData() != null && !TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getGender())) {
             if (((CreateAccountActivity) getActivity()).getUserData().getGender().equalsIgnoreCase("Male")) {
                 tgGender.check(R.id.tbMale);
                 strGender = "Male";
@@ -90,7 +107,7 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
                 if (tgShowMeTo.getCheckedRadioButtonId() == R.id.tvshowMen) {
                     strShowMeTo = "Male";
                     tgShowMeTo.check(R.id.tvshowMen);
-                }else {
+                } else {
                     strShowMeTo = "Female";
                     tgShowMeTo.check(R.id.tvshowWomen);
                 }
@@ -98,9 +115,9 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
             }
             btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
             btnContinue.setEnabled(true);
-            if (((CreateAccountActivity) getActivity()).isEdit) {
+            /*if (((CreateAccountActivity) getActivity()).isEdit) {
                 btnContinue.setText("Done");
-            }
+            }*/
         }
         btnContinue.setOnClickListener(this);
         tgGender.setOnCheckedChangeListener(this);
@@ -116,7 +133,7 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
     }
 
     /**
-     ***  Method to Handle api Response
+     * **  Method to Handle api Response
      */
     private void subscribeModel() {
         model = ViewModelProviders.of(this).get(CreateAccountViewModel.class);
@@ -133,28 +150,28 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
                     case SUCCESS:
                         getBaseActivity().hideLoading();
                         if (resource.data.getSuccess()) {
-                            if(resource.data.getError()!=null && resource.data.getError().getCode().equalsIgnoreCase("401")){
+                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
                                 getBaseActivity().openActivityOnTokenExpire();
-                            }else {
+                            } else {
                                 Gson gson = new Gson();
                                 String user = getBaseActivity().sp.getUser();
                                 VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
                                 getBaseActivity().sp.saveisSettingsChanged(true);
-                                if(((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
+                                if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
                                     if (!TextUtils.isEmpty(getBaseActivity().sp.getMyString(SearchFragment.SearchResponse)))
                                         getBaseActivity().sp.removeKey(SearchFragment.SearchResponse);
                                     if (!TextUtils.isEmpty(getBaseActivity().sp.getMyString(SearchFragment.FilterResponse)))
                                         getBaseActivity().sp.removeKey(SearchFragment.FilterResponse);
                                 }
                                 obj.setUser(resource.data.getUser());
-                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(),resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
                                 ((CreateAccountActivity) getActivity()).updateParseCount(4);
                                 sendIntent();
                             }
                         } else {
                             getBaseActivity().hideLoading();
                             getBaseActivity().showSnackbar(btnContinue, resource.data.getMessage());
-                            if(resource.data.getError()!=null && resource.data.getError().getCode().equalsIgnoreCase("401"))
+                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401"))
                                 getBaseActivity().openActivityOnTokenExpire();
                         }
                         break;
@@ -170,10 +187,10 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
         if (view == btnContinue) {
-            if( ((CreateAccountActivity)getActivity()).preference.getIsFromNumber()){
+            if (((CreateAccountActivity) getActivity()).preference.getIsFromNumber()) {
                 ((CreateAccountActivity) getActivity()).updateParseCount(4);
                 sendIntent();
-            }else {
+            } else {
                 getBaseActivity().showLoading();
                 hideKeyboard();
                 if (!strGender.equalsIgnoreCase("male") && !strGender.equalsIgnoreCase("female"))

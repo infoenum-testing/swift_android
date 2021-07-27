@@ -1,97 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clbirthday"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:visibility="visible"
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:src="@drawable/bday_img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tv_birthday"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_20sdp"
-            android:fontFamily="@font/semi_bold"
-            android:text="@string/myBirthdayIs"
-            android:textColor="@color/primaryTextColor"
-            android:textSize="@dimen/_20ssp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_date_wheel"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_150sdp"
-            android:layout_marginTop="@dimen/_30sdp"
-            app:layout_constraintEnd_toEndOf="@+id/tv_birthday"
-            app:layout_constraintStart_toStartOf="@+id/tv_birthday"
-            app:layout_constraintTop_toBottomOf="@+id/tv_birthday">
-
-            <com.swift.dating.common.wheelpicker.LoopView
-                android:id="@+id/picker_month"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/_150sdp"
-                android:layout_weight="1"
-                app:layout_constraintEnd_toStartOf="@id/picker_day"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.swift.dating.common.wheelpicker.LoopView
-                android:id="@+id/picker_day"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:layout_constraintBottom_toBottomOf="@id/picker_month"
-                app:layout_constraintEnd_toStartOf="@id/picker_year"
-                app:layout_constraintStart_toEndOf="@id/picker_month"
-                app:layout_constraintTop_toTopOf="@id/picker_month" />
-
-            <com.swift.dating.common.wheelpicker.LoopView
-                android:id="@+id/picker_year"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:layout_constraintBottom_toBottomOf="@id/picker_month"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/picker_day"
-                app:layout_constraintTop_toTopOf="@id/picker_month" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/tv_birthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:fontFamily="@font/bold"
+        android:text="@string/myBirthdayIs"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_17ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
-    <Button
-        android:id="@+id/btn_continue"
+
+    <RelativeLayout
+        android:id="@+id/rlMonth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_30sdp"
         android:layout_marginEnd="@dimen/_20sdp"
         android:layout_marginBottom="@dimen/_10sdp"
-        android:background="@drawable/disabledbtn"
-        android:enabled="false"
-        android:fontFamily="@font/medium"
-        android:minWidth="@dimen/_200sdp"
+        android:background="@drawable/btn_white_border_new"
+        android:backgroundTint="@color/grey_new"
+        android:paddingStart="@dimen/_15sdp"
         android:paddingTop="@dimen/_10sdp"
+        android:paddingEnd="@dimen/_20sdp"
         android:paddingBottom="@dimen/_10sdp"
-        android:text="@string/continue_txt"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_14ssp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/clbirthday" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_birthday">
 
+        <TextView
+            android:id="@+id/tvMonthOfBirth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/thin"
+            android:text="@string/month"
+            android:textSize="@dimen/_16ssp" />
+
+        <ImageView
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/arrow_down" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlDays"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:background="@drawable/btn_white_border_new"
+        android:backgroundTint="@color/grey_new"
+        android:paddingStart="@dimen/_15sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingEnd="@dimen/_20sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        app:layout_constraintTop_toBottomOf="@+id/rlMonth">
+
+        <TextView
+            android:id="@+id/tvDayOfBirth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/thin"
+            android:text="@string/date"
+            android:textSize="@dimen/_16ssp" />
+
+        <ImageView
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/arrow_down" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlYear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:background="@drawable/btn_white_border_new"
+        android:backgroundTint="@color/grey_new"
+        android:paddingStart="@dimen/_15sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingEnd="@dimen/_20sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        app:layout_constraintTop_toBottomOf="@+id/rlDays">
+
+        <TextView
+            android:id="@+id/tvYearOfBirth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/thin"
+            android:text="@string/year"
+            android:textSize="@dimen/_16ssp" />
+
+        <ImageView
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/arrow_down" />
+
+    </RelativeLayout>
+
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_arrow_right"
+        app:backgroundTint="@color/pink"
+        app:layout_constraintBottom_toBottomOf="@+id/llBottom"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/llBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new"
+
+            />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/pink" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

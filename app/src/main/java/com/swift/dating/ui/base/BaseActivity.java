@@ -235,9 +235,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                             sp.saveString(SharedPreference.userPhone, resource.data.getUser().getMobile());
                             if (myProfileResponse != null)
                                 myProfileResponse.setProfileData();
-                            if (!sp.getVerified().equals(resource.data.getUser().getIsVerified()) || sp.isRejected() != resource.data.getUser().getisRejected().equals("1")) {
+                            if (!sp.getVerified().equals(resource.data.getUser().getIsVerified()) /*|| sp.isRejected() != resource.data.getUser().getisRejected().equals("1")*/) {
                                 sp.saveVerified(resource.data.getUser().getIsVerified());
-                                sp.saveIsRejected(resource.data.getUser().getisRejected().equals("1"));
+                           //     sp.saveIsRejected(resource.data.getUser().getisRejected().equals("1"));
                                 if (isCardScreen) {
                                     ((HomeActivity) mActivity).onTabSelected(((HomeActivity) mActivity).tabHome.getTabAt(0));
                                 } else if (isMatchScreen) {

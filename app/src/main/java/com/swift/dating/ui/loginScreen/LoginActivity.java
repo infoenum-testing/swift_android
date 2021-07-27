@@ -255,7 +255,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         if (resource.data.getSuccess()) {
                             //Log.e("data", resource.data.getUser().getIsVerified());
                             sp.savePremium(resource.data.getUser().getIsPremium().equalsIgnoreCase("Yes"));
-                            sp.saveDeluxe(resource.data.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
+                           // sp.saveDeluxe(resource.data.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
                             setData(resource.data);
                         } else {
                             showSnackbar(cl_main, resource.data.getMessage());
@@ -285,7 +285,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             sp.saveVerified(data.getUser().getIsVerified());
         }
         sp.saveVerified(data.getUser().getIsVerified());
-        sp.saveIsRejected(data.getUser().getisRejected().equals("1"));
+   //     sp.saveIsRejected(data.getUser().getisRejected().equals("1"));
         Intent i;
         if (TextUtils.isEmpty(data.getUser().getProfileOfUser().getName())) {
             i = new Intent(mActivity, WelcomeActivity.class);

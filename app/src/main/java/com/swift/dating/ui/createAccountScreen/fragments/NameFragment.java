@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
 import com.swift.dating.R;
@@ -28,7 +29,7 @@ import com.swift.dating.ui.createAccountScreen.viewmodel.CreateAccountViewModel;
 public class NameFragment extends BaseFragment implements View.OnClickListener, TextWatcher {
 
     private EditText etName;
-    private Button btnContinue;
+    private FloatingActionButton btnContinue;
     private CreateAccountViewModel model;
 
     @Override
@@ -57,42 +58,39 @@ public class NameFragment extends BaseFragment implements View.OnClickListener, 
      */
     private void subscribeModel() {
         model = ViewModelProviders.of(this).get(CreateAccountViewModel.class);
-        model.nameResponse().observe(this, new Observer<Resource<VerificationResponseModel>>() {
-            @Override
-            public void onChanged(@Nullable Resource<VerificationResponseModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        getBaseActivity().hideLoading();
-                        if (resource.data.getSuccess()) {
-                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
-                                getBaseActivity().openActivityOnTokenExpire();
-                            } else {
-                                Gson gson = new Gson();
-                                String user = getBaseActivity().sp.getUser();
-                                VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
-                                obj.setUser(resource.data.getUser());
-                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
-                                ((CreateAccountActivity) getActivity()).updateParseCount(2);
-                                ((CreateAccountActivity) getActivity()).addFragment();
-                            }
+        model.nameResponse().observe(this, resource -> {
+            if (resource == null) {
+                return;
+            }
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    getBaseActivity().hideLoading();
+                    if (resource.data.getSuccess()) {
+                        if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
+                            getBaseActivity().openActivityOnTokenExpire();
                         } else {
-                            getBaseActivity().hideLoading();
-                            getBaseActivity().showSnackbar(btnContinue, resource.data.getMessage());
-                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401"))
-                                getBaseActivity().openActivityOnTokenExpire();
+                            Gson gson = new Gson();
+                            String user = getBaseActivity().sp.getUser();
+                            VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
+                            obj.setUser(resource.data.getUser());
+                            getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                            ((CreateAccountActivity) getActivity()).updateParseCount(2);
+                            ((CreateAccountActivity) getActivity()).addFragment();
                         }
-
-                        break;
-                    case ERROR:
+                    } else {
                         getBaseActivity().hideLoading();
-                        getBaseActivity().showSnackbar(btnContinue, resource.message);
-                        break;
-                }
+                        getBaseActivity().showSnackbar(btnContinue, resource.data.getMessage());
+                        if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401"))
+                            getBaseActivity().openActivityOnTokenExpire();
+                    }
+
+                    break;
+                case ERROR:
+                    getBaseActivity().hideLoading();
+                    getBaseActivity().showSnackbar(btnContinue, resource.message);
+                    break;
             }
         });
     }
@@ -109,9 +107,9 @@ public class NameFragment extends BaseFragment implements View.OnClickListener, 
             etName.setText(((CreateAccountActivity) getActivity()).getUserData().getName());
             btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
             btnContinue.setEnabled(true);
-            if (((CreateAccountActivity) getActivity()).isEdit) {
+            /*if (((CreateAccountActivity) getActivity()).isEdit) {
                 btnContinue.setText("Done");
-            }
+            }*/
         }
 
 

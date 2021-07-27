@@ -2,27 +2,35 @@ package com.swift.dating.ui.createAccountScreen.fragments;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+//import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
 import com.swift.dating.R;
+import com.swift.dating.common.wheelpicker.LoopView;
 import com.swift.dating.data.network.Resource;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountLocationModel;
 import com.swift.dating.model.responsemodel.VerificationResponseModel;
@@ -33,15 +41,21 @@ import com.swift.dating.ui.createAccountScreen.viewmodel.CreateAccountViewModel;
 public class LocationFragment extends BaseFragment {
     private final String US = "United States";
     private final String TAG = LocationFragment.class.getSimpleName();
-    private final String[] us_state_names = new String[]{"Select State", "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "IllinoisIndiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "MontanaNebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "PennsylvaniaRhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"};
-    private Button btn_continue;
+    private final String[] us_state_names = new String[]{"Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "IllinoisIndiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "MontanaNebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "PennsylvaniaRhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"};
+    private FloatingActionButton btn_continue;
     //private TextView tv_state;
     private EditText edit_city;
     private ArrayList<String> country;
-    private Spinner spin_country, spin_state;
+    //  private Spinner spin_country, spin_state;
     private CreateAccountViewModel model;
+    TextView tv_country, tv_state;
     private String state = "";
     private String contry = "";
+    int countryPos = 0, statePost;
+    private ArrayList<String> stateList;
+    boolean isUsSelected = false;
+    private RelativeLayout rlState, rlCountry;
+
 
     @Override
     public int getLayoutId() {
@@ -66,8 +80,11 @@ public class LocationFragment extends BaseFragment {
             contry = ((CreateAccountActivity) getActivity()).getUserData().getCountry();
             for (int i = 0; i < country.size(); i++) {
                 if (country.get(i).equalsIgnoreCase(contry)) {
-                    spin_country.setSelection(i);
-                    edit_city.setVisibility(View.VISIBLE);
+                    countryPos = i;
+                    //    spin_country.setSelection(i);
+                    tv_country.setText(country.get(countryPos));
+                    setVisibility(country.get(countryPos).equalsIgnoreCase(US));
+                    // edit_city.setVisibility(View.VISIBLE);
                     break;
                 }
             }
@@ -76,7 +93,9 @@ public class LocationFragment extends BaseFragment {
             state = ((CreateAccountActivity) getActivity()).getUserData().getState();
             for (int i = 0; i < us_state_names.length; i++) {
                 if (us_state_names[i].equalsIgnoreCase(state)) {
-                    spin_state.setSelection(i);
+                    statePost = i;
+                    //     spin_state.setSelection(i);
+                    tv_state.setText(stateList.get(statePost));
                     break;
                 }
             }
@@ -85,8 +104,14 @@ public class LocationFragment extends BaseFragment {
 
     private void initView(View view) {
         edit_city = view.findViewById(R.id.edit_city);
-        spin_country = view.findViewById(R.id.spin_country);
+        rlCountry = view.findViewById(R.id.rlCountry);
+        rlState = view.findViewById(R.id.rlState);
+        tv_state = view.findViewById(R.id.tv_state);
+        tv_country = view.findViewById(R.id.tv_country);
+
+     /*   spin_country = view.findViewById(R.id.spin_country);
         spin_state = view.findViewById(R.id.spin_state);
+     */
         country = new ArrayList<>();
         String[] isoCountryCodes = Locale.getISOCountries();
         for (String countryCode : isoCountryCodes) {
@@ -94,8 +119,8 @@ public class LocationFragment extends BaseFragment {
             country.add(locale.getDisplayCountry());
         }
         Collections.sort(country);
-        country.add(0, "Select Country");
-        String[] test=new String[]{"United Kingdom","Canada","United States"};
+        // country.add(0, "Select Country");
+        String[] test = new String[]{"United Kingdom", "Canada", "United States"};
         for (String s : test) {
             for (int i = 0; i < country.size(); i++) {
                 if (country.get(i).equalsIgnoreCase(s)) {
@@ -105,16 +130,78 @@ public class LocationFragment extends BaseFragment {
                 }
             }
         }
+        stateList = new ArrayList<>();
+        stateList.addAll(Arrays.asList(us_state_names));
+
+        rlCountry.setOnClickListener(vs -> {
+            View v = LocationFragment.this.getLayoutInflater().inflate(R.layout.bottom_sheet_day, null);
+            BottomSheetDialog dialog = new BottomSheetDialog(LocationFragment.this.getContext());
+            dialog.setContentView(v);
+            dialog.show();
+            v.setNestedScrollingEnabled(true);
+            dialog.getBehavior().setDraggable(false);
+            LoopView loopView;
+            TextView btn_done;
+            loopView = v.findViewById(R.id.picker);
+            btn_done = v.findViewById(R.id.btn_done);
+            loopView.setNotLoop();
+            loopView.setArrayList(country);
+            loopView.setInitPosition(countryPos);
+            loopView.setListener(item -> {
+                countryPos = item;
+                tv_country.setText(country.get(countryPos));
+                setVisibility(country.get(countryPos).equalsIgnoreCase(US));
+            });
+
+            btn_done.setOnClickListener((View v1) -> {
+                tv_country.setText(country.get(countryPos));
+                dialog.cancel();
+                contry = country.get(countryPos);
+            });
+        });
+
+        rlState.setOnClickListener(vs -> {
+            View v = LocationFragment.this.getLayoutInflater().inflate(R.layout.bottom_sheet_day, null);
+            BottomSheetDialog dialog = new BottomSheetDialog(LocationFragment.this.getContext());
+            dialog.setContentView(v);
+            dialog.show();
+            v.setNestedScrollingEnabled(true);
+            dialog.getBehavior().setDraggable(false);
+            LoopView loopView;
+            TextView btn_done;
+            loopView = v.findViewById(R.id.picker);
+            btn_done = v.findViewById(R.id.btn_done);
+            loopView.setNotLoop();
+            loopView.setArrayList(stateList);
+            loopView.setInitPosition(statePost);
+
+            loopView.setListener(item -> {
+                statePost = item;
+                tv_state.setText(stateList.get(item));
+                state = stateList.get(statePost);
+            });
+
+            btn_done.setOnClickListener((View v1) -> {
+                tv_state.setText(stateList.get(statePost));
+                state = stateList.get(statePost);
+                dialog.cancel();
+            });
+        });
+
+
         btn_continue = view.findViewById(R.id.btn_continue);
-        if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
+       /* if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
             btn_continue.setText("Done");
-        }
+        }*/
+
+
         btn_continue.setOnClickListener(v -> {
             if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
-                CreateAccountActivity.location = "" + edit_city.getText().toString() + ", " + country.get(spin_country.getSelectedItemPosition());
+                CreateAccountActivity.location = "" + edit_city.getText().toString() + ", " +country.get(countryPos);
             }
             if (!TextUtils.isEmpty(contry)) {
-                if (spin_state.getVisibility() == View.VISIBLE) {
+                //if (spin_state.getVisibility() == View.VISIBLE) {
+                if (isUsSelected) {
                     if (!TextUtils.isEmpty(state)) {
                         if (!TextUtils.isEmpty(edit_city.getText().toString())) {
                             hideKeyboard();
@@ -140,20 +227,21 @@ public class LocationFragment extends BaseFragment {
             }
 
         });
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, country);
+
+     /*   ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, country);
         spin_country.setAdapter(adapter);
         spin_country.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position != 0) {
                     edit_city.setVisibility(View.VISIBLE);
-                    if (country.get(position).equalsIgnoreCase(US)){
+                    if (country.get(position).equalsIgnoreCase(US)) {
                         edit_city.setVisibility(View.GONE);
                     }
                     setVisibility(country.get(position).equalsIgnoreCase(US));
                     contry = country.get(position);
 
-                }else {
+                } else {
                     edit_city.setVisibility(View.GONE);
                 }
             }
@@ -169,7 +257,7 @@ public class LocationFragment extends BaseFragment {
                 if (position != 0) {
                     state = us_state_names[position];
                     edit_city.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     edit_city.setVisibility(View.GONE);
                 }
             }
@@ -183,31 +271,21 @@ public class LocationFragment extends BaseFragment {
         ArrayList<String> list = new ArrayList<>();
         list.addAll(Arrays.asList(us_state_names));
         ArrayAdapter<String> adapter_state = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, list);
-        spin_state.setAdapter(adapter_state);
+        spin_state.setAdapter(adapter_state);*/
+
+
     }
 
     private void setVisibility(boolean visible) {
         if (visible) {
-            // if (tv_state.getVisibility() == View.GONE) tv_state.setVisibility(View.VISIBLE);
-            if (spin_state.getVisibility() == View.GONE) spin_state.setVisibility(View.VISIBLE);
+            isUsSelected = true;
+            rlState.setVisibility(View.VISIBLE);
         } else {
-            //if (tv_state.getVisibility() == View.VISIBLE) tv_state.setVisibility(View.GONE);
-            if (spin_state.getVisibility() == View.VISIBLE) spin_state.setVisibility(View.GONE);
+            isUsSelected = false;
+            rlState.setVisibility(View.GONE);
         }
+
     }
-/*
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (view.getId() == R.id.spin_country) {
-            setVisibility(country.get(position).equalsIgnoreCase(US));
-            contry = country.get(position);
-        } else if (view.getId() == R.id.spin_state)
-
-    }*/
-
-   /* @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-    }*/
 
     private void subscribeModel() {
         model = ViewModelProviders.of(this).get(CreateAccountViewModel.class);

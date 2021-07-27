@@ -48,6 +48,8 @@
     <string name="education_level">What is your highest level of education?</string>
     <string name="my_ethnicity_is">My Ethnicity is</string>
     <string name="i_identify_as">I identify as</string>
+    <string name="mans">Man</string>
+    <string name="women">Woman</string>
     <string name="man">Male</string>
     <string name="Woman">Female</string>
     <string name="other">Other</string>
@@ -74,16 +76,17 @@
     <string name="answer_now">Chat Now</string>
     <string name="my_card">Profile Preview</string>
     <string name="question_headings">Skip the small talk! Enter three questions of your choice that your matches will answer.Your questions are a way to learn more about your match.Be creative fun and keep it interesting</string>
-
-
-    <string name="welcome_to_app">Welcome to BlackGentry</string>
-    <string name="welcome_to_app_desc">At BlackGentry, we are focused on creating a quality community where you can meet ambitious and driven Black singles. Our values are important to us. We expect members to represent themselves with class and be respectful to others.\n\n
-        What makes BlackGentry Different?\n\n
-        \u2022All profiles will be reviewed and must be approved.\n
-        \u2022All members must verify their profile with a selfie during registration.\n
-        \u2022Members will have 24 hours to initiate a conversation after matching.\n
-        \u2022All members must complete a majority of their profile questions.\n\n\n\nBy using BlackGentry, you agree to our <u>terms &amp; policies</u>.\n </string>
+    <string name="welcome_to_app">Welcome to</string>
+    <string name="welcome_to_app_desc">Swift is the dating app designed to connect faster. We are focused on people actually connecting. We know you are tired of swiping all day and collecting matches but never truly connecting so we give matches 72 hours to make a connection and move things to real life.</string>
+    <string name="what_makes_txt_1">All matches have 72 hours to get to know each other</string>
+    <string name="what_makes_txt_2">More completed profiles than other apps</string>
+    <string name="what_makes_txt_3">Search for people and find your true match.</string>
+    <string name="what_makes_txt_4">Send Direct Messages</string>
+    <string name="terms">By using SWIFT, you agree to our </string>
+    <string name="terms2"> terms &amp; policies.</string>
     <string name="process">Process</string>
+    <string name="what_makes_txt">What makes Swift different?</string>
+
     <string name="process_desc">Swipe Match Set a date within 48 hours.Talk Exchange Contacts\n
         You can unmatch any step of the way.Please remember to be yourself,be friendly and date Safely.</string>
     <string name="i_understand">I Understand</string>
@@ -148,6 +151,7 @@
     <string name="privacy_policy"> Privacy Policy</string>
     <string name="licence">Licenses</string>
     <string name="sharevidee">Refer a friend</string>
+    <string name="agree">I agree</string>
 
     <string name="expiring_matches">Expiring Matches</string>
     <string name="match_update">New Messages</string>
@@ -628,6 +632,9 @@
     <string name="direct_msg_message_popup">Note: Direct Messages are messages sent to  users that you have not matched with. You can still send likes and match with users in order to communicate.</string>
     <string name="restore_deluxe_txt"><u>Already paid for Deluxe? Restore Purchase.</u></string>
     <string name="restore_premium_txt"><u>Already paid for Premium? Restore Purchase.</u></string>
+    <string name="month">Month</string>
+    <string name="date">Date</string>
+    <string name="year">Year</string>
     <!--App secret: 8b06af16f5d8d10e309c497a7569baac-->
 
 

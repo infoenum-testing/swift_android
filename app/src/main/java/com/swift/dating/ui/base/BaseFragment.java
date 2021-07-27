@@ -118,7 +118,7 @@ public abstract class BaseFragment extends Fragment {
     public void showSnackBar(View v, String message) {
         Snackbar snack = Snackbar.make(v, message, Snackbar.LENGTH_LONG);
         View view = snack.getView();
-        view.setBackgroundColor(ContextCompat.getColor(mContext, R.color.primaryTextColor));
+        view.setBackgroundColor(ContextCompat.getColor(mContext, R.color.pink));
         TextView tv = view.findViewById(R.id.snackbar_text);
         tv.setTextColor(Color.WHITE);
         snack.show();

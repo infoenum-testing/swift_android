@@ -21,6 +21,6 @@
     <color name="blurr_white">#36FFFFFF</color>
     <color name="grey">#f5f5F5</color>
     <color name="border_color">#A2ABB8</color>
-
+    <color name="grey_new">#989898</color>
 
 </resources>
