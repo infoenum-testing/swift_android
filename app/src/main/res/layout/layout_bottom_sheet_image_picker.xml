@@ -18,9 +18,10 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="10dp"
-            android:tint="@color/colorPrimary"
             android:src="@drawable/close_black_ic"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:backgroundTint="@color/pink"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_select_option"
@@ -52,7 +53,7 @@
                 android:layout_height="@dimen/_50sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:background="@drawable/roundbg"
-                android:backgroundTint="@color/primaryTextColor"
+                android:backgroundTint="@color/pink"
                 android:duplicateParentState="true"
                 android:padding="15dp"
 
@@ -75,6 +76,7 @@
             android:id="@+id/view"
             android:layout_width="0.2dp"
             android:layout_height="70dp"
+            android:visibility="gone"
             android:layout_margin="@dimen/_20sdp"
             android:background="@color/primaryTextColor"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -98,7 +100,7 @@
                 android:layout_height="@dimen/_50sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:background="@drawable/roundbg"
-                android:backgroundTint="@color/primaryTextColor"
+                android:backgroundTint="@color/pink"
                 android:duplicateParentState="true"
                 android:padding="15dp"
                 android:src="@drawable/ic_gallery" />

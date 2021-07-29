@@ -39,30 +39,26 @@
 
             <ImageView
                 android:id="@+id/ivLogo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_50sdp"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_100sdp"
                 android:src="@drawable/phone_new_img"
-                app:layout_constraintBottom_toTopOf="@+id/tv_mobile_number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_cross" />
 
             <TextView
                 android:id="@+id/tv_mobile_number"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_20sdp"
                 android:fontFamily="@font/bold"
-                android:gravity="center"
                 android:text="My Phone Number is"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_17ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -71,9 +67,10 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="@dimen/_20sdp"
                 android:background="@drawable/edit_txt_bg"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_mobile_number">
@@ -85,57 +82,124 @@
                     android:layout_alignParentStart="true"
                     android:gravity="center"
                     app:ccp_arrowColor="@color/pink"
-                    app:ccp_contentColor="@color/pink"
+
+                    app:ccp_contentColor="@color/black"
                     app:ccp_defaultNameCode="US"
                     app:ccp_showFlag="false"
                     app:ccp_showFullName="false"
                     app:ccp_showNameCode="false" />
 
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="1dp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/cc_picker"
+                    android:background="@color/grey_new" />
+
                 <EditText
                     android:id="@+id/et_phone"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
-                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginEnd="10dp"
-                    android:layout_toEndOf="@+id/cc_picker"
+                    android:layout_toEndOf="@+id/view"
                     android:background="@null"
-                    android:fontFamily="@font/medium"
-                    android:hint="Enter Your Cell Phone Number"
+                    android:fontFamily="@font/thin"
+                    android:hint="Your Phone Number"
                     android:imeOptions="actionDone"
                     android:inputType="phone"
                     android:lines="1"
                     android:maxLength="50"
-                    android:textColor="@color/pink"
-                    android:textColorHint="@color/transparent_alpha"
-                    android:textSize="@dimen/_12sdp"
-                    android:visibility="visible" />
+                    android:textColor="@color/primaryTextColor"
+                    android:textColorHint="@color/secondaryTextColor"
+                    android:textSize="@dimen/_14ssp"
+                    android:visibility="visible"
+
+                    />
 
             </RelativeLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 
-    <Button
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_continue"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_30sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_arrow_right"
+        app:backgroundTint="@color/pink"
+        app:layout_constraintBottom_toBottomOf="@+id/llBottom"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/llBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_20sdp"
-        android:background="@drawable/disabledbtn"
-        android:enabled="false"
-        android:fontFamily="@font/medium"
-        android:minWidth="@dimen/_200sdp"
-        android:paddingTop="@dimen/_10sdp"
-        android:paddingBottom="@dimen/_10sdp"
-        android:text="@string/continue_txt"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_14ssp"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sView" />
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/pink" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

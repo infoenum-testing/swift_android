@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
 import java.util.Objects;
@@ -27,7 +28,7 @@ import com.swift.dating.ui.settingScreen.SettingsActivity;
 
 public class ShowMeFragment extends BaseFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
     CreateAccountViewModel model;
-    private Button btnContinue;
+    private FloatingActionButton btnContinue;
     private RadioGroup tgShowMe;
     private String strShowMe = "";
 
@@ -122,9 +123,9 @@ public class ShowMeFragment extends BaseFragment implements View.OnClickListener
             strShowMe = ((CreateAccountActivity) getActivity()).getUserData().getInterested();
             btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
             btnContinue.setEnabled(true);
-            if (((CreateAccountActivity) getActivity()).isEdit) {
+            /*if (((CreateAccountActivity) getActivity()).isEdit) {
                 btnContinue.setText("Done");
-            }
+            }*/
         }
 
     }

@@ -67,6 +67,7 @@ import com.swift.dating.data.network.CallServer;
 public class CommonUtils {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String isCompleteRegistration="isCompleteRegistration";
 
     /* public static HashMap<String,Object> jsonToMap(String t) throws JSONException {
             HashMap<String, Object> map = new HashMap<String, Object>();
@@ -416,15 +417,15 @@ public class CommonUtils {
                     if (!TextUtils.isEmpty(obj.getAdminArea())) {
                         if (!TextUtils.isEmpty(obj.getSubAdminArea())) {
                             if (!TextUtils.isEmpty(obj.getLocality())) {
-                                customAdd= obj.getLocality()+", "+obj.getAdminArea() + ", " + obj.getCountryName();
-                            }else {
-                                customAdd= obj.getSubAdminArea()+", "+obj.getAdminArea() + ", " + obj.getCountryName();
+                                customAdd = obj.getLocality() + ", " + obj.getAdminArea() + ", " + obj.getCountryName();
+                            } else {
+                                customAdd = obj.getSubAdminArea() + ", " + obj.getAdminArea() + ", " + obj.getCountryName();
                             }
-                        }else {
+                        } else {
                             if (!TextUtils.isEmpty(obj.getLocality())) {
-                                customAdd= obj.getLocality()+", "+obj.getAdminArea() + ", " + obj.getCountryName();
-                            }else {
-                                customAdd= obj.getAdminArea() + ", " + obj.getCountryName();
+                                customAdd = obj.getLocality() + ", " + obj.getAdminArea() + ", " + obj.getCountryName();
+                            } else {
+                                customAdd = obj.getAdminArea() + ", " + obj.getCountryName();
                             }
                         }
                     } else {
@@ -433,7 +434,7 @@ public class CommonUtils {
                 } else {
                     customAdd = "";
                 }
-                Log.e("WhereYouLiveActivity", "getAddress: "+customAdd );
+                Log.e("WhereYouLiveActivity", "getAddress: " + customAdd);
                 return customAdd;
             } else {
                 return "";

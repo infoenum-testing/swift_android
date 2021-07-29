@@ -42,6 +42,7 @@ import com.swift.dating.ui.selfieScreen.SelfieActivity;
 import com.swift.dating.ui.welcomeScreen.WelcomeActivity;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
@@ -180,11 +181,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         } */ else {
             if (view == tvTermOfService) {
                 startActivity(new Intent(this, CommonWebViewActivity.class)
-                        .putExtra("url", "https://blackgentryapp.com/terms-of-service/"));
+                        .putExtra("url", "https://swiftdatingapp.com/terms/"));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             } else if (view == tvPrivacyPolicy) {
                 startActivity(new Intent(this, CommonWebViewActivity.class)
-                        .putExtra("url", "https://blackgentryapp.com/privacy-policy-2/"));
+                        .putExtra("url", "https://swiftdatingapp.com/privacy/"));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         }
@@ -253,9 +254,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     case SUCCESS:
                         hideLoading();
                         if (resource.data.getSuccess()) {
-                            //Log.e("data", resource.data.getUser().getIsVerified());
                             sp.savePremium(resource.data.getUser().getIsPremium().equalsIgnoreCase("Yes"));
-                           // sp.saveDeluxe(resource.data.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
                             setData(resource.data);
                         } else {
                             showSnackbar(cl_main, resource.data.getMessage());
@@ -285,10 +284,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             sp.saveVerified(data.getUser().getIsVerified());
         }
         sp.saveVerified(data.getUser().getIsVerified());
-   //     sp.saveIsRejected(data.getUser().getisRejected().equals("1"));
+        //     sp.saveIsRejected(data.getUser().getisRejected().equals("1"));
         Intent i;
         if (TextUtils.isEmpty(data.getUser().getProfileOfUser().getName())) {
-            i = new Intent(mActivity, WelcomeActivity.class);
+            i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 1);
         } else if (TextUtils.isEmpty(data.getUser().getProfileOfUser().getDob())) {
             i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 2);
         } else if (TextUtils.isEmpty(data.getUser().getProfileOfUser().getGender())) {

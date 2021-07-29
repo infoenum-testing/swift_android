@@ -38,13 +38,16 @@ public class ChooseLoginFrom extends AppCompatActivity {
     private void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_create_new:
+/*
                 startActivity(new Intent(this, WelcomeActivity.class));
                 finishAffinity();
+*/
                 break;
             case R.id.btn_link_number:
-                startActivity(new Intent(this, EmailActivity.class));
+                /*startActivity(new Intent(this, EmailActivity.class));
                 preference.setIsFromNumber(false);
                 finishAffinity();
+                */
                 break;
             case R.id.img_cross:
                 finishAffinity();

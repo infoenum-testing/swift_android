@@ -7,9 +7,9 @@
     android:layout_margin="@dimen/_5sdp"
     android:background="@drawable/roundbg"
     android:orientation="vertical"
-    app:cardCornerRadius="@dimen/_5sdp"
     android:padding="@dimen/_5sdp"
-    android:tint="#F5F5F5">
+    android:tint="#F5F5F5"
+    app:cardCornerRadius="@dimen/_5sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="@dimen/_80sdp"
@@ -39,7 +39,8 @@
             android:layout_toEndOf="@+id/iv_photo"
             android:background="@drawable/ic_slide"
             android:elevation="@dimen/_3sdp"
-            android:src="@drawable/cross_image"
+            android:src="@drawable/add_ic"
+            android:rotation="45"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -52,7 +53,7 @@
             android:layout_alignBottom="@id/iv_photo"
             android:layout_toEndOf="@+id/iv_photo"
             android:elevation="@dimen/_3sdp"
-            android:src="@drawable/plus"
+            android:src="@drawable/add_ic"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

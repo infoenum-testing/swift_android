@@ -197,8 +197,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_40sdp"
                     android:layout_marginBottom="@dimen/_30sdp"
-                    android:text="@string/terms2"
-
+                    android:text=" terms &amp; policies."
                     android:textColor="@color/pink"
                     android:textSize="14sp" />
             </LinearLayout>

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -42,6 +43,8 @@ import com.swift.dating.ui.base.CropImage;
 import com.swift.dating.ui.createAccountScreen.CreateAccountActivity;
 import com.swift.dating.ui.editProfileScreen.viewmodel.EditProfileViewModel;
 import com.swift.dating.ui.selfieScreen.SelfieActivity;
+import com.swift.dating.ui.welcomeScreen.WelcomeActivity;
+
 import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -69,7 +72,7 @@ public class AddImagesFragment extends BaseFragment implements PhotoAdapter.OnCl
     private ArrayList<ImageModel> imageList = new ArrayList<>();
     private RecyclerView rvPhotos;
     private PhotoAdapter photoAdapter;
-    private Button btnDone;
+    private FloatingActionButton btnDone;
     private BottomSheetDialog mBottomSheetDialog;
 
     @Override
@@ -90,7 +93,7 @@ public class AddImagesFragment extends BaseFragment implements PhotoAdapter.OnCl
     private void init(View view) {
         subscribeModel();
         rvPhotos = view.findViewById(R.id.rv_photos);
-        btnDone = view.findViewById(R.id.btn_done);
+        btnDone = view.findViewById(R.id.btn_continue);
         CoordinatorLayout bottomSheetGallery = view.findViewById(R.id.bottomSheetGallery);
 
         rvPhotos.setLayoutManager(new GridLayoutManager(getContext(), 3));
@@ -208,8 +211,8 @@ public class AddImagesFragment extends BaseFragment implements PhotoAdapter.OnCl
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.btn_done) {
-            if (photoList.size() > 2) {
+        if (view.getId() == R.id.btn_continue) {
+            if (photoList.size() > 0) {
                 if (((CreateAccountActivity) getActivity()).preference.getIsFromNumber()) {
                     ((CreateAccountActivity) getActivity()).updateParseCount(6);
                     getBaseActivity().hideLoading();
@@ -221,7 +224,7 @@ public class AddImagesFragment extends BaseFragment implements PhotoAdapter.OnCl
                     uploadImage();
                 }
             } else {
-                getBaseActivity().showSnackbar(btnDone, "Please add a minimum of 3 photos");
+                getBaseActivity().showSnackbar(btnDone, "Please add a minimum of 1 photo");
             }
         } else if (view.getId() == R.id.ll_camera) {
             hideBottomSheet();
@@ -298,7 +301,8 @@ public class AddImagesFragment extends BaseFragment implements PhotoAdapter.OnCl
                             getBaseActivity().sp.saveUserImage(responseBean.getImages());
                             ((CreateAccountActivity) getActivity()).updateParseCount(6);
                             getBaseActivity().hideLoading();
-                            Intent intent = new Intent(getActivity(), SelfieActivity.class);
+                            //Intent intent = new Intent(getActivity(), SelfieActivity.class);
+                            Intent intent = new Intent(getActivity(), WelcomeActivity.class);
                             intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
                             startActivity(intent);
                             getActivity().finishAffinity();

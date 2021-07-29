@@ -36,7 +36,7 @@ import com.swift.dating.ui.createAccountScreen.viewmodel.CreateAccountViewModel;
 
 public class BirthdayFragment extends BaseFragment implements View.OnClickListener {
 
-    private int yearPos, monthPos, dayPos, minYear, maxYear;
+    private int yearPos, monthPos, dayPos, minYear, maxYear, count;
     private ArrayList yearList = new ArrayList(), monthList = new ArrayList(), dayList = new ArrayList();
     private CreateAccountViewModel model;
     private FloatingActionButton btnContinue;
@@ -130,6 +130,7 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
      * **  Method to initialize
      */
     private void initialize(View view) {
+        count = 0;
         rlDays = view.findViewById(R.id.rlDays);
         rlMonth = view.findViewById(R.id.rlMonth);
         rlYear = view.findViewById(R.id.rlYear);
@@ -154,6 +155,7 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
         initPickerViews(); //
 
         rlDays.setOnClickListener(v -> {
+            count++;
             View view = getLayoutInflater().inflate(R.layout.bottom_sheet_day, null);
             BottomSheetDialog dialog = new BottomSheetDialog(getContext());
             dialog.setContentView(view);
@@ -200,6 +202,7 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
         });
         /////////////////////// month picker ///////////////////////
         rlMonth.setOnClickListener(v -> {
+            count++;
             View view = getLayoutInflater().inflate(R.layout.bottom_sheet_day, null);
             BottomSheetDialog dialog = new BottomSheetDialog(getContext());
             dialog.setContentView(view);
@@ -233,6 +236,7 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
 
         /////////////////////// Year picker ///////////////////////
         rlYear.setOnClickListener(v -> {
+            count++;
             View view = getLayoutInflater().inflate(R.layout.bottom_sheet_day, null);
             BottomSheetDialog dialog = new BottomSheetDialog(getContext());
             dialog.setContentView(view);
@@ -303,7 +307,7 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
         monthList.addAll(Arrays.asList(getResources().getStringArray(R.array.monthsArray)));
 
         // yearLoopView.setArrayList(yearList);
-      //  yearPos = yearList.size(); // set year position already at 18 years
+        //  yearPos = yearList.size(); // set year position already at 18 years
         // yearLoopView.setInitPosition(yearPos);
 
         // monthLoopView.setArrayList(monthList);
@@ -323,16 +327,13 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        Log.e("TAG", "onClick: "+" "+dayPos +monthPos+" "+yearPos);
+        Log.e("TAG", "onClick: " + " " + dayPos + monthPos + " " + yearPos);
         if (view == btnContinue) {
-            if (((CreateAccountActivity) getActivity()).preference.getIsFromNumber()) {
-                ((CreateAccountActivity) getActivity()).updateParseCount(23);
-                sendIntent();
-            } else {
+            if (count == 3) {
+                count = 0;
                 int year = minYear + yearPos;
                 int month = monthPos + 1;
                 int day = dayPos + 1;
-                ((CreateAccountActivity) getActivity()).updateParseCount(3);
                 if (onDatePickCompleted(year, month, day)) {
                     String strCustomDate = month < 10 ? "0" + month : "" + month;
                     strCustomDate += day < 10 ? "/0" + day : "/" + day;
@@ -343,10 +344,14 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
                         getBaseActivity().showLoading();
                         hideKeyboard();
                         model.verifyRequest(new CreateAccountBirthModel(strDate));
+                        Log.e("TAG", "onClick: " + strDate);
                     }, "Please confirm that your birthday is " + strCustomDate + " and you are " + CommonUtils.getAge(strDate) + " years old. Your birthday cannot be changed once registration is complete.");
                 }
+            } else {
+                showSnackBar(btnContinue, "Please select date");
             }
         }
+
     }
 
 

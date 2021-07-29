@@ -26,7 +26,7 @@
         android:shape="rectangle">
         <corners android:radius="@dimen/_200sdp"/>
         <gradient android:type="radial" android:gradientRadius="2500"
-            android:startColor="@color/primaryTextColor"
+            android:startColor="@color/pink"
             android:centerColor="#1b2b54" />
     </shape>
 </item>

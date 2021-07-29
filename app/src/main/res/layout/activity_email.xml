@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLay"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/rootLay">
+    android:layout_height="match_parent">
 
     <ScrollView
         android:id="@+id/sView"
@@ -31,42 +31,82 @@
                 android:padding="5dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/back"
-                android:tint="@color/colorPrimary"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/pink" />
+
+
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_100sdp"
+                android:scaleType="center"
+                android:src="@drawable/email"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_cross" />
 
             <TextView
                 android:id="@+id/tv_mobile_number"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_100sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:fontFamily="@font/medium"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:fontFamily="@font/bold"
                 android:text="@string/my_email"
-                android:textColor="@color/primaryTextColor"
-                android:textSize="@dimen/_20ssp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_17ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
-            <EditText
-                android:id="@+id/et_email"
-                android:layout_width="0dp"
+            <RelativeLayout
+                android:id="@+id/relativeLayout2"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:fontFamily="@font/medium"
-                android:hint="@string/enter_your_email"
-                android:imeOptions="actionDone"
-                android:inputType="textEmailAddress"
-                android:lines="1"
-                android:maxLength="50"
-                android:textColor="@color/primaryTextColor"
-                android:textColorHint="@color/primaryTextColor"
-                android:textSize="@dimen/_14ssp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@drawable/edit_txt_bg"
+                android:gravity="center"
+                android:padding="@dimen/_10sdp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
                 app:layout_constraintEnd_toEndOf="@+id/tv_mobile_number"
                 app:layout_constraintStart_toStartOf="@+id/tv_mobile_number"
-                app:layout_constraintTop_toBottomOf="@+id/tv_mobile_number" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_mobile_number">
+
+                <ImageView
+                    android:id="@+id/ivUser"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/email_ic" />
+
+
+                <EditText
+                    android:id="@+id/et_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/ivUser"
+                    android:background="@null"
+                    android:fontFamily="@font/thin"
+                    android:hint="Enter your email"
+                    android:imeOptions="actionDone"
+
+                    android:inputType="textEmailAddress"
+                    android:lines="1"
+                    android:maxLength="50"
+                    android:paddingStart="20dp"
+
+                    android:paddingEnd="0dp"
+                    android:textColor="@color/primaryTextColor"
+                    android:textColorHint="@color/secondaryTextColor"
+                    android:textSize="@dimen/_14ssp" />
+
+
+            </RelativeLayout>
+
 
             <Spinner
                 android:id="@+id/spin"
@@ -99,28 +139,87 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
     </ScrollView>
 
-    <Button
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_continue"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_30sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_arrow_right"
+        app:backgroundTint="@color/pink"
+        app:layout_constraintBottom_toBottomOf="@+id/llBottom"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/llBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_20sdp"
-        android:background="@drawable/disabledbtn"
-        android:enabled="false"
-        android:fontFamily="@font/medium"
-        android:minWidth="@dimen/_200sdp"
-        android:paddingTop="@dimen/_10sdp"
-        android:paddingBottom="@dimen/_10sdp"
-        android:text="@string/continue_txt"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_14ssp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sView" />
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/pink" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

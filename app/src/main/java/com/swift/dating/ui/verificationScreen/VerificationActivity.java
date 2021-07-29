@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mukesh.OnOtpCompletionListener;
-import com.mukesh.OtpView;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -44,10 +43,13 @@ import com.swift.dating.ui.selfieScreen.SelfieActivity;
 import com.swift.dating.ui.verificationScreen.viewmodel.VerificationViewModel;
 import com.swift.dating.ui.welcomeScreen.WelcomeActivity;
 
-public class VerificationActivity extends BaseActivity implements View.OnClickListener, OnOtpCompletionListener, ApiCallback.OtpVerifyCallBack, ApiCallback.LinkNumberCallBack, ApiCallback.PhoneLoginCallBack {
+import in.aabhasjindal.otptextview.OTPListener;
+import in.aabhasjindal.otptextview.OtpTextView;
+
+public class VerificationActivity extends BaseActivity implements View.OnClickListener, ApiCallback.OtpVerifyCallBack, ApiCallback.LinkNumberCallBack, ApiCallback.PhoneLoginCallBack, OTPListener {
 
     Button btnVerify;
-    OtpView otpView;
+    OtpTextView otpView;
     String email, linkedinId, phone;
     TextView tv_resend, tv_mobile_number;
     ImageView ivback;
@@ -60,7 +62,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.primaryTextColor));
+        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.white));
         email = getIntent().getExtras().getString("email");
         phone = getIntent().getExtras().getString("phone");
         linkedinId = getIntent().getExtras() != null && getIntent().hasExtra("linkedInId") ? getIntent().getExtras().getString("linkedInId") : "";
@@ -76,7 +78,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
         tv_resend = findViewById(R.id.tv_resend);
         otpView = findViewById(R.id.otp_view);
         tv_resend.setOnClickListener(this);
-        otpView.setOtpCompletionListener(this);
+        otpView.setOtpListener(this);
         if (!preference.getIsFromNumber()) {
             tv_mobile_number.setText("Code sent to " + email + "\n Enter code below");
         } else {
@@ -116,7 +118,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                             if (resource.data.getNoOfLikes() != null)
                                 sp.saveNoOfLikes(resource.data.getNoOfLikes());
                             sp.savePremium(resource.data.getUser().getIsPremium().equalsIgnoreCase("Yes"));
-                           // sp.saveDeluxe(resource.data.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
+                            // sp.saveDeluxe(resource.data.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
                             sp.saveLinkedIn(!TextUtils.isEmpty(linkedinId));
                             sp.saveString(SharedPreference.userEmail, resource.data.getUser().getEmail());
                             sp.saveString(SharedPreference.userPhone, resource.data.getUser().getMobile());
@@ -128,7 +130,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                                     resource.data.getUser().getSelfiesForUser().getSelfieUrl() != null) {
                                 sp.saveSelfie(resource.data.getUser().getSelfiesForUser().getSelfieUrl());
                                 sp.saveVerified(resource.data.getUser().getIsVerified());
-                               // sp.saveIsRejected(resource.data.getUser().getisRejected().equals("1"));
+                                // sp.saveIsRejected(resource.data.getUser().getisRejected().equals("1"));
                             }
                             sendIntent();
                         } else {
@@ -184,8 +186,12 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
         ArrayList<ImageModel> imagelist = new Gson().fromJson(jsonImage, type);
 
         Intent i;
-        if (obj==null||TextUtils.isEmpty(obj.getName())) {
-            i = new Intent(mActivity, WelcomeActivity.class);
+        //if (obj == null || TextUtils.isEmpty(obj.getName())) {
+        if (TextUtils.isEmpty(sp.getMyString(SharedPreference.userEmail))) {
+            i = new Intent(mActivity, EmailActivity.class);
+            i.putExtra("fromOtp", "yes");
+        } else if (TextUtils.isEmpty(obj.getName())) {
+            i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 1);
         } else if (TextUtils.isEmpty(obj.getDob())) {
             i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 2);
         } else if (TextUtils.isEmpty(obj.getGender())) {
@@ -210,7 +216,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
         if (view.getId() == R.id.btn_verify) {
             if (preference.getIsFromNumber()) {
                 hideKeyboard();
-                if (otpView.getText().toString().length() == 6) {
+                if (otpView.getOTP().length() == 6) {
                     hideKeyboard();
                     VerifyOtpCall();
                 } else {
@@ -220,13 +226,13 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                 //finishAffinity();
             } else {
                 hideKeyboard();
-                if (otpView.getText().toString().length() == 6) {
+                if (otpView.getOTP().length() == 6) {
                     hideKeyboard();
                     if (forLinkNumber != null && forLinkNumber.equalsIgnoreCase("yes")) {
                         LinkNumberCall();
                     } else {
                         showLoading();
-                        model.verifyRequest(new VerficationRequestModel(email, Integer.parseInt(otpView.getText().toString()), sp.getDeviceToken()));
+                        model.verifyRequest(new VerficationRequestModel(email, Integer.parseInt(otpView.getOTP()), sp.getDeviceToken()));
                     }
                 } else {
                     showSnackbar(btnVerify, "Please enter OTP");
@@ -253,16 +259,10 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
         ApiCall.phoneLogin(map, this);
     }
 
-    @Override
-    public void onOtpCompleted(String otp) {
-        btnVerify.setEnabled(true);
-        btnVerify.setBackground(this.getResources().getDrawable(R.drawable.gradientbtn));
-    }
-
     private void VerifyOtpCall() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("mobile", phone);
-        map.put("otp", Integer.parseInt(otpView.getText().toString()));
+        map.put("otp", Integer.parseInt(otpView.getOTP()));
         map.put("socialType", 6);
         map.put("deviceType", "ANDROID");
         map.put("devicetoken", sp.getDeviceToken());
@@ -291,7 +291,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
             if (response.getUser().getSelfiesForUser() != null && response.getUser().getSelfiesForUser().getSelfieUrl() != null) {
                 sp.saveSelfie(response.getUser().getSelfiesForUser().getSelfieUrl());
                 sp.saveVerified(response.getUser().getIsVerified());
-             //   sp.saveIsRejected(response.getUser().getisRejected().equals("1"));
+                //   sp.saveIsRejected(response.getUser().getisRejected().equals("1"));
             }
             preference.setIsFromEmail(true);
             preference.setIsFromNumber(false);
@@ -303,10 +303,8 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                     startActivity(intent);
                     finish();*/
                 } else {
-                    Intent intent = new Intent(mActivity, EmailActivity.class);
-                    intent.putExtra("fromOtp", "yes");
-                    startActivity(intent);
-                    finish();
+                    callEmailScreen();
+
                 }
             } else {
                 Intent intent = new Intent(mActivity, HomeActivity.class);
@@ -315,8 +313,15 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                 finishAffinity();
             }
         } else {
-            showSnackbar(btnVerify,  "" + response.getMessage() );
+            showSnackbar(btnVerify, "" + response.getMessage());
         }
+    }
+
+    private void callEmailScreen() {
+        Intent intent = new Intent(mActivity, EmailActivity.class);
+        intent.putExtra("fromOtp", "yes");
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -329,7 +334,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
         HashMap<String, Object> map = new HashMap<>();
         map.put("mobile", sp.getPhone());
         map.put("email", email);
-        map.put("otp", Integer.parseInt(otpView.getText().toString()));
+        map.put("otp", Integer.parseInt(otpView.getOTP()));
         map.put("deviceType", "ANDROID");
         map.put("devicetoken", sp.getDeviceToken());
         showLoading();
@@ -340,12 +345,12 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
     public void onSuccessLinkNumber(VerificationResponseModel response) {
         hideLoading();
         if (response.getSuccess()) {
-            if (response.getUser().getProfileOfUser()!=null) {
+            if (response.getUser().getProfileOfUser() != null) {
                 sp.saveUserData(response.getUser().getProfileOfUser(), response.getUser().getProfileOfUser().getCompleted().toString());
                 sp.saveToken("bearer " + response.getToken(), String.valueOf(response.getUser().getProfileOfUser().getUserId()), true);
             }
             sp.savePremium(response.getUser().getIsPremium().equalsIgnoreCase("Yes"));
-  //          sp.saveDeluxe(response.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
+            //          sp.saveDeluxe(response.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
             sp.saveLinkedIn(!TextUtils.isEmpty(linkedinId));
 
             if (response.getImagedata() != null)
@@ -354,7 +359,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                     response.getUser().getSelfiesForUser().getSelfieUrl() != null) {
                 sp.saveSelfie(response.getUser().getSelfiesForUser().getSelfieUrl());
                 sp.saveVerified(response.getUser().getIsVerified());
-            //    sp.saveIsRejected(response.getUser().getisRejected().equals("1"));
+                //    sp.saveIsRejected(response.getUser().getisRejected().equals("1"));
             }
             sp.saveString(SharedPreference.userEmail, response.getUser().getEmail());
             sp.saveString(SharedPreference.userPhone, response.getUser().getMobile());
@@ -372,5 +377,15 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                 sp.setPhone(phone);
         }
         showSnackbar(tv_resend, response.getMessage());
+    }
+
+    @Override
+    public void onInteractionListener() {
+
+    }
+
+    @Override
+    public void onOTPComplete(String otp) {
+
     }
 }

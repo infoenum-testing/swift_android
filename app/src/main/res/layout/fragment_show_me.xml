@@ -11,100 +11,182 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/tvskip">
 
-    <TextView
-        android:id="@+id/tv_showme"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:fontFamily="@font/semi_bold"
-        android:text="@string/showMe"
-        android:textColor="@color/primaryTextColor"
-        android:textSize="@dimen/_20ssp"
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:src="@drawable/show_me"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/tv_showme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:fontFamily="@font/bold"
+        android:text="@string/showMe"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_17ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
+
+
     <RadioGroup
         android:id="@+id/tgShowMe"
-        android:layout_width="wrap_content"
-        android:layout_height="?actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/_30ssp"
         android:gravity="center"
         android:maxHeight="@dimen/_150sdp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@+id/tv_showme"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_showme">
 
         <RadioButton
             android:id="@+id/Maletb"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/toggle_selected"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_10ssp"
+            android:background="@drawable/toggle_selected_new"
             android:button="@color/transparent"
             android:fontFamily="@font/medium"
-            android:padding="@dimen/_10sdp"
+            android:gravity="center"
+            android:padding="@dimen/_13sdp"
             android:text="@string/men"
+            android:checked="true"
             android:textAllCaps="false"
-            android:textColor="@drawable/ic_select"
+            android:textColor="@drawable/select_radio"
             android:textSize="@dimen/_12ssp" />
 
         <RadioButton
             android:id="@+id/tbWomen"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/toggle_selected"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_10ssp"
+            android:background="@drawable/toggle_selected_new"
             android:button="@color/transparent"
             android:checked="false"
             android:fontFamily="@font/medium"
-            android:padding="@dimen/_10sdp"
+            android:gravity="center"
+            android:padding="@dimen/_13sdp"
             android:text="@string/Women"
             android:textAllCaps="false"
-            android:textColor="@drawable/ic_select"
+            android:textColor="@drawable/select_radio"
             android:textSize="@dimen/_12ssp" />
 
         <RadioButton
             android:id="@+id/everyoneTb"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/toggle_selected"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_10ssp"
+            android:background="@drawable/toggle_selected_new"
             android:button="@color/transparent"
             android:checked="false"
             android:fontFamily="@font/medium"
-            android:padding="@dimen/_10sdp"
-            android:text="@string/everyone"
+            android:gravity="center"
+            android:padding="@dimen/_13sdp"
+            android:text="@string/other"
             android:textAllCaps="false"
-            android:textColor="@drawable/ic_select"
+            android:textColor="@drawable/select_radio"
             android:textSize="@dimen/_12ssp" />
 
     </RadioGroup>
 
-    <Button
-        android:id="@+id/btn_continue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:background="@drawable/disabledbtn"
-        android:enabled="false"
-        android:fontFamily="@font/medium"
-        android:minWidth="@dimen/_200sdp"
-        android:paddingTop="@dimen/_10sdp"
-        android:paddingBottom="@dimen/_10sdp"
-        android:text="@string/continue_txt"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_14ssp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tgShowMe" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_arrow_right"
+        app:backgroundTint="@color/pink"
+        app:layout_constraintBottom_toBottomOf="@+id/llBottom"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/llBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new"
+
+            />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/pink" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

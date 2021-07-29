@@ -2,6 +2,7 @@ package com.swift.dating.ui.createAccountScreen.fragments;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
@@ -34,11 +35,10 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
     CreateAccountViewModel model;
     FloatingActionButton btnContinue;
     private RadioGroup tgGender, tgShowMeTo;
-    private LoopView pickerGender;
+    private NumberPicker pickerGender;
     private String strGender, strShowMeTo = "";
     private int genderPos;
-    private ArrayList<String> genderList = new ArrayList<>();
-    NumberPicker picker;
+    // private ArrayList<String> genderList = new ArrayList<>();
 
     @Override
     public int getLayoutId() {
@@ -58,33 +58,21 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
      */
     private void initialize(View view) {
         btnContinue = view.findViewById(R.id.btn_continue);
-        picker = view.findViewById(R.id.picker);
-
-        picker.setMinValue(0);
-        picker.setMaxValue(10);
-         picker.setWrapSelectorWheel(true);
-
-        picker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                String text = "Changed from " + oldVal + " to " + newVal;
-             }
-        });
-
-
+        pickerGender = view.findViewById(R.id.picker_gender);
+        pickerGender.setWrapSelectorWheel(true);
         // btnContinue.setText(((CreateAccountActivity)getActivity()).btn_text);
         tgGender = view.findViewById(R.id.tgGender);
         tgShowMeTo = view.findViewById(R.id.tgshowMeTo);
         pickerGender = view.findViewById(R.id.picker_gender);
-        pickerGender.setNotLoop();
-        pickerGender.setListener(item -> {
-            genderPos = item;
-        });
-        genderList.addAll(Arrays.asList(getResources().getStringArray(R.array.genderArray)));
+        pickerGender.setWrapSelectorWheel(false);
+        pickerGender.setMinValue(0);
+        pickerGender.setMaxValue(getResources().getStringArray(R.array.genderArray).length - 1);
 
-        pickerGender.setArrayList(genderList);
-        pickerGender.setInitPosition(genderPos);
+        pickerGender.setOnValueChangedListener((picker, oldVal, newVal) -> genderPos = newVal);
 
+        // genderList.addAll(Arrays.asList(getResources().getStringArray(R.array.genderArray)));
+        pickerGender.setDisplayedValues(getResources().getStringArray(R.array.genderArray));
+        pickerGender.setValue(genderPos);
 
         if (((CreateAccountActivity) getActivity()).getUserData() != null && !TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getGender())) {
             if (((CreateAccountActivity) getActivity()).getUserData().getGender().equalsIgnoreCase("Male")) {
@@ -99,7 +87,7 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
                 tgGender.check(R.id.otherTb);
                 pickerGender.setVisibility(View.VISIBLE);
                 tgShowMeTo.setVisibility(View.VISIBLE);
-                pickerGender.setInitPosition(genderList.indexOf(((CreateAccountActivity) getActivity()).getUserData().getGender()));
+                //  pickerGender.setInitPosition(genderList.indexOf(((CreateAccountActivity) getActivity()).getUserData().getGender()));
                 if (!TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getShowmeto()))
                     tgShowMeTo.check(((CreateAccountActivity) getActivity()).getUserData().getShowmeto().equalsIgnoreCase("male") ?
                             R.id.tvshowMen : R.id.tvshowWomen);
@@ -194,7 +182,7 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
                 getBaseActivity().showLoading();
                 hideKeyboard();
                 if (!strGender.equalsIgnoreCase("male") && !strGender.equalsIgnoreCase("female"))
-                    strGender = getContext().getResources().getStringArray(R.array.genderArray)[pickerGender.getSelectedItem()];
+                    strGender = getContext().getResources().getStringArray(R.array.genderArray)[pickerGender.getValue()];
                 model.verifyRequest(new CreateAccountGenderModel(strGender, strShowMeTo));
             }
         }
@@ -229,7 +217,7 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
                 tgShowMeTo.setVisibility(View.GONE);
             }
         } else if (radioGroup == tgShowMeTo) {
-            strGender = this.getResources().getStringArray(R.array.genderArray)[pickerGender.getSelectedItem()];
+            strGender = this.getResources().getStringArray(R.array.genderArray)[pickerGender.getValue()];
             strShowMeTo = i == R.id.tvshowMen ? "Male" : "Female";
             btnContinue.setEnabled(true);
             btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));

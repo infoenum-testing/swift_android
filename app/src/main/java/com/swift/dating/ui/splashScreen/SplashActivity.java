@@ -28,10 +28,12 @@ import java.util.List;
 
 import com.swift.dating.R;
 import com.swift.dating.common.ScreenUtils;
+import com.swift.dating.data.preference.SharedPreference;
 import com.swift.dating.model.ImageModel;
 import com.swift.dating.model.responsemodel.ProfileOfUser;
 import com.swift.dating.ui.base.BaseActivity;
 import com.swift.dating.ui.createAccountScreen.CreateAccountActivity;
+import com.swift.dating.ui.emailScreen.EmailActivity;
 import com.swift.dating.ui.homeScreen.HomeActivity;
 import com.swift.dating.ui.loginScreen.LoginActivity;
 import com.swift.dating.ui.selfieScreen.SelfieActivity;
@@ -102,19 +104,15 @@ public class SplashActivity extends BaseActivity {
      */
     private void getDeviceToken() {
         FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<InstanceIdResult> task) {
-
-                        if (!task.isSuccessful()) {
-                            Log.w("Token", "getInstanceId failed", task.getException());
-                            return;
-                        }
-
-                        // Get new Instance ID token
-                        sp.saveDeviceToken(task.getResult().getToken());
-                        intentViaHandler();
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.w("Token", "getInstanceId failed", task.getException());
+                        return;
                     }
+
+                    // Get new Instance ID token
+                    sp.saveDeviceToken(task.getResult().getToken());
+                    intentViaHandler();
                 });
     }
 
@@ -135,8 +133,11 @@ public class SplashActivity extends BaseActivity {
                 List<ImageModel> imagelist = gson.fromJson(jsonImage, type);
 
                 if (obj != null) {
-                    if (TextUtils.isEmpty(obj.getName())) {
-                        i = new Intent(mActivity, WelcomeActivity.class);
+                    if (TextUtils.isEmpty(obj.getUseremail())) {
+                        i = new Intent(mActivity, EmailActivity.class);
+                        i.putExtra("fromOtp", "yes");
+                    } else if (TextUtils.isEmpty(obj.getName())) {
+                        i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 1);
                     } else if (TextUtils.isEmpty(obj.getDob())) {
                         i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 2);
                     }/*  else if (TextUtils.isEmpty(obj.getCity())) {
@@ -147,8 +148,8 @@ public class SplashActivity extends BaseActivity {
                         i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 4);
                     } else if (imagelist == null || imagelist.size() == 0) {
                         i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 5);
-                    } else if (TextUtils.isEmpty(sp.getSelfie())) {
-                        i = new Intent(mActivity, SelfieActivity.class);
+                    } else if (obj.getState().equalsIgnoreCase("Incomplete")) {
+                        i = new Intent(mActivity, WelcomeActivity.class);
                     } else {
                         i = new Intent(mActivity, HomeActivity.class);
                     }

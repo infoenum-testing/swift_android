@@ -14,6 +14,7 @@ import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountBirth
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountCityModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountDrinkModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountEducationModel;
+import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountEmailModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountExerciseModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountGenderModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountHeightModel;
@@ -37,6 +38,7 @@ import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccoutLookin
 public class CreateAccountViewModel extends AndroidViewModel {
 
     private MutableLiveData<CreateAccountNameModel> nameModel = new MutableLiveData<>();
+    private MutableLiveData<CreateAccountEmailModel> emailModel = new MutableLiveData<>();
     private MutableLiveData<CreateAccountLocationModel> locationModel = new MutableLiveData<>();
     private MutableLiveData<CreateAccountBirthModel> birthModel = new MutableLiveData<>();
     private MutableLiveData<CreateAccountGenderModel> genderModel = new MutableLiveData<>();
@@ -60,6 +62,7 @@ public class CreateAccountViewModel extends AndroidViewModel {
     private MutableLiveData<CreateAccountQuestionModel> questionModel = new MutableLiveData<>();
 
     private LiveData<Resource<VerificationResponseModel>> nameLD;
+    private LiveData<Resource<VerificationResponseModel>> emailLD;
     private LiveData<Resource<VerificationResponseModel>> locationLD;
     private LiveData<Resource<VerificationResponseModel>> birthLD;
     private LiveData<Resource<VerificationResponseModel>> genderLD;
@@ -90,8 +93,15 @@ public class CreateAccountViewModel extends AndroidViewModel {
             public LiveData<Resource<VerificationResponseModel>> apply(CreateAccountNameModel input) {
                 return CreateAccountRepo.get().verify(getApplication().getApplicationContext(), input);
             }
-
         });
+
+        emailLD = Transformations.switchMap(emailModel, new Function<CreateAccountEmailModel, LiveData<Resource<VerificationResponseModel>>>() {
+            @Override
+            public LiveData<Resource<VerificationResponseModel>> apply(CreateAccountEmailModel input) {
+                return CreateAccountRepo.get().verify(getApplication().getApplicationContext(), input);
+            }
+        });
+
         locationLD = Transformations.switchMap(locationModel, new Function<CreateAccountLocationModel, LiveData<Resource<VerificationResponseModel>>>() {
             @Override
             public LiveData<Resource<VerificationResponseModel>> apply(CreateAccountLocationModel input) {
@@ -246,6 +256,11 @@ public class CreateAccountViewModel extends AndroidViewModel {
         nameModel.setValue(s);
     }
 
+
+    public void verifyRequest(CreateAccountEmailModel s) {
+        emailModel.setValue(s);
+    }
+
     public void verifyRequest(CreateAccountLocationModel s) {
         locationModel.setValue(s);
     }
@@ -333,7 +348,11 @@ public class CreateAccountViewModel extends AndroidViewModel {
 
     public LiveData<Resource<VerificationResponseModel>> nameResponse() {
         return nameLD;
-    } public LiveData<Resource<VerificationResponseModel>> locationResponse() {
+    }
+    public LiveData<Resource<VerificationResponseModel>> emailResponse() {
+        return emailLD;
+    }
+    public LiveData<Resource<VerificationResponseModel>> locationResponse() {
         return locationLD;
     }public LiveData<Resource<VerificationResponseModel>> birthResponse() {
         return birthLD;
@@ -374,7 +393,6 @@ public class CreateAccountViewModel extends AndroidViewModel {
     }public LiveData<Resource<VerificationResponseModel>> lookingResponse() {
         return lookingLD;
     }public LiveData<Resource<VerificationResponseModel>> questionResponse() {
-
         return questionLD;
     }
 

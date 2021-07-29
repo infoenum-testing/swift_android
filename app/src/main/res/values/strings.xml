@@ -7,7 +7,7 @@
     <string name="continueWithNumber">Continue with phone number</string>
     <string name="continueWithLinkedIn">Continue with LinkedIn</string>
     <string name="weDoNotShare">By continuing, you agree to ours terms and policies.</string><!--.\n We never post to Facebook or Linkedin.-->
-    <string name="termsOfService">Terms of Service </string>
+    <string name="termsOfService"><u>Terms of Service</u></string>
     <string name="crop_text">Crop</string>
     <string name="error_image_loading">Error while loading Image, Please try again</string>
     <string name="ok_text">OK</string>
@@ -19,7 +19,7 @@
     <string name="account_exist">Account is already exist with this email id</string>
     <string name="yes_text">Yes</string>
     <string name="cancel_text">Cancel</string>
-    <string name="addPhotos">Add Photos</string>
+    <string name="addPhotos">Add photos. Please add at least one clear photo of yourself.</string>
 
 
     <!--    EmailScreen-->
@@ -27,7 +27,7 @@
     <string name="enter_your_email">Enter your email</string>
     <string name="my_email">My email is</string>
     <string name="verify_txt">Verify</string>
-    <string name="resend"><u>Resend</u></string>
+    <string name="resend">RESEND CODE</string>
     <string name="reset"><u>Reset</u></string>
     <string name="enter_code">Enter Code</string>
     <string name="verification_code">Verification Code</string>
@@ -148,7 +148,7 @@
     <string name="helpnsupport">Contact &amp; FAQ</string>
     <string name="rateUs">Rate Us</string>
     <string name="legal">Terms and Policies</string>
-    <string name="privacy_policy"> Privacy Policy</string>
+    <string name="privacy_policy"><u>Privacy Policy</u></string>
     <string name="licence">Licenses</string>
     <string name="sharevidee">Refer a friend</string>
     <string name="agree">I agree</string>

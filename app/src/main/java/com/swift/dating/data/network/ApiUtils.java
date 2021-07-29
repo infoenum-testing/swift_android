@@ -24,6 +24,7 @@ import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountBirth
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountCityModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountDrinkModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountEducationModel;
+import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountEmailModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountExerciseModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountGenderModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountHeightModel;
@@ -44,6 +45,7 @@ import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccoutAmbiti
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccoutLookingModel;
 import com.swift.dating.model.responsemodel.PhoneLoginResponse;
 import com.swift.dating.model.responsemodel.VerificationResponseModel;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -96,10 +98,20 @@ public interface ApiUtils {
 
     //    ------------------------Update Profile-------------------------------------
 
+    @POST("api/users/completeRegistration")
+    Call<ResponseBody> completeRegistration(@Header("Authorization") String header,
+                                            @Body HashMap<String, String> data);
+
     @POST("users/updateProfile")
     Call<ResponseBody> updateProfile(
             @Header("Authorization") String header,
             @Body CreateAccountNameModel data);
+
+    @POST("users/updateProfile")
+    Call<ResponseBody> updateProfile(
+            @Header("Authorization") String header,
+            @Body CreateAccountEmailModel data);
+
 
     @POST("users/updateProfile")
     Call<ResponseBody> updateProfile(
@@ -241,10 +253,11 @@ public interface ApiUtils {
     @GET("/api/matches/{id}?limit=10")
     Call<ResponseBody> getUserList(@Header("Authorization") String header,
                                    @Path("id") String id);
+
     /* api to get User Cards noLimit*/
     @GET("/api/matches/{id}")
     Call<ResponseBody> getUserListAll(@Header("Authorization") String header,
-                                   @Path("id") String id);
+                                      @Path("id") String id);
 
     /* api to get New Matches List */
     @GET("/api/matches/newMatchList/{id}")
@@ -291,10 +304,11 @@ public interface ApiUtils {
     @POST("/api/subscription/add")
     Call<ResponseBody> premiumUser(@Header("Authorization") String header,
                                    @Body PremiumTokenCountModel settingsRequestModel);
+
     /* api to Buy deluxe User */
     @POST("/api/subscription/add")
     Call<ResponseBody> deluxeUser(@Header("Authorization") String header,
-                                   @Body DeluxeTokenCountModel settingsRequestModel);
+                                  @Body DeluxeTokenCountModel settingsRequestModel);
 
     /* api to check premium User */
     @POST("/api/subscription/checksubscription")
@@ -314,8 +328,6 @@ public interface ApiUtils {
     @POST("/api/matches/applyTimeTokens")
     Call<ResponseBody> applyTimeToken(@Header("Authorization") String header,
                                       @Body ApplyTimeTokenRequest applyTimeTokenRequest);
-
-
 
 
     /* api to Vip Tokens */
@@ -381,11 +393,13 @@ public interface ApiUtils {
 
     /* api to get list of like user Account*/
     @GET("matches/get/liked/user/{pagecount}")
-    Call<ResponseBody> getUserListWhoLikedYou(@Header("Authorization") String header,@Path("pagecount") String pagecount);/* api to get list of like user Account*/
+    Call<ResponseBody> getUserListWhoLikedYou(@Header("Authorization") String header, @Path("pagecount") String pagecount);/* api to get list of like user Account*/
+
     @GET("matches/get/disliked/user")
     Call<ResponseBody> getUserDislikedList(@Header("Authorization") String header);
+
     @POST("matches/search/users")
-    Call<ResponseBody> getSearchFilterList(@Header("Authorization") String header,@Body HashMap<String, Object> map);
+    Call<ResponseBody> getSearchFilterList(@Header("Authorization") String header, @Body HashMap<String, Object> map);
 
     @DELETE("matches/resetSkippedProfiles")
     Call<ResponseBody> resetAllSkippedProfile(@Header("Authorization") String header);

@@ -17,6 +17,8 @@ public class CreateAccountNameModel {
         this.useremail = useremail;
     }
 
+
+
     public String getUseremail() {
         return useremail;
     }

@@ -118,20 +118,10 @@ public class NameFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onClick(View view) {
         if (view == btnContinue) {
-            if (((CreateAccountActivity) getActivity()).preference.getIsFromNumber()) {
-                ((CreateAccountActivity) getActivity()).updateParseCount(2);
-                ((CreateAccountActivity) getActivity()).addFragment();
-            } else {
-                hideKeyboard();
-                getBaseActivity().showLoading();
-                boolean isFromPhoneFlow = (((CreateAccountActivity) getActivity()).preference.getBoolean(SharedPreference.fromPhoneBool));
-                String email = (((CreateAccountActivity) getActivity()).preference.getMyString(SharedPreference.fromPhoneFlow));
-                if (isFromPhoneFlow && !TextUtils.isEmpty(email)) {
-                    model.verifyRequest(new CreateAccountNameModel(etName.getText().toString(), email));
-                } else {
-                    model.verifyRequest(new CreateAccountNameModel(etName.getText().toString()));
-                }
-            }
+            //any question look first in old commits
+            hideKeyboard();
+            getBaseActivity().showLoading();
+            model.verifyRequest(new CreateAccountNameModel(etName.getText().toString()));
         }
     }
 

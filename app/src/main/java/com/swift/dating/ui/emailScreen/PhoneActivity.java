@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hbb20.CountryCodePicker;
 
 import java.util.HashMap;
@@ -31,7 +32,7 @@ public class PhoneActivity extends BaseActivity implements TextWatcher, CountryC
     private final String TAG = PhoneActivity.class.getSimpleName();
     private ImageView img_cross;
     private EditText et_phone;
-    private Button btn_continue;
+    private FloatingActionButton btn_continue;
     private CountryCodePicker cc_picker;
     private ConstraintLayout rootLAY;
     private String c_code;

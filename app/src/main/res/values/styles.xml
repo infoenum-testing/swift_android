@@ -28,6 +28,8 @@
     </style>
 
 
+
+
     <style name="activityTheme" parent="AppTheme">
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowNoTitle">false</item>

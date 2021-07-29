@@ -16,6 +16,7 @@ import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountBirth
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountCityModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountDrinkModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountEducationModel;
+import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountEmailModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountExerciseModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountGenderModel;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountHeightModel;
@@ -79,6 +80,41 @@ public class CreateAccountRepo {
 
         return data;
     }
+
+    LiveData<Resource<VerificationResponseModel>> verify(final Context c, CreateAccountEmailModel obj) {
+        final MutableLiveData<Resource<VerificationResponseModel>> data = new MutableLiveData<>();
+        data.setValue(Resource.loading(null));
+        SharedPreference sp = new SharedPreference(c);
+        CallServer.get().getAPIName().updateProfile(sp.getToken(), obj).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+
+                try {
+                    Gson gson = new GsonBuilder().setLenient().create();
+
+                    if (response.code() == 200) {
+
+                        VerificationResponseModel responseBean = gson.fromJson(response.body().string(), VerificationResponseModel.class);
+                        data.setValue(Resource.success(responseBean));
+                    } else {
+                        VerificationResponseModel responseBean = gson.fromJson(response.errorBody().string(), VerificationResponseModel.class);
+                        data.setValue(Resource.success(responseBean));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    data.setValue(Resource.<VerificationResponseModel>error("Something Went Wrong", null, 0,e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                data.setValue(Resource.<VerificationResponseModel>error(CallServer.serverError, null, 0, t));
+            }
+        });
+
+        return data;
+    }
+
 
     LiveData<Resource<VerificationResponseModel>> verify(final Context c, CreateAccountLocationModel obj) {
         final MutableLiveData<Resource<VerificationResponseModel>> data = new MutableLiveData<>();

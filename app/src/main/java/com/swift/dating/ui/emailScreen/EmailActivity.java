@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -25,6 +26,8 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.Objects;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 import com.swift.dating.R;
 import com.swift.dating.common.CommonDialogs;
 import com.swift.dating.common.ValidationUtils;
@@ -33,17 +36,22 @@ import com.swift.dating.data.network.ApiCallback;
 import com.swift.dating.data.network.Resource;
 import com.swift.dating.data.preference.SharedPreference;
 import com.swift.dating.model.requestmodel.SignUpRequestModel;
+import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountEmailModel;
+import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountNameModel;
 import com.swift.dating.model.responsemodel.PhoneLoginResponse;
+import com.swift.dating.model.responsemodel.ProfileOfUser;
 import com.swift.dating.model.responsemodel.VerificationResponseModel;
 import com.swift.dating.ui.base.BaseActivity;
+import com.swift.dating.ui.createAccountScreen.CreateAccountActivity;
+import com.swift.dating.ui.createAccountScreen.viewmodel.CreateAccountViewModel;
 import com.swift.dating.ui.emailScreen.viewmodel.EnterEmailViewModel;
 import com.swift.dating.ui.verificationScreen.VerificationActivity;
 import com.swift.dating.ui.welcomeScreen.WelcomeActivity;
 
-public class EmailActivity extends BaseActivity implements View.OnClickListener, TextWatcher, ApiCallback.EmailExistCallBack, ApiCallback.LinkEmailCallBack {
-    Button btnContinue;
+public class EmailActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
+    FloatingActionButton btnContinue;
     EditText etEmail;
-    EnterEmailViewModel model;
+    private CreateAccountViewModel accountModel;
     String linkedInId = "";
     private ImageView img_cross;
     private Spinner spin;
@@ -54,7 +62,7 @@ public class EmailActivity extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.primaryTextColor));
+        // this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.primaryTextColor));
         setContentView(R.layout.activity_email);
         linkedInId = getIntent().getExtras() != null && getIntent().getExtras().containsKey("linkedInId") ? getIntent().getExtras().getString("linkedInId") : "";
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("fromOtp"))
@@ -68,41 +76,42 @@ public class EmailActivity extends BaseActivity implements View.OnClickListener,
      * **  Method to Handle api Response
      */
     private void subscribeModel() {
-        model = ViewModelProviders.of(this).get(EnterEmailViewModel.class);
-        model.signInResponse().observe(this, new Observer<Resource<VerificationResponseModel>>() {
-            @Override
-            public void onChanged(@Nullable Resource<VerificationResponseModel> resource) {
-                if (resource == null) {
-                    hideLoading();
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        if (resource.data.getSuccess()) {
-                            CommonDialogs.dismiss();
+        accountModel = ViewModelProviders.of(this).get(CreateAccountViewModel.class);
 
-                            startActivity(new Intent(EmailActivity.this, VerificationActivity.class)
-                                    .putExtra("email", etEmail.getText().toString())
-                                    .putExtra("linkedInId", linkedInId));
+        accountModel.emailResponse().observe(this, resource -> {
+            if (resource == null) {
+                hideLoading();
+                return;
+            }
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    hideLoading();
+                    if (resource.data.getSuccess()) {
+                        if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
+                            openActivityOnTokenExpire();
                         } else {
-                            if (resource.data.getMessage().equalsIgnoreCase("You are already Registered ...Please Login !")) {
-                                CommonDialogs.dismiss();
-                                startActivity(new Intent(EmailActivity.this, VerificationActivity.class)
-                                        .putExtra("email", etEmail.getText().toString())
-                                        .putExtra("isResend", true)
-                                        .putExtra("linkedInId", linkedInId));
-                            }
-                            showSnackbar(btnContinue, resource.data.getMessage());
+                            Gson gson = new Gson();
+                            String user = sp.getUser();
+                            VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
+                            obj.setUser(resource.data.getUser());
+                            sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                            Intent i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 1);
+                            startActivity(i);
                         }
-                        break;
-                    case ERROR:
+                    } else {
                         hideLoading();
-                        showSnackbar(btnContinue, resource.message);
-                        break;
-                }
+                        showSnackbar(btnContinue, resource.data.getMessage());
+                        if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401"))
+                            openActivityOnTokenExpire();
+                    }
+
+                    break;
+                case ERROR:
+                    hideLoading();
+                    showSnackbar(btnContinue, resource.message);
+                    break;
             }
         });
     }
@@ -162,27 +171,12 @@ public class EmailActivity extends BaseActivity implements View.OnClickListener,
             }
         } else if (view.getId() == R.id.tv_yes) {
             CommonDialogs.dismiss();
-            if (sp.getIsFromEmail()) {
-                CallForCheckEmailExistOrNot();
-            } else if (sp.getIsFromNumber()) {
-                sp.setIsFromEmail(true);
-                startActivity(new Intent(this, VerificationActivity.class).putExtra("email", etEmail.getText().toString()));
-                /*sp.setIsFromEmail(false);
-                sp.setIsFromNumber(false);
-                startActivity(new Intent(EmailActivity.this, Login.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                finishAffinity();*/
-            } else {
-                showLoading();
-                model.signInRequest(new SignUpRequestModel(etEmail.getText().toString(), "0", "0", sp.getDeviceToken()));
-            }
+            showLoading();
+            accountModel.verifyRequest(new CreateAccountEmailModel(etEmail.getText().toString()));
         } else if (view.getId() == R.id.img_cross) {
             onBackPressed();
         } else if (view.getId() == R.id.tv_no) {
             CommonDialogs.dismiss();
-            startActivity(new Intent(EmailActivity.this, WelcomeActivity.class));
-            finishAffinity();
-            // onBackPressed();
         }
 
     }
@@ -206,124 +200,4 @@ public class EmailActivity extends BaseActivity implements View.OnClickListener,
     public void afterTextChanged(Editable editable) {
     }
 
-    private void CallForCheckEmailExistOrNot() {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("email", etEmail.getText().toString().trim());
-        map.put("socialType", 7);
-        showLoading();
-        ApiCall.CheckEmailExistOrNot(map, this);
-    }
-
-    @Override
-    public void onSuccessEmailExist(PhoneLoginResponse response) {
-        hideLoading();
-        if (response.getSuccess()&&response.getEmailType() != null && response.getEmailType() == 1) {
-            Dialog dialog = new Dialog(EmailActivity.this);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.setContentView(R.layout.dialog_two_button);
-            dialog.setCancelable(false);
-            dialog.setCanceledOnTouchOutside(false);
-            Window window = dialog.getWindow();
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            dialog.show();
-            TextView tv_message = dialog.findViewById(R.id.tv_message);
-            TextView tv_yes = dialog.findViewById(R.id.tv_yes);
-            TextView tv_no = dialog.findViewById(R.id.tv_no);
-            tv_no.setText("No");
-            tv_message.setText(mContext.getResources().getString(R.string.link_email_txt));
-            tv_yes.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    CallForLinkAccount();
-                }
-            });
-
-            tv_no.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CommonDialogs.dismiss();
-                    dialog.dismiss();
-                    //showAlertOfExiting("");
-                    /*sp.setIsFromNumber(false);
-                    sp.setIsFromEmail(true);
-                    sp.saveBoolean(SharedPreference.fromPhoneBool, true);
-                    sp.saveString(SharedPreference.fromPhoneFlow, etEmail.getText().toString());
-                    CommonDialogs.dismiss();
-                    startActivity(new Intent(EmailActivity.this, WelcomeActivity.class));*/
-                }
-            });
-        } else if (response.getEmailType() != null && response.getEmailType() == 2) {
-            showAlertOfExiting("This email is linked to an existing account. Please enter another email address.");
-        } else {
-            sp.setIsFromNumber(false);
-            sp.setIsFromEmail(true);
-            sp.saveBoolean(SharedPreference.fromPhoneBool, true);
-            sp.saveString(SharedPreference.fromPhoneFlow, etEmail.getText().toString());
-            CommonDialogs.dismiss();
-            startActivity(new Intent(EmailActivity.this, WelcomeActivity.class));
-        }
-    }
-
-    private void showAlertOfExiting(String s) {
-        Dialog dialog2 = new Dialog(EmailActivity.this);
-        dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Objects.requireNonNull(dialog2.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog2.setContentView(R.layout.already_exist_dialog);
-        dialog2.setCancelable(false);
-        dialog2.setCanceledOnTouchOutside(false);
-        Window window = dialog2.getWindow();
-        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        TextView tvOk = dialog2.findViewById(R.id.tvOk);
-        if (!TextUtils.isEmpty(s)) {
-            TextView tv_message = dialog2.findViewById(R.id.tv_message);
-            tv_message.setText(s);
-        }
-        dialog2.show();
-        tvOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog2.dismiss();
-            }
-        });
-    }
-
-    @Override
-    public void onError(String error) {
-        hideLoading();
-        if (error.equalsIgnoreCase("Email does not exist.")) {
-            sp.setIsFromNumber(false);
-            sp.setIsFromEmail(true);
-            sp.saveBoolean(SharedPreference.fromPhoneBool, true);
-            sp.saveString(SharedPreference.fromPhoneFlow, etEmail.getText().toString());
-            CommonDialogs.dismiss();
-            startActivity(new Intent(EmailActivity.this, WelcomeActivity.class));
-        } else
-            showSnackbar(etEmail, error);
-    }
-
-    private void CallForLinkAccount() {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("email", etEmail.getText().toString().trim());
-        map.put("socialType", 8);
-        showLoading();
-        ApiCall.LinkAccountForEmail(map, this);
-    }
-
-    @Override
-    public void onSuccessLinkEmail(PhoneLoginResponse response) {
-        hideLoading();
-        if (response.getSuccess()) {
-            Toast.makeText(EmailActivity.this, "" + response.getMessage(), Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(EmailActivity.this, VerificationActivity.class);
-            intent.putExtra("email", etEmail.getText().toString());
-            intent.putExtra("otp", String.valueOf(response.getOtp()));
-            intent.putExtra("forLinkNumber", "yes");
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else {
-            showSnackbar(etEmail, response.getMessage());
-        }
-    }
 }
