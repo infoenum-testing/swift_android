@@ -50,6 +50,8 @@ public class SharedPreference {
     private String FilterReq = "FilterReq";
     private Context context;
     private String disLiked = "Disliked";
+    public static final String userStatus = "userStatus";
+
 
     public SharedPreference(Context context) {
         this.context = context;
@@ -108,6 +110,7 @@ public class SharedPreference {
         editor.apply();
         editor.commit();
     }
+
 
     public void saveNoOfLikes(VerificationResponseModel.NoOfLikes noOfLikes) {
         Gson gson = new Gson();

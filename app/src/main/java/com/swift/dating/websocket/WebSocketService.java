@@ -379,13 +379,13 @@ public class WebSocketService {
         if (fromPic != null && !fromPic.isEmpty())
             bitmap = CommonUtils.getBitmapFromUrl(fromPic, 1);
         else
-            bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.appicon_foreground);
+            bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher_foreground);
 
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent intent = PendingIntent.getActivity(mContext, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
-        int pushIcon = R.mipmap.appicon_round;
+        int pushIcon = R.mipmap.ic_launcher_round;
         int notificationId = 1;
         String channelId = mContext.getString(R.string.notification_channel_id);
         String channelName = mContext.getString(R.string.notification_channel_name);;

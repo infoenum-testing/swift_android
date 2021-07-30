@@ -329,7 +329,7 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View view) {
         Log.e("TAG", "onClick: " + " " + dayPos + monthPos + " " + yearPos);
         if (view == btnContinue) {
-            if (count == 3) {
+            if (count >= 3) {
                 count = 0;
                 int year = minYear + yearPos;
                 int month = monthPos + 1;

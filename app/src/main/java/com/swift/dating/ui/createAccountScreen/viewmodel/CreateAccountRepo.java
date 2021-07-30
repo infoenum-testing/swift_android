@@ -68,7 +68,7 @@ public class CreateAccountRepo {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    data.setValue(Resource.<VerificationResponseModel>error("Something Went Wrong", null, 0,e));
+                    data.setValue(Resource.error("Something Went Wrong", null, 0,e));
                 }
             }
 

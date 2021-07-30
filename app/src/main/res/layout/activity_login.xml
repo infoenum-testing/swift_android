@@ -78,29 +78,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!--create_linkedin--><!--create_account_with_num-->
-    <Button
-        android:id="@+id/create_account"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/btnwhiteborder"
-        android:fontFamily="@font/medium"
-        android:minWidth="@dimen/_200sdp"
-        android:paddingStart="@dimen/_20sdp"
-        android:paddingTop="@dimen/_10sdp"
-        android:paddingEnd="@dimen/_20sdp"
-        android:paddingBottom="@dimen/_10sdp"
-        android:text="@string/continueWithEmail"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_14ssp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvAppName" />
 
     <Button
         android:id="@+id/create_account_with_num"

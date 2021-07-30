@@ -23,19 +23,22 @@
         android:required="false" />
 
     <application
-        android:name="com.swift.dating.BlackGentry"
+        android:name=".BlackGentry"
         android:allowBackup="false"
-        android:icon="@mipmap/appicon"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:roundIcon="@mipmap/appicon_round"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
-        <activity android:name="com.swift.dating.ui.homeScreen.CardFilterActivity"></activity>
+        <activity android:name=".DummyActivity"
+            android:theme="@style/AppThemeNew"
+            ></activity>
+        <activity android:name=".ui.homeScreen.CardFilterActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -49,94 +52,91 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.swift.dating.ui.where_do_you_live.WhereYouLiveActivity"
+            android:name=".ui.where_do_you_live.WhereYouLiveActivity"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name="com.swift.dating.ui.emailScreen.PhoneActivity"
+            android:name=".ui.emailScreen.PhoneActivity"
             android:theme="@style/AppThemeNew" />
-        <activity android:name="com.swift.dating.ui.loginScreen.ChooseLoginFrom" />
-        <activity android:name="com.swift.dating.ui.homeScreen.FilterActivity"></activity>
+        <activity android:name=".ui.loginScreen.ChooseLoginFrom" />
+        <activity android:name=".ui.homeScreen.FilterActivity" />
         <activity
-            android:name="com.swift.dating.ui.welcomeScreen.WelcomeActivity"
+            android:name=".ui.welcomeScreen.WelcomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name="com.swift.dating.ui.questionListScreen.QuestionListActivity"
+            android:name=".ui.questionListScreen.QuestionListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.swift.dating.ui.chatScreen.ChatWindow"
+            android:name=".ui.chatScreen.ChatWindow"
             android:configChanges="keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.swift.dating.ui.selfieScreen.SelfieActivity"
+            android:name=".ui.selfieScreen.SelfieActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name="com.swift.dating.ui.loginScreen.LinkedInWebView"
+            android:name=".ui.loginScreen.LinkedInWebView"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.swift.dating.ui.userCardScreen.UserCardActivity"
+            android:name=".ui.userCardScreen.UserCardActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name="com.swift.dating.ui.viewpagerScreen.ViewPagerActivity"
+            android:name=".ui.viewpagerScreen.ViewPagerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name="com.swift.dating.ui.myCardScreen.MyCardActivity"
+            android:name=".ui.myCardScreen.MyCardActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name="com.swift.dating.ui.answerNowScreen.AnswerNowActivity"
+            android:name=".ui.answerNowScreen.AnswerNowActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name="com.swift.dating.ui.itsAMatchScreen.ItsAMatchActivity"
+            android:name=".ui.itsAMatchScreen.ItsAMatchActivity"
             android:theme="@style/Theme_Transparents" />
         <activity
-            android:name="com.swift.dating.ui.settingScreen.SettingsActivity"
+            android:name=".ui.settingScreen.SettingsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name="com.swift.dating.ui.editProfileScreen.EditProfileActivity"
+            android:name=".ui.editProfileScreen.EditProfileActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name="com.swift.dating.ui.base.CommonWebViewActivity"
+            android:name=".ui.base.CommonWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.swift.dating.ui.homeScreen.HomeActivity"
+            android:name=".ui.homeScreen.HomeActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.swift.dating.ui.createAccountScreen.CreateAccountActivity"
+            android:name=".ui.createAccountScreen.CreateAccountActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNew">
-
-        </activity>
+            android:theme="@style/AppThemeNew"></activity>
         <activity
-            android:name="com.swift.dating.ui.base.CropImage"
+            android:name=".ui.base.CropImage"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew" />
         <activity
-            android:name="com.swift.dating.ui.emailScreen.EmailActivity"
-            android:theme="@style/AppThemeNew"
+            android:name=".ui.emailScreen.EmailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNew" />
+        <activity
+            android:name=".ui.verificationScreen.VerificationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.swift.dating.ui.verificationScreen.VerificationActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity
-            android:name="com.swift.dating.ui.loginScreen.LoginActivity"
+            android:name=".ui.loginScreen.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew" />
         <activity
-            android:name="com.swift.dating.ui.splashScreen.SplashActivity"
+            android:name=".ui.splashScreen.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew">
             <intent-filter>
@@ -144,7 +144,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <provider
@@ -183,7 +182,7 @@
             android:value="ca-app-pub-9278644902816701~1940646099" />
 
         <service
-            android:name="com.swift.dating.notification.MyFirebaseMessagingService"
+            android:name=".notification.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

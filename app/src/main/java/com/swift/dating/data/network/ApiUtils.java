@@ -98,7 +98,7 @@ public interface ApiUtils {
 
     //    ------------------------Update Profile-------------------------------------
 
-    @POST("api/users/completeRegistration")
+    @POST("users/completeRegistration")
     Call<ResponseBody> completeRegistration(@Header("Authorization") String header,
                                             @Body HashMap<String, String> data);
 

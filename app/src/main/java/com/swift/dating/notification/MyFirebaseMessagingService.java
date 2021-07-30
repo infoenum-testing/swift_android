@@ -57,12 +57,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      */
     private void sendNotification(String title, String messageBody, NotificationModel match) {
 
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.appicon_foreground);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_foreground);
         notificationIntent.putExtra("match", match);
 
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        int pushIcon = R.mipmap.appicon_round;
+        int pushIcon = R.mipmap.ic_launcher_round;
         int notificationId = 1;
         String channelId = getApplicationContext().getString(R.string.notification_channel_id);
         String channelName = getApplicationContext().getString(R.string.notification_channel_name);

@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.facebook.login.LoginResult;
+import com.swift.dating.DummyActivity;
 import com.swift.dating.R;
 import com.swift.dating.data.network.Resource;
 import com.swift.dating.model.requestmodel.SignUpRequestModel;
@@ -34,21 +35,17 @@ import com.swift.dating.model.responsemodel.VerificationResponseModel;
 import com.swift.dating.ui.base.BaseActivity;
 import com.swift.dating.ui.base.CommonWebViewActivity;
 import com.swift.dating.ui.createAccountScreen.CreateAccountActivity;
-import com.swift.dating.ui.emailScreen.EmailActivity;
 import com.swift.dating.ui.emailScreen.PhoneActivity;
 import com.swift.dating.ui.emailScreen.viewmodel.EnterEmailViewModel;
-import com.swift.dating.ui.homeScreen.HomeActivity;
-import com.swift.dating.ui.selfieScreen.SelfieActivity;
 import com.swift.dating.ui.welcomeScreen.WelcomeActivity;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     TextView tvTermOfService, tvPrivacyPolicy, tvRule1;
     //TextView tvCreateAccount;
-    Button create_account, create_account_with_num;
+    Button create_account_with_num;
     ConstraintLayout cl_main, login_button_fb;
     CallbackManager callbackManager;
     String providerId, name, email, profilePic;
@@ -64,7 +61,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         subscribeModel();
         tvTermOfService = findViewById(R.id.tvTermOfService);
         tvPrivacyPolicy = findViewById(R.id.tvPrivacyPolicy);
-        create_account = findViewById(R.id.create_account);
         create_account_with_num = findViewById(R.id.create_account_with_num);
         //tvCreateAccount = findViewById(R.id.create_account);
         tvRule1 = findViewById(R.id.tvRule1);
@@ -76,7 +72,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         //tvCreateAccount.setOnClickListener(this);
         login_button_fb = findViewById(R.id.login_button_fb);
         login_button_fb.setOnClickListener(this);
-        create_account.setOnClickListener(this);
         create_account_with_num.setOnClickListener(this);
         tvTermOfService.setOnClickListener(this);
         tvPrivacyPolicy.setOnClickListener(this);
@@ -109,12 +104,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View view) {
-        if (view == create_account) {
-            Intent intent = new Intent(this, EmailActivity.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            sp.setIsFromNumber(false);
-        } else if (view.getId() == R.id.login_button_fb) {
+        if (view.getId() == R.id.login_button_fb) {
             LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
             LoginManager.getInstance().registerCallback(callbackManager,
                     new FacebookCallback<LoginResult>() {
@@ -137,48 +127,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             // App code
                         }
                     });
-        } /*else if (view == btnLinkedIn) {
-            startActivityForResult(new Intent(LoginActivity.this, LinkedInWebView.class).putExtra("url",
-                    "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=7884wouiik0t5j&" +
-                            "redirect_uri=http://192.168.1.75:3020/api/users/callback&state=fooobar&scope=" +
-                            "r_liteprofile%20r_emailaddress%20w_member_social")
-                    , 1000);
-        } */ else if (view == create_account_with_num) {
+        } else if (view == create_account_with_num) {
             Intent intent = new Intent(this, PhoneActivity.class);
             // sp.setIsFromNumber(true);
             //  intent.putExtra("Title", "My PhoneNumberAc is");
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        }/* else if (view.getId() == R.id.login_button_fb) {
-            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
-            LoginManager.getInstance().registerCallback(callbackManager,
-                    new FacebookCallback<LoginResult>() {
-                        @Override
-                        public void onSuccess(LoginResult loginResult) {
-                            Log.e("test", "test2");
-                            RequestData();
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            // App code
-                            Log.e("test", "test3");
-
-                        }
-
-                        @Override
-                        public void onError(FacebookException exception) {
-                            exception.printStackTrace();
-                            // App code
-                        }
-                    });
-        }*/ /*else if (view == btnLinkedIn) {
-            startActivityForResult(new Intent(LoginActivity.this, LinkedInWebView.class).putExtra("url",
-                    "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=7884wouiik0t5j&" +
-                            "redirect_uri=http://192.168.1.75:3020/api/users/callback&state=fooobar&scope=" +
-                            "r_liteprofile%20r_emailaddress%20w_member_social")
-                    , 1000);
-        } */ else {
+        } else {
             if (view == tvTermOfService) {
                 startActivity(new Intent(this, CommonWebViewActivity.class)
                         .putExtra("url", "https://swiftdatingapp.com/terms/"));
@@ -273,6 +228,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
      * **  Method to save data in preferences
      */
     private void setData(VerificationResponseModel data) {
+        String userStatus = "";
+        if (data != null && data.getUser() != null && !TextUtils.isEmpty(data.getUser().getStatus())) {
+            userStatus = data.getUser().getStatus();
+        }
         sp.saveUserData(data.getUser().getProfileOfUser(), data.getUser().getProfileOfUser().getCompleted().toString());
         sp.saveLinkedIn(!TextUtils.isEmpty(linkedInId));
         sp.saveToken("bearer " + data.getToken(), String.valueOf(data.getUser().getProfileOfUser().getUserId()), true);
@@ -296,11 +255,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 4);
         } else if (data.getImagedata().getData() == null || data.getImagedata().getData().size() == 0) {
             i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 5);
-        } else if (TextUtils.isEmpty(sp.getSelfie())) {
-            i = new Intent(mActivity, SelfieActivity.class);
-            i.putExtra("android.intent.extras.CAMERA_FACING", 1);
+        } else if (!userStatus.equalsIgnoreCase("Active")) {
+            i = new Intent(mActivity, WelcomeActivity.class);
         } else {
-            i = new Intent(mActivity, HomeActivity.class);
+            // i = new Intent(mActivity, HomeActivity.class);
+            i = new Intent(mActivity, DummyActivity.class);
         }
         startActivity(i);
         finishAffinity();

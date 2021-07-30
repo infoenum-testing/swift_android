@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,7 +42,6 @@ import com.swift.dating.ui.base.BaseFragment;
 import com.swift.dating.ui.base.CropImage;
 import com.swift.dating.ui.createAccountScreen.CreateAccountActivity;
 import com.swift.dating.ui.editProfileScreen.viewmodel.EditProfileViewModel;
-import com.swift.dating.ui.selfieScreen.SelfieActivity;
 import com.swift.dating.ui.welcomeScreen.WelcomeActivity;
 
 import id.zelory.compressor.Compressor;
@@ -122,10 +121,10 @@ public class AddImagesFragment extends BaseFragment implements PhotoAdapter.OnCl
                             imageList.clear();
                             imageList.addAll(resource.data.getImagedata().getData());
                             getBaseActivity().sp.saveUserImage(imageList);
-                            getBaseActivity().sp.saveUserData(resource.data.getUser().getProfileOfUser(),resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                            getBaseActivity().sp.saveUserData(resource.data.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
                             if (imageList.size() > 2) {
                                 ((CreateAccountActivity) getActivity()).updateParseCount(6);
-                                Intent intent = new Intent(getActivity(), SelfieActivity.class);
+                                Intent intent = new Intent(getActivity(), WelcomeActivity.class);
                                 intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
                                 startActivity(intent);
                                 getActivity().finishAffinity();
@@ -213,16 +212,18 @@ public class AddImagesFragment extends BaseFragment implements PhotoAdapter.OnCl
     public void onClick(View view) {
         if (view.getId() == R.id.btn_continue) {
             if (photoList.size() > 0) {
-                if (((CreateAccountActivity) getActivity()).preference.getIsFromNumber()) {
+                uploadImage();
+
+                /*if (((CreateAccountActivity) getActivity()).preference.getIsFromNumber()) {
                     ((CreateAccountActivity) getActivity()).updateParseCount(6);
                     getBaseActivity().hideLoading();
-                    Intent intent = new Intent(getActivity(), SelfieActivity.class);
+                    Intent intent = new Intent(getActivity(), WelcomeActivity.class);
                     intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
                     startActivity(intent);
                     getActivity().finishAffinity();
                 } else {
                     uploadImage();
-                }
+                }*/
             } else {
                 getBaseActivity().showSnackbar(btnDone, "Please add a minimum of 1 photo");
             }
@@ -232,7 +233,7 @@ public class AddImagesFragment extends BaseFragment implements PhotoAdapter.OnCl
         } else if (view.getId() == R.id.ll_gallery) {
             hideBottomSheet();
             EasyImage.openGallery(getActivity(), 0);
-        }else if (view.getId() == R.id.img_close) {
+        } else if (view.getId() == R.id.img_close) {
             hideBottomSheet();
             //EasyImage.openGallery(getActivity(), 0);
         }
@@ -289,21 +290,28 @@ public class AddImagesFragment extends BaseFragment implements PhotoAdapter.OnCl
         call.enqueue(new retrofit2.Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
                 try {
-                    Gson gson = new GsonBuilder().setLenient().create();
+                    // Gson gson = new GsonBuilder().setLenient().create();
+                    Gson gson = new Gson();
                     if (response.code() == 200) {
-                        ProfileOfUser user=gson.fromJson(response.body().string(), ProfileOfUser.class);
-                        if (user!=null&&user.getCompleted()!=null){
-                            getBaseActivity().sp.saveUserData(user,user.getCompleted().toString());
-                        }
-                        ImageResponseModel responseBean = gson.fromJson(response.body().string(), ImageResponseModel.class);
-                        if (responseBean.getSuccess()) {
+                        String myResStr = response.body().string();
+                        Log.e("TAG", "onResponse:1 " + myResStr);
+                        // ProfileOfUser user = gson.fromJson(myResStr, ProfileOfUser.class);
+
+                        ImageResponseModel responseBean = gson.fromJson(myResStr, ImageResponseModel.class);
+/*
+                        if (user != null && user.getCompleted() != null) {
+                            getBaseActivity().sp.saveUserData(user, user.getCompleted().toString());
+                            Log.e("TAG", "onResponse: if" );
+                        }*/
+                        // ImageResponseModel responseBean = gson1.fromJson(myResStr, ImageResponseModel.class);
+                        Log.e("TAG", "onResponse:2 " + myResStr);
+                        Log.e("TAG", "onResponse:3 " + responseBean);
+                        if (responseBean != null && responseBean.getSuccess() != null && responseBean.getSuccess()) {
                             getBaseActivity().sp.saveUserImage(responseBean.getImages());
-                            ((CreateAccountActivity) getActivity()).updateParseCount(6);
                             getBaseActivity().hideLoading();
-                            //Intent intent = new Intent(getActivity(), SelfieActivity.class);
                             Intent intent = new Intent(getActivity(), WelcomeActivity.class);
-                            intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
                             startActivity(intent);
                             getActivity().finishAffinity();
                         } else if (responseBean.getError() != null && responseBean.getError().getCode().equalsIgnoreCase("401")) {
@@ -323,7 +331,7 @@ public class AddImagesFragment extends BaseFragment implements PhotoAdapter.OnCl
                     if (getBaseActivity() != null) {
                         getBaseActivity().hideLoading();
                         editProfileViewModel.myProfileRequest(getBaseActivity().sp.getToken());
-                    }else {
+                    } else {
                         getBaseActivity().showSnackbar(btnDone, CallServer.somethingWentWrong);
                     }
                     ae.printStackTrace();
@@ -334,7 +342,7 @@ public class AddImagesFragment extends BaseFragment implements PhotoAdapter.OnCl
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                if (getBaseActivity()!=null){
+                if (getBaseActivity() != null) {
                     getBaseActivity().hideLoading();
                     editProfileViewModel.myProfileRequest(getBaseActivity().sp.getToken());
                     getBaseActivity().showSnackbar(btnDone, CallServer.serverError);

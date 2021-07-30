@@ -36,7 +36,7 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
     FloatingActionButton btnContinue;
     private RadioGroup tgGender, tgShowMeTo;
     private NumberPicker pickerGender;
-    private String strGender, strShowMeTo = "";
+    private String strGender = "", strShowMeTo = "";
     private int genderPos;
     // private ArrayList<String> genderList = new ArrayList<>();
 
@@ -175,16 +175,31 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
         if (view == btnContinue) {
+            if (!TextUtils.isEmpty(strGender)) {
+                 getBaseActivity().showLoading();
+                hideKeyboard();
+                if (!strGender.equalsIgnoreCase("male") && !strGender.equalsIgnoreCase("female"))
+                    strGender = getContext().getResources().getStringArray(R.array.genderArray)[pickerGender.getValue()];
+                Log.e("TAG", "onClick: " + strShowMeTo);
+                Log.e("TAG", "onClick: " + strGender);
+                model.verifyRequest(new CreateAccountGenderModel(strGender, strShowMeTo));
+            } else {
+                showSnackBar(btnContinue, "Please select gender");
+            }
+
+/*
             if (((CreateAccountActivity) getActivity()).preference.getIsFromNumber()) {
                 ((CreateAccountActivity) getActivity()).updateParseCount(4);
                 sendIntent();
-            } else {
+            } else
+                {
                 getBaseActivity().showLoading();
                 hideKeyboard();
                 if (!strGender.equalsIgnoreCase("male") && !strGender.equalsIgnoreCase("female"))
                     strGender = getContext().getResources().getStringArray(R.array.genderArray)[pickerGender.getValue()];
                 model.verifyRequest(new CreateAccountGenderModel(strGender, strShowMeTo));
             }
+*/
         }
     }
 
@@ -204,13 +219,11 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
         if (radioGroup == tgGender) {
             if (i == R.id.otherTb) {
-                btnContinue.setEnabled(false);
-                btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.disabledbtn));
+                strShowMeTo = "Male";
+                strGender = this.getResources().getStringArray(R.array.genderArray)[pickerGender.getValue()];
                 pickerGender.setVisibility(View.VISIBLE);
                 tgShowMeTo.setVisibility(View.VISIBLE);
             } else {
-                btnContinue.setEnabled(true);
-                btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
                 strGender = i == R.id.tbMale ? "Male" : "Female";
                 strShowMeTo = "";
                 pickerGender.setVisibility(View.GONE);
@@ -219,8 +232,6 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
         } else if (radioGroup == tgShowMeTo) {
             strGender = this.getResources().getStringArray(R.array.genderArray)[pickerGender.getValue()];
             strShowMeTo = i == R.id.tvshowMen ? "Male" : "Female";
-            btnContinue.setEnabled(true);
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
         }
     }
 }

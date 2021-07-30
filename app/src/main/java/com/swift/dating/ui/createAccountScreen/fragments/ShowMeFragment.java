@@ -57,7 +57,7 @@ public class ShowMeFragment extends BaseFragment implements View.OnClickListener
     }
 
     /**
-     ***  Method to Handle api Response
+     * **  Method to Handle api Response
      */
     private void subscribeModel() {
         model = ViewModelProviders.of(this).get(CreateAccountViewModel.class);
@@ -81,13 +81,13 @@ public class ShowMeFragment extends BaseFragment implements View.OnClickListener
                                 VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
                                 obj.setUser(resource.data.getUser());
                                 getBaseActivity().sp.saveisSettingsChanged(true);
-                                if(((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
+                                if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
                                     if (!TextUtils.isEmpty(getBaseActivity().sp.getMyString(SearchFragment.SearchResponse)))
                                         getBaseActivity().sp.removeKey(SearchFragment.SearchResponse);
                                     if (!TextUtils.isEmpty(getBaseActivity().sp.getMyString(SearchFragment.FilterResponse)))
                                         getBaseActivity().sp.removeKey(SearchFragment.FilterResponse);
                                 }
-                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(),resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
                                 ((CreateAccountActivity) getActivity()).updateParseCount(5);
                                 sendIntent();
                             }
@@ -109,14 +109,14 @@ public class ShowMeFragment extends BaseFragment implements View.OnClickListener
     }
 
     /**
-     ***  Method to Initialize
+     * **  Method to Initialize
      */
     private void initialize(View view) {
         btnContinue = view.findViewById(R.id.btn_continue);
         btnContinue.setOnClickListener(this);
         tgShowMe = view.findViewById(R.id.tgShowMe);
         tgShowMe.setOnCheckedChangeListener(this);
-        if (((CreateAccountActivity) getActivity()).getUserData()!=null&&!TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getInterested())) {
+        if (((CreateAccountActivity) getActivity()).getUserData() != null && !TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getInterested())) {
             tgShowMe.check(((CreateAccountActivity) getActivity()).getUserData().getInterested().equalsIgnoreCase("men") ?
                     R.id.Maletb : ((CreateAccountActivity) getActivity()).getUserData().getInterested().equalsIgnoreCase("women") ? R.id.tbWomen
                     : R.id.everyoneTb);
@@ -131,11 +131,11 @@ public class ShowMeFragment extends BaseFragment implements View.OnClickListener
     }
 
     /**
-     ***  Method to Handle api Response
+     * **  Method to Handle api Response
      */
     private void sendIntent() {
         if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
-            SettingsActivity.isSettingChanged=true;
+            SettingsActivity.isSettingChanged = true;
             getActivity().finish();
         } else {
             ((CreateAccountActivity) getActivity()).addFragment();
@@ -144,14 +144,21 @@ public class ShowMeFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-        if ( ((CreateAccountActivity) getActivity()).preference.getIsFromNumber()){
-            ((CreateAccountActivity) getActivity()).updateParseCount(5);
-            sendIntent();
-        }else {
+        if (view.getId() == R.id.btn_continue) {
             getBaseActivity().showLoading();
             hideKeyboard();
             model.verifyRequest(new CreateAccountInterestedModel(strShowMe));
         }
+/*        if ( ((CreateAccountActivity) getActivity()).preference.getIsFromNumber())
+        {
+            ((CreateAccountActivity) getActivity()).updateParseCount(5);
+            sendIntent();
+        }else {
+
+        getBaseActivity().showLoading();
+        hideKeyboard();
+        model.verifyRequest(new CreateAccountInterestedModel(strShowMe));
+         }*/
     }
 
     @Override

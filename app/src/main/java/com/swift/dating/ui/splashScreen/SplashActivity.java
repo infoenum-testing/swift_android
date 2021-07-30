@@ -26,11 +26,13 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import com.swift.dating.DummyActivity;
 import com.swift.dating.R;
 import com.swift.dating.common.ScreenUtils;
 import com.swift.dating.data.preference.SharedPreference;
 import com.swift.dating.model.ImageModel;
 import com.swift.dating.model.responsemodel.ProfileOfUser;
+import com.swift.dating.model.responsemodel.VerificationResponseModel;
 import com.swift.dating.ui.base.BaseActivity;
 import com.swift.dating.ui.createAccountScreen.CreateAccountActivity;
 import com.swift.dating.ui.emailScreen.EmailActivity;
@@ -125,7 +127,8 @@ public class SplashActivity extends BaseActivity {
             if (sp.isloggedIn().equalsIgnoreCase("true")) {
                 Gson gson = new Gson();
                 String json = sp.getUser();
-                Log.e("token_________", sp.getToken());
+                String userStatus;
+                userStatus = sp.getMyString(SharedPreference.userStatus);
                 ProfileOfUser obj = gson.fromJson(json, ProfileOfUser.class);
                 String jsonImage = sp.getUserImage();
                 Type type = new TypeToken<List<ImageModel>>() {
@@ -140,18 +143,17 @@ public class SplashActivity extends BaseActivity {
                         i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 1);
                     } else if (TextUtils.isEmpty(obj.getDob())) {
                         i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 2);
-                    }/*  else if (TextUtils.isEmpty(obj.getCity())) {
-                        i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 23);
-                    }*/ else if (TextUtils.isEmpty(obj.getGender())) {
+                    }else if (TextUtils.isEmpty(obj.getGender())) {
                         i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 3);
                     } else if (TextUtils.isEmpty(obj.getInterested())) {
                         i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 4);
                     } else if (imagelist == null || imagelist.size() == 0) {
                         i = new Intent(mActivity, CreateAccountActivity.class).putExtra("parseCount", 5);
-                    } else if (obj.getState().equalsIgnoreCase("Incomplete")) {
+                    } else if (!userStatus.equalsIgnoreCase("Active")) {
                         i = new Intent(mActivity, WelcomeActivity.class);
                     } else {
-                        i = new Intent(mActivity, HomeActivity.class);
+                        // i = new Intent(mActivity, HomeActivity.class);
+                        i = new Intent(mActivity, DummyActivity.class);
                     }
                 } else {
                     i = new Intent(mActivity, LoginActivity.class);

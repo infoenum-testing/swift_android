@@ -25,4 +25,12 @@ public class ImageResponseModel extends BaseModel {
     public ArrayList<ImageModel> getImages() {
         return images;
     }
+
+    @Override
+    public String toString() {
+        return "ImageResponseModel{" +
+                "images=" + images +
+                ", image=" + image +
+                '}';
+    }
 }
