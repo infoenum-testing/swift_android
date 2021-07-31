@@ -28,8 +28,6 @@
     </style>
 
 
-
-
     <style name="activityTheme" parent="AppTheme">
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowNoTitle">false</item>
@@ -99,4 +97,22 @@
         <item name="textAllCaps">false</item>
         <item name="android:textAllCaps">false</item>
     </style>
+
+    <!--otp view style-->
+    <style name="otp_style" parent="Widget.AppCompat.EditText">
+        <item name="android:inputType">number</item>
+        <item name="android:maxLength">1</item>
+        <item name="android:cursorVisible">false</item>
+        <item name="android:fontFamily">@font/bold</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginEnd">@dimen/_10sdp</item>
+
+    </style>
+
+
 </resources>
