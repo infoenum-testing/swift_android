@@ -13,27 +13,25 @@
         android:layout_marginEnd="20dp"
         android:fillViewport="true">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/_20sdp"
             android:fitsSystemWindows="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/_10sdp">
 
             <TextView
                 android:id="@+id/tv_welcome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_gravity="center"
                 android:layout_marginStart="@dimen/_15sdp"
-                android:layout_marginTop="@dimen/_70sdp"
+                android:layout_marginTop="@dimen/_20sdp"
                 android:layout_marginEnd="@dimen/_15sdp"
                 android:fontFamily="@font/medium"
                 android:gravity="center"
                 android:text="@string/welcome_to_app"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_20ssp"
+                android:textSize="@dimen/_16sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -43,8 +41,6 @@
                 android:id="@+id/imageViewLogo"
                 android:layout_width="@dimen/_130sdp"
                 android:layout_height="@dimen/_50sdp"
-                android:layout_below="@+id/tv_welcome"
-                android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/logo" />
 
@@ -52,13 +48,12 @@
                 android:id="@+id/tv_welcome_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/imageViewLogo"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_8sdp"
                 android:fontFamily="@font/medium"
                 android:gravity="start"
                 android:text="@string/welcome_to_app_desc"
                 android:textColor="@color/grey_new"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -68,13 +63,12 @@
                 android:id="@+id/tv_what_makes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_welcome_desc"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_8sdp"
                 android:fontFamily="@font/medium"
                 android:gravity="start"
                 android:text="@string/what_makes_txt"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_16ssp"
+                android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -85,7 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_what_makes"
-                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -100,7 +94,7 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:text="@string/what_makes_txt_1"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
@@ -124,7 +118,7 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:text="@string/what_makes_txt_2"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
@@ -148,7 +142,7 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:text="@string/what_makes_txt_3"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
@@ -172,42 +166,28 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:text="@string/what_makes_txt_4"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/llTerms"
-                android:layout_width="wrap_content"
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tvTerms"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/btn_continue"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_40sdp"
-                    android:layout_marginBottom="@dimen/_30sdp"
-                    android:text="@string/terms"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_40sdp"
-                    android:layout_marginBottom="@dimen/_30sdp"
-                    android:text=" terms &amp; policies."
-                    android:textColor="@color/pink"
-                    android:textSize="14sp" />
-            </LinearLayout>
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_20sdp"
+                android:textSize="14sp" />
 
 
             <Button
                 android:id="@+id/btn_continue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_gravity="bottom"
                 android:layout_marginStart="@dimen/_20sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
@@ -219,7 +199,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_14ssp" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 

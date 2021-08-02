@@ -120,12 +120,12 @@ public class LocationFragment extends BaseFragment {
         }
         Collections.sort(country);
         // country.add(0, "Select Country");
-        String[] test = new String[]{"United Kingdom", "Canada", "United States"};
+        String[] test = new String[]{"Canada", "United Kingdom", "United States"};
         for (String s : test) {
             for (int i = 0; i < country.size(); i++) {
                 if (country.get(i).equalsIgnoreCase(s)) {
                     country.remove(i);
-                    country.add(1, s);
+                    country.add(0, s);
                     break;
                 }
             }

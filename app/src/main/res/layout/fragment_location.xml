@@ -51,13 +51,13 @@
             android:fontFamily="@font/thin"
             android:text="Country"
             android:textSize="@dimen/_16ssp" />
+
         <Spinner
             android:id="@+id/spin_country"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/ivCountryPick"
@@ -82,8 +82,8 @@
         android:paddingStart="@dimen/_15sdp"
         android:paddingTop="@dimen/_10sdp"
         android:paddingEnd="@dimen/_20sdp"
-        android:visibility="gone"
         android:paddingBottom="@dimen/_10sdp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/rlCountry">
 
         <TextView
@@ -98,9 +98,9 @@
             android:id="@+id/spin_state"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
@@ -114,6 +114,7 @@
 
     <EditText
         android:id="@+id/edit_city"
+        style="@style/et_font_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -122,7 +123,6 @@
         android:layout_marginEnd="@dimen/_20sdp"
         android:background="@drawable/btn_white_border_new"
         android:backgroundTint="@color/grey_new"
-        android:fontFamily="@font/thin"
         android:hint="City"
         android:imeOptions="actionDone"
         android:inputType="textCapSentences"

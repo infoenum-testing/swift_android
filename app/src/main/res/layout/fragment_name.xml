@@ -63,12 +63,12 @@
 
         <EditText
             android:id="@+id/et_name"
+            style="@style/et_font_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/ivUser"
             android:background="@null"
-            android:fontFamily="@font/thin"
             android:hint="Enter your name"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences"
@@ -92,8 +92,7 @@
         android:src="@drawable/ic_arrow_right"
         app:backgroundTint="@color/pink"
         app:layout_constraintBottom_toBottomOf="@+id/llBottom"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
         android:id="@+id/llBottom"
