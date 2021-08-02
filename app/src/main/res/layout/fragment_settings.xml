@@ -68,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_30sdp"
-            android:paddingBottom="@dimen/_20sdp">
+            android:paddingBottom="@dimen/_5sdp">
 
 
             <androidx.cardview.widget.CardView
@@ -121,10 +121,10 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tvEmailTxt"
                         android:layout_marginTop="@dimen/_10sdp"
-                        android:fontFamily="@font/thin"
+                        android:fontFamily="@font/medium"
                         android:gravity="start"
                         android:singleLine="true"
-                        android:text="a@gggg.njnn"
+                        android:text="- - - -"
                         android:textColor="@color/grey_new"
                         android:textSize="@dimen/_14ssp" />
 
@@ -152,10 +152,10 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tvPhoneTxt"
                         android:layout_marginTop="@dimen/_10sdp"
-                        android:fontFamily="@font/thin"
+                        android:fontFamily="@font/medium"
                         android:gravity="start"
                         android:singleLine="true"
-                        android:text="gsgfsgf"
+                        android:text="- - - -"
                         android:textColor="@color/grey_new"
                         android:textSize="@dimen/_14ssp" />
 
@@ -629,7 +629,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/card"
+                        android:id="@+id/cardHelp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_5sdp"
@@ -638,7 +638,7 @@
                         android:layout_marginBottom="@dimen/_5sdp"
                         android:background="@color/white"
                         app:cardCornerRadius="@dimen/_8sdp"
-                        app:cardElevation="2dp"
+                        app:cardElevation="@dimen/_10sdp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_contactUs">
@@ -730,6 +730,7 @@
                         app:layout_constraintTop_toBottomOf="parent" />
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardPrivacyPolicy"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_15sdp"
@@ -737,7 +738,8 @@
                         android:layout_marginEnd="@dimen/_15sdp"
                         android:background="@color/white"
                         app:cardCornerRadius="@dimen/_8sdp"
-                        app:cardElevation="2dp">
+                        app:cardElevation="@dimen/_10sdp"
+                        >
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -772,6 +774,7 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardTermnService"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_15sdp"
@@ -938,23 +941,21 @@
                 app:layout_constraintBottom_toTopOf="@id/btnlogout"
                 app:layout_constraintTop_toBottomOf="@+id/btn_bg_premium" />
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/pagerSlider"
+            <FrameLayout
+                android:id="@+id/sliderFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/_10sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnShare" />
-
 
             <Button
                 android:id="@+id/btnlogout"
                 android:layout_width="@dimen/_150sdp"
                 android:layout_height="@dimen/_40sdp"
                 android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
                 android:layout_marginBottom="@dimen/_10sdp"
                 android:background="@drawable/facebookbtn"
@@ -974,7 +975,7 @@
                 app:layout_constraintBottom_toTopOf="@id/tvdelete"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pagerSlider" />
+                app:layout_constraintTop_toBottomOf="@+id/sliderFragment" />
 
 
             <TextView
@@ -982,7 +983,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
                 android:layout_marginBottom="@dimen/_10sdp"
                 android:fontFamily="@font/medium"
@@ -1013,7 +1014,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_20ssp"
                 android:fontFamily="@font/medium"
                 android:gravity="center"
                 android:text="V 1.0"

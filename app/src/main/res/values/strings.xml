@@ -641,7 +641,7 @@
 
     <string-array name="arr_premium_txt">
         <item>Send Unlimited Likes</item>
-        <item>View Unlimited Direct Message</item>
+        <item>Send Unlimited Direct Messages</item>
         <item>See Who Likes You</item>
         <item>Change Location</item>
         <item>See Second Chance</item>
@@ -659,5 +659,8 @@
         <item>@drawable/skip_profile</item>
         <item>@drawable/hide_ads</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="swift_premium">SWIFT PREMIUM</string>
 
 </resources>

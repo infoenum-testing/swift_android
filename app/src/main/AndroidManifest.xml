@@ -35,9 +35,9 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
-        <activity android:name=".DummyActivity"
-            android:theme="@style/AppThemeNew"
-            ></activity>
+        <activity
+            android:name=".DummyActivity"
+            android:theme="@style/AppThemeNew"></activity>
         <activity android:name=".ui.homeScreen.CardFilterActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -103,7 +103,7 @@
             android:name=".ui.settingScreen.SettingsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -19,24 +19,34 @@ import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
+import com.chahinem.pageindicator.PageIndicator;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
+import com.swift.dating.ui.slider_fragment;
+import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.OnSeekChangeListener;
 import com.warkiz.widget.SeekParams;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import com.swift.dating.BuildConfig;
@@ -70,7 +80,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private static final String TAG = "SettingsActivity";
     public static boolean isSettingChanged = false;
     ConstraintLayout btnBGPremium, btn_bg_deluxe, btn_reset_skiped_profile;
-    TextView tvHelp, tvPrivacyPolicy, tvTermnService, tvRestoreSubscription, tvVersion;
+    TextView tvRestoreSubscription, tvVersion;
+    CardView cardTermnService, cardHelp, cardPrivacyPolicy;
     boolean isFromCardScreen;
     View view;
     double price;
@@ -81,31 +92,30 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private TextView tvLocation, tvDistance, tvAgeRange, tv_done, tv_delete, tvLookingFor, tvPhone, tvEmail;
     ImageView tv_cancel;
     private IndicatorSeekBar seekDistance;
-    SliderAdapter sliderAdapter;
-    ViewPager2 viewPager2;
     private RangeSeekBar seekAgeRange;
     private Switch showMeSwitch, newMatchSwitch, callSwitch, expireSwitch, matchSwitch, emailNotifySwitch, pushNotifySwitch;
     private HomeViewModel homeViewModel;
     private BillingProcessor bp;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.grey));
         setContentView(R.layout.fragment_settings);
-        setPager();
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("isCardScreen")) {
             isFromCardScreen = getIntent().getExtras().getBoolean("isCardScreen");
         }
         initialize();
         initBillingProcess();
+        setSlider();
     }
 
-    private void setPager() {
-        viewPager2 = findViewById(R.id.pagerSlider);
-        sliderAdapter = new SliderAdapter(this);
-        viewPager2.setAdapter(sliderAdapter);
+
+    private void setSlider() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.sliderFragment, new slider_fragment()).commit();
     }
+
 
     /**
      * Method to Initialize Billing Process
@@ -162,9 +172,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         showMeSwitch = findViewById(R.id.simpleSwitch);
         tvVersion = findViewById(R.id.tvVersion);
         view = findViewById(R.id.view);
-        tvHelp = findViewById(R.id.tvHelp);
-        tvPrivacyPolicy = findViewById(R.id.tvPrivacyPolicy);
-        tvTermnService = findViewById(R.id.tvTermnService);
+        cardHelp = findViewById(R.id.cardHelp);
+        cardPrivacyPolicy = findViewById(R.id.cardPrivacyPolicy);
+        cardTermnService = findViewById(R.id.cardTermnService);
         newMatchSwitch = findViewById(R.id.simpleSwitch2);
 
         callSwitch = findViewById(R.id.callSwitch);
@@ -210,9 +220,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         tvLookingFor.setOnClickListener(this);
         btnShare.setOnClickListener(this);
         tvRestoreSubscription.setOnClickListener(this);
-        tvHelp.setOnClickListener(this);
-        tvTermnService.setOnClickListener(this);
-        tvPrivacyPolicy.setOnClickListener(this);
+        cardHelp.setOnClickListener(this);
+        cardTermnService.setOnClickListener(this);
+        cardPrivacyPolicy.setOnClickListener(this);
         seekDistance.setOnSeekChangeListener(this);
         seekAgeRange.setOnRangeSeekBarChangeListener(this);
         view.setOnClickListener(this);
@@ -324,12 +334,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         } else if (resource.code == 401) {
                             openActivityOnTokenExpire();
                         } else {
-                            showSnackbar(tvTermnService, "Something went wrong");
+                            showSnackbar(cardTermnService, "Something went wrong");
                         }
                         break;
                     case ERROR:
                         hideLoading();
-                        showSnackbar(tvTermnService, resource.message);
+                        showSnackbar(cardTermnService, resource.message);
                         break;
                 }
             }
@@ -352,12 +362,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         } else if (resource.code == 401) {
                             openActivityOnTokenExpire();
                         } else {
-                            showSnackbar(tvTermnService, "Something went wrong");
+                            showSnackbar(cardTermnService, "Something went wrong");
                         }
                         break;
                     case ERROR:
                         hideLoading();
-                        showSnackbar(tvTermnService, resource.message);
+                        showSnackbar(cardTermnService, resource.message);
                         break;
                 }
             }
@@ -411,12 +421,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         } else if (resource.code == 401) {
                             openActivityOnTokenExpire();
                         } else {
-                            showSnackbar(tvTermnService, "Something went wrong");
+                            showSnackbar(cardTermnService, "Something went wrong");
                         }
                         break;
                     case ERROR:
                         hideLoading();
-                        showSnackbar(tvTermnService, resource.message);
+                        showSnackbar(cardTermnService, resource.message);
                         break;
                 }
             }
@@ -525,35 +535,27 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             TextView tv_no = dialog.findViewById(R.id.tv_no);
             tv_message.setText(this.getResources().getString(R.string.do_you_want_to_logout_text));
 
-            tv_yes.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showLoading();
-                    dialog.dismiss();
-                    homeViewModel.logoutRequest(sp.getToken());
-                    CookieManager cookieManager = CookieManager.getInstance();
-                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        cookieManager.removeAllCookies(new ValueCallback<Boolean>() {
-                            @Override
-                            public void onReceiveValue(Boolean value) {
-                                //Removed?
-                            }
-                        });
-                        cookieManager.flush();
-                    } else {
-                        CookieSyncManager.createInstance(SettingsActivity.this);
-                        cookieManager.removeAllCookie();
-                    }
+            tv_yes.setOnClickListener(view12 -> {
+                showLoading();
+                dialog.dismiss();
+                homeViewModel.logoutRequest(sp.getToken());
+                CookieManager cookieManager = CookieManager.getInstance();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    cookieManager.removeAllCookies(new ValueCallback<Boolean>() {
+                        @Override
+                        public void onReceiveValue(Boolean value) {
+                            //Removed?
+                        }
+                    });
+                    cookieManager.flush();
+                } else {
+                    CookieSyncManager.createInstance(SettingsActivity.this);
+                    cookieManager.removeAllCookie();
+                }
 
 
-                }
             });
-            tv_no.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                }
-            });
+            tv_no.setOnClickListener(view13 -> dialog.dismiss());
         } else if (view == tv_done) {
             if (isSettingChanged) {
                 if (seekAgeRange.getSelectedMaxValue().intValue() - seekAgeRange.getSelectedMinValue().intValue() > 4) {
@@ -656,17 +658,17 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (view == tvPrivacyPolicy) {
+        } else if (view == cardPrivacyPolicy) {
             startActivity(new Intent(this, CommonWebViewActivity.class)
-                    .putExtra("url", "https://blackgentryapp.com/privacy-policy-2/"));
+                    .putExtra("url", "https://swiftdatingapp.com/privacy/"));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (view == tvTermnService) {
+        } else if (view == cardTermnService) {
             startActivity(new Intent(this, CommonWebViewActivity.class)
-                    .putExtra("url", "https://blackgentryapp.com/terms-of-service/"));
+                    .putExtra("url", "https://swiftdatingapp.com/terms/"));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (view == tvHelp) {
+        } else if (view == cardHelp) {
             startActivity(new Intent(this, CommonWebViewActivity.class)
-                    .putExtra("url", "https://blackgentryapp.com/faq/"));
+                    .putExtra("url", "https://swiftdatingapp.com/faq/"));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (view.getId() == R.id.view) {
             if (showMeSwitch.isChecked()) {
@@ -690,12 +692,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         dialog.dismiss();
                     }
                 });
-                tv_no.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
+                tv_no.setOnClickListener(view1 -> dialog.dismiss());
             } else {
                 showMeSwitch.setChecked(true);
             }
@@ -726,7 +723,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
-        // setData();
+        setData();
         isRangeChange = false;
         isSettingChanged = false;
     }
