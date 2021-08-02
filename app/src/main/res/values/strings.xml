@@ -138,7 +138,7 @@
     <string name="location">Location</string>
     <string name="currentlocation">Current Location</string>
     <string name="maxDistance">Maximum Distance</string>
-    <string name="logout">Log out</string>
+    <string name="logout">Logout</string>
     <string name="agerange">Age Range</string>
     <string name="hideProfile">Show my profile on BlackGentry</string>
     <string name="notification">Notifications</string>
@@ -156,7 +156,7 @@
     <string name="expiring_matches">Expiring Matches</string>
     <string name="match_update">New Messages</string>
     <string name="terms_n_service">Terms of Service</string>
-    <string name="delete_account">Delete Account</string>
+    <string name="delete_account"><u>Delete Account</u></string>
     <string name="report">Report</string>
     <string name="reportuser">Report User</string>
     <string name="unmatch">Unmatch/Block</string>
@@ -635,7 +635,29 @@
     <string name="month">Month</string>
     <string name="date">Date</string>
     <string name="year">Year</string>
+    <string name="save">Save</string>
     <!--App secret: 8b06af16f5d8d10e309c497a7569baac-->
 
+
+    <string-array name="arr_premium_txt">
+        <item>Send Unlimited Likes</item>
+        <item>View Unlimited Direct Message</item>
+        <item>See Who Likes You</item>
+        <item>Change Location</item>
+        <item>See Second Chance</item>
+        <item>Reset Skipped Profiles</item>
+        <item>Hide Ads</item>
+    </string-array>
+
+
+    <string-array name="arr_premium_images">
+        <item>@drawable/unlimited_likes</item>
+        <item>@drawable/u_msg</item>
+        <item>@drawable/who_likes</item>
+        <item>@drawable/location</item>
+        <item>@drawable/second_chance</item>
+        <item>@drawable/skip_profile</item>
+        <item>@drawable/hide_ads</item>
+    </string-array>
 
 </resources>

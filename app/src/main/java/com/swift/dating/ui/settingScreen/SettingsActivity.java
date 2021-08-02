@@ -19,6 +19,7 @@ import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
@@ -58,6 +60,7 @@ import com.swift.dating.ui.createAccountScreen.CreateAccountActivity;
 import com.swift.dating.ui.homeScreen.fragment.SearchFragment;
 import com.swift.dating.ui.homeScreen.viewmodel.HomeViewModel;
 import com.swift.dating.model.responsemodel.SettingsResponseModel;
+
 import okhttp3.ResponseBody;
 
 import static com.swift.dating.common.AppConstants.LICENSE_KEY;
@@ -75,8 +78,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     int selectedPosition;
     boolean isRangeChange = false;
     private Button btnLogout, btnShare;
-    private TextView tvLocation, tvDistance, tvAgeRange, tv_cancel, tv_done, tv_delete, tvLookingFor, tvPhone, tvEmail;
+    private TextView tvLocation, tvDistance, tvAgeRange, tv_done, tv_delete, tvLookingFor, tvPhone, tvEmail;
+    ImageView tv_cancel;
     private IndicatorSeekBar seekDistance;
+    SliderAdapter sliderAdapter;
+    ViewPager2 viewPager2;
     private RangeSeekBar seekAgeRange;
     private Switch showMeSwitch, newMatchSwitch, callSwitch, expireSwitch, matchSwitch, emailNotifySwitch, pushNotifySwitch;
     private HomeViewModel homeViewModel;
@@ -87,11 +93,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.grey));
         setContentView(R.layout.fragment_settings);
+        setPager();
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("isCardScreen")) {
             isFromCardScreen = getIntent().getExtras().getBoolean("isCardScreen");
         }
         initialize();
         initBillingProcess();
+    }
+
+    private void setPager() {
+        viewPager2 = findViewById(R.id.pagerSlider);
+        sliderAdapter = new SliderAdapter(this);
+        viewPager2.setAdapter(sliderAdapter);
     }
 
     /**
@@ -713,7 +726,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
-        setData();
+        // setData();
         isRangeChange = false;
         isSettingChanged = false;
     }

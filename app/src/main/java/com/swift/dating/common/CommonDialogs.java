@@ -515,7 +515,6 @@ public class CommonDialogs {
             WormDotsIndicator indicator = dialog.findViewById(R.id.text_pager_indicator);
             indicator.setViewPager(pager_text);
 
-
             pager_text.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

@@ -22,5 +22,9 @@
     <color name="grey">#f5f5F5</color>
     <color name="border_color">#A2ABB8</color>
     <color name="grey_new">#989898</color>
+    <color name="title_color">#2F2F2F</color>
+    <color name="divider_color">#D2D2D2</color>
+    <color name="pink_light_toggle">#FBDCDE</color>
+
 
 </resources>
