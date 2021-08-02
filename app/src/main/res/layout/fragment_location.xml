@@ -48,7 +48,7 @@
             android:id="@+id/tv_country"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/thin"
+            android:fontFamily="@font/medium"
             android:text="Country"
             android:textSize="@dimen/_16ssp" />
 
@@ -90,7 +90,7 @@
             android:id="@+id/tv_state"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/thin"
+            android:fontFamily="@font/medium"
             android:text="State"
             android:textSize="@dimen/_16ssp" />
 

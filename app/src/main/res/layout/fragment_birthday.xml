@@ -51,7 +51,7 @@
             android:id="@+id/tvMonthOfBirth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/thin"
+            android:fontFamily="@font/medium"
             android:text="@string/month"
             android:textSize="@dimen/_16ssp" />
 
@@ -84,7 +84,7 @@
             android:id="@+id/tvDayOfBirth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/thin"
+            android:fontFamily="@font/medium"
             android:text="@string/date"
             android:textSize="@dimen/_16ssp" />
 
@@ -117,7 +117,7 @@
             android:id="@+id/tvYearOfBirth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/thin"
+            android:fontFamily="@font/medium"
             android:text="@string/year"
             android:textSize="@dimen/_16ssp" />
 
