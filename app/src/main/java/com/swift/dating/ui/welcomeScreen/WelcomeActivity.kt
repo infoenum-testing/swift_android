@@ -1,9 +1,13 @@
 package com.swift.dating.ui.welcomeScreen
 
 import android.content.Intent
-import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.swift.dating.DummyActivity
@@ -11,9 +15,9 @@ import com.swift.dating.R
 import com.swift.dating.data.network.CallServer
 import com.swift.dating.data.network.Resource
 import com.swift.dating.data.preference.SharedPreference
-import com.swift.dating.model.responsemodel.ProfileOfUser
 import com.swift.dating.model.responsemodel.VerificationResponseModel
 import com.swift.dating.ui.base.BaseActivity
+import com.swift.dating.ui.base.CommonWebViewActivity
 import kotlinx.android.synthetic.main.activity_welcome.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -26,6 +30,23 @@ class WelcomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome)
+
+        // tvTerms
+        var terms: String = resources.getString(R.string.terms) + " "
+
+        val word: Spannable = SpannableString(terms)
+
+        word.setSpan(ForegroundColorSpan(ResourcesCompat.getColor(resources, R.color.grey_new, null)), 0, word.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tvTerms.text = word
+        val wordTwo: Spannable = SpannableString(resources.getString(R.string.terms2))
+        wordTwo.setSpan(ForegroundColorSpan(Color.RED), 0, wordTwo.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        tvTerms.append(wordTwo)
+        tvTerms.setOnClickListener {
+            startActivity(Intent(this, CommonWebViewActivity::class.java)
+                    .putExtra("url", "https://swiftdatingapp.com/terms/"))
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
+
         btn_continue.setOnClickListener {
             callApi()
         }

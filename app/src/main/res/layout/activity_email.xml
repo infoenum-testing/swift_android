@@ -85,15 +85,14 @@
 
                 <EditText
                     android:id="@+id/et_email"
+                    style="@style/et_font_style"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@+id/ivUser"
                     android:background="@null"
-                    android:fontFamily="@font/thin"
                     android:hint="Enter your email"
                     android:imeOptions="actionDone"
-
                     android:inputType="textEmailAddress"
                     android:lines="1"
                     android:maxLength="50"

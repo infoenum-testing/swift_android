@@ -226,8 +226,8 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
             } else {
                 strGender = i == R.id.tbMale ? "Male" : "Female";
                 strShowMeTo = "";
-                pickerGender.setVisibility(View.GONE);
-                tgShowMeTo.setVisibility(View.GONE);
+                pickerGender.setVisibility(View.INVISIBLE);
+                tgShowMeTo.setVisibility(View.INVISIBLE);
             }
         } else if (radioGroup == tgShowMeTo) {
             strGender = this.getResources().getStringArray(R.array.genderArray)[pickerGender.getValue()];

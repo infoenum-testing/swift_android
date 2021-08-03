@@ -99,13 +99,13 @@
 
                 <EditText
                     android:id="@+id/et_phone"
+                    style="@style/et_font_style"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginEnd="10dp"
                     android:layout_toEndOf="@+id/view"
                     android:background="@null"
-                    android:fontFamily="@font/thin"
                     android:hint="Your Phone Number"
                     android:imeOptions="actionDone"
                     android:inputType="phone"

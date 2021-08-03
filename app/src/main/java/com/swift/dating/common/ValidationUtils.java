@@ -16,6 +16,7 @@ public class ValidationUtils {
     public static boolean isEmailValid(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
+
     /*
      *** Method to check if text is empty or not
      */
@@ -33,6 +34,7 @@ public class ValidationUtils {
         }
         return true;
     }
+
     /*
      *** Method to check if date is valid or not
      */
@@ -51,7 +53,7 @@ public class ValidationUtils {
             e.printStackTrace();
         }
 
-        return year >= 18;
+        return (year >= 18) && (year <= 80);
     }
 
     /**

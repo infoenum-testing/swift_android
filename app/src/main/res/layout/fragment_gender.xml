@@ -1,280 +1,273 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:fitsSystemWindows="true">
+    android:layout_gravity="center">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clgender"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvskip">
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent">
 
-
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="@dimen/_100sdp"
-            android:layout_height="@dimen/_100sdp"
-            android:src="@drawable/gender_new"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_gender"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:fontFamily="@font/bold"
-            android:text="@string/i_identify_as"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_17ssp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
-
-
-        <RadioGroup
-            android:id="@+id/tgGender"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clgender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_30ssp"
-            android:gravity="center"
-            android:maxHeight="@dimen/_120sdp"
+            android:layout_marginBottom="@dimen/_80sdp"
+            android:background="@color/white"
+            android:gravity="center|top"
             android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_gender">
-
-            <RadioButton
-                android:id="@+id/tbMale"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:layout_marginBottom="@dimen/_10sdp"
-                android:background="@drawable/toggle_selected_new"
-                android:button="@android:color/transparent"
-                android:checked="false"
-                android:fontFamily="@font/medium"
-                android:gravity="center"
-                android:padding="@dimen/_13sdp"
-                android:text="@string/man"
-                android:textAllCaps="false"
-                android:textColor="@drawable/select_radio"
-                android:textSize="@dimen/_12ssp"
-
-                />
-
-            <RadioButton
-                android:id="@+id/femaleTb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:layout_marginBottom="@dimen/_10sdp"
-                android:background="@drawable/toggle_selected_new"
-                android:button="@android:color/transparent"
-                android:checked="false"
-                android:fontFamily="@font/medium"
-                android:gravity="center"
-                android:padding="@dimen/_13sdp"
-                android:text="@string/Woman"
-                android:textAllCaps="false"
-                android:textColor="@drawable/select_radio"
-                android:textSize="@dimen/_12ssp" />
-
-            <RadioButton
-                android:id="@+id/bothTb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:layout_marginBottom="@dimen/_10sdp"
-                android:background="@drawable/toggle_selected_new"
-                android:button="@android:color/transparent"
-                android:checked="false"
-                android:fontFamily="@font/medium"
-                android:padding="@dimen/_13sdp"
-                android:text="Both"
-                android:textAllCaps="false"
-                android:textColor="@drawable/select_radio"
-                android:textSize="@dimen/_12ssp"
-                android:visibility="gone" />
-
-            <RadioButton
-                android:id="@+id/otherTb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20sdp"
-
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:layout_marginBottom="@dimen/_10sdp"
-                android:background="@drawable/toggle_selected_new"
-                android:button="@android:color/transparent"
-                android:checked="false"
-                android:fontFamily="@font/medium"
-                android:gravity="center"
-                android:padding="@dimen/_13sdp"
-                android:text="@string/other"
-                android:textAllCaps="false"
-                android:textColor="@drawable/select_radio"
-                android:textSize="@dimen/_12ssp" />
-
-        </RadioGroup>
-
-        <NumberPicker
-            android:id="@+id/picker_gender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_20sdp"
-            android:layout_marginEnd="@dimen/_20sdp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tgGender" />
+            app:layout_constraintTop_toBottomOf="@+id/tvskip">
 
 
-        <RadioGroup
-            android:id="@+id/tgshowMeTo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:layout_marginBottom="@dimen/_20sdp"
-            android:gravity="center"
-            android:maxHeight="@dimen/_120sdp"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/btn_continue"
-            app:layout_constraintEnd_toEndOf="@+id/picker_gender"
-            app:layout_constraintStart_toStartOf="@+id/picker_gender"
-            app:layout_constraintTop_toBottomOf="@+id/picker_gender">
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_100sdp"
+                android:src="@drawable/gender_new"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <RadioButton
-                android:id="@+id/tvshowMen"
+            <TextView
+                android:id="@+id/tv_gender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/toggle_selected"
-                android:button="@android:color/transparent"
-                android:checked="true"
-                android:fontFamily="@font/medium"
-                android:minWidth="@dimen/_125sdp"
-                android:gravity="center"
-                android:padding="@dimen/_10sdp"
-                android:text="@string/showMeToMen"
-                android:textAllCaps="false"
-                android:textColor="@drawable/ic_select"
-                android:textSize="@dimen/_10ssp" />
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/bold"
+                android:text="@string/i_identify_as"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_17ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
-            <RadioButton
-                android:id="@+id/tvshowWomen"
-                android:layout_width="wrap_content"
+
+            <RadioGroup
+                android:id="@+id/tgGender"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:gravity="center"
-                android:background="@drawable/toggle_selected"
-                android:button="@android:color/transparent"
-                android:checked="false"
-                android:fontFamily="@font/medium"
-                android:minWidth="@dimen/_125sdp"
-                android:padding="@dimen/_10sdp"
-                android:text="@string/showMeToWomen"
-                android:textAllCaps="false"
-                android:textColor="@drawable/ic_select"
-                android:textSize="@dimen/_10ssp" />
+                android:orientation="vertical"
+                android:weightSum="3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_gender">
+
+                <RadioButton
+                    android:id="@+id/tbMale"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:background="@drawable/toggle_selected_new"
+                    android:button="@android:color/transparent"
+                    android:checked="false"
+                    android:fontFamily="@font/medium"
+                    android:gravity="center"
+                    android:text="@string/man"
+                    android:textAllCaps="false"
+                    android:textColor="@drawable/select_radio"
+                    android:textSize="@dimen/_12ssp"
+
+                    />
+
+                <RadioButton
+                    android:id="@+id/femaleTb"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:background="@drawable/toggle_selected_new"
+                    android:button="@android:color/transparent"
+                    android:checked="false"
+                    android:fontFamily="@font/medium"
+                    android:gravity="center"
+                    android:text="@string/Woman"
+                    android:textAllCaps="false"
+                    android:textColor="@drawable/select_radio"
+                    android:textSize="@dimen/_12ssp" />
 
 
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/otherTb"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:background="@drawable/toggle_selected_new"
+                    android:button="@android:color/transparent"
+                    android:checked="false"
+                    android:fontFamily="@font/medium"
+                    android:gravity="center"
+                    android:text="@string/other"
+                    android:textAllCaps="false"
+                    android:textColor="@drawable/select_radio"
+                    android:textSize="@dimen/_12ssp" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btn_continue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_arrow_right"
-            app:backgroundTint="@color/pink"
-            app:layout_constraintBottom_toBottomOf="@+id/llBottom"
-            app:layout_constraintEnd_toEndOf="parent" />
+            </RadioGroup>
 
-        <LinearLayout
-            android:id="@+id/llBottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_20sdp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            <NumberPicker
+                android:id="@+id/picker_gender"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_120sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tgGender" />
 
-            <View
-                android:layout_width="17dp"
-                android:layout_height="4dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/facebookbtn"
-                android:backgroundTint="@color/grey_new"
 
-                />
+            <RadioGroup
+                android:id="@+id/tgshowMeTo"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:maxHeight="@dimen/_120sdp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/picker_gender"
+                app:layout_constraintStart_toStartOf="@+id/picker_gender"
+                app:layout_constraintTop_toBottomOf="@+id/picker_gender">
 
-            <View
-                android:layout_width="17dp"
-                android:layout_height="4dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/facebookbtn"
-                android:backgroundTint="@color/grey_new" />
+                <RadioButton
+                    android:id="@+id/tvshowMen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/toggle_selected"
+                    android:button="@android:color/transparent"
+                    android:checked="true"
+                    android:fontFamily="@font/medium"
+                    android:gravity="center"
+                    android:minWidth="@dimen/_125sdp"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/showMeToMen"
+                    android:textAllCaps="false"
+                    android:textColor="@drawable/ic_select"
+                    android:textSize="@dimen/_10ssp" />
 
-            <View
-                android:layout_width="17dp"
-                android:layout_height="4dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/facebookbtn"
-                android:backgroundTint="@color/grey_new" />
+                <RadioButton
+                    android:id="@+id/tvshowWomen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/toggle_selected"
+                    android:button="@android:color/transparent"
+                    android:checked="false"
+                    android:fontFamily="@font/medium"
+                    android:gravity="center"
+                    android:minWidth="@dimen/_125sdp"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/showMeToWomen"
+                    android:textAllCaps="false"
+                    android:textColor="@drawable/ic_select"
+                    android:textSize="@dimen/_10ssp" />
 
-            <View
-                android:layout_width="17dp"
-                android:layout_height="4dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/facebookbtn"
-                android:backgroundTint="@color/grey_new" />
 
-            <View
-                android:layout_width="17dp"
-                android:layout_height="4dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/facebookbtn"
-                android:backgroundTint="@color/grey_new" />
+            </RadioGroup>
 
-            <View
-                android:layout_width="17dp"
-                android:layout_height="4dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/facebookbtn"
-                android:backgroundTint="@color/pink" />
 
-            <View
-                android:layout_width="17dp"
-                android:layout_height="4dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/facebookbtn"
-                android:backgroundTint="@color/grey_new" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
-            <View
-                android:layout_width="17dp"
-                android:layout_height="4dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/facebookbtn"
-                android:backgroundTint="@color/grey_new" />
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_arrow_right"
+        app:backgroundTint="@color/pink"
+        app:fabSize="auto"
+        app:layout_constraintBottom_toBottomOf="@+id/llBottom"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/llBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="@dimen/_15sdp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new"
+
+            />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/pink" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+
+        <View
+            android:layout_width="17dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/facebookbtn"
+            android:backgroundTint="@color/grey_new" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

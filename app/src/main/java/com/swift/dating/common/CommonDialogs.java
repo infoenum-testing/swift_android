@@ -1402,7 +1402,7 @@ private static ProgressDialog progressDialog ;
     /*
      *** Method to show dialog with 1 button
      */
-    public void alertDialogOneButton(Context mContext, String message) {
+    public static void alertDialogOneButton(Context mContext, String message) {
         dialog = new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -1413,12 +1413,7 @@ private static ProgressDialog progressDialog ;
         TextView tv_message = dialog.findViewById(R.id.tv_message);
         TextView tv_ok = dialog.findViewById(R.id.tv_ok);
         tv_message.setText(message);
-        tv_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        tv_ok.setOnClickListener(view -> dialog.dismiss());
     }
 
     public void setOnDeluxeContinuebtn(onPurchaseDeluxe onPurchaseDeluxe) {

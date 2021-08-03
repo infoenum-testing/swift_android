@@ -277,7 +277,7 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
         RadioGroup tgGender = view.findViewById(R.id.tgGender);
         tgGender.setOnCheckedChangeListener(this);
         TextView tv_gender = view.findViewById(R.id.tv_gender);
-        RadioButton bothTb = view.findViewById(R.id.bothTb);
+       // RadioButton bothTb = view.findViewById(R.id.bothTb);
         RadioButton otherTb = view.findViewById(R.id.otherTb);
         RadioButton tbMale = view.findViewById(R.id.tbMale);
         RadioButton femaleTb = view.findViewById(R.id.femaleTb);
