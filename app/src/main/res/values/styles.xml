@@ -124,6 +124,12 @@
     </style>
 
 
+    <!--font style for edittext -->
+    <style name="et_font_style" parent="Widget.AppCompat.EditText">
+        <item name="android:fontFamily">@font/medium</item>
+    </style>
+
+
 
 
 </resources>

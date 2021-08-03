@@ -11,33 +11,81 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="5dp"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp"
+        android:paddingBottom="5dp">
 
         <RelativeLayout
             android:id="@+id/action_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:padding="10dp"
-            android:visibility="gone"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="My Profile"
-                android:textColor="@color/colorPrimary"
-                android:textSize="20dp" />
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/iv_settings"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:background="@drawable/back_avtar"
+                    android:padding="@dimen/_12sdp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/icsetting"
+                    android:tint="@color/pink" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/medium"
+                    android:text="@string/settings"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/iv_edit"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:background="@drawable/back_avtar"
+                    android:padding="@dimen/_12sdp"
+                    android:src="@drawable/iceditprofile"
+                    android:tint="@color/pink" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/medium"
+                    android:text="@string/edit_profile"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
         </RelativeLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="30dp"
             android:background="@drawable/rounded_sheet"
+            android:paddingTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/action_bar">
@@ -59,7 +107,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/medium"
-                android:textColor="@color/primaryTextColor"
+                android:text="Cipla"
+                android:textColor="@color/title_color"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="@id/iv_profile"
                 app:layout_constraintStart_toStartOf="@id/iv_profile"
@@ -86,76 +135,10 @@
                 android:layout_margin="@dimen/_2sdp"
                 android:fontFamily="@font/medium"
                 android:text="Tap image to preview profile"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/grey_new"
                 android:textSize="@dimen/_10ssp"
                 app:layout_constraintEnd_toEndOf="@id/iv_profile"
                 app:layout_constraintStart_toStartOf="@id/iv_profile"
-                app:layout_constraintTop_toBottomOf="@id/tv_name" />
-
-            <ImageButton
-                android:id="@+id/iv_settings"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:background="@drawable/back_avtar"
-                android:padding="@dimen/_12sdp"
-                android:scaleType="fitXY"
-                android:src="@drawable/icsetting"
-                android:tint="@color/primaryTextColor"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_profile"
-                app:layout_constraintEnd_toStartOf="@id/iv_profile"
-                app:layout_constraintTop_toTopOf="@id/iv_profile" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/medium"
-                android:text="@string/settings"
-                android:textColor="@color/primaryTextColor"
-                android:textSize="@dimen/_12ssp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="@+id/iv_settings"
-                app:layout_constraintStart_toStartOf="@+id/iv_settings"
-                app:layout_constraintTop_toBottomOf="@+id/iv_settings" />
-
-            <ImageButton
-                android:id="@+id/iv_edit"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:background="@drawable/back_avtar"
-                android:padding="@dimen/_12ssp"
-                android:scaleType="fitXY"
-                android:src="@drawable/iceditprofile"
-                android:tint="@color/primaryTextColor"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_profile"
-                app:layout_constraintStart_toEndOf="@id/iv_profile"
-                app:layout_constraintTop_toTopOf="@id/iv_profile" />
-            <!--android:backgroundTint="#E5E5E5"-->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/medium"
-                android:text="@string/profileedit"
-                android:textColor="@color/primaryTextColor"
-                android:textSize="@dimen/_12ssp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="@+id/iv_edit"
-                app:layout_constraintStart_toStartOf="@+id/iv_edit"
-                app:layout_constraintTop_toBottomOf="@+id/iv_edit" />
-
-            <TextView
-                android:id="@+id/text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:fontFamily="@font/medium"
-                android:text="Tap image to view your profile"
-                android:textColor="@color/secondaryTextColor"
-                android:textSize="@dimen/_10sdp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_name" />
 
             <View
@@ -180,6 +163,7 @@
                 android:orientation="horizontal"
                 android:paddingTop="10.00dp"
                 android:paddingBottom="15.00dp"
+                android:visibility="gone"
                 android:weightSum="2"
                 app:layout_constraintTop_toBottomOf="@+id/tv_click">
 
@@ -236,12 +220,12 @@
             android:id="@+id/loc_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="10dp"
-            android:layout_marginTop="5dp"
-            app:cardUseCompatPadding="true"
-            app:cardElevation="0dp"
             android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="true"
             app:layout_constraintTop_toBottomOf="@id/cl_top">
 
             <RelativeLayout
@@ -263,14 +247,15 @@
                     android:layout_centerVertical="true"
                     android:layout_toStartOf="@+id/card_chng_loc"
                     android:layout_toEndOf="@+id/loc_img"
-                    android:paddingBottom="5dp"
                     android:layout_toRightOf="@id/loc_img"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingBottom="5dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Location"
+                        android:fontFamily="@font/medium"
+                        android:text="LOCATION"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
 
@@ -279,14 +264,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:textColor="@color/quantum_grey" />
+                        android:fontFamily="@font/medium"
+                        android:textColor="@color/grey_new" />
                 </LinearLayout>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_chng_loc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/_20sdp"
                     app:cardCornerRadius="10dp">
@@ -296,7 +282,7 @@
                         android:layout_width="80dp"
                         android:layout_height="30dp"
                         android:layout_gravity="center_vertical"
-                        android:background="@color/colorPrimary"
+                        android:background="@color/pink"
                         android:elevation="@dimen/_10sdp"
                         android:text="Change"
                         android:textAllCaps="false"
@@ -311,361 +297,151 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#EFEFEF"
+            android:orientation="horizontal"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
-            android:orientation="horizontal"
             android:weightSum="3"
             app:layout_constraintTop_toBottomOf="@id/loc_card">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_crush"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_margin="5dp"
-                app:cardElevation="0dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
 
                 >
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_5sdp">
 
-                    <LinearLayout
+                    <ImageView
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/crush_icon" />
+
+
+                    <TextView
+                        android:id="@+id/tvCrushToken"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:orientation="horizontal">
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_weight="0.7">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginEnd="10dp"
-                                android:src="@drawable/crush_icon" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp"
-                            android:layout_weight="0.3">
-
-                            <View
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:layout_alignParentStart="true"
-                                android:layout_marginStart="5dp"
-                                android:background="@color/quantum_grey" />
-                        </RelativeLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tv_suprLike"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="6"
-                                android:textColor="@color/red"
-                                android:textSize="22sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvCrushToken"
-                                android:layout_width="match_parent"
-                                android:text="Crush Tokens"
-                                android:layout_height="wrap_content"
-                                />
-                        </LinearLayout>
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:fontFamily="@font/medium"
+                        android:gravity="center"
+                        android:text="Crush Tokens"
+                        android:textColor="@color/yellow_new"
+                        android:textSize="14sp" />
 
 
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/btn_likeGetMore"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_30sdp"
-                        android:background="@color/transparent"
-                        android:text="Get More"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="12sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_time"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:cardElevation="0dp"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="10dp"
-                >
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_5sdp">
 
-                    <LinearLayout
+                    <ImageView
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/time_token_icon" />
+
+
+                    <TextView
+                        android:id="@+id/tvTimeToken"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:orientation="horizontal">
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_weight="0.7">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginEnd="10dp"
-                                android:src="@drawable/time_token_icon" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp"
-                            android:layout_weight="0.3">
-
-                            <View
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:layout_alignParentStart="true"
-                                android:layout_marginStart="5dp"
-                                android:background="@color/quantum_grey" />
-                        </RelativeLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tv_extends"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="0"
-                                android:textColor="@color/dark_yellow"
-                                android:textSize="22sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvTimeTokenTxt"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Time Tokens" />
-                        </LinearLayout>
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:fontFamily="@font/medium"
+                        android:gravity="center"
+                        android:text="Time Tokens"
+                        android:textColor="@color/blue"
+                        android:textSize="14sp" />
 
 
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/btn_extend"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_30sdp"
-                        android:background="@color/transparent"
-                        android:text="Get More"
-
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="12sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_vip"
                 android:layout_width="0dp"
-                app:cardElevation="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="10dp"
-                >
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_5sdp">
 
-                    <LinearLayout
+                    <ImageView
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/vip_token_icon" />
+
+
+                    <TextView
+                        android:id="@+id/tvVipToken"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:orientation="horizontal">
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_weight="0.7">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginEnd="10dp"
-                                android:src="@drawable/vip_token_icon" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp"
-                            android:layout_weight="0.3">
-
-                            <View
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:layout_alignParentStart="true"
-                                android:layout_marginStart="5dp"
-                                android:background="@color/quantum_grey" />
-                        </RelativeLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tv_vipNum"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="0"
-                                android:textColor="@color/orange"
-                                android:textSize="22sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvVipTokenTxt"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="VIP Tokens" />
-                        </LinearLayout>
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:fontFamily="@font/medium"
+                        android:gravity="center"
+                        android:text="Vip Tokens"
+                        android:textColor="@color/red"
+                        android:textSize="14sp" />
 
 
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/btn_vip"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_30sdp"
-                        android:background="@color/transparent"
-                        android:text="Get More"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="12sp" />
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
-
-        <!-- <androidx.appcompat.widget.AppCompatImageButton
-             android:id="@+id/iv_like"
-             android:layout_width="@dimen/_45sdp"
-             android:layout_height="@dimen/_45sdp"
-             android:layout_marginStart="@dimen/_20sdp"
-             android:layout_marginTop="@dimen/_20sdp"
-             android:layout_marginBottom="@dimen/_10sdp"
-             android:background="@drawable/icsuperlikebtn"
-             app:layout_constraintStart_toStartOf="parent"
-             app:layout_constraintTop_toBottomOf="@id/ll_token" />
-
-         <TextView
-
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_marginStart="@dimen/_10sdp"
-             android:fontFamily="@font/medium"
-             android:text="8 Crush Tokens"
-             android:textColor="@color/red"
-             android:textSize="@dimen/_12ssp"
-             app:layout_constraintBottom_toBottomOf="@id/iv_like"
-             app:layout_constraintStart_toEndOf="@id/iv_like"
-             app:layout_constraintTop_toTopOf="@id/iv_like" />-->
-
-
-        <!--   <androidx.appcompat.widget.AppCompatImageButton
-               android:id="@+id/iv_extend"
-               android:layout_width="@dimen/_45sdp"
-               android:layout_height="@dimen/_45sdp"
-               android:layout_marginStart="24dp"
-               android:layout_marginTop="24dp"
-               android:background="@drawable/icrewind"
-               android:elevation="@dimen/_5sdp"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintTop_toBottomOf="@id/ll_token" />
-
-           <TextView
-
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_marginStart="@dimen/_10sdp"
-               android:fontFamily="@font/medium"
-               android:text="4 Time Tokens"
-               android:textColor="@color/orange"
-               android:textSize="@dimen/_12ssp"
-               app:layout_constraintBottom_toBottomOf="@id/iv_extend"
-               app:layout_constraintStart_toEndOf="@id/iv_extend"
-               app:layout_constraintTop_toTopOf="@id/iv_extend" />
-
-           <Button
-
-               android:layout_width="@dimen/_80sdp"
-               android:layout_height="@dimen/_30sdp"
-               android:layout_marginEnd="@dimen/_20sdp"
-               android:background="@drawable/facebookbtn"
-               android:backgroundTint="@color/white"
-               android:elevation="@dimen/_10sdp"
-               android:text="Get More"
-               android:textAllCaps="false"
-               android:textColor="@color/orange"
-               app:layout_constraintBottom_toBottomOf="@id/iv_extend"
-               app:layout_constraintEnd_toEndOf="parent"
-               app:layout_constraintTop_toTopOf="@id/iv_extend" />-->
         <androidx.cardview.widget.CardView
             android:id="@+id/card_premium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            app:cardElevation="0dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:visibility="gone"
             app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
             app:layout_constraintTop_toBottomOf="@id/ll_token">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/btn_bg_premium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:layout_marginBottom="@dimen/_10sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -708,6 +484,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tv_premium"
                     app:layout_constraintTop_toTopOf="@+id/tv_premium" />
+
                 <TextView
                     android:id="@+id/premium"
                     android:layout_width="wrap_content"
@@ -740,9 +517,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            app:cardElevation="0dp"
             android:paddingBottom="10dp"
+            android:visibility="gone"
             app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
             app:layout_constraintTop_toBottomOf="@id/card_premium">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -799,11 +577,11 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/medium"
                     android:gravity="center"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
                     android:text="@string/no_ad_text_delux"
                     android:textColor="@color/secondaryTextColor"
                     android:textSize="12sp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_delux" />
@@ -811,6 +589,15 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
+
+        <FrameLayout
+            android:id="@+id/sliderFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_token" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -126,7 +126,7 @@
         <activity
             android:name=".ui.createAccountScreen.CreateAccountActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNew"></activity>
+            android:theme="@style/AppThemeNew"/>
         <activity
             android:name=".ui.base.CropImage"
             android:screenOrientation="portrait"

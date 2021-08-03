@@ -63,6 +63,7 @@ import com.swift.dating.model.responsemodel.SubscriptionDetailResponseModel;
 import com.swift.dating.model.responsemodel.SuperLikeResponseModel;
 import com.swift.dating.model.responsemodel.VerificationResponseModel;
 import com.swift.dating.ui.base.BaseActivity;
+import com.swift.dating.ui.slider_fragment;
 import com.swift.dating.ui.where_do_you_live.WhereYouLiveActivity;
 import com.swift.dating.model.responsemodel.VipTokenResponseModel;
 import com.swift.dating.ui.base.BaseFragment;
@@ -71,6 +72,7 @@ import com.swift.dating.ui.homeScreen.HomeActivity;
 import com.swift.dating.ui.homeScreen.viewmodel.HomeViewModel;
 import com.swift.dating.ui.myCardScreen.MyCardActivity;
 import com.swift.dating.ui.settingScreen.SettingsActivity;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.swift.dating.common.AppConstants.LICENSE_KEY;
@@ -82,10 +84,10 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     double price;
     String productId, tokenSType, lat, lon;
     private ImageButton ivEdit, ivSettings;
-    private TextView tv_complete, tv_deluxe_subscribe, tv_pre_subscribe, tvName, tvAddress, tvSuperLike, tvExtends, tvPremium, tvUnlimitedView, tv_active, tvCrushToken, tv_vipNum, tvVipTokenTxt, tvTimeTokenTxt;
+    private TextView tv_complete, tv_deluxe_subscribe, tv_pre_subscribe, tvName, tvAddress, tvPremium, tvUnlimitedView, tv_active, tvCrushToken, tv_vipNum, tvVipToken, tvTimeTokenTxt;
     private CircleImageView ivProfileImage;
     private HomeViewModel homeViewModel;
-    private Button btnLikeGetMore, btnExtend, btn_vip, btn_change;
+    private Button /*btnLikeGetMore, btnExtend, btn_vip,*/ btn_change;
     private ConstraintLayout btnBGPremium;
     private int purchaseType, selectedPosition;
     private ConstraintLayout btn_bg_delux;
@@ -101,6 +103,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mActivity = (BaseActivity) getActivity();
+
         if (getBaseActivity().isNetworkConnected()) {
             initialize(view);
             setData();
@@ -108,6 +111,11 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         } else {
             getBaseActivity().showSnackbar(view, "Please connect to internet");
         }
+        setSlider();
+    }
+
+    private void setSlider() {
+        getChildFragmentManager().beginTransaction().replace(R.id.sliderFragment, new slider_fragment()).commit();
     }
 
     @Override
@@ -142,9 +150,8 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         tv_deluxe_subscribe = view.findViewById(R.id.tv_deluxe_subscribe);
         tv_complete = view.findViewById(R.id.tv_complete);
         tvCrushToken = view.findViewById(R.id.tvCrushToken);
-        tv_vipNum = view.findViewById(R.id.tv_vipNum);
-        tvVipTokenTxt = view.findViewById(R.id.tvVipTokenTxt);
-        tvTimeTokenTxt = view.findViewById(R.id.tvTimeTokenTxt);
+        tvVipToken = view.findViewById(R.id.tvVipToken);
+        tvTimeTokenTxt = view.findViewById(R.id.tvTimeToken);
         tv_active = view.findViewById(R.id.tv_active);
         card_crush = view.findViewById(R.id.card_crush);
         btn_change = view.findViewById(R.id.btn_change);
@@ -157,15 +164,9 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         tvAddress = view.findViewById(R.id.tv_address);
         ivEdit = view.findViewById(R.id.iv_edit);
         ivProfileImage = view.findViewById(R.id.iv_profile);
-        btnLikeGetMore = view.findViewById(R.id.btn_likeGetMore);
-        btnExtend = view.findViewById(R.id.btn_extend);
-        tvSuperLike = view.findViewById(R.id.tv_suprLike);
-        tvExtends = view.findViewById(R.id.tv_extends);
         btnBGPremium = view.findViewById(R.id.btn_bg_premium);
         tvPremium = view.findViewById(R.id.premium);
         tvUnlimitedView = view.findViewById(R.id.ads);
-        btn_vip = view.findViewById(R.id.btn_vip);
-
         listener();
         subscribeModel();
         initBillingProcess();
@@ -217,70 +218,65 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             }
         });
 
-        homeViewModel.addSuperLikeResponse().observe(this, new Observer<Resource<SuperLikeResponseModel>>() {
-            @Override
-            public void onChanged(@Nullable Resource<SuperLikeResponseModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        getBaseActivity().hideLoading();
-                        if (resource.data.isSuccess()) {
-                            Gson gson = new Gson();
-                            String user = getBaseActivity().sp.getUser();
-                            ProfileOfUser obj = gson.fromJson(user, ProfileOfUser.class);
-                            obj.setSuperLikesCount(resource.data.getTotalSuperlikes());
-                            getBaseActivity().sp.saveUserData(obj, getBaseActivity().sp.getProfileCompleted());
-                            tvSuperLike.setText((obj.getSuperLikesCount() == 1) ? "" + obj.getSuperLikesCount() : "" + obj.getSuperLikesCount());
-
-                        } else if (resource.code == 401) {
-                            getBaseActivity().openActivityOnTokenExpire();
-                        } else {
-                            getBaseActivity().showSnackbar(ivProfileImage, "Something went wrong");
-                        }
-                        break;
-                    case ERROR:
-                        getBaseActivity().hideLoading();
-                        getBaseActivity().showSnackbar(ivProfileImage, resource.message);
-                        break;
-                }
+        // super like == crush token
+        homeViewModel.addSuperLikeResponse().observe(this, resource -> {
+            if (resource == null) {
+                return;
+            }
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    getBaseActivity().hideLoading();
+                    if (resource.data.isSuccess()) {
+                        Gson gson = new Gson();
+                        String user = getBaseActivity().sp.getUser();
+                        ProfileOfUser obj = gson.fromJson(user, ProfileOfUser.class);
+                        obj.setSuperLikesCount(resource.data.getTotalSuperlikes());
+                        getBaseActivity().sp.saveUserData(obj, getBaseActivity().sp.getProfileCompleted());
+                        setCrushTokens(obj);
+                    } else if (resource.code == 401) {
+                        getBaseActivity().openActivityOnTokenExpire();
+                    } else {
+                        getBaseActivity().showSnackbar(ivProfileImage, "Something went wrong");
+                    }
+                    break;
+                case ERROR:
+                    getBaseActivity().hideLoading();
+                    getBaseActivity().showSnackbar(ivProfileImage, resource.message);
+                    break;
             }
         });
 
-        homeViewModel.vipTokenResponse().observe(this, new Observer<Resource<VipTokenResponseModel>>() {
-            @Override
-            public void onChanged(@Nullable Resource<VipTokenResponseModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        getBaseActivity().hideLoading();
-                        if (resource.data.isSuccess()) {
-                            Gson gson = new Gson();
-                            String user = getBaseActivity().sp.getUser();
-                            ProfileOfUser obj = gson.fromJson(user, ProfileOfUser.class);
-                            obj.setVipToken(resource.data.getTotalVIPToken());
-                            getBaseActivity().sp.saveUserData(obj, getBaseActivity().sp.getProfileCompleted());
-                            tv_vipNum.setText((obj.getVipToken() == 1) ? "" + obj.getVipToken() : "" + obj.getVipToken());
-                        } else if (resource.code == 401) {
-                            getBaseActivity().openActivityOnTokenExpire();
-                        } else {
-                            getBaseActivity().showSnackbar(ivProfileImage, "Something went wrong");
-                        }
-                        break;
-                    case ERROR:
-                        getBaseActivity().hideLoading();
-                        getBaseActivity().showSnackbar(ivProfileImage, resource.message);
-                        break;
-                }
+        homeViewModel.vipTokenResponse().observe(this, resource -> {
+            if (resource == null) {
+                return;
+            }
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    getBaseActivity().hideLoading();
+                    if (resource.data.isSuccess()) {
+                        Gson gson = new Gson();
+                        String user = getBaseActivity().sp.getUser();
+                        ProfileOfUser obj = gson.fromJson(user, ProfileOfUser.class);
+                        obj.setVipToken(resource.data.getTotalVIPToken());
+                        getBaseActivity().sp.saveUserData(obj, getBaseActivity().sp.getProfileCompleted());
+                        setVipTokens(obj);
+                    } else if (resource.code == 401) {
+                        getBaseActivity().openActivityOnTokenExpire();
+                    } else {
+                        getBaseActivity().showSnackbar(ivProfileImage, "Something went wrong");
+                    }
+                    break;
+                case ERROR:
+                    getBaseActivity().hideLoading();
+                    getBaseActivity().showSnackbar(ivProfileImage, resource.message);
+                    break;
             }
         });
+
 
         homeViewModel.timeTokenResponse().observe(this, new Observer<Resource<SuperLikeResponseModel>>() {
             @Override
@@ -299,7 +295,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                             ProfileOfUser obj = gson.fromJson(user, ProfileOfUser.class);
                             obj.setTimeTokenCount(resource.data.getTotalTimeTokens());
                             getBaseActivity().sp.saveUserData(obj, getBaseActivity().sp.getProfileCompleted());
-                            tvExtends.setText((obj.getTimeTokenCount() == 1) ? "" + obj.getTimeTokenCount() : "" + obj.getTimeTokenCount());
+                            setTimeToken(obj);
                         } else if (resource.code == 401) {
                             getBaseActivity().openActivityOnTokenExpire();
                         } else {
@@ -394,7 +390,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                                 String productId = "";
                                 if (isSubscribed)
                                     productId = resource.data.getSubscription().getSubscriptionForUser().getSubscriptionId();
-                               // new FindMatchFragment().checkSubscription(isSubscribed, productId, resource.data.getSubscription().getSubscriptionForUser().getPurchaseToken());
+                                // new FindMatchFragment().checkSubscription(isSubscribed, productId, resource.data.getSubscription().getSubscriptionForUser().getPurchaseToken());
                             } else {
                                 //new FindMatchFragment().checkExistingSubscription();
                             }
@@ -407,6 +403,21 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         });
     }
 
+    private void setCrushTokens(@NonNull ProfileOfUser obj) {
+        String TokenStr = obj.getSuperLikesCount() == 1 ? obj.getSuperLikesCount() + "Crush Token" : obj.getSuperLikesCount() + "Crush Tokens";
+        tvCrushToken.setText(TokenStr);
+    }
+
+    private void setVipTokens(@NonNull ProfileOfUser obj) {
+        String TokenStr = obj.getVipToken() == 1 ? obj.getVipToken() + "Vip Token" : obj.getVipToken() + "Vip Tokens";
+        tvVipToken.setText(TokenStr);
+    }
+
+    private void setTimeToken(@NonNull ProfileOfUser obj) {
+        String timeToke = obj.getTimeTokenCount() == 1 ? obj.getTimeTokenCount() + "Time Token" : obj.getTimeTokenCount() + "Time Tokens";
+        tvTimeTokenTxt.setText(timeToke);
+    }
+
     /**
      * **  Method to implement Listener
      */
@@ -416,11 +427,8 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         card_vip.setOnClickListener(this);
         ivSettings.setOnClickListener(this);
         ivEdit.setOnClickListener(this);
-        btnExtend.setOnClickListener(this);
-        btnLikeGetMore.setOnClickListener(this);
         btnBGPremium.setOnClickListener(this);
         ivProfileImage.setOnClickListener(this);
-        btn_vip.setOnClickListener(this);
         btn_bg_delux.setOnClickListener(this);
     }
 
@@ -444,7 +452,6 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                 tv_complete.setText("" + obj.getCompleted() + "%");
             }
             if (!TextUtils.isEmpty(obj.getName())) {
-                //tvName.setText(obj.getName() + ", " + age);
                 tvName.setText(obj.getName() /*+ ", " + age*/);
             }
 
@@ -453,13 +460,10 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                 lon = obj.getLongitude();
                 tvAddress.setText(CommonUtils.getCityAddress(getContext(), obj.getLatitude(), obj.getLongitude()));
             }
-            tvSuperLike.setText("" + obj.getSuperLikesCount());
-            tvExtends.setText("" + obj.getTimeTokenCount());
-            tv_vipNum.setText("" + obj.getVipToken());
-           /* if (getBaseActivity().sp.getPremium()) {
-                tvPremium.setVisibility(View.INVISIBLE);
-                tvUnlimitedView.setVisibility(View.INVISIBLE);
-            }*/
+            setCrushTokens(obj);
+            setTimeToken(obj);
+            setVipTokens(obj);
+
         } else {
             if (!TextUtils.isEmpty(getBaseActivity().sp.getProfileCompleted())) {
                 tv_complete.setText("" + getBaseActivity().sp.getProfileCompleted() + "%");
@@ -481,30 +485,12 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             } else {
                 GpsTracker.getInstance(getContext()).showSettingsAlert();
             }
-            /*if (!lat.equalsIgnoreCase(""+simpleLocation.getLatitude())){
-                lat = ""+simpleLocation.getLatitude();
-                lon =""+simpleLocation.getLongitude();
-                tvAddress.setText(CommonUtils.getCityAddress(getContext(), lat, lon));
-                Log.e("TAG", "setData: "+simpleLocation.getLongitude()+"  "+simpleLocation.getLatitude());
-                Log.e("TAG", "setData: ne  "+tvAddress.getText().toString());
-            }*/
         }
         if (getBaseActivity().sp.getPremium()) {
             if (!getBaseActivity().sp.getDeluxe())
                 tv_pre_subscribe.setVisibility(View.VISIBLE);
         }
-        //////////////////////////////           setting token text with singular and plural ///////////////////////////
-        String time = "Time ", vip = "VIP ", crush = "Crush ";
-        int timeNum, vipNum, crushNum;
-        timeNum = tvExtends.getText().toString().isEmpty() ? 0 : Integer.parseInt(tvExtends.getText().toString());
-        vipNum = tv_vipNum.getText().toString().isEmpty() ? 0 : Integer.parseInt(tv_vipNum.getText().toString());
-        crushNum = tvSuperLike.getText().toString().isEmpty() ? 0 : Integer.parseInt(tvSuperLike.getText().toString());
-        crush = crush.concat(getContext().getResources().getQuantityString(R.plurals.token, crushNum));
-        vip = vip.concat(getContext().getResources().getQuantityString(R.plurals.token, vipNum));
-        time = time.concat(getContext().getResources().getQuantityString(R.plurals.token, timeNum));
-        tvCrushToken.setText(crush);
-        tvVipTokenTxt.setText(vip);
-        tvTimeTokenTxt.setText(time);
+
     }
 
     private int getAgeFromDob(String sdate) {
@@ -533,13 +519,9 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         } else if (view.getId() == R.id.iv_edit) {
             startActivityForResult(new Intent(getContext(), EditProfileActivity.class), 1010);
             getActivity().overridePendingTransition(R.anim.slide_in_top, R.anim.nothing);
-        } else if (view.getId() == R.id.btn_extend || view.getId() == R.id.card_time) {
-          /*  getBaseActivity().sp.setDialogOpen(true);
-            CommonDialogs.purchaseDialog(getContext(), "Time Tokens", "", this);*/
+        } else if (view.getId() == R.id.card_time) {
             CommonDialogs.TimeTokenPurChaseDialog(getContext(), this);
-        } else if (view.getId() == R.id.btn_likeGetMore || view.getId() == R.id.card_crush) {
-           /* getBaseActivity().sp.setDialogOpen(true);
-            CommonDialogs.purchaseDialog(getContext(), "Crush Tokens", "", this);*/
+        } else if (view.getId() == R.id.card_crush) {
             CommonDialogs.CrushPurChaseDialog(getContext(), this);
         } else if (view.getId() == R.id.btn_bg_premium) {
             getBaseActivity().sp.setDialogOpen(true);
@@ -548,43 +530,30 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             } else if (getBaseActivity().sp.getPremium()) {
                 CommonDialogs.showAlreadyPremiumUser(getContext(), getContext().getResources().getString(R.string.you_have_active_subscription));
             } else {
-                //CommonDialogs.purchaseDialog(getContext(), "BlackGentry Premium", "", this);
                 preDialog = CommonDialogs.PremuimPurChaseDialog(getContext(), this);
             }
         } else if (view.getId() == R.id.iv_profile) {
             startActivity(new Intent(getContext(), MyCardActivity.class));
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (view.getId() == R.id.btn_vip || view.getId() == R.id.card_vip) {
+        } else if (view.getId() == R.id.card_vip) {
             CommonDialogs.VIPPurChaseDialog(getContext(), this);
         } else if (view.getId() == R.id.btn_bg_delux) {
             getBaseActivity().sp.setDialogOpen(true);
             if (getBaseActivity().sp.getDeluxe()) {
                 CommonDialogs.showAlreadyPremiumUser(getContext(), getContext().getResources().getString(R.string.you_have_active_deluxe_subscription));
             } else {
-                //CommonDialogs.purchaseDialog(getContext(), "BlackGentry Premium", "", this);
                 CommonDialogs.DeluxePurChaseDialog(getContext(), this);
             }
         } else if (view.getId() == R.id.btn_change) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (mActivity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2021);
-                  /*final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("Location Permission");
-                    builder.setMessage("The app needs location permissions. Please grant this permission to continue using the features of the app.");
-                    builder.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> ActivityCompat.requestPermissions(((Activity)context),new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},2021));
-                    builder.setNegativeButton(android.R.string.no, null);
-                    builder.show();*/
                 } else {
                     startActivityForResult(new Intent(mActivity, WhereYouLiveActivity.class).putExtra("lat", lat).putExtra("lon", lon), 1001);
                 }
             } else {
                 startActivityForResult(new Intent(mActivity, WhereYouLiveActivity.class).putExtra("lat", lat).putExtra("lon", lon), 1001);
             }
-
-            /*else {
-
-            }*/
-            //CommonDialogs.DeluxePurChaseDialog(getContext());
         }
     }
 
