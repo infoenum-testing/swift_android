@@ -17,6 +17,7 @@ import com.swift.dating.data.network.Resource
 import com.swift.dating.data.preference.SharedPreference
 import com.swift.dating.model.responsemodel.VerificationResponseModel
 import com.swift.dating.ui.base.BaseActivity
+import com.swift.dating.ui.base.CommonWebViewActivity
 import kotlinx.android.synthetic.main.activity_welcome.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -31,7 +32,7 @@ class WelcomeActivity : BaseActivity() {
         setContentView(R.layout.activity_welcome)
 
         // tvTerms
-        var terms :String =resources.getString(R.string.terms)+" "
+        var terms: String = resources.getString(R.string.terms) + " "
 
         val word: Spannable = SpannableString(terms)
 
@@ -40,6 +41,12 @@ class WelcomeActivity : BaseActivity() {
         val wordTwo: Spannable = SpannableString(resources.getString(R.string.terms2))
         wordTwo.setSpan(ForegroundColorSpan(Color.RED), 0, wordTwo.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         tvTerms.append(wordTwo)
+        tvTerms.setOnClickListener {
+            startActivity(Intent(this, CommonWebViewActivity::class.java)
+                    .putExtra("url", "https://swiftdatingapp.com/terms/"))
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
+
         btn_continue.setOnClickListener {
             callApi()
         }

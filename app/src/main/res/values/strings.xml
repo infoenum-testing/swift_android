@@ -34,7 +34,7 @@
     <string name="skip">Skip</string>
     <string name="firstName">First Name</string>
     <string name="myNameIs">My name is</string>
-    <string name="ageAbove18Text">Must be over 18</string>
+    <string name="ageAbove18Text">You are not between the age limit for Swift Dating the minimum age requirement is 18 years old and Maximum age requirement is 80 years old.</string>
     <string name="selectValidDateText">Select a valid date</string>
     <string name="myBirthdayIs">My birthday is</string>
     <string name="aboutYourself">Introduce yourself</string>

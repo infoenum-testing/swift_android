@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 
 import com.swift.dating.R;
@@ -29,6 +30,7 @@ import com.swift.dating.common.ValidationUtils;
 import com.swift.dating.common.wheelpicker.LoopView;
 import com.swift.dating.data.network.Resource;
 import com.swift.dating.model.requestmodel.createaccountmodel.CreateAccountBirthModel;
+import com.swift.dating.model.responsemodel.ProfileOfUser;
 import com.swift.dating.model.responsemodel.VerificationResponseModel;
 import com.swift.dating.ui.base.BaseFragment;
 import com.swift.dating.ui.createAccountScreen.CreateAccountActivity;
@@ -36,12 +38,13 @@ import com.swift.dating.ui.createAccountScreen.viewmodel.CreateAccountViewModel;
 
 public class BirthdayFragment extends BaseFragment implements View.OnClickListener {
 
-    private int yearPos, monthPos, dayPos, minYear, maxYear, count;
+    private int yearPos, monthPos, dayPos, minYear, maxYear;
     private ArrayList yearList = new ArrayList(), monthList = new ArrayList(), dayList = new ArrayList();
     private CreateAccountViewModel model;
     private FloatingActionButton btnContinue;
     private RelativeLayout rlDays, rlMonth, rlYear;
     TextView tvDayOfBirth, tvMonthOfBirth, tvYearOfBirth;
+    private static final String TAG = "BirthdayFragment";
 
     /**
      * ** method to add 0 before the date less than 10
@@ -61,6 +64,40 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
         initialize(view);
         listener();
         subscribeModel();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setDob();
+    }
+
+    private void setDob() {
+        try {
+            Gson gson = new Gson();
+            String user = getBaseActivity().sp.getUser();
+            ProfileOfUser obj = gson.fromJson(user, ProfileOfUser.class);
+            if (obj != null && !TextUtils.isEmpty(obj.getDob())) {
+                String[] arr = obj.getDob().split("-");
+                String yearStr = arr[0];
+                String monthStr = arr[1];
+                String dayStr = arr[2];
+                yearPos = yearList.indexOf(yearStr);
+                if (monthStr.substring(0, 1).equalsIgnoreCase("0")) {
+                    monthStr = monthStr.substring(1);
+                }
+                List<String> mList = Arrays.asList(getResources().getStringArray(R.array.monthsArray));
+                String monthName = mList.get(Integer.parseInt(monthStr) - 1);
+                monthPos = monthList.indexOf(monthName);
+                dayPos = dayList.indexOf(dayStr);
+                tvDayOfBirth.setText(String.valueOf(dayList.get(dayPos)));
+                tvMonthOfBirth.setText(String.valueOf(monthList.get(monthPos)));
+                tvYearOfBirth.setText(String.valueOf(yearList.get(yearPos)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
     }
 
     @Override
@@ -130,7 +167,6 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
      * **  Method to initialize
      */
     private void initialize(View view) {
-        count = 0;
         rlDays = view.findViewById(R.id.rlDays);
         rlMonth = view.findViewById(R.id.rlMonth);
         rlYear = view.findViewById(R.id.rlYear);
@@ -153,56 +189,10 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
      */
     private void listener() {
         initPickerViews(); //
+        initDayPickerView();
 
-        rlDays.setOnClickListener(v -> {
-            count++;
-            View view = getLayoutInflater().inflate(R.layout.bottom_sheet_day, null);
-            BottomSheetDialog dialog = new BottomSheetDialog(getContext());
-            dialog.setContentView(view);
-            dialog.show();
-            view.setNestedScrollingEnabled(true);
-            dialog.getBehavior().setDraggable(false);
-            LoopView loopView;
-            TextView btn_done;
-            loopView = view.findViewById(R.id.picker);
-            btn_done = view.findViewById(R.id.btn_done);
-
-            loopView.setNotLoop();
-            int dayMaxInMonth;
-            Calendar calendar = Calendar.getInstance();
-            ArrayList daysList = new ArrayList<String>();
-
-            calendar.set(Calendar.YEAR, minYear + yearPos);
-            calendar.set(Calendar.MONTH, monthPos);
-            //get max day in month
-            dayMaxInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-
-            for (int i = 0; i < dayMaxInMonth; i++) {
-                daysList.add(format2LenStr(i + 1));
-            }
-            loopView.setArrayList(daysList);
-            loopView.setInitPosition(dayPos);
-            if (((CreateAccountActivity) getActivity()).getUserData() != null && !TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getDob())) {
-                ((CreateAccountActivity) getActivity()).getUserData().getDob().split("-");
-                loopView.setInitPosition(Integer.parseInt(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[2]) - 1);
-                monthPos = Integer.parseInt(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[1]) - 1;
-                dayPos = Integer.parseInt(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[2]) - 1;
-                yearPos = yearList.indexOf(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[0]);
-            }
-            loopView.setListener(item -> {
-                dayPos = item;
-                tvDayOfBirth.setText(String.valueOf(daysList.get(item)));
-                // initDayPickerView();
-            });
-
-            btn_done.setOnClickListener((View v1) -> {
-                tvDayOfBirth.setText(String.valueOf(daysList.get(dayPos)));
-                dialog.cancel();
-            });
-        });
         /////////////////////// month picker ///////////////////////
         rlMonth.setOnClickListener(v -> {
-            count++;
             View view = getLayoutInflater().inflate(R.layout.bottom_sheet_day, null);
             BottomSheetDialog dialog = new BottomSheetDialog(getContext());
             dialog.setContentView(view);
@@ -229,14 +219,11 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
             loopView.setListener(item -> {
                 monthPos = item;
                 tvMonthOfBirth.setText(String.valueOf(monthList.get(item)));
-                // initDayPickerView();
             });
         });
 
-
         /////////////////////// Year picker ///////////////////////
         rlYear.setOnClickListener(v -> {
-            count++;
             View view = getLayoutInflater().inflate(R.layout.bottom_sheet_day, null);
             BottomSheetDialog dialog = new BottomSheetDialog(getContext());
             dialog.setContentView(view);
@@ -253,23 +240,16 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
             });
             loopView.setNotLoop();
             loopView.setArrayList(yearList);
+
             loopView.setInitPosition(yearPos);
 
-            if (((CreateAccountActivity) getActivity()).getUserData() != null && !TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getDob())) {
-                ((CreateAccountActivity) getActivity()).getUserData().getDob().split("-");
-                loopView.setInitPosition(Integer.parseInt(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[1]) - 1);
-                yearPos = yearList.indexOf(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[0]);
-            }
             loopView.setListener(item -> {
                 yearPos = item;
                 tvYearOfBirth.setText(String.valueOf(yearList.get(item)));
-                // initDayPickerView();
             });
         });
 
-
         btnContinue.setOnClickListener(this);
-        //  initDayPickerView();
     }
 
     /**
@@ -279,7 +259,6 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
 
         int dayMaxInMonth;
         Calendar calendar = Calendar.getInstance();
-        ArrayList dayList = new ArrayList<String>();
 
         calendar.set(Calendar.YEAR, minYear + yearPos);
         calendar.set(Calendar.MONTH, monthPos);
@@ -289,8 +268,40 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
         for (int i = 0; i < dayMaxInMonth; i++) {
             dayList.add(format2LenStr(i + 1));
         }
-        // dayLoopView.setArrayList(dayList);
-        // dayLoopView.setInitPosition(dayPos);
+
+        rlDays.setOnClickListener(v -> {
+            View view = getLayoutInflater().inflate(R.layout.bottom_sheet_day, null);
+            BottomSheetDialog dialog = new BottomSheetDialog(getContext());
+            dialog.setContentView(view);
+            dialog.show();
+            view.setNestedScrollingEnabled(true);
+            dialog.getBehavior().setDraggable(false);
+            LoopView loopView;
+            TextView btn_done;
+            loopView = view.findViewById(R.id.picker);
+            btn_done = view.findViewById(R.id.btn_done);
+
+            loopView.setNotLoop();
+            loopView.setArrayList(dayList);
+            loopView.setInitPosition(dayPos);
+            if (((CreateAccountActivity) getActivity()).getUserData() != null && !TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getDob())) {
+                ((CreateAccountActivity) getActivity()).getUserData().getDob().split("-");
+                loopView.setInitPosition(Integer.parseInt(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[2]) - 1);
+                monthPos = Integer.parseInt(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[1]) - 1;
+                dayPos = Integer.parseInt(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[2]) - 1;
+                yearPos = yearList.indexOf(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[0]);
+            }
+            loopView.setListener(item -> {
+                dayPos = item;
+                tvDayOfBirth.setText(String.valueOf(dayList.get(item)));
+                // initDayPickerView();
+            });
+
+            btn_done.setOnClickListener((View v1) -> {
+                tvDayOfBirth.setText(String.valueOf(dayList.get(dayPos)));
+                dialog.cancel();
+            });
+        });
     }
 
     /**
@@ -318,7 +329,6 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
             //   monthLoopView.setInitPosition(Integer.parseInt(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[1]) - 1);
             //   dayLoopView.setInitPosition(Integer.parseInt(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[2]) - 1);
             // yearLoopView.setInitPosition(yearList.indexOf(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[0]));
-
             monthPos = Integer.parseInt(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[1]) - 1;
             dayPos = Integer.parseInt(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[2]) - 1;
             yearPos = yearList.indexOf(((CreateAccountActivity) getActivity()).getUserData().getDob().split("-")[0]);
@@ -329,8 +339,8 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View view) {
         Log.e("TAG", "onClick: " + " " + dayPos + monthPos + " " + yearPos);
         if (view == btnContinue) {
-            if (count >= 3) {
-                count = 0;
+            if (!tvMonthOfBirth.getText().toString().trim().equalsIgnoreCase("Month") && !tvYearOfBirth.getText().toString().trim().equalsIgnoreCase("Year") && !tvDayOfBirth.getText().toString().trim().equalsIgnoreCase("Date")) {
+                Log.e("TAG", "onClick: done date is selected ");
                 int year = minYear + yearPos;
                 int month = monthPos + 1;
                 int day = dayPos + 1;
@@ -365,7 +375,7 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
             if (ValidationUtils.checkAgeIsValid(date)) {
                 return true;
             } else {
-                getBaseActivity().showSnackbar(btnContinue, getString(R.string.ageAbove18Text));
+                CommonDialogs.alertDialogOneButton(mActivity, getString(R.string.ageAbove18Text));
                 return false;
             }
         } else {

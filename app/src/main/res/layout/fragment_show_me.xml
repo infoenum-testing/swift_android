@@ -99,7 +99,7 @@
             android:fontFamily="@font/medium"
             android:gravity="center"
             android:padding="@dimen/_13sdp"
-            android:text="@string/both"
+            android:text="@string/everyone"
             android:textAllCaps="false"
             android:textColor="@drawable/select_radio"
             android:textSize="@dimen/_12ssp" />
