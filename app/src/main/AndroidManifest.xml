@@ -53,7 +53,9 @@
 
         <activity
             android:name=".ui.where_do_you_live.WhereYouLiveActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:theme="@style/AppThemeNew"
+            />
         <activity
             android:name=".ui.emailScreen.PhoneActivity"
             android:theme="@style/AppThemeNew" />

@@ -9,7 +9,9 @@ import androidx.lifecycle.ViewModelProviders;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,6 +29,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -53,6 +56,7 @@ import com.swift.dating.model.responsemodel.ProfileOfUser;
 import com.swift.dating.ui.homeScreen.fragment.SearchFragment;
 import com.swift.dating.ui.homeScreen.viewmodel.HomeViewModel;
 import com.swift.dating.ui.loginScreen.LoginActivity;
+
 import im.delight.android.location.SimpleLocation;
 
 import static com.swift.dating.common.AppConstants.LICENSE_KEY;
@@ -80,6 +84,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
     private int selectedPosition;
     private boolean isLocationNull = false;
     private boolean isFromCrtLoc = false;
+    Bitmap smallMarkerBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,70 +122,64 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
         btn_save_loc.setOnClickListener(this::oClick);
         addressLayout.setOnClickListener(this::oClick);
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-        homeViewModel.sendLatLongResponse().observe(WhereYouLiveActivity.this, new Observer<Resource<BaseModel>>() {
-            @Override
-            public void onChanged(Resource<BaseModel> resource) {
-                if (resource == null)
-                    return;
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case ERROR:
-                        hideLoading();
-                        showSnackBar(constraint_main, resource.data.getMessage());
-                        if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401"))
-                            openActivityOnTokenExpire();
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
-                            openActivityOnTokenExpire();
-                        } else {
-                            BaseModel model = resource.data;
-                            // showSnackBar(constraint_main, model.getMessage());
-                            ProfileOfUser obj = new Gson().fromJson(sp.getUser(), ProfileOfUser.class);
-                            obj.setLatitude("" + model.getLatitude());
-                            obj.setLongitude("" + model.getLongitude());
-                            sp.saveUserData(obj, sp.getProfileCompleted());
-                            sp.saveLocation(true);
-                            if (!TextUtils.isEmpty(sp.getMyString(SearchFragment.SearchResponse))) {
-                                sp.removeKey(SearchFragment.SearchResponse);
-                            }
-                            if (!TextUtils.isEmpty(sp.getMyString(SearchFragment.FilterResponse))) {
-                                sp.removeKey(SearchFragment.FilterResponse);
-                            }
-                            sp.saveisSettingsChanged(true);
-                            finish();
+        homeViewModel.sendLatLongResponse().observe(WhereYouLiveActivity.this, resource -> {
+            if (resource == null)
+                return;
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case ERROR:
+                    hideLoading();
+                    showSnackBar(constraint_main, resource.data.getMessage());
+                    if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401"))
+                        openActivityOnTokenExpire();
+                    break;
+                case SUCCESS:
+                    hideLoading();
+                    if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
+                        openActivityOnTokenExpire();
+                    } else {
+                        BaseModel model = resource.data;
+                        // showSnackBar(constraint_main, model.getMessage());
+                        ProfileOfUser obj = new Gson().fromJson(sp.getUser(), ProfileOfUser.class);
+                        obj.setLatitude("" + model.getLatitude());
+                        obj.setLongitude("" + model.getLongitude());
+                        sp.saveUserData(obj, sp.getProfileCompleted());
+                        sp.saveLocation(true);
+                        if (!TextUtils.isEmpty(sp.getMyString(SearchFragment.SearchResponse))) {
+                            sp.removeKey(SearchFragment.SearchResponse);
                         }
-                        break;
-                }
+                        if (!TextUtils.isEmpty(sp.getMyString(SearchFragment.FilterResponse))) {
+                            sp.removeKey(SearchFragment.FilterResponse);
+                        }
+                        sp.saveisSettingsChanged(true);
+                        finish();
+                    }
+                    break;
             }
         });
 
-        homeViewModel.addDeluxeResponse().observe(this, new Observer<Resource<BaseModel>>() {
-            @Override
-            public void onChanged(Resource<BaseModel> resource) {
-                if (resource == null)
-                    return;
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        if (resource.data.getSuccess()) {
-                            sp.savePremium(false);
-                            sp.saveDeluxe(true);
-                        } else if (resource.code == 401) {
-                            openActivityOnTokenExpire();
-                        } else {
-                            showSnackBar(constraint_main, "Something went wrong");
-                        }
-                        break;
-                    case ERROR:
-                        hideLoading();
-                        showSnackBar(constraint_main, resource.message);
-                        break;
-                }
+        homeViewModel.addDeluxeResponse().observe(this, resource -> {
+            if (resource == null)
+                return;
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    hideLoading();
+                    if (resource.data.getSuccess()) {
+                        sp.savePremium(false);
+                        sp.saveDeluxe(true);
+                    } else if (resource.code == 401) {
+                        openActivityOnTokenExpire();
+                    } else {
+                        showSnackBar(constraint_main, "Something went wrong");
+                    }
+                    break;
+                case ERROR:
+                    hideLoading();
+                    showSnackBar(constraint_main, resource.message);
+                    break;
             }
         });
         Intent intent = getIntent();
@@ -192,6 +191,13 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
         } else {
             latLng = new LatLng(simpleLocation.getLatitude(), simpleLocation.getLongitude());
         }
+
+
+        int height = 100;
+        int width = 70;
+        BitmapDrawable bitmapdraw = (BitmapDrawable)getResources().getDrawable(R.drawable.location_icon);
+        Bitmap b = bitmapdraw.getBitmap();
+        smallMarkerBitmap = Bitmap.createScaledBitmap(b, width, height, false);
     }
 
     public void openActivityOnTokenExpire() {
@@ -282,7 +288,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
             tv_addres.setText(CommonUtils.getAddress(WhereYouLiveActivity.this, "" + latLng.latitude, "" + latLng.longitude));
         } catch (Exception ignored) {
         }
-        mMap.addMarker(new MarkerOptions().position(latLng));
+        mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromBitmap(smallMarkerBitmap))) ;
         CameraUpdate location = CameraUpdateFactory.newLatLngZoom(latLng, 11);
         mMap.animateCamera(location);
         mMap.setOnCameraChangeListener(this);
@@ -300,7 +306,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
                     tv_addres.setText(place.getAddress());
                     latLng = place.getLatLng();
                     mMap.clear();
-                    mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title("Set Workout Location"));
+                    mMap.addMarker(new MarkerOptions().position(place.getLatLng()).icon(BitmapDescriptorFactory.fromBitmap(smallMarkerBitmap)).title("Set Workout Location"));
                     CameraUpdate location = CameraUpdateFactory.newLatLngZoom(latLng, 11);
                     mMap.animateCamera(location);
                 }
@@ -337,7 +343,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
     public void onCameraChange(CameraPosition cameraPosition) {
         if (!isFromPlace) {
             mMap.clear();
-            mMap.addMarker(new MarkerOptions().position(cameraPosition.target).title(cameraPosition.toString()));
+            mMap.addMarker(new MarkerOptions().position(cameraPosition.target).title(cameraPosition.toString()).icon(BitmapDescriptorFactory.fromBitmap(smallMarkerBitmap)));
             Log.e(TAG, "onCameraChange: " + latLng);
             String placename = CommonUtils.getAddress(WhereYouLiveActivity.this, "" + latLng.latitude, "" + latLng.longitude);
             if (!TextUtils.isEmpty(placename)) {
