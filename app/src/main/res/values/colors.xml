@@ -27,9 +27,16 @@
     <color name="pink_light_toggle">#FBDCDE</color>
     <color name="yellow_new">#FEA100</color>
     <color name="blue">#05C7FD</color>
+    <color name="blue_end">#139FE6</color>
+    <color name="token_yellow">#FFBC00</color>
+    <color name="red_start">#FF3F4C</color>
+    <color name="red_end">#FF838B</color>
+    <color name="yellow_end">#FDC800</color>
 
 
 
 
+
+    05C7FD
 
 </resources>

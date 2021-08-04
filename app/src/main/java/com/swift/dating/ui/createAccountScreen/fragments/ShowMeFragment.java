@@ -30,7 +30,7 @@ public class ShowMeFragment extends BaseFragment implements View.OnClickListener
     CreateAccountViewModel model;
     private FloatingActionButton btnContinue;
     private RadioGroup tgShowMe;
-    private String strShowMe = "";
+    private String strShowMe = "Men";
 
     @Override
     public int getLayoutId() {

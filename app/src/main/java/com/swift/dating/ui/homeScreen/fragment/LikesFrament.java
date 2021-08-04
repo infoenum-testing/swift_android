@@ -120,21 +120,21 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
     @Override
     public void onPause() {
         super.onPause();
-        if (list != null)
+/*        if (list != null)
             ((HomeActivity) getActivity()).LikeUserlist = list;
         if (disLikelist!=null){
             ((HomeActivity) getActivity()).DisLikeUserlist = disLikelist;
         }
-        getBaseActivity().isLikeScreen = false;
+        getBaseActivity().isLikeScreen = false;*/
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mActivity = (BaseActivity) getActivity();
+/*        mActivity = (BaseActivity) getActivity();
         getBaseActivity().isLikeScreen = true;
         //((HomeActivity) Objects.requireNonNull(getActivity())).setToolbarWithTitle("Likes");
-        ((HomeActivity) getActivity()).mToolbar.setVisibility(View.GONE);
+        ((HomeActivity) getActivity()).mToolbar.setVisibility(View.GONE);*/
     }
          /*CommonDialogs dialog = CommonDialogs.DeluxePurChaseDialog(getContext(), this);
         dialog.setOnDeluxeContinuebtn(this);*/
@@ -142,14 +142,14 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.e(TAG, "onViewCreated: LikesFragment");
+    /*    Log.e(TAG, "onViewCreated: LikesFragment");
         mActivity = (BaseActivity) getActivity();
         getBaseActivity().isLikeScreen = true;
         if (getBaseActivity().isNetworkConnected())
             initViews(view);
         else {
             getBaseActivity().showSnackbar(view, "Please connect to internet");
-        }
+        }*/
     }
 
     private void initViews(View view) {

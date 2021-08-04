@@ -134,29 +134,30 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
 
     override fun onResume() {
         super.onResume()
-        BaseActivity.mActivity = this.activity
+        /*BaseActivity.mActivity = this.activity
         baseActivity.isCardScreen = true
         baseActivity.sp.saveFirstTime("true")
         (activity as HomeActivity).swipeCount = 0
         //(activity as HomeActivity?)!!.setToolbarWithTitle("Blackgentry")
         (activity as HomeActivity?)!!.mToolbar.visibility = GONE
+        */
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.e(TAG, "onViewCreated: FindMatchFragment")
-        init(view)
-        if (baseActivity.isNetworkConnected) {
-            if (baseActivity.sp.isSettingsChanged || (activity as HomeActivity).cardList.isEmpty()) {
-                list = (activity as HomeActivity).cardList
-                checkLocationPermission()
-            } else {
-                list = (activity as HomeActivity).cardList
-                setupCardStackView()
-            }
-        } else {
-            baseActivity.showSnackbar(view, "Please connect to internet")
-        }
+        /*  init(view)
+          if (baseActivity.isNetworkConnected) {
+              if (baseActivity.sp.isSettingsChanged || (activity as HomeActivity).cardList.isEmpty()) {
+                  list = (activity as HomeActivity).cardList
+                  checkLocationPermission()
+              } else {
+                  list = (activity as HomeActivity).cardList
+                  setupCardStackView()
+              }
+          } else {
+              baseActivity.showSnackbar(view, "Please connect to internet")
+          }*/
     }
 
     /**
@@ -1390,12 +1391,12 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
 
     override fun onPause() {
         super.onPause()
-        if (baseActivity.isNetworkConnected) {
+      /*  if (baseActivity.isNetworkConnected) {
             baseActivity.isCardScreen = false
             baseActivity.sp.saveFirstTime("false")
             (activity as HomeActivity?)!!.cardList = arrayListOf<User>()
             (activity as HomeActivity?)!!.cardList = list
-        }
+        }*/
     }
 
     /**

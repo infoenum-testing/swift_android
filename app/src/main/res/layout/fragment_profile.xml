@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EFEFEF"
+    android:background="@color/white"
     android:fillViewport="true"
     android:overScrollMode="never"
     android:scrollbars="none">
@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            android:paddingTop="5dp"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -28,15 +29,15 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginStart="@dimen/_15sdp"
                 android:orientation="vertical">
 
                 <ImageButton
                     android:id="@+id/iv_settings"
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_gravity="center"
                     android:background="@drawable/back_avtar"
-                    android:padding="@dimen/_12sdp"
                     android:scaleType="fitXY"
                     android:src="@drawable/icsetting"
                     android:tint="@color/pink" />
@@ -56,22 +57,22 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <ImageButton
                     android:id="@+id/iv_edit"
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
                     android:background="@drawable/back_avtar"
-                    android:padding="@dimen/_12sdp"
                     android:src="@drawable/iceditprofile"
                     android:tint="@color/pink" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:fontFamily="@font/medium"
                     android:text="@string/edit_profile"
                     android:textColor="@color/black"
@@ -84,7 +85,6 @@
             android:id="@+id/cl_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_sheet"
             android:paddingTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +107,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/medium"
-                android:text="Cipla"
                 android:textColor="@color/title_color"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="@id/iv_profile"
@@ -221,17 +220,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
+            android:layout_marginTop="5dp"
             app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
+            app:cardElevation="5dp"
             app:cardUseCompatPadding="true"
             app:layout_constraintTop_toBottomOf="@id/cl_top">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp">
+                android:padding="5dp"
+                >
 
                 <ImageView
                     android:id="@+id/loc_img"
@@ -296,10 +296,10 @@
             android:id="@+id/ll_token"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#EFEFEF"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@color/white"
             android:orientation="horizontal"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
             android:weightSum="3"
             app:layout_constraintTop_toBottomOf="@id/loc_card">
 
@@ -310,7 +310,7 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="0dp"
+                app:cardElevation="5dp"
 
                 >
 
@@ -338,7 +338,7 @@
                         android:gravity="center"
                         android:text="Crush Tokens"
                         android:textColor="@color/yellow_new"
-                        android:textSize="14sp" />
+                        android:textSize="12sp" />
 
 
                 </LinearLayout>
@@ -351,7 +351,7 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="0dp">
+                app:cardElevation="5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -377,7 +377,7 @@
                         android:gravity="center"
                         android:text="Time Tokens"
                         android:textColor="@color/blue"
-                        android:textSize="14sp" />
+                        android:textSize="12sp" />
 
 
                 </LinearLayout>
@@ -390,7 +390,7 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="0dp">
+                app:cardElevation="5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -416,7 +416,7 @@
                         android:gravity="center"
                         android:text="Vip Tokens"
                         android:textColor="@color/red"
-                        android:textSize="14sp" />
+                        android:textSize="12sp" />
 
 
                 </LinearLayout>
@@ -594,7 +594,9 @@
             android:id="@+id/sliderFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_token" />

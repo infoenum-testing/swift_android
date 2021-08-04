@@ -117,7 +117,6 @@
         <item name="android:fontFamily">@font/medium</item>
     </style>
 
-    <!--divider -->
 
     <!--for divider or separater-->
     <style name="Divider">
@@ -127,12 +126,86 @@
     </style>
 
 
-    <!--font style for edittext -->
-    <style name="et_font_style" parent="Widget.AppCompat.EditText">
-        <item name="android:fontFamily">@font/medium</item>
+    <!--for token text font and color-->
+    <style name="token_price_style">
+        <item name="android:fontFamily">@font/bold</item>
+        <item name="android:textColor">@color/title_color</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
 
+    <!--for token text font and color-->
+    <style name="token_quantity_style">
+        <item name="android:fontFamily">@font/medium</item>
+        <item name="android:textColor">@color/title_color</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+
+    <!--for token text font and color-->
+    <style name="crush_token_count_style">
+        <item name="android:fontFamily">@font/bold</item>
+        <item name="android:textColor">@color/yellow_new</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:background">@drawable/crush_token_count_bg</item>
+        <!--time_token_count_bg-->
+        <!--vip_token_count_bg-->
+    </style>
+
+
+    <style name="time_token_count_style">
+        <item name="android:fontFamily">@font/bold</item>
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:background">@drawable/time_token_count_bg</item>
+        <!--vip_token_count_bg-->
+    </style>
+
+
+    <style name="vip_token_count_style">
+        <item name="android:fontFamily">@font/bold</item>
+        <item name="android:textColor">@color/red_start</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:background">@drawable/vip_token_count_bg</item>
+    </style>
+
+
+    <!--continue button style of tokens -->
+    <style name="token_btn_style">
+        <item name="android:layout_marginStart">30dp</item>
+        <item name="android:layout_marginEnd">30dp</item>
+        <item name="android:layout_marginTop">30dp</item>
+        <item name="android:paddingTop">15dp</item>
+        <item name="android:paddingBottom">15dp</item>
+
+
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/_14ssp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/medium</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:text">@string/continue_txt</item>
+
+        <item name="android:background">@drawable/vip_token_count_bg</item>
+    </style>
 
 
 </resources>

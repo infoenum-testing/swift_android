@@ -89,12 +89,14 @@ public class CommonDialogs {
     }
 
     private static final String TAG = "CommonDialogs";
+
     private static void gotoManageSubscription(Context context) {
         String PACKAGE_NAME = context.getPackageName();
         Log.d(TAG, "gotoManageSubscription: " + PACKAGE_NAME);
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/account/subscriptions?package=" + PACKAGE_NAME));
         context.startActivity(browserIntent);
     }
+
     /*
      *** Method to show dialog on Selfie Screen
      */
@@ -362,76 +364,8 @@ public class CommonDialogs {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
             dialog.setCancelable(false);
             dialog.setCanceledOnTouchOutside(false);
-            TextView refer_text = dialog.findViewById(R.id.refer_text);
-            TextView[] tvToken1Price = new TextView[4];
-            tvToken1Price[0] = dialog.findViewById(R.id.tvToken1Price);
-            tvToken1Price[1] = dialog.findViewById(R.id.tvToken5Price);
-            tvToken1Price[2] = dialog.findViewById(R.id.tvToken10Price);
-            tvToken1Price[3] = dialog.findViewById(R.id.tvToken20Price);
 
-            if (crushTokenPriceList.size() > 0) {
-                for (int i = 0; i < tvToken1Price.length; i++) {
-                    if (!TextUtils.isEmpty(crushTokenPriceList.get(i).getPriceTxt())) {
-                        tvToken1Price[i].setText(crushTokenPriceList.get(i).getPriceTxt());
-                    }
-                }
-            }
-
-
-            refer_text.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_SEND);
-                    intent.setType("plain/text");
-                    intent.putExtra(Intent.EXTRA_TEXT, refer_text.getText().toString());
-                    //intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "---" });
-                    //intent.putExtra(Intent.EXTRA_SUBJECT, "---");
-                    ctx.startActivity(Intent.createChooser(intent, "BlackGentry App"));
-                }
-            });
             ImageView ivclose = dialog.findViewById(R.id.ivclose);
-            ViewPager pager_text = dialog.findViewById(R.id.pager_text);
-            pager_text.setAdapter(new TextPagerAdapter(Arrays.asList(ctx.getResources().getStringArray(R.array.CrushStringArray)), ctx));
-            WormDotsIndicator indicator = dialog.findViewById(R.id.text_pager_indicator);
-            indicator.setViewPager(pager_text);
-
-
-            pager_text.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-                }
-
-                @Override
-                public void onPageSelected(int position) {
-                    currentPage = position;
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
-                }
-            });
-
-            handler = new Handler();
-            Update = () -> {
-                if (currentPage == pager_text.getAdapter().getCount()) {
-                    currentPage = 0;
-                }
-                pager_text.setCurrentItem(currentPage, true);
-                currentPage++;
-            };
-
-            if (timer != null) {
-                timer.cancel();
-            }
-            timer = new Timer();
-            timer.schedule(new TimerTask() { // task to be scheduled
-                @Override
-                public void run() {
-                    handler.post(Update);
-                }
-            }, 0, TIME_PERIOD);
 
             LinearLayout[] layouts = new LinearLayout[4];
             layouts[0] = dialog.findViewById(R.id.rb5Likes);
@@ -440,31 +374,25 @@ public class CommonDialogs {
             layouts[3] = dialog.findViewById(R.id.tokens20Lay);
             for (int i = 0; i < layouts.length; i++) {
                 int finalI = i;
-                layouts[i].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        indexOfSelectedLayout = finalI;
-                        unSelectAll(layouts);
-                        layouts[finalI].setBackgroundResource(R.drawable.pink_radial);
-                    }
+                layouts[i].setOnClickListener(v -> {
+                    indexOfSelectedLayout = finalI;
+                    unSelectAll(layouts);
+                    layouts[finalI].setBackgroundResource(R.drawable.yellow_radial);
                 });
             }
 
             Button btn_continue = dialog.findViewById(R.id.btn_continue);
-            btn_continue.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (indexOfSelectedLayout == 0) {
-                        clickListener.onClickToken("crushToken", 1, indexOfSelectedLayout);//0.99
-                    } else if (indexOfSelectedLayout == 1) {
-                        clickListener.onClickToken("crushToken", 5, indexOfSelectedLayout);//3.99
-                    } else if (indexOfSelectedLayout == 2) {
-                        clickListener.onClickToken("crushToken", 10, indexOfSelectedLayout);//6.99
-                    } else {
-                        clickListener.onClickToken("crushToken", 20, indexOfSelectedLayout);//12.99
-                    }
-                    dialog.dismiss();
-                }
+            btn_continue.setOnClickListener(v -> {
+                /*if (indexOfSelectedLayout == 0) {
+                    clickListener.onClickToken("crushToken", 1, indexOfSelectedLayout);//0.99
+                } else if (indexOfSelectedLayout == 1) {
+                    clickListener.onClickToken("crushToken", 5, indexOfSelectedLayout);//3.99
+                } else if (indexOfSelectedLayout == 2) {
+                    clickListener.onClickToken("crushToken", 10, indexOfSelectedLayout);//6.99
+                } else {
+                    clickListener.onClickToken("crushToken", 20, indexOfSelectedLayout);//12.99
+                }*/
+                dialog.dismiss();
             });
 
 
@@ -510,48 +438,6 @@ public class CommonDialogs {
             }
 
             ImageView ivclose = dialog.findViewById(R.id.ivclose);
-            ViewPager pager_text = dialog.findViewById(R.id.pager_text);
-            pager_text.setAdapter(new TextPagerAdapter(Arrays.asList(ctx.getResources().getStringArray(R.array.TimeStringArray)), ctx));
-            WormDotsIndicator indicator = dialog.findViewById(R.id.text_pager_indicator);
-            indicator.setViewPager(pager_text);
-
-            pager_text.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-                }
-
-                @Override
-                public void onPageSelected(int position) {
-                    currentPage = position;
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
-                }
-            });
-
-            handler = new Handler();
-            Update = () -> {
-                if (currentPage == pager_text.getAdapter().getCount()) {
-                    currentPage = 0;
-                }
-                pager_text.setCurrentItem(currentPage, true);
-                currentPage++;
-            };
-
-            if (timer != null) {
-                timer.cancel();
-            }
-            timer = new Timer();
-            timer.schedule(new TimerTask() { // task to be scheduled
-                @Override
-                public void run() {
-                    handler.post(Update);
-                }
-            }, 0, TIME_PERIOD);
-
 
             LinearLayout[] layouts = new LinearLayout[4];
             layouts[0] = dialog.findViewById(R.id.rb5Likes);
@@ -563,25 +449,22 @@ public class CommonDialogs {
                 layouts[i].setOnClickListener(v -> {
                     indexOfSelectedLayout = finalI;
                     unSelectAll(layouts);
-                    layouts[finalI].setBackgroundResource(R.drawable.bg_time_token_selected);
+                    layouts[finalI].setBackgroundResource(R.drawable.blue_radial);
                 });
             }
             Button btn_continue = dialog.findViewById(R.id.btn_continue);
-            btn_continue.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if (indexOfSelectedLayout == 0) {
-                        clickListener.onClickToken("timeToken", 1, indexOfSelectedLayout);//0.99
-                    } else if (indexOfSelectedLayout == 1) {
-                        clickListener.onClickToken("timeToken", 5, indexOfSelectedLayout);//3.99
-                    } else if (indexOfSelectedLayout == 2) {
-                        clickListener.onClickToken("timeToken", 10, indexOfSelectedLayout);//6.99
-                    } else {
-                        clickListener.onClickToken("timeToken", 20, indexOfSelectedLayout);//12.99
-                    }
-                    dialog.dismiss();
-                }
+            btn_continue.setOnClickListener(v -> {
+/*
+                if (indexOfSelectedLayout == 0) {
+                    clickListener.onClickToken("timeToken", 1, indexOfSelectedLayout);//0.99
+                } else if (indexOfSelectedLayout == 1) {
+                    clickListener.onClickToken("timeToken", 5, indexOfSelectedLayout);//3.99
+                } else if (indexOfSelectedLayout == 2) {
+                    clickListener.onClickToken("timeToken", 10, indexOfSelectedLayout);//6.99
+                } else {
+                    clickListener.onClickToken("timeToken", 20, indexOfSelectedLayout);//12.99
+                }*/
+                dialog.dismiss();
             });
 
 
@@ -596,7 +479,7 @@ public class CommonDialogs {
             currentPage = 0;
             indexOfSelectedLayout = 0;
             dialog = new Dialog(ctx, R.style.PauseDialog);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+           // dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.custom_buy_vip_dialog);
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
             lp.copyFrom(dialog.getWindow().getAttributes());
@@ -621,49 +504,6 @@ public class CommonDialogs {
             }
 
             ImageView ivclose = dialog.findViewById(R.id.ivclose);
-            ViewPager pager_text = dialog.findViewById(R.id.pager_text);
-            pager_text.setAdapter(new TextPagerAdapter(Arrays.asList(ctx.getResources().getStringArray(R.array.VIPStringArray)), ctx));
-            WormDotsIndicator indicator = dialog.findViewById(R.id.text_pager_indicator);
-            indicator.setViewPager(pager_text);
-
-
-            pager_text.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-                }
-
-                @Override
-                public void onPageSelected(int position) {
-                    currentPage = position;
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
-                }
-            });
-
-            handler = new Handler();
-            Update = () -> {
-                if (currentPage == pager_text.getAdapter().getCount()) {
-                    currentPage = 0;
-                }
-                pager_text.setCurrentItem(currentPage, true);
-                currentPage++;
-            };
-
-            if (timer != null) {
-                timer.cancel();
-            }
-            timer = new Timer();
-            timer.schedule(new TimerTask() { // task to be scheduled
-                @Override
-                public void run() {
-                    handler.post(Update);
-                }
-            }, 0, TIME_PERIOD);
-
             LinearLayout[] layouts = new LinearLayout[4];
             layouts[0] = dialog.findViewById(R.id.rb5Likes);
             layouts[1] = dialog.findViewById(R.id.rb25Likes);
@@ -674,33 +514,32 @@ public class CommonDialogs {
                 layouts[i].setOnClickListener(v -> {
                     indexOfSelectedLayout = finalI;
                     unSelectAll(layouts);
-                    layouts[finalI].setBackgroundResource(R.drawable.bg_time_token_selected);
+                    layouts[finalI].setBackgroundResource(R.drawable.vip_token_red_bg);
                 });
             }
             Button btn_continue = dialog.findViewById(R.id.btn_continue);
-            btn_continue.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (indexOfSelectedLayout == 0) {
-                        clickListener.onClickToken("vipToken", 1, indexOfSelectedLayout);//4.99
-                    } else if (indexOfSelectedLayout == 1) {
-                        clickListener.onClickToken("vipToken", 5, indexOfSelectedLayout);//19.99
-                    } else if (indexOfSelectedLayout == 2) {
-                        clickListener.onClickToken("vipToken", 10, indexOfSelectedLayout);//34.99
-                    } else {
-                        clickListener.onClickToken("vipToken", 20, indexOfSelectedLayout);//59.99
-                    }
-                    dialog.dismiss();
-                }
+            btn_continue.setOnClickListener(v -> {
+               /* if (indexOfSelectedLayout == 0) {
+                    clickListener.onClickToken("vipToken", 1, indexOfSelectedLayout);//4.99
+                } else if (indexOfSelectedLayout == 1) {
+                    clickListener.onClickToken("vipToken", 5, indexOfSelectedLayout);//19.99
+                } else if (indexOfSelectedLayout == 2) {
+                    clickListener.onClickToken("vipToken", 10, indexOfSelectedLayout);//34.99
+                } else {
+                    clickListener.onClickToken("vipToken", 20, indexOfSelectedLayout);//59.99
+                }*/
+                dialog.dismiss();
             });
             ivclose.setOnClickListener(v -> dialog.dismiss());
             dialog.show();
         }
     }
-private static ProgressDialog progressDialog ;
-    private static void showLoader(Context context){
-        if (progressDialog==null){
-            progressDialog=new ProgressDialog(context);
+
+    private static ProgressDialog progressDialog;
+
+    private static void showLoader(Context context) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(context);
             if (progressDialog.getWindow() != null) {
                 progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             }
@@ -710,13 +549,15 @@ private static ProgressDialog progressDialog ;
             progressDialog.setCanceledOnTouchOutside(false);
         }
         if (!progressDialog.isShowing())
-        progressDialog.show();
+            progressDialog.show();
     }
-    private static void hideLoading(){
-        if (progressDialog!=null&&progressDialog.isShowing()){
+
+    private static void hideLoading() {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }
+
     public static Dialog PremuimPurChaseDialog(Context ctx, final onProductConsume clickListener) {
         if (dialog == null || !dialog.isShowing()) {
             currentPage = 0;
@@ -789,19 +630,19 @@ private static ProgressDialog progressDialog ;
                             new CallRestoreApi().callApi(model, new SharedPreference(ctx), subscriptiontype, new onPurchaseRestore() {
                                 @Override
                                 public void onError(String msg) {
-                                    Toast.makeText(ctx,msg,Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
                                     hideLoading();
                                     dialog.dismiss();
                                 }
 
                                 @Override
                                 public void onSucces() {
-                                    Toast.makeText(ctx,"Purchase Restored Successfully",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ctx, "Purchase Restored Successfully", Toast.LENGTH_SHORT).show();
                                     hideLoading();
                                     dialog.dismiss();
                                 }
                             });
-                        }else {
+                        } else {
                             //Toast.makeText(ctx,"Purchase Restore unavailable.",Toast.LENGTH_SHORT).show();
                             hideLoading();
                             //dialog.dismiss();
@@ -897,26 +738,26 @@ private static ProgressDialog progressDialog ;
                         showLoader(ctx);
                         model = checkExistingSubscriptionForDeluxe(myBp, ctx);
                         if (model != null) {
-                            Log.e(TAG, "onClick: "+model.getPurchaseState() );
+                            Log.e(TAG, "onClick: " + model.getPurchaseState());
                             new CallRestoreApi().callApi(model, new SharedPreference(ctx), subscriptiontype, new onPurchaseRestore() {
                                 @Override
                                 public void onError(String msg) {
-                                    Toast.makeText(ctx,msg,Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
                                     hideLoading();
                                     dialog.dismiss();
                                 }
 
                                 @Override
                                 public void onSucces() {
-                                    Toast.makeText(ctx,"Purchase Restored Successfully",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ctx, "Purchase Restored Successfully", Toast.LENGTH_SHORT).show();
                                     hideLoading();
                                     dialog.dismiss();
                                 }
                             });
-                        }else {
-                           // Toast.makeText(ctx,"Purchase Restore unavailable.",Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Toast.makeText(ctx,"Purchase Restore unavailable.",Toast.LENGTH_SHORT).show();
                             hideLoading();
-                           // dialog.dismiss();
+                            // dialog.dismiss();
                         }
                     }
                     //gotoManageSubscription(ctx);
@@ -1070,19 +911,19 @@ private static ProgressDialog progressDialog ;
                             new CallRestoreApi().callApi(model, new SharedPreference(ctx), subscriptiontype, new onPurchaseRestore() {
                                 @Override
                                 public void onError(String msg) {
-                                    Toast.makeText(ctx,msg,Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
                                     hideLoading();
                                     dialog.dismiss();
                                 }
 
                                 @Override
                                 public void onSucces() {
-                                    Toast.makeText(ctx,"Purchase Restored Successfully",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ctx, "Purchase Restored Successfully", Toast.LENGTH_SHORT).show();
                                     hideLoading();
                                     dialog.dismiss();
                                 }
                             });
-                        }else {
+                        } else {
                             //Toast.makeText(ctx,"Purchase Restore unavailable.",Toast.LENGTH_SHORT).show();
                             hideLoading();
                             //dialog.dismiss();
@@ -1295,22 +1136,22 @@ private static ProgressDialog progressDialog ;
         setPurchaseData(vipTokenArr, vipTokenPriceList, bp);
         setPurchaseData(timeTokenArr, timeTokenPriceList, bp);
         setPurchaseData(crushTokenArr, crushTokenPriceList, bp);
-        setSubcripData(PremiumArr, PremiumPriceList, bp,PremiumPriceArr);
-        setSubcripData(DeluxeArr, DeluxePriceList, bp,DeluxePriceArr);
+        setSubcripData(PremiumArr, PremiumPriceList, bp, PremiumPriceArr);
+        setSubcripData(DeluxeArr, DeluxePriceList, bp, DeluxePriceArr);
     }
 
     public static void setBilling(BillingProcessor bp) {
         myBp = bp;
     }
 
-    public static void setSubcripData(String[] arr, List<InAppPriceValue> PriceList, BillingProcessor bp,Double[] pricearr) {
+    public static void setSubcripData(String[] arr, List<InAppPriceValue> PriceList, BillingProcessor bp, Double[] pricearr) {
         PriceList.clear();
         //SkuDetails skuDetails;
         for (int i = 0; i < arr.length; i++) {
            /* String s = arr[i];
             skuDetails = bp.getSubscriptionListingDetails(s);
             if (skuDetails != null)*/
-                PriceList.add(new InAppPriceValue("$" + pricearr[i] /*skuDetails.priceText*/, pricearr[i] /*skuDetails.priceValue*/));
+            PriceList.add(new InAppPriceValue("$" + pricearr[i] /*skuDetails.priceText*/, pricearr[i] /*skuDetails.priceValue*/));
         }
     }
 
@@ -1387,7 +1228,7 @@ private static ProgressDialog progressDialog ;
                 Date c = bp.getSubscriptionTransactionDetails(productid).purchaseInfo.purchaseData.purchaseTime;
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss");
                 String formattedDate = df.format(c);
-                Log.e(TAG, "checkExistingSubscriptionForDeluxe: "+bp.getSubscriptionTransactionDetails(productid).purchaseInfo.toString() );
+                Log.e(TAG, "checkExistingSubscriptionForDeluxe: " + bp.getSubscriptionTransactionDetails(productid).purchaseInfo.toString());
                 return new PremiumTokenCountModel(subscriptiontype, productid, price, Integer.parseInt(productid.split("_")[1]), bp.getSubscriptionTransactionDetails(productid).purchaseInfo.purchaseData.orderId, bp.getSubscriptionTransactionDetails(productid).purchaseInfo.purchaseData.purchaseToken, formattedDate, bp.getSubscriptionTransactionDetails(productid).purchaseInfo.signature, bp.getSubscriptionTransactionDetails(productid).purchaseInfo.purchaseData.purchaseState.toString());
             } else {
                 new AlertDialog.Builder(ctx).setTitle("Nothing to restore").setMessage("No previous purchases were found").setPositiveButton("ok", null).show();
@@ -1432,6 +1273,7 @@ private static ProgressDialog progressDialog ;
 
     public interface onPurchaseRestore {
         void onSucces();
+
         void onError(String msg);
     }
 

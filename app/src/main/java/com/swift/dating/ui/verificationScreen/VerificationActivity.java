@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.swift.dating.DummyActivity;
 import com.swift.dating.R;
 import com.swift.dating.data.network.ApiCall;
 import com.swift.dating.data.network.ApiCallback;
@@ -29,6 +29,7 @@ import com.swift.dating.model.responsemodel.VerificationResponseModel;
 import com.swift.dating.ui.base.BaseActivity;
 import com.swift.dating.ui.createAccountScreen.CreateAccountActivity;
 import com.swift.dating.ui.emailScreen.EmailActivity;
+import com.swift.dating.ui.homeScreen.HomeActivity;
 import com.swift.dating.ui.welcomeScreen.WelcomeActivity;
 
 import in.aabhasjindal.otptextview.OTPListener;
@@ -113,8 +114,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
         } else if (!userStatus.equalsIgnoreCase("Active")) {
             i = new Intent(mActivity, WelcomeActivity.class);
         } else {
-            // i = new Intent(mActivity, HomeActivity.class);
-            i = new Intent(mActivity, DummyActivity.class);
+            i = new Intent(mActivity, HomeActivity.class);
         }
         startActivity(i);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -192,8 +192,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                     callEmailScreen();
                 }
             } else {
-                //Intent intent = new Intent(mActivity, HomeActivity.class);
-                Intent intent = new Intent(mActivity, DummyActivity.class);
+                Intent intent = new Intent(mActivity, HomeActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finishAffinity();

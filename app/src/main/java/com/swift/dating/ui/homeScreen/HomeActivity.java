@@ -53,8 +53,8 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
     public String timer = "";
     public isDeluxePopOpen isDeluxePopOpen;
     int tabPos = 0;
-    public List<User> LikeUserlist=new ArrayList<>();
-    public List<User> DisLikeUserlist=new ArrayList<>();
+    public List<User> LikeUserlist = new ArrayList<>();
+    public List<User> DisLikeUserlist = new ArrayList<>();
     HomeViewModel homeViewModel;
     boolean isShowDirect = false;
     boolean isShowSecondChance = false;
@@ -67,18 +67,17 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.primaryTextColor));
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_home);
-        if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().containsKey("replace")) {
+       /* if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().containsKey("replace")) {
             isShowDirect = MatchFragment.isShowDirect;
             isShowSecondChance = LikesFrament.showSencondChance;
             tabPos = getIntent().getExtras().getInt("replace");
-        }
-        setToolbar();
-        onNewIntent(getIntent());
+        }*/
+        // setToolbar(); v
+        //  onNewIntent(getIntent());
         sp = new SharedPreference(this);
-        sp.setDislikeApi(true);
+        // sp.setDislikeApi(true);
         init(tabPos);
         //Daily Popup Code
        /* if (!sp.getPremium() && !sp.getDeluxe() && sp.getVerified().equalsIgnoreCase("Yes")) {
@@ -214,19 +213,21 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
     @Override
     protected void onStart() {
         super.onStart();
+/*
         LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
                 new IntentFilter("MyData"));
+*/
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        //    LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
     @Override
     protected void onResume() {
-        isHomeScreen = true;
+        /*isHomeScreen = true;
         if (getIntent().hasExtra("type")) {
             type = getIntent().getExtras().getInt("type");
         }
@@ -234,12 +235,14 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
         if (sp.getVerified().equals("Yes")) {
             homeViewModel.unreadRequest(sp.getToken());
         }
+        */
         super.onResume();
+
     }
 
     @Override
     protected void onPause() {
-        isHomeScreen = false;
+        // isHomeScreen = false;
         super.onPause();
 
     }
@@ -261,7 +264,6 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
         Bundle extra = intent.getExtras();
         super.onNewIntent(intent);
         if (extra != null) {
-
             if (extra.containsKey("approved")) {
                 sp.saveVerified("Yes");
                 sp.saveIsRejected(false);

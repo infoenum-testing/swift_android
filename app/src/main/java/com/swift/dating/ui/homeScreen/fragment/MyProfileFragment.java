@@ -124,7 +124,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         mActivity = (BaseActivity) getActivity();
         if (getBaseActivity().isNetworkConnected()) {
             //((HomeActivity) Objects.requireNonNull(getActivity())).setToolbarWithTitle("Black Gentry");
-            ((HomeActivity) getActivity()).mToolbar.setVisibility(View.GONE);
+            // ((HomeActivity) getActivity()).mToolbar.setVisibility(View.GONE);
             Gson gson = new Gson();
             SharedPreference sp = new SharedPreference(getContext());
             String jsonImage = sp.getUserImage();
@@ -404,17 +404,17 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void setCrushTokens(@NonNull ProfileOfUser obj) {
-        String TokenStr = obj.getSuperLikesCount() == 1 ? obj.getSuperLikesCount() + "Crush Token" : obj.getSuperLikesCount() + "Crush Tokens";
+        String TokenStr = obj.getSuperLikesCount() == 1 ? obj.getSuperLikesCount() + " Crush Token" : obj.getSuperLikesCount() + " Crush Tokens";
         tvCrushToken.setText(TokenStr);
     }
 
     private void setVipTokens(@NonNull ProfileOfUser obj) {
-        String TokenStr = obj.getVipToken() == 1 ? obj.getVipToken() + "Vip Token" : obj.getVipToken() + "Vip Tokens";
+        String TokenStr = obj.getVipToken() == 1 ? obj.getVipToken() + " Vip Token" : obj.getVipToken() + " Vip Tokens";
         tvVipToken.setText(TokenStr);
     }
 
     private void setTimeToken(@NonNull ProfileOfUser obj) {
-        String timeToke = obj.getTimeTokenCount() == 1 ? obj.getTimeTokenCount() + "Time Token" : obj.getTimeTokenCount() + "Time Tokens";
+        String timeToke = obj.getTimeTokenCount() == 1 ? obj.getTimeTokenCount() + " Time Token" : obj.getTimeTokenCount() + " Time Tokens";
         tvTimeTokenTxt.setText(timeToke);
     }
 
@@ -537,14 +537,14 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (view.getId() == R.id.card_vip) {
             CommonDialogs.VIPPurChaseDialog(getContext(), this);
-        } else if (view.getId() == R.id.btn_bg_delux) {
+        } /*else if (view.getId() == R.id.btn_bg_delux) {
             getBaseActivity().sp.setDialogOpen(true);
             if (getBaseActivity().sp.getDeluxe()) {
                 CommonDialogs.showAlreadyPremiumUser(getContext(), getContext().getResources().getString(R.string.you_have_active_deluxe_subscription));
             } else {
                 CommonDialogs.DeluxePurChaseDialog(getContext(), this);
             }
-        } else if (view.getId() == R.id.btn_change) {
+        } */ else if (view.getId() == R.id.btn_change) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (mActivity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2021);

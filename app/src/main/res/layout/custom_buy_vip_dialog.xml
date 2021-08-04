@@ -5,121 +5,86 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:weightSum="2">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight=".9"
-                android:background="@drawable/vip_token_bg"
-                android:scaleX="1.2"
-                android:scaleY="1.2" />
-        </LinearLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:layout_above="@+id/btn_continue">
+        android:layout_above="@+id/btn_continue"
+        android:fillViewport="true">
 
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        <RelativeLayout
-            android:id="@+id/rv_action"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
 
             <ImageView
                 android:id="@+id/ivclose"
+                android:layout_width="@dimen/_30ssp"
+                android:layout_height="@dimen/_30ssp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:src="@drawable/ic_back_btn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/pink"
+
+                />
+
+            <ImageView
+                android:id="@+id/img_crush"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="@dimen/_10sdp"
-                android:src="@drawable/close_black_ic"
-                android:tint="@color/white" />
+                android:layout_gravity="center"
+                android:src="@drawable/vip_token_top"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivclose" />
+
+            <Space
+                android:id="@+id/space"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_crush" />
 
             <TextView
                 android:id="@+id/tvHeading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
                 android:fontFamily="@font/medium"
+                android:gravity="center"
                 android:text="VIP Tokens"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_16sdp" />
-        </RelativeLayout>
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/btn_continue"
-            android:layout_below="@+id/rv_action"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <LinearLayout
-                android:id="@+id/llLay"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/img_crush"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/vip_token_header_img" />
-
-                <TextView
-                    android:id="@+id/tvSubHeading1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:fontFamily="@font/medium"
-                    android:gravity="center"
-                    android:text="Use VIP tokens to skip the line and be shown to more users quicker. Each token lasts 30 minutes."
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_12ssp"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/pager_text"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:textColor="@color/title_color"
+                android:textSize="@dimen/_15ssp"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/llLay">
+                app:layout_constraintTop_toBottomOf="@+id/space" />
 
-            </androidx.viewpager.widget.ViewPager>
 
-            <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
-                android:id="@+id/text_pager_indicator"
+            <TextView
+                android:id="@+id/tvSubHeading1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/medium"
                 android:gravity="center"
-                app:dotsColor="@color/white"
-                app:dotsCornerRadius="8dp"
-                app:dotsSize="8dp"
-                app:dotsSpacing="4dp"
-                app:dotsStrokeColor="@color/white"
-                app:dotsStrokeWidth="1dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="Use VIP Tokens to skip the line and be shown to users quicker. Each token lasts 30 minutes"
+                android:textColor="@color/grey_new"
+                android:textSize="@dimen/_12ssp"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pager_text" />
+
+                app:layout_constraintTop_toBottomOf="@+id/tvHeading" />
 
             <LinearLayout
                 android:id="@+id/ll_purchase"
@@ -128,7 +93,7 @@
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_pager_indicator">
+                app:layout_constraintTop_toBottomOf="@+id/tvSubHeading1">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -140,25 +105,24 @@
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="180dp"
-                        android:layout_height="185dp"
+                        android:layout_height="190dp"
                         app:cardBackgroundColor="@color/white"
                         app:cardCornerRadius="10dp"
-                        app:cardElevation="10dp"
+                        app:cardElevation="5dp"
                         app:cardUseCompatPadding="true">
 
                         <LinearLayout
                             android:id="@+id/rb5Likes"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_margin="8dp"
-                            android:background="@drawable/bg_time_token_selected"
+                            android:background="@drawable/vip_token_red_bg"
                             android:gravity="center"
                             android:orientation="vertical">
 
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:src="@drawable/img_1_coin" />
+                            <TextView
+                                style="@style/vip_token_count_style"
+                                android:text="1" />
 
                             <TextView
                                 android:id="@+id/tvToken1Price"
@@ -184,25 +148,24 @@
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="180dp"
-                        android:layout_height="185dp"
+                        android:layout_height="190dp"
                         app:cardBackgroundColor="@color/white"
                         app:cardCornerRadius="10dp"
-                        app:cardElevation="10dp"
+                        app:cardElevation="5dp"
                         app:cardUseCompatPadding="true">
 
                         <LinearLayout
                             android:id="@+id/rb25Likes"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_margin="8dp"
                             android:background="@drawable/img_rectangle_outline"
                             android:gravity="center"
                             android:orientation="vertical">
 
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:src="@drawable/img_5_coin" />
+                            <TextView
+                                style="@style/vip_token_count_style"
+                                android:text="5" />
 
                             <TextView
                                 android:id="@+id/tvToken5Price"
@@ -239,25 +202,24 @@
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="180dp"
-                        android:layout_height="185dp"
+                        android:layout_height="190dp"
                         app:cardBackgroundColor="@color/white"
                         app:cardCornerRadius="10dp"
-                        app:cardElevation="10dp"
+                        app:cardElevation="5dp"
                         app:cardUseCompatPadding="true">
 
                         <LinearLayout
                             android:id="@+id/tokens10Lay"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_margin="8dp"
                             android:background="@drawable/img_rectangle_outline"
                             android:gravity="center"
                             android:orientation="vertical">
 
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:src="@drawable/img_20_coin" />
+                            <TextView
+                                style="@style/vip_token_count_style"
+                                android:text="10" />
 
                             <TextView
                                 android:id="@+id/tvToken10Price"
@@ -284,25 +246,24 @@
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="180dp"
-                        android:layout_height="185dp"
+                        android:layout_height="190dp"
                         app:cardBackgroundColor="@color/white"
                         app:cardCornerRadius="10dp"
-                        app:cardElevation="10dp"
+                        app:cardElevation="5dp"
                         app:cardUseCompatPadding="true">
 
                         <LinearLayout
                             android:id="@+id/tokens20Lay"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_margin="8dp"
                             android:background="@drawable/img_rectangle_outline"
                             android:gravity="center"
                             android:orientation="vertical">
 
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:src="@drawable/img_10_coin" />
+                            <TextView
+                                style="@style/vip_token_count_style"
+                                android:text="20" />
 
                             <TextView
                                 android:id="@+id/tvToken20Price"
@@ -334,30 +295,23 @@
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
                     android:text="@string/non_refundable"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/grey_new" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </RelativeLayout>
     </ScrollView>
 
-        <Button
-            android:id="@+id/btn_continue"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/continue_to_btn_bg"
-            android:backgroundTint="@color/orange"
-            android:fontFamily="@font/medium"
-            android:minWidth="@dimen/_200sdp"
-            android:paddingTop="@dimen/_10sdp"
-            android:paddingBottom="@dimen/_10sdp"
-            android:text="@string/continue_txt"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_14ssp" />
+    <Button
+        android:id="@+id/btn_continue"
+        style="@style/token_btn_style"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/vip_token_btn_bg" />
+
+
+    <!--  <Button
+        android:id="@+id/btn_continue"
+        style="@style/token_btn_style"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/continue_to_btn_bg" />-->
 
 </RelativeLayout>

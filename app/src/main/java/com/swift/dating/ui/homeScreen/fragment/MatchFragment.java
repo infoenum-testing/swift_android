@@ -165,7 +165,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {/*
         getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         super.onViewCreated(view, savedInstanceState);
         mActivity = (BaseActivity) getActivity();
@@ -178,7 +178,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             initBillingProcess();
         } else {
             getBaseActivity().showSnackbar(view, "Please connect to internet");
-        }
+        }*/
     }
 
     private void initBillingProcess() {
@@ -441,7 +441,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
 
     @Override
     public void onResume() {
-        mActivity = (BaseActivity) getActivity();
+      /*  mActivity = (BaseActivity) getActivity();
         ((HomeActivity) Objects.requireNonNull(getActivity())).mToolbar.setVisibility(View.GONE);
         if (getBaseActivity().isNetworkConnected()) {
             try {
@@ -471,14 +471,14 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                     rv_reject.setVisibility(View.GONE);
                 }
             }
-        }
+        }*/
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMessageReceiver2);
-        getBaseActivity().isMatchScreen = false;
+     /*   LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMessageReceiver2);
+        getBaseActivity().isMatchScreen = false;*/
         super.onPause();
     }
 

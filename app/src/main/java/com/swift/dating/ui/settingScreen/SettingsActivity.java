@@ -467,51 +467,54 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         String json = sp.getUser();
         Log.e(TAG, "setData: " + json);
         ProfileOfUser obj = gson.fromJson(json, ProfileOfUser.class);
-        if (sp != null && !TextUtils.isEmpty(sp.getMyString(SharedPreference.userEmail))) {
-            tvEmail.setText(sp.getMyString(SharedPreference.userEmail));
-        } else if (!TextUtils.isEmpty(obj.getUseremail())) {
-            tvEmail.setText(obj.getUseremail());
-        }
-        if (sp != null && !TextUtils.isEmpty(sp.getMyString(SharedPreference.userPhone))) {
-            tvPhone.setText(sp.getMyString(SharedPreference.userPhone));
-        }
-        if (!TextUtils.isEmpty(obj.getExpiredMatches())) {
-            expireSwitch.setChecked(obj.getExpiredMatches().equalsIgnoreCase("on"));
-        }
-        if (!TextUtils.isEmpty(obj.getChatNotify())) {
-            matchSwitch.setChecked(obj.getChatNotify().equalsIgnoreCase("on"));
-        }
-        if (!TextUtils.isEmpty(obj.getMatchNotify())) {
-            newMatchSwitch.setChecked(obj.getMatchNotify().equalsIgnoreCase("on"));
-        }
-        if (!TextUtils.isEmpty(obj.getEmailNotify())) {
-            emailNotifySwitch.setChecked(obj.getEmailNotify().equalsIgnoreCase("on"));
-        }
-        if (!TextUtils.isEmpty(obj.getReactionNotify())) {
-            pushNotifySwitch.setChecked(obj.getReactionNotify().equalsIgnoreCase("on"));
-        }
-        if (!TextUtils.isEmpty(obj.getVisible()))
-            showMeSwitch.setChecked(obj.getVisible().equalsIgnoreCase("true"));
-        if (obj.getMaxAgePrefer() != null)
-            seekAgeRange.setSelectedMaxValue(obj.getMaxAgePrefer());
-        if (obj.getMinAgePrefer() != null)
-            seekAgeRange.setSelectedMinValue(obj.getMinAgePrefer());
-        if (obj.getDistance() != null && obj.getDistance().intValue() > 20) {
-            seekDistance.setProgress(obj.getDistance().floatValue());
-            tvDistance.setText(obj.getDistance().intValue() + " Miles");
-        } else {
-            seekDistance.setProgress(20);
-            tvDistance.setText("20 Miles");
-        }
-        tvLookingFor.setText(obj.getInterested() != null ? obj.getInterested().equalsIgnoreCase("Both") ? "Looking for: Everyone" : "Looking for: " + obj.getInterested() : "Looking for: ");
-        tvAgeRange.setText(obj.getMinAgePrefer() + "-" + obj.getMaxAgePrefer());
-        // Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        //List<Address> addresses = null;
         try {
-            // addresses = geocoder.getFromLocation(Double.parseDouble(obj.getLatitude()), Double.parseDouble(obj.getLongitude()), 1);
-            // int maxAddressLine = addresses.get(0).getMaxAddressLineIndex();
-            // String cityName = addresses.get(0).getLocality();// + ", " + addresses.get(0).getAdminArea();
-            tvLocation.setText(CommonUtils.getCityAddress(mContext, obj.getLatitude(), obj.getLongitude()));
+            if (obj!=null) {
+                if (sp != null && !TextUtils.isEmpty(sp.getMyString(SharedPreference.userEmail))) {
+                    tvEmail.setText(sp.getMyString(SharedPreference.userEmail));
+                } else if (!TextUtils.isEmpty(obj.getUseremail())) {
+                    tvEmail.setText(obj.getUseremail());
+                }
+                if (sp != null && !TextUtils.isEmpty(sp.getMyString(SharedPreference.userPhone))) {
+                    tvPhone.setText(sp.getMyString(SharedPreference.userPhone));
+                }
+                if (!TextUtils.isEmpty(obj.getExpiredMatches())) {
+                    expireSwitch.setChecked(obj.getExpiredMatches().equalsIgnoreCase("on"));
+                }
+                if (!TextUtils.isEmpty(obj.getChatNotify())) {
+                    matchSwitch.setChecked(obj.getChatNotify().equalsIgnoreCase("on"));
+                }
+                if (!TextUtils.isEmpty(obj.getMatchNotify())) {
+                    newMatchSwitch.setChecked(obj.getMatchNotify().equalsIgnoreCase("on"));
+                }
+                if (!TextUtils.isEmpty(obj.getEmailNotify())) {
+                    emailNotifySwitch.setChecked(obj.getEmailNotify().equalsIgnoreCase("on"));
+                }
+                if (!TextUtils.isEmpty(obj.getReactionNotify())) {
+                    pushNotifySwitch.setChecked(obj.getReactionNotify().equalsIgnoreCase("on"));
+                }
+                if (!TextUtils.isEmpty(obj.getVisible()))
+                    showMeSwitch.setChecked(obj.getVisible().equalsIgnoreCase("true"));
+                if (obj.getMaxAgePrefer() != null)
+                    seekAgeRange.setSelectedMaxValue(obj.getMaxAgePrefer());
+                if (obj.getMinAgePrefer() != null)
+                    seekAgeRange.setSelectedMinValue(obj.getMinAgePrefer());
+                if (obj.getDistance() != null && obj.getDistance().intValue() > 20) {
+                    seekDistance.setProgress(obj.getDistance().floatValue());
+                    tvDistance.setText(obj.getDistance().intValue() + " Miles");
+                } else {
+                    seekDistance.setProgress(20);
+                    tvDistance.setText("20 Miles");
+                }
+                tvLookingFor.setText(obj.getInterested() != null ? obj.getInterested().equalsIgnoreCase("Both") ? "Looking for: Everyone" : "Looking for: " + obj.getInterested() : "Looking for: ");
+                tvAgeRange.setText(obj.getMinAgePrefer() + "-" + obj.getMaxAgePrefer());
+                // Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                //List<Address> addresses = null;
+                // addresses = geocoder.getFromLocation(Double.parseDouble(obj.getLatitude()), Double.parseDouble(obj.getLongitude()), 1);
+                // int maxAddressLine = addresses.get(0).getMaxAddressLineIndex();
+                // String cityName = addresses.get(0).getLocality();// + ", " + addresses.get(0).getAdminArea();
+                tvLocation.setText(CommonUtils.getCityAddress(mContext, obj.getLatitude(), obj.getLongitude()));
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             tvLocation.setText("Add Location");

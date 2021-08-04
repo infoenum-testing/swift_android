@@ -27,7 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.facebook.login.LoginResult;
-import com.swift.dating.DummyActivity;
 import com.swift.dating.R;
 import com.swift.dating.data.network.Resource;
 import com.swift.dating.model.requestmodel.SignUpRequestModel;
@@ -37,6 +36,7 @@ import com.swift.dating.ui.base.CommonWebViewActivity;
 import com.swift.dating.ui.createAccountScreen.CreateAccountActivity;
 import com.swift.dating.ui.emailScreen.PhoneActivity;
 import com.swift.dating.ui.emailScreen.viewmodel.EnterEmailViewModel;
+import com.swift.dating.ui.homeScreen.HomeActivity;
 import com.swift.dating.ui.welcomeScreen.WelcomeActivity;
 
 import java.util.Arrays;
@@ -258,8 +258,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         } else if (!userStatus.equalsIgnoreCase("Active")) {
             i = new Intent(mActivity, WelcomeActivity.class);
         } else {
-            // i = new Intent(mActivity, HomeActivity.class);
-            i = new Intent(mActivity, DummyActivity.class);
+             i = new Intent(mActivity, HomeActivity.class);
         }
         startActivity(i);
         finishAffinity();

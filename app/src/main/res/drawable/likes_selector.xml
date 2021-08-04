@@ -3,11 +3,7 @@
 
 
     <item android:drawable="@drawable/like_selected" android:state_selected="true" />
-    <item android:drawable="@drawable/like_unselected"
-        android:state_focused="false" android:state_pressed="false"
-        android:state_selected="false"
-        android:tint="@color/primaryTextColor"
-        />
+    <item android:drawable="@drawable/like_unselected" android:state_focused="false" android:state_pressed="false" android:state_selected="false" android:tint="@color/primaryTextColor" />
 
 
 </selector>

@@ -93,30 +93,30 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
 
     @Override
     public void onPause() {
-        if (getBaseActivity() != null && getBaseActivity().sp.getDeluxe()) {
+      /*  if (getBaseActivity() != null && getBaseActivity().sp.getDeluxe()) {
             getBaseActivity().sp.saveString(MyPageIndex, "" + pageCount);
             getBaseActivity().sp.saveString(RecycleLastPos, "" + posAdapter);
-        }
+        }*/
         super.onPause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mActivity = (BaseActivity) getActivity();
-        ((HomeActivity) getActivity()).mToolbar.setVisibility(View.GONE);
+/*        mActivity = (BaseActivity) getActivity();
+        ((HomeActivity) getActivity()).mToolbar.setVisibility(View.GONE);*/
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mActivity = (BaseActivity) getActivity();
+    /*    mActivity = (BaseActivity) getActivity();
         Log.e(TAG, "onViewCreated: SearchFragment" );
         if (getBaseActivity().isNetworkConnected()) {
             initViews(view);
         } else {
             getBaseActivity().showSnackbar(view, "Please connect to internet");
-        }
+        }*/
     }
 
     public void showLoading() {

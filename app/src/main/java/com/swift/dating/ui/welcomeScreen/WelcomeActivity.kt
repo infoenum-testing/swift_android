@@ -6,11 +6,9 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
-import com.swift.dating.DummyActivity
 import com.swift.dating.R
 import com.swift.dating.data.network.CallServer
 import com.swift.dating.data.network.Resource
@@ -18,6 +16,7 @@ import com.swift.dating.data.preference.SharedPreference
 import com.swift.dating.model.responsemodel.VerificationResponseModel
 import com.swift.dating.ui.base.BaseActivity
 import com.swift.dating.ui.base.CommonWebViewActivity
+import com.swift.dating.ui.homeScreen.HomeActivity
 import kotlinx.android.synthetic.main.activity_welcome.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -73,7 +72,7 @@ class WelcomeActivity : BaseActivity() {
                         obj.user = verificationResponseModel.user
                         sp.saveUserData(obj.user.profileOfUser, verificationResponseModel.user.profileOfUser.completed.toString())
                         sp.saveString(SharedPreference.userStatus, verificationResponseModel.user.status);
-                        val i: Intent? = Intent(mActivity, DummyActivity::class.java)
+                        val i: Intent? = Intent(mActivity, HomeActivity::class.java)
                         startActivity(i)
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                         finishAffinity()

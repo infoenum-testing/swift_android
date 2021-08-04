@@ -133,11 +133,11 @@ class MyCardActivity : BaseActivity() {
 
         iv_back.setOnClickListener { view -> onBackPressed() }
 
-        left_overlay.visibility = View.GONE
-        right_overlay.visibility = View.GONE
-        top_overlay.visibility = View.GONE
-        bottom_overlay.visibility = View.GONE
-        tv_report.visibility = View.GONE
+        left_overlay.visibility = GONE
+        right_overlay.visibility = GONE
+        top_overlay.visibility = GONE
+        bottom_overlay.visibility = GONE
+        tv_report.visibility = GONE
 
         val gson = Gson()
         val json = sp.user
@@ -167,7 +167,7 @@ class MyCardActivity : BaseActivity() {
         ivUserImage6.maxHeight = 1700
         ivUserImage6.minimumHeight = 1700
 
-        view1.visibility = View.GONE
+        view1.visibility = GONE
 
 
         if (!TextUtils.isEmpty(obj!!.name)) {
@@ -180,90 +180,105 @@ class MyCardActivity : BaseActivity() {
         if (sp.linkedIn) {
             llLinkedin.visibility = View.VISIBLE
         } else {
-            llLinkedin.visibility = View.GONE
+            llLinkedin.visibility = GONE
         }
 
         ll_superlike.visibility = GONE
 
-        tv_distance.visibility = View.GONE
-        currentLoc.visibility = View.GONE
+        tv_distance.visibility = GONE
+        currentLoc.visibility = GONE
         if (!TextUtils.isEmpty(obj.city)) {
             tv_lives_in.text = obj.city
         } else
-            cv_live.visibility = View.GONE
+            cv_live.visibility = GONE
 
         if (!TextUtils.isEmpty(obj.question1)) {
             tvQuestion1.text = obj.question1
             tvAnswer1.text = obj.answer1
         } else
-            cvQuestion1.visibility = View.GONE
+            cvQuestion1.visibility = GONE
 
         if (!TextUtils.isEmpty(obj.question2)) {
             tvQuestion2.text = obj.question2
             tvAnswer2.text = obj.answer2
         } else
-            cvQuestion2.visibility = View.GONE
+            cvQuestion2.visibility = GONE
 
         if (!TextUtils.isEmpty(obj.question3)) {
             tvQuestion3.text = obj.question3
             tvAnswer3.text = obj.answer3
         } else
-            cvQuestion3.visibility = View.GONE
+            cvQuestion3.visibility = GONE
 
 
         if (!TextUtils.isEmpty(obj.occupation))
             tvOccupation.text = obj.occupation
         else
-            cv_occupation.visibility = View.GONE
+            cv_occupation.visibility = GONE
 
         if (!TextUtils.isEmpty(obj.school))
             tvSchool.text = obj.school
         else
-            cvSchool.visibility = View.GONE
+            cvSchool.visibility = GONE
 
         if (!TextUtils.isEmpty(obj.aboutme)) {
             cv_about_me.visibility = View.VISIBLE
             tv_about_me.text = obj.aboutme
         } else
-            cv_about_me.visibility = View.GONE
+            cv_about_me.visibility = GONE
 
         if (!TextUtils.isEmpty(obj.ambitions)) {
             cv_interest.visibility = View.VISIBLE
             tv_interest.text = obj.ambitions
         } else
-            cv_interest.visibility = View.GONE
+            cv_interest.visibility = GONE
 
 
 
 
-        Glide.with(item_image).load(CallServer.BaseImage + imagelist.get(0).imageUrl).centerCrop()
+        Glide.with(item_image).load(CallServer.BaseImage + imagelist[0].imageUrl).centerCrop()
                 .into(item_image);
-        Glide.with(ivUserImage2).load(CallServer.BaseImage + imagelist.get(1).imageUrl).centerCrop()
-                .into(ivUserImage2);
-        Glide.with(ivUserImage3).load(CallServer.BaseImage + imagelist.get(2).imageUrl).centerCrop()
-                .into(ivUserImage3);
-        
-        if (imagelist.size > 3) {
-            Glide.with(ivUserImage4).load(CallServer.BaseImage + imagelist.get(3).imageUrl).centerCrop()
-                    .into(ivUserImage4);
-            if (imagelist.size > 4) {
-                Glide.with(ivUserImage5).load(CallServer.BaseImage + imagelist.get(4).imageUrl).centerCrop()
-                        .into(ivUserImage5);
-                if (imagelist.size > 5) {
-                    Glide.with(ivUserImage6).load(CallServer.BaseImage + imagelist.get(5).imageUrl).centerCrop()
-                            .into(ivUserImage6);
+
+        if (imagelist.size > 1) {
+            Glide.with(ivUserImage2).load(CallServer.BaseImage + imagelist[1].imageUrl).centerCrop()
+                    .into(ivUserImage2);
+
+            if (imagelist.size > 2) {
+                Glide.with(ivUserImage3).load(CallServer.BaseImage + imagelist[2].imageUrl).centerCrop()
+                        .into(ivUserImage3);
+                if (imagelist.size > 3) {
+                    Glide.with(ivUserImage4).load(CallServer.BaseImage + imagelist[3].imageUrl).centerCrop()
+                            .into(ivUserImage4)
+                    if (imagelist.size > 4) {
+                        Glide.with(ivUserImage5).load(CallServer.BaseImage + imagelist[4].imageUrl).centerCrop()
+                                .into(ivUserImage5);
+                        if (imagelist.size > 5) {
+                            Glide.with(ivUserImage6).load(CallServer.BaseImage + imagelist[5].imageUrl).centerCrop()
+                                    .into(ivUserImage6);
+                        } else {
+                            ivUserImage6.visibility = GONE
+                        }
+                    } else {
+                        ivUserImage5.visibility = GONE
+                        ivUserImage6.visibility = GONE
+                    }
                 } else {
-                    ivUserImage6.visibility = View.GONE
+                    ivUserImage4.visibility = GONE
+                    ivUserImage5.visibility = GONE
+                    ivUserImage6.visibility = GONE
                 }
             } else {
-                ivUserImage5.visibility = View.GONE
-                ivUserImage6.visibility = View.GONE
+                ivUserImage3.visibility = GONE
+                ivUserImage4.visibility = GONE
+                ivUserImage5.visibility = GONE
+                ivUserImage6.visibility = GONE
             }
         } else {
-            ivUserImage4.visibility = View.GONE
-            ivUserImage5.visibility = View.GONE
-            ivUserImage6.visibility = View.GONE
-
+            ivUserImage2.visibility = GONE
+            ivUserImage3.visibility = GONE
+            ivUserImage4.visibility = GONE
+            ivUserImage5.visibility = GONE
+            ivUserImage6.visibility = GONE
         }
 
         val layoutManager = FlexboxLayoutManager(mActivity)
@@ -280,8 +295,12 @@ class MyCardActivity : BaseActivity() {
             if (hetS.contains(".")) {
                 val het = hetS.toFloat()
                 hetS = when {
-                    het < 4 -> { "< 4'0\"" }
-                    het > 7 -> { "> 7'0\"" }
+                    het < 4 -> {
+                        "< 4'0\""
+                    }
+                    het > 7 -> {
+                        "> 7'0\""
+                    }
                     else -> hetS.replace(".", "'") + "\""
                 }
             }
@@ -311,7 +330,7 @@ class MyCardActivity : BaseActivity() {
         if (!TextUtils.isEmpty(obj.pets)) {
             tagList.add(DetailTagModel(obj.pets, R.drawable.dog_ic))
         }
-        Log.e("TAG", "setData: "+obj.political )
+        Log.e("TAG", "setData: " + obj.political)
         if (!TextUtils.isEmpty(obj.political)) {
             tagList.add(DetailTagModel(obj.political, R.drawable.ic_political))
         }

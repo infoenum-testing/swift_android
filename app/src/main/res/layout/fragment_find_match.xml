@@ -8,12 +8,15 @@
     android:background="#F5F5F5"
     android:clipChildren="false">
 
+    <include layout="@layout/new_module_layout" />
+
     <RelativeLayout
         android:id="@+id/rl_title"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
         android:padding="10dp"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
@@ -53,8 +56,9 @@
             android:layout_marginEnd="@dimen/_10sdp"
             android:layout_toStartOf="@+id/rv_who_liked"
             android:padding="5dp"
-            android:visibility="gone"
-            android:src="@drawable/ic_filter" />
+            android:src="@drawable/ic_filter"
+            android:visibility="gone" />
+
         <RelativeLayout
             android:id="@+id/rv_who_liked"
             android:layout_width="35dp"
@@ -70,6 +74,7 @@
                 android:src="@drawable/ic_fav" />
 
         </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -98,6 +103,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/_5sdp"
+        android:visibility="gone"
         app:cardCornerRadius="@dimen/_10sdp"
         app:layout_constraintBottom_toBottomOf="@+id/clView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -309,7 +315,7 @@
         android:layout_height="wrap_content"
         android:elevation="@dimen/_10sdp"
         android:paddingBottom="@dimen/_10sdp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -389,18 +395,18 @@
         android:gravity="center"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
-        app:layout_constraintTop_toBottomOf="@+id/rl_title" >
+        app:layout_constraintTop_toBottomOf="@+id/rl_title">
 
         <TextView
             android:id="@+id/tv_no_permision"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
             android:gravity="center"
+            android:text="Unable to determine location.\nYou must turn on Location in order to use BlackGentry."
             android:textColor="@color/primaryTextColor"
             android:textSize="@dimen/_15sdp"
-            android:layout_marginEnd="@dimen/_5sdp"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:text="Unable to determine location.\nYou must turn on Location in order to use BlackGentry."
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -410,17 +416,17 @@
             android:layout_height="@dimen/_40sdp"
             android:layout_below="@+id/tv_no_permision"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/btnwhiteborder"
             android:backgroundTint="@color/primaryTextColor"
+            android:fontFamily="@font/semi_bold"
             android:minWidth="@dimen/_200sdp"
             android:paddingStart="@dimen/_20sdp"
             android:paddingTop="@dimen/_10sdp"
-            android:fontFamily="@font/semi_bold"
             android:paddingEnd="@dimen/_20sdp"
             android:paddingBottom="@dimen/_10sdp"
             android:text="Open Location Settings"
-            android:layout_marginTop="@dimen/_10sdp"
             android:textAllCaps="false"
             android:textColor="@color/primaryTextColor"
             android:textSize="@dimen/_14ssp" />
@@ -428,6 +434,7 @@
 
     <include
         layout="@layout/layout_verify"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
