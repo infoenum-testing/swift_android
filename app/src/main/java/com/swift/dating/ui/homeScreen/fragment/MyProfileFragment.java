@@ -78,7 +78,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static com.swift.dating.common.AppConstants.LICENSE_KEY;
 
 public class MyProfileFragment extends BaseFragment implements View.OnClickListener, OnInAppInterface,
-        BillingProcessor.IBillingHandler, CommonDialogs.onProductConsume, BaseActivity.MyProfileResponse {
+        BillingProcessor.IBillingHandler, CommonDialogs.onProductConsume, BaseActivity.MyProfileResponse, slider_fragment.onReceiveClickCallback {
     public static BillingProcessor bp;
     List<ImageModel> imagelist = new ArrayList<>();
     double price;
@@ -115,7 +115,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void setSlider() {
-        getChildFragmentManager().beginTransaction().replace(R.id.sliderFragment, new slider_fragment()).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.sliderFragment, new slider_fragment(this)).commit();
     }
 
     @Override
@@ -516,14 +516,19 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         if (view.getId() == R.id.iv_settings) {
             startActivityForResult(new Intent(getContext(), SettingsActivity.class), 1010);
             getActivity().overridePendingTransition(R.anim.slide_in_top, R.anim.nothing);
-        } else if (view.getId() == R.id.iv_edit) {
+        }
+        else if (view.getId() == R.id.iv_edit) {
             startActivityForResult(new Intent(getContext(), EditProfileActivity.class), 1010);
             getActivity().overridePendingTransition(R.anim.slide_in_top, R.anim.nothing);
-        } else if (view.getId() == R.id.card_time) {
+        }
+        else if (view.getId() == R.id.card_time) {
             CommonDialogs.TimeTokenPurChaseDialog(getContext(), this);
-        } else if (view.getId() == R.id.card_crush) {
+        }
+        else if (view.getId() == R.id.card_crush) {
             CommonDialogs.CrushPurChaseDialog(getContext(), this);
-        } else if (view.getId() == R.id.btn_bg_premium) {
+        }
+        else if (view.getId() == R.id.btn_bg_premium)
+        {
             getBaseActivity().sp.setDialogOpen(true);
             if (getBaseActivity().sp.getDeluxe()) {
                 CommonDialogs.showAlreadyDeluxe(mActivity);
@@ -535,7 +540,8 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         } else if (view.getId() == R.id.iv_profile) {
             startActivity(new Intent(getContext(), MyCardActivity.class));
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (view.getId() == R.id.card_vip) {
+        }
+        else if (view.getId() == R.id.card_vip) {
             CommonDialogs.VIPPurChaseDialog(getContext(), this);
         } /*else if (view.getId() == R.id.btn_bg_delux) {
             getBaseActivity().sp.setDialogOpen(true);
@@ -544,7 +550,8 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             } else {
                 CommonDialogs.DeluxePurChaseDialog(getContext(), this);
             }
-        } */ else if (view.getId() == R.id.btn_change) {
+        } */
+        else if (view.getId() == R.id.btn_change) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (mActivity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2021);
@@ -697,6 +704,22 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     public void onClickToken(String tokenType, int tokensNum, int selectedPos) {
+        handleCallBack(tokenType, tokensNum, selectedPos);
+    }
+
+    @Override
+    public void setProfileData() {
+        if (getBaseActivity() != null)
+            setData();
+    }
+
+
+    @Override
+    public void onPremiumCallback(String tokenType, int tokensNum, int selectedPos) {
+        handleCallBack(tokenType, tokensNum, selectedPos);
+    }
+
+    void handleCallBack(String tokenType, int tokensNum, int selectedPos) {
         tokenSType = tokenType;
         selectedPosition = tokensNum;
         if (tokenType.equalsIgnoreCase("crushToken")) {
@@ -755,11 +778,11 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         }
     }
 
-    @Override
-    public void setProfileData() {
-        if (getBaseActivity() != null)
-            setData();
-    }
+
+
+
+
+
     /*bp.purchase(YOUR_ACTIVITY, "YOUR PRODUCT ID FROM GOOGLE PLAY CONSOLE HERE");
     bp.subscribe(YOUR_ACTIVITY, "YOUR SUBSCRIPTION ID FROM GOOGLE PLAY CONSOLE HERE");*/
 }

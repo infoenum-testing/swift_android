@@ -39,6 +39,7 @@ import com.chahinem.pageindicator.PageIndicator;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.swift.dating.ui.slider_fragment;
+import com.swift.dating.ui.where_do_you_live.WhereYouLiveActivity;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.OnSeekChangeListener;
@@ -75,24 +76,21 @@ import okhttp3.ResponseBody;
 
 import static com.swift.dating.common.AppConstants.LICENSE_KEY;
 
-public class SettingsActivity extends BaseActivity implements View.OnClickListener, OnSeekChangeListener, RangeSeekBar.OnRangeSeekBarChangeListener, OnInAppInterface, BillingProcessor.IBillingHandler, DialogInterface.OnClickListener, CommonDialogs.onProductConsume, ApiCallback.ResetSkippedProfileCallback, CompoundButton.OnCheckedChangeListener {
+public class SettingsActivity extends BaseActivity implements View.OnClickListener, OnInAppInterface, BillingProcessor.IBillingHandler, DialogInterface.OnClickListener, CommonDialogs.onProductConsume, ApiCallback.ResetSkippedProfileCallback, CompoundButton.OnCheckedChangeListener, slider_fragment.onReceiveClickCallback {
 
     private static final String TAG = "SettingsActivity";
     public static boolean isSettingChanged = false;
-    ConstraintLayout btnBGPremium, btn_bg_deluxe, btn_reset_skiped_profile;
+    ConstraintLayout btnBGPremium, rootLay;
     TextView tvRestoreSubscription, tvVersion;
     CardView cardTermnService, cardHelp, cardPrivacyPolicy;
     boolean isFromCardScreen;
-    View view;
     double price;
     String productId, tokenSType;
     int selectedPosition;
     boolean isRangeChange = false;
-    private Button btnLogout, btnShare;
-    private TextView tvLocation, tvDistance, tvAgeRange, tv_done, tv_delete, tvLookingFor, tvPhone, tvEmail;
+    private Button btnLogout, btnShare, btn_reset_skiped_profile;
+    private TextView tv_done, tv_delete, tvPhone, tvEmail;
     ImageView tv_cancel;
-    private IndicatorSeekBar seekDistance;
-    private RangeSeekBar seekAgeRange;
     private Switch showMeSwitch, newMatchSwitch, callSwitch, expireSwitch, matchSwitch, emailNotifySwitch, pushNotifySwitch;
     private HomeViewModel homeViewModel;
     private BillingProcessor bp;
@@ -113,7 +111,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     private void setSlider() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.sliderFragment, new slider_fragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.sliderFragment, new slider_fragment(this)).commit();
     }
 
 
@@ -157,21 +155,19 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
      */
     private void initialize() {
         btn_reset_skiped_profile = findViewById(R.id.btn_reset_skiped_profile);
+        rootLay = findViewById(R.id.rootLay);
         emailNotifySwitch = findViewById(R.id.emailNotifySwitch);
         pushNotifySwitch = findViewById(R.id.pushNotifySwitch);
         tvEmail = findViewById(R.id.tvEmail);
         tvPhone = findViewById(R.id.tvPhone);
         btnLogout = findViewById(R.id.btnlogout);
         btnShare = findViewById(R.id.btnShare);
-        tvLocation = findViewById(R.id.tvLocation);
         tv_cancel = findViewById(R.id.tv_cancel);
         tv_done = findViewById(R.id.tv_done);
         tv_delete = findViewById(R.id.tvdelete);
         tvRestoreSubscription = findViewById(R.id.tvRestoreSubscription);
-        tvLookingFor = findViewById(R.id.tv_lookingFor);
         showMeSwitch = findViewById(R.id.simpleSwitch);
         tvVersion = findViewById(R.id.tvVersion);
-        view = findViewById(R.id.view);
         cardHelp = findViewById(R.id.cardHelp);
         cardPrivacyPolicy = findViewById(R.id.cardPrivacyPolicy);
         cardTermnService = findViewById(R.id.cardTermnService);
@@ -180,12 +176,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         callSwitch = findViewById(R.id.callSwitch);
         matchSwitch = findViewById(R.id.messageSwitch);
         expireSwitch = findViewById(R.id.expiredSwitch);
-        seekAgeRange = findViewById(R.id.sb_age);
-        seekDistance = findViewById(R.id.seek_distance);
-        tvDistance = findViewById(R.id.tvDistance);
-        tvAgeRange = findViewById(R.id.tvRange);
         btnBGPremium = findViewById(R.id.btn_bg_premium);
-        btn_bg_deluxe = findViewById(R.id.btn_bg_deluxe);
         try {
 //            PackageInfo pInfo = mContext.getPackageManager().getPackageInfo("app.blackgentry", 0);
 //            String version = pInfo.versionName;
@@ -211,22 +202,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         expireSwitch.setOnCheckedChangeListener(this);
         matchSwitch.setOnCheckedChangeListener(this);
         btn_reset_skiped_profile.setOnClickListener(this);
-        btn_bg_deluxe.setOnClickListener(this);
         btnLogout.setOnClickListener(this);
         tv_cancel.setOnClickListener(this);
         tv_delete.setOnClickListener(this);
         tv_done.setOnClickListener(this);
         btnBGPremium.setOnClickListener(this);
-        tvLookingFor.setOnClickListener(this);
         btnShare.setOnClickListener(this);
         tvRestoreSubscription.setOnClickListener(this);
         cardHelp.setOnClickListener(this);
         cardTermnService.setOnClickListener(this);
         cardPrivacyPolicy.setOnClickListener(this);
-        seekDistance.setOnSeekChangeListener(this);
-        seekAgeRange.setOnRangeSeekBarChangeListener(this);
-        view.setOnClickListener(this);
-
     }
 
     /**
@@ -289,7 +274,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         break;
                     case ERROR:
                         hideLoading();
-                        showSnackbar(tvAgeRange, resource.message);
+                        showSnackbar(rootLay, resource.message);
                         break;
                 }
             }
@@ -311,7 +296,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     case ERROR:
                         hideLoading();
                         openActivityOnTokenExpire();
-                        showSnackbar(tvAgeRange, resource.message);
+                        showSnackbar(rootLay, resource.message);
                         break;
                 }
             }
@@ -401,7 +386,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         break;
                     case ERROR:
                         hideLoading();
-                        showSnackbar(tvAgeRange, resource.message);
+                        showSnackbar(rootLay, resource.message);
                         break;
                 }
             }
@@ -447,12 +432,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         } else if (resource.code == 401) {
                             openActivityOnTokenExpire();
                         } else {
-                            showSnackbar(tvAgeRange, "Something went wrong");
+                            showSnackbar(rootLay, "Something went wrong");
                         }
                         break;
                     case ERROR:
                         hideLoading();
-                        showSnackbar(tvAgeRange, resource.message);
+                        showSnackbar(rootLay, resource.message);
                         break;
                 }
             }
@@ -468,7 +453,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         Log.e(TAG, "setData: " + json);
         ProfileOfUser obj = gson.fromJson(json, ProfileOfUser.class);
         try {
-            if (obj!=null) {
+            if (obj != null) {
                 if (sp != null && !TextUtils.isEmpty(sp.getMyString(SharedPreference.userEmail))) {
                     tvEmail.setText(sp.getMyString(SharedPreference.userEmail));
                 } else if (!TextUtils.isEmpty(obj.getUseremail())) {
@@ -494,30 +479,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 }
                 if (!TextUtils.isEmpty(obj.getVisible()))
                     showMeSwitch.setChecked(obj.getVisible().equalsIgnoreCase("true"));
-                if (obj.getMaxAgePrefer() != null)
-                    seekAgeRange.setSelectedMaxValue(obj.getMaxAgePrefer());
-                if (obj.getMinAgePrefer() != null)
-                    seekAgeRange.setSelectedMinValue(obj.getMinAgePrefer());
-                if (obj.getDistance() != null && obj.getDistance().intValue() > 20) {
-                    seekDistance.setProgress(obj.getDistance().floatValue());
-                    tvDistance.setText(obj.getDistance().intValue() + " Miles");
-                } else {
-                    seekDistance.setProgress(20);
-                    tvDistance.setText("20 Miles");
-                }
-                tvLookingFor.setText(obj.getInterested() != null ? obj.getInterested().equalsIgnoreCase("Both") ? "Looking for: Everyone" : "Looking for: " + obj.getInterested() : "Looking for: ");
-                tvAgeRange.setText(obj.getMinAgePrefer() + "-" + obj.getMaxAgePrefer());
-                // Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                //List<Address> addresses = null;
-                // addresses = geocoder.getFromLocation(Double.parseDouble(obj.getLatitude()), Double.parseDouble(obj.getLongitude()), 1);
-                // int maxAddressLine = addresses.get(0).getMaxAddressLineIndex();
-                // String cityName = addresses.get(0).getLocality();// + ", " + addresses.get(0).getAdminArea();
-                tvLocation.setText(CommonUtils.getCityAddress(mContext, obj.getLatitude(), obj.getLongitude()));
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            tvLocation.setText("Add Location");
         }
     }
 
@@ -561,14 +526,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tv_no.setOnClickListener(view13 -> dialog.dismiss());
         } else if (view == tv_done) {
             if (isSettingChanged) {
-                if (seekAgeRange.getSelectedMaxValue().intValue() - seekAgeRange.getSelectedMinValue().intValue() > 4) {
-                    showLoading();
-                    homeViewModel.settingsRequest(new SettingsRequestModel(showMeSwitch.isChecked() ? "True" : "False", newMatchSwitch.isChecked() ? "On" : "Off", emailNotifySwitch.isChecked() ? "On" : "Off", pushNotifySwitch.isChecked() ? "On" : "Off",
-                            expireSwitch.isChecked() ? "On" : "Off", matchSwitch.isChecked() ? "On" : "Off", seekAgeRange.getSelectedMaxValue().intValue(),
-                            seekAgeRange.getSelectedMinValue().intValue(), seekDistance.getProgress()));
-                } else {
-                    showSnackbar(seekAgeRange, "Minimum Age range should be 5 years");
-                }
+                showLoading();
+                homeViewModel.settingsRequest(new SettingsRequestModel(showMeSwitch.isChecked() ? "True" : "False",
+                        newMatchSwitch.isChecked() ? "On" : "Off",
+                        emailNotifySwitch.isChecked() ? "On" : "Off",
+                        pushNotifySwitch.isChecked() ? "On" : "Off",
+                        expireSwitch.isChecked() ? "On" : "Off",
+                        matchSwitch.isChecked() ? "On" : "Off"
+                ));
             } else {
                 onBackPressed();
             }
@@ -590,18 +555,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     }
                 }, "Do you want to reset all skipped profiles? Users that you have skipped will appear on your card stack.");
             } else {
-                CommonDialogs.DeluxePurChaseDialog(this, this);
+                CommonDialogs.PremuimPurChaseDialog(this, this);
             }
             //onBackPressed();
         } else if (view.getId() == R.id.tv_yes) {
             bp.subscribe(SettingsActivity.this, "premium_6");
 
-        } else if (view == tvLookingFor) {
-            Intent intent = new Intent(this, CreateAccountActivity.class);
-            intent.putExtra("parseCount", 4);
-            intent.putExtra("isEdit", true);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (view == tv_delete) {
             final Dialog dialog = new Dialog(Objects.requireNonNull(this));
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -702,26 +661,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    @Override
-    public void onSeeking(SeekParams seekParams) {
-        if (!isSettingChanged && isRangeChange) {
-            isSettingChanged = true;
-        }
-        isRangeChange = true;
-        if (seekParams.seekBar == seekDistance) {
-            tvDistance.setText(String.valueOf(seekParams.progress).concat(" ").concat(getString(R.string.miles)));
-        }
-    }
-
-    @Override
-    public void onStartTrackingTouch(IndicatorSeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
-
-    }
 
     @Override
     protected void onResume() {
@@ -777,7 +716,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
                     details.purchaseInfo.purchaseData.purchaseState.toString()));
         }
-        Log.e("purchase success DeluxePurChase ", details.purchaseInfo.responseData);
+        Log.e("DeluxePurChaseSuccess", details.purchaseInfo.responseData);
     }
 
     @Override
@@ -825,29 +764,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onRangeSeekBarValuesChanged(RangeSeekBar bar, Object minValue, Object maxValue) {
-        if (!isSettingChanged && isRangeChange) {
-            isSettingChanged = true;
-            Log.e(TAG, "onRangeSeekBarValuesChanged: ");
-        }
-        isRangeChange = true;
-        if (maxValue != null || minValue != null) {
-            if (Integer.parseInt(String.valueOf(maxValue)) - Integer.parseInt(String.valueOf(minValue)) > 4) {
-                tvAgeRange.setText(String.valueOf(minValue).concat("-").concat(String.valueOf(maxValue)));
-            } else {
-                if (Integer.parseInt(String.valueOf(minValue)) > 18) {
-                    seekAgeRange.setSelectedMaxValue(seekAgeRange.getSelectedMaxValue().intValue());
-                    seekAgeRange.setSelectedMinValue(seekAgeRange.getSelectedMinValue().intValue() - 1);
-                } else {
-                    seekAgeRange.setSelectedMaxValue(seekAgeRange.getSelectedMaxValue().intValue() + 1);
-                    seekAgeRange.setSelectedMinValue(seekAgeRange.getSelectedMinValue().intValue());
-                }
-            }
-        }
+    public void onClickToken(String tokenType, int tokensNum, int selectedPos) {
+        handleCallBack(tokenType, tokensNum, selectedPos);
     }
 
-    @Override
-    public void onClickToken(String tokenType, int tokensNum, int selectedPos) {
+    void handleCallBack(String tokenType, int tokensNum, int selectedPos) {
         tokenSType = tokenType;
         selectedPosition = selectedPos;
         if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
@@ -862,6 +783,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             bp.subscribe(mActivity, productId);
         }
     }
+
 
     @Override
     public void onSuccess(String body) {
@@ -884,6 +806,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Log.e(TAG, "onCheckedChanged: ");
         isSettingChanged = true;
+    }
+
+    @Override
+    public void onPremiumCallback(String tokenType, int tokensNum, int selectedPos) {
+        handleCallBack(tokenType, tokensNum, selectedPos);
     }
 
     /*bp.purchase(YOUR_ACTIVITY, "YOUR PRODUCT ID FROM GOOGLE PLAY CONSOLE HERE");

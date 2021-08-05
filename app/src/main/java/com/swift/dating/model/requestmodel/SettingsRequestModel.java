@@ -32,6 +32,15 @@ public class SettingsRequestModel {
         this.distance = distance;
     }
 
+    public SettingsRequestModel(String visible, String matchNotify,String emailNotify,String reactionNotify,String expiredMatches,String chatNotify) {
+        this.visible = visible;
+        this.matchNotify = matchNotify;
+        this.emailNotify = emailNotify;
+        this.reactionNotify = reactionNotify;
+        this.expiredMatches = expiredMatches;
+        this.chatNotify = chatNotify;
+    }
+
     public String getVisible() {
         return visible;
     }

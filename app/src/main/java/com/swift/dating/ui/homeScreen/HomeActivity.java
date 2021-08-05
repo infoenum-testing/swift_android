@@ -182,10 +182,10 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
      */
     private void setupTabIcons(boolean show, Integer tabPos) {
         setCustomLayout(R.drawable.card_selector);
-        setCustomLayout(R.drawable.likes_selector);
-        setCustomLayout(R.drawable.search_selector);
-        setCustomLayout(R.drawable.match_selector);
-        setCustomLayout(R.drawable.profile_selector);
+        setCustomLayout(R.drawable.likes_selector);//66-66
+        setCustomLayout(R.drawable.search_selector);///63-63
+        setCustomLayout(R.drawable.match_selector);//6363
+        setCustomLayout(R.drawable.profile_selector);//6363
         badge_notification_1.setVisibility(!show ? View.GONE : View.VISIBLE);
         tabHome.getTabAt(tabPos).select();
     }

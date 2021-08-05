@@ -18,19 +18,10 @@
             app:layout_constraintStart_toStartOf="parent">
 
 
-            <ImageView
-                android:id="@+id/ivclose"
-                android:layout_width="@dimen/_30ssp"
-                android:layout_height="@dimen/_30ssp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_10sdp"
-                android:src="@drawable/ic_back_btn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/pink"
+            <include
+                android:id="@+id/back_lay"
+                layout="@layout/back_image_layout" />
 
-                />
 
             <ImageView
                 android:id="@+id/img_crush"
@@ -40,12 +31,12 @@
                 android:src="@drawable/time_token_top_icon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivclose" />
+                app:layout_constraintTop_toBottomOf="@+id/back_lay" />
 
             <Space
                 android:id="@+id/space"
                 android:layout_width="wrap_content"
-                android:layout_height="25dp"
+                android:layout_height="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_crush" />
@@ -73,11 +64,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
                 android:fontFamily="@font/medium"
                 android:gravity="center"
-                android:text="Add more time to your connections"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="Time tokens are used to add more time to your matches after they expire. 72 hours shall be added to the match. "
                 android:textColor="@color/grey_new"
                 android:textSize="@dimen/_12ssp"
                 android:visibility="visible"
@@ -298,7 +289,6 @@
         android:id="@+id/btn_continue"
         style="@style/token_btn_style"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/time_token_btn_bg"
-        />
+        android:background="@drawable/time_token_btn_bg" />
 
 </RelativeLayout>

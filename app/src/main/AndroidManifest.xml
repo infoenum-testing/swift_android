@@ -35,9 +35,10 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
+        <activity android:name=".ui.Premium_purchase_screen"></activity>
         <activity
             android:name=".DummyActivity"
-            android:theme="@style/AppThemeNew"></activity>
+            android:theme="@style/AppThemeNew" />
         <activity android:name=".ui.homeScreen.CardFilterActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -54,8 +55,7 @@
         <activity
             android:name=".ui.where_do_you_live.WhereYouLiveActivity"
             android:label="@string/title_activity_maps"
-            android:theme="@style/AppThemeNew"
-            />
+            android:theme="@style/AppThemeNew" />
         <activity
             android:name=".ui.emailScreen.PhoneActivity"
             android:theme="@style/AppThemeNew" />
@@ -105,9 +105,7 @@
             android:name=".ui.settingScreen.SettingsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew"
-            android:windowSoftInputMode="stateHidden|adjustPan">
-
-        </activity>
+            android:windowSoftInputMode="stateHidden|adjustPan"></activity>
         <activity
             android:name=".ui.editProfileScreen.EditProfileActivity"
             android:screenOrientation="portrait"

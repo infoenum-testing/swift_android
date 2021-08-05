@@ -220,8 +220,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
             android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
             app:cardCornerRadius="10dp"
             app:cardElevation="5dp"
             app:cardUseCompatPadding="true"
@@ -230,15 +230,14 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                >
+                android:padding="10dp">
 
                 <ImageView
                     android:id="@+id/loc_img"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_centerVertical="true"
-                    android:padding="10dp"
+                    android:padding="5dp"
                     android:src="@drawable/location_icon" />
 
                 <LinearLayout
@@ -247,9 +246,10 @@
                     android:layout_centerVertical="true"
                     android:layout_toStartOf="@+id/card_chng_loc"
                     android:layout_toEndOf="@+id/loc_img"
-                    android:layout_toRightOf="@id/loc_img"
+                    android:gravity="center_vertical"
                     android:orientation="vertical"
-                    android:paddingBottom="5dp">
+                    android:padding="5dp"
+                    >
 
                     <TextView
                         android:layout_width="match_parent"
@@ -265,6 +265,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:fontFamily="@font/medium"
+                        android:text="sdfsdfsdf"
                         android:textColor="@color/grey_new" />
                 </LinearLayout>
 
@@ -274,7 +275,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/_20sdp"
                     app:cardCornerRadius="10dp">
 
                     <Button
@@ -595,8 +595,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_token" />

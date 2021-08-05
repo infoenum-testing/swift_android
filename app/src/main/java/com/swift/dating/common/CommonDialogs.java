@@ -12,7 +12,10 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Handler;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,18 +26,25 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.SkuDetails;
+import com.google.android.material.tabs.TabLayout;
+import com.swift.dating.ui.settingScreen.SliderAdapter;
+import com.swift.dating.ui.slider_fragment;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -365,7 +375,7 @@ public class CommonDialogs {
             dialog.setCancelable(false);
             dialog.setCanceledOnTouchOutside(false);
 
-            ImageView ivclose = dialog.findViewById(R.id.ivclose);
+            ImageView ivclose = dialog.findViewById(R.id.image_back);
 
             LinearLayout[] layouts = new LinearLayout[4];
             layouts[0] = dialog.findViewById(R.id.rb5Likes);
@@ -437,7 +447,7 @@ public class CommonDialogs {
                 }
             }
 
-            ImageView ivclose = dialog.findViewById(R.id.ivclose);
+            ImageView ivclose = dialog.findViewById(R.id.image_back);
 
             LinearLayout[] layouts = new LinearLayout[4];
             layouts[0] = dialog.findViewById(R.id.rb5Likes);
@@ -479,7 +489,7 @@ public class CommonDialogs {
             currentPage = 0;
             indexOfSelectedLayout = 0;
             dialog = new Dialog(ctx, R.style.PauseDialog);
-           // dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.custom_buy_vip_dialog);
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
             lp.copyFrom(dialog.getWindow().getAttributes());
@@ -503,7 +513,7 @@ public class CommonDialogs {
                 }
             }
 
-            ImageView ivclose = dialog.findViewById(R.id.ivclose);
+            ImageView ivclose = dialog.findViewById(R.id.image_back);
             LinearLayout[] layouts = new LinearLayout[4];
             layouts[0] = dialog.findViewById(R.id.rb5Likes);
             layouts[1] = dialog.findViewById(R.id.rb25Likes);
@@ -559,6 +569,9 @@ public class CommonDialogs {
     }
 
     public static Dialog PremuimPurChaseDialog(Context ctx, final onProductConsume clickListener) {
+        ViewPager viewPager;
+        TabLayout text_pager_indicator;
+        SliderAdapter sliderAdapter;
         if (dialog == null || !dialog.isShowing()) {
             currentPage = 0;
             indexOfSelectedLayout = 0;
@@ -574,14 +587,6 @@ public class CommonDialogs {
             dialog.setCancelable(false);
             dialog.setCanceledOnTouchOutside(false);
 
-            TextView tv_txt = dialog.findViewById(R.id.tv_txt);
-            tv_txt.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            MaskFilter mm = tv_txt.getPaint().setMaskFilter(null);
-            tv_txt.getPaint().setMaskFilter(mm);
-            TextView tv_upgradetxt = dialog.findViewById(R.id.tv_upgradetxt);
-            tv_upgradetxt.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            MaskFilter mmm = tv_upgradetxt.getPaint().setMaskFilter(null);
-            tv_upgradetxt.getPaint().setMaskFilter(mmm);
             LinearLayout[] layouts = new LinearLayout[4];
             layouts[0] = dialog.findViewById(R.id.rb5Likes);
             layouts[1] = dialog.findViewById(R.id.rb25Likes);
@@ -596,20 +601,17 @@ public class CommonDialogs {
                 });
             }
             Button btn_continue = dialog.findViewById(R.id.btn_continue);
-            btn_continue.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (indexOfSelectedLayout == 0) {
-                        clickListener.onClickToken("PremiumPurchase", 1, indexOfSelectedLayout);//9.99
-                    } else if (indexOfSelectedLayout == 1) {
-                        clickListener.onClickToken("PremiumPurchase", 3, indexOfSelectedLayout);//24.99
-                    } else if (indexOfSelectedLayout == 2) {
-                        clickListener.onClickToken("PremiumPurchase", 6, indexOfSelectedLayout);//39.99
-                    } else {
-                        clickListener.onClickToken("PremiumPurchase", 12, indexOfSelectedLayout);//59.99
-                    }
-                    //dialog.dismiss();
-                }
+            btn_continue.setOnClickListener(v -> {
+                               /* if (indexOfSelectedLayout == 0) {
+                    clickListener.onClickToken("PremiumPurchase", 1, indexOfSelectedLayout);//9.99
+                } else if (indexOfSelectedLayout == 1) {
+                    clickListener.onClickToken("PremiumPurchase", 3, indexOfSelectedLayout);//24.99
+                } else if (indexOfSelectedLayout == 2) {
+                    clickListener.onClickToken("PremiumPurchase", 6, indexOfSelectedLayout);//39.99
+                } else {
+                    clickListener.onClickToken("PremiumPurchase", 12, indexOfSelectedLayout);//59.99
+                }*/
+                //dialog.dismiss();
             });
 
             TextView[] tvToken1Price = new TextView[4];
@@ -619,6 +621,63 @@ public class CommonDialogs {
             tvToken1Price[3] = dialog.findViewById(R.id.tvToken20Price);
 
             TextView tv_restore = dialog.findViewById(R.id.tv_restore);
+            text_pager_indicator = dialog.findViewById(R.id.text_pager_indicator);
+
+            viewPager = dialog.findViewById(R.id.pagerSlider);
+            String[] tab_names = ctx.getResources().getStringArray(R.array.arr_premium_txt);
+            List<String> titleList = new ArrayList<>();
+            Collections.addAll(titleList, tab_names);
+            sliderAdapter = new SliderAdapter(Objects.requireNonNull(ctx), titleList, null);
+            viewPager.setAdapter(sliderAdapter);
+            text_pager_indicator.setupWithViewPager(viewPager);
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    currentPage = position;
+
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+            handler = new Handler();
+            Update = () -> {
+                if (currentPage == viewPager.getAdapter().getCount()) {
+                    currentPage = 0;
+                }
+                viewPager.setCurrentItem(currentPage, true);
+                currentPage++;
+            };
+
+            if (timer != null) {
+                timer.cancel();
+            }
+            timer = new Timer();
+
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    handler.post(Update);
+                }
+            }, 0, TIME_PERIOD);
+
+            String one = "Already paid for Premium?";
+            Spannable word = new SpannableString(one);
+            word.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(ctx.getResources(), R.color.grey_new, null)), 0, word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            tv_restore.setText(word);
+
+
+            Spannable wordTwo = new SpannableString(" Restore Purchase.");
+            wordTwo.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(ctx.getResources(), R.color.red_start, null)), 0, wordTwo.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            tv_restore.append(wordTwo);
+
             tv_restore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -657,53 +716,15 @@ public class CommonDialogs {
                     }
                 }
             }
+            ImageView ivclose = dialog.findViewById(R.id.image_back);
 
-            ImageView ivclose = dialog.findViewById(R.id.ivclose);
-            ViewPager pager_text = dialog.findViewById(R.id.pager_text);
-            pager_text.setAdapter(new TextPagerAdapter(Arrays.asList(ctx.getResources().getStringArray(R.array.PremiumStringArray)), ctx));
-            WormDotsIndicator indicator = dialog.findViewById(R.id.text_pager_indicator);
-            indicator.setViewPager(pager_text);
-
-            pager_text.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-                }
-
-                @Override
-                public void onPageSelected(int position) {
-                    currentPage = position;
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
-                }
-            });
-
-            handler = new Handler();
-            Update = () -> {
-                if (currentPage == pager_text.getAdapter().getCount()) {
-                    currentPage = 0;
-                }
-                pager_text.setCurrentItem(currentPage, true);
-                currentPage++;
-            };
-
-            if (timer != null) {
-                timer.cancel();
-            }
-            timer = new Timer();
-            timer.schedule(new TimerTask() { // task to be scheduled
-                @Override
-                public void run() {
-                    handler.post(Update);
-                }
-            }, 0, TIME_PERIOD);
 
             ivclose.setOnClickListener(v -> dialog.dismiss());
 
+
             dialog.show();
+
+
         }
         return dialog;
     }

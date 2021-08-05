@@ -140,7 +140,7 @@
     <string name="maxDistance">Maximum Distance</string>
     <string name="logout">Logout</string>
     <string name="agerange">Age Range</string>
-    <string name="hideProfile">Show my profile on BlackGentry</string>
+    <string name="hideProfile">Show my profile on swift</string>
     <string name="notification">Notifications</string>
     <string name="newMatches">New Matches</string>
     <string name="calls">Call Reminders</string>
@@ -631,7 +631,7 @@
     <string name="direct_msg_title_popup">You are out of free Direct Messages for the day. Don’t want to wait? Upgrade to Deluxe and send unlimited Direct Messages.</string>
     <string name="direct_msg_message_popup">Note: Direct Messages are messages sent to  users that you have not matched with. You can still send likes and match with users in order to communicate.</string>
     <string name="restore_deluxe_txt"><u>Already paid for Deluxe? Restore Purchase.</u></string>
-    <string name="restore_premium_txt"><u>Already paid for Premium? Restore Purchase.</u></string>
+    <string name="restore_premium_txt">Already paid for Premium? Restore Purchase.</string>
     <string name="month">Month</string>
     <string name="date">Date</string>
     <string name="year">Year</string>

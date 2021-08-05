@@ -17,20 +17,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
+            <include
+                android:id="@+id/back_lay"
+                layout="@layout/back_image_layout" />
 
-            <ImageView
-                android:id="@+id/ivclose"
-                android:layout_width="@dimen/_30ssp"
-                android:layout_height="@dimen/_30ssp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_10sdp"
-                android:src="@drawable/ic_back_btn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/pink"
-
-                />
 
             <ImageView
                 android:id="@+id/img_crush"
@@ -40,12 +30,12 @@
                 android:src="@drawable/vip_token_top"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivclose" />
+                app:layout_constraintTop_toBottomOf="@+id/back_lay" />
 
             <Space
                 android:id="@+id/space"
                 android:layout_width="wrap_content"
-                android:layout_height="25dp"
+                android:layout_height="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_crush" />
@@ -77,7 +67,7 @@
                 android:gravity="center"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:text="Use VIP Tokens to skip the line and be shown to users quicker. Each token lasts 30 minutes"
+                android:text="Use VIP Tokens to skip the line and be shown to users quicker. Each token lasts 30 minutes."
                 android:textColor="@color/grey_new"
                 android:textSize="@dimen/_12ssp"
                 android:visibility="visible"

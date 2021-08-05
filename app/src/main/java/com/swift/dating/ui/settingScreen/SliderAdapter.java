@@ -31,10 +31,12 @@ public class SliderAdapter extends PagerAdapter {
     private Context context;
     List<String> titleList;
     private LayoutInflater mLayoutInflater;
+    OnItemClicked clicked;
 
-    public SliderAdapter(Context context, List<String> titleList) {
+    public SliderAdapter(Context context, List<String> titleList, OnItemClicked clicked) {
         this.context = context;
         this.titleList = titleList;
+        this.clicked = clicked;
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -51,6 +53,12 @@ public class SliderAdapter extends PagerAdapter {
         image.setImageResource(imgs.getResourceId(position, -1));
         tvTitle.setText(titleList.get(position));
         container.addView(itemView);
+        itemView.setOnClickListener(v -> {
+            if (clicked != null)
+                clicked.onPagerItemClick();
+        });
+
+
         return itemView;
     }
 
@@ -67,6 +75,10 @@ public class SliderAdapter extends PagerAdapter {
     @Override
     public void destroyItem(View container, int position, Object object) {
         ((ViewPager) container).removeView((View) object);
+    }
+
+    public interface OnItemClicked {
+        void onPagerItemClick();
     }
 
 }

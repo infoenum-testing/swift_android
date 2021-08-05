@@ -1,5 +1,6 @@
 package com.swift.dating.ui.where_do_you_live;
 
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -67,24 +68,21 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
     String lat, lon;
     boolean isFromPlace = false;
     private GoogleMap mMap;
-    private ImageView image_back;
-    private Button btn_set_crt_loc, btn_save_loc;
     private SimpleLocation simpleLocation;
     private LatLng latLng;
-    private LinearLayout addressLayout;
     private TextView tv_addres;
-    private int AUTOCOMPLETE_REQUEST_CODE = 1001;
+    private final int AUTOCOMPLETE_REQUEST_CODE = 1001;
     private HomeViewModel homeViewModel;
     private ProgressDialog mProgressDialog;
     private SharedPreference sp;
     private BillingProcessor bp;
     private ConstraintLayout constraint_main;
-    private String productId, tokenSType;
     private double price;
     private int selectedPosition;
     private boolean isLocationNull = false;
     private boolean isFromCrtLoc = false;
     Bitmap smallMarkerBitmap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,15 +110,19 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
     private void initViews() {
         sp = new SharedPreference(this);
         constraint_main = findViewById(R.id.constraint_main);
-        addressLayout = findViewById(R.id.addressLayout);
+        LinearLayout addressLayout = findViewById(R.id.addressLayout);
         tv_addres = findViewById(R.id.tv_addres);
-        image_back = findViewById(R.id.image_back);
-        btn_save_loc = findViewById(R.id.btn_save_loc);
-        btn_set_crt_loc = findViewById(R.id.btn_set_crt_loc);
+        ImageView image_back = findViewById(R.id.image_back);
+        CardView cardSearch = findViewById(R.id.cardSearch);
+
+        Button btn_save_loc = findViewById(R.id.btn_save_loc);
+        Button btn_set_crt_loc = findViewById(R.id.btn_set_crt_loc);
         image_back.setOnClickListener(this::oClick);
         btn_set_crt_loc.setOnClickListener(this::oClick);
         btn_save_loc.setOnClickListener(this::oClick);
         addressLayout.setOnClickListener(this::oClick);
+        cardSearch.setOnClickListener(this::oClick);
+
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         homeViewModel.sendLatLongResponse().observe(WhereYouLiveActivity.this, resource -> {
             if (resource == null)
@@ -195,7 +197,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
 
         int height = 100;
         int width = 70;
-        BitmapDrawable bitmapdraw = (BitmapDrawable)getResources().getDrawable(R.drawable.location_icon);
+        BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.location_icon);
         Bitmap b = bitmapdraw.getBitmap();
         smallMarkerBitmap = Bitmap.createScaledBitmap(b, width, height, false);
     }
@@ -215,6 +217,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
                 finish();
                 break;
             case R.id.addressLayout:
+            case R.id.cardSearch:
                 ActionPlacesAPI();
                 break;
             case R.id.btn_save_loc:
@@ -227,7 +230,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
                             new AlertDialog.Builder(this).setMessage("You cannot choose this location.").setPositiveButton("OK", null).show();
                         }
                     } else {
-                        CommonDialogs.DeluxePurChaseDialog(WhereYouLiveActivity.this, WhereYouLiveActivity.this);
+                        CommonDialogs.PremuimPurChaseDialog(WhereYouLiveActivity.this, WhereYouLiveActivity.this);
                     }
                 }
                 break;
@@ -288,7 +291,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
             tv_addres.setText(CommonUtils.getAddress(WhereYouLiveActivity.this, "" + latLng.latitude, "" + latLng.longitude));
         } catch (Exception ignored) {
         }
-        mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromBitmap(smallMarkerBitmap))) ;
+        mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromBitmap(smallMarkerBitmap)));
         CameraUpdate location = CameraUpdateFactory.newLatLngZoom(latLng, 11);
         mMap.animateCamera(location);
         mMap.setOnCameraChangeListener(this);
@@ -361,11 +364,10 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
 
     @Override
     public void onClickToken(String tokenType, int tokensNum, int selectedPos) {
-        tokenSType = tokenType;
         selectedPosition = tokensNum;
         if (tokenType.equalsIgnoreCase("DeluxePurChase")) {
             price = CommonDialogs.DeluxePriceList.get(selectedPos).getPriceValue();
-            productId = CommonDialogs.DeluxeArr[selectedPos];
+            String productId = CommonDialogs.DeluxeArr[selectedPos];
             bp.subscribe(WhereYouLiveActivity.this, productId);
         }
     }
