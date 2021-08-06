@@ -206,4 +206,69 @@
     </style>
 
 
+    <!--title style -->
+
+    <style name="title_style_top">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">?android:attr/actionBarSize</item>
+        <item name="fontFamily">@font/medium</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/title_color</item>
+        <item name="android:textSize">@dimen/_16ssp</item>
+    </style>
+
+    <!--top right button style-->
+
+    <style name="red_top_right_style" parent="title_style_top">
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:textColor">@color/pink</item>
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
+
+    <!--edit profile title-->
+    <style name="edit_profile_title_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="fontFamily">@font/medium</item>
+        <item name="android:textColor">@color/title_color</item>
+        <item name="android:textSize">@dimen/_14ssp</item>
+        <item name="android:layout_marginStart">@dimen/_10sdp</item>
+        <item name="android:layout_marginEnd">@dimen/_20sdp</item>
+        <item name="android:layout_marginTop">@dimen/_10sdp</item>
+    </style>
+
+
+    <!--edit profile text data-->
+    <style name="edit_profile_data_txt_style">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="fontFamily">@font/medium</item>
+        <item name="background">@drawable/roundbg</item>
+        <item name="android:drawableEnd">@drawable/ic_next</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">@dimen/_10sdp</item>
+        <item name="android:textColor">@color/grey_new</item>
+        <item name="android:textColorHint">@color/pink</item>
+        <item name="android:textSize">@dimen/_12ssp</item>
+        <item name="android:layout_margin">@dimen/_10sdp</item>
+        <item name="drawableTint">@color/pink</item>
+    </style>
+
+
+    <!--other info editProfile style-->
+
+    <style name="otherInfoProfileStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="fontFamily">@font/medium</item>
+        <item name="android:layout_marginStart">15dp</item>
+        <item name="android:textColor">@color/grey_new</item>
+        <item name="android:textSize">@dimen/_13ssp</item>
+        <item name="drawableTint">@color/pink</item>
+    </style>
+
 </resources>

@@ -453,7 +453,7 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
             tagList.add(DetailTagModel(obj.drink, R.drawable.ic_drink))
         }
         if (!TextUtils.isEmpty(obj.smoke)) {
-            tagList.add(DetailTagModel(obj.smoke, R.drawable.ic_smoke))
+            tagList.add(DetailTagModel(obj.smoke, R.drawable.smoke_img))
         }
         if (!TextUtils.isEmpty(obj.pets)) {
             tagList.add(DetailTagModel(obj.pets, R.drawable.dog_ic))

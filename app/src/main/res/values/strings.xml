@@ -27,6 +27,7 @@
     <string name="enter_your_email">Enter your email</string>
     <string name="my_email">My email is</string>
     <string name="verify_txt">Verify</string>
+    <string name="verify_profile">Verify Profile</string>
     <string name="resend">RESEND CODE</string>
     <string name="reset"><u>Reset</u></string>
     <string name="enter_code">Enter Code</string>

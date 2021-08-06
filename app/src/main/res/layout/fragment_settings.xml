@@ -25,15 +25,9 @@
 
     <TextView
         android:id="@+id/tv_settings"
-        android:layout_width="wrap_content"
-        android:layout_height="?android:attr/actionBarSize"
-        android:fontFamily="@font/medium"
-        android:gravity="center"
+        style="@style/title_style_top"
         android:paddingStart="@dimen/_5sdp"
         android:text="@string/settings"
-        android:textAllCaps="false"
-        android:textColor="@color/title_color"
-        android:textSize="@dimen/_16ssp"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@id/tv_done"
         app:layout_constraintStart_toEndOf="@id/tv_cancel"
@@ -41,15 +35,8 @@
 
     <TextView
         android:id="@+id/tv_done"
-        android:layout_width="wrap_content"
-        android:layout_height="?android:attr/actionBarSize"
-        android:fontFamily="@font/medium"
-        android:gravity="center"
-        android:paddingEnd="@dimen/_10sdp"
+        style="@style/red_top_right_style"
         android:text="@string/save"
-        android:textAllCaps="false"
-        android:textColor="@color/pink"
-        android:textSize="@dimen/_14ssp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

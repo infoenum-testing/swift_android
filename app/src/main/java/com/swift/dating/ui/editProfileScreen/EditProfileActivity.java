@@ -73,6 +73,7 @@ import com.swift.dating.ui.homeScreen.adapter.ImageAdapter;
 import com.swift.dating.ui.editProfileScreen.viewmodel.EditProfileViewModel;
 import com.swift.dating.ui.questionListScreen.QuestionListActivity;
 import com.swift.dating.ui.selfieScreen.SelfieActivity;
+
 import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -94,9 +95,10 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
     private static final String TAG = "EditProfileActivity";
     boolean /*isFirstTime = false,*/ isOrderChanged;
     private ImageAdapter imageAdapter;
-    private TextView tvDone, tvCancel;
+    private TextView tvDone;
     private RecyclerView rvImage;
     private Button btnSelfie;
+    private ImageView image_back;
     private List<ImageModel> imageList = new ArrayList<>();
     private CoordinatorLayout bottomSheetGallery;
     private EditProfileViewModel editProfileViewModel;
@@ -443,6 +445,7 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
         heightDigitlist.add(0, 3.9f);*/
         Collections.addAll(heightDigitlist, arraydigit);
         ivPhoto = findViewById(R.id.iv_photo);
+        image_back = findViewById(R.id.image_back);
         rvImage = findViewById(R.id.rv_image);
         ivPhoto2 = findViewById(R.id.iv_photo2);
         ivPhoto3 = findViewById(R.id.iv_photo3);
@@ -491,7 +494,6 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
         cvPolitics = findViewById(R.id.cvPolitics);
         cvPets = findViewById(R.id.cvPets);
         cvSign = findViewById(R.id.cvSign);
-        tvCancel = findViewById(R.id.tv_cancel);
         tvDone = findViewById(R.id.tv_done);
         cvInstagram = findViewById(R.id.cvInstagram);
         tvInsta = findViewById(R.id.tv_insta);
@@ -574,7 +576,6 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
         cvPets.setOnClickListener(this);
         cvSign.setOnClickListener(this);
         tvDone.setOnClickListener(this);
-        tvCancel.setOnClickListener(this);
         btn_continue.setOnClickListener(this);
 
         ivPhoto.setOnDragListener(this);
@@ -686,7 +687,7 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
     @Override
     public void onClick(View view) {
         Intent intent = null;
-        if (view == tvCancel) {
+        if (view == image_back) {
             finish();
             overridePendingTransition(R.anim.slide_out_down_fast, R.anim.nothing_fast);
         } else if (view == tvDone) {
@@ -861,8 +862,7 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
     public void onDeleteClick(int pos) {
         Log.e(TAG, "onDeleteClick: " + pos);
         Log.e(TAG, "onDeleteClick: " + imageList.get(pos));
-
-        if (imageList.size() > 3) {
+        if (imageList.size() > 1) {
             position = pos;
             fromReplace = false;
             if (pos < imageList.size()) {

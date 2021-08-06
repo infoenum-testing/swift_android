@@ -1,86 +1,89 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
         android:id="@+id/clView"
-        android:padding="@dimen/_10sdp"
-        android:layout_height="wrap_content">
-
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/iv_photo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/roundbg"
-        android:scaleType="centerCrop"
-        app:roundBottomEnd="true"
-        app:roundBottomStart="true"
-        app:roundTopEnd="true"
-        app:roundTopStart="true"
-        app:roundedCornerRadius="@dimen/_5sdp"
-        app:layout_constraintEnd_toEndOf="@+id/iv_photo2"
-        app:layout_constraintStart_toStartOf="@+id/iv_photo2"
-        app:layout_constraintTop_toTopOf="@+id/iv_photo2"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_photo2"/>
-
-    <ImageView
-        android:id="@+id/iv_photo2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        android:visibility="invisible"
         android:padding="@dimen/_10sdp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent">
 
-
-
-    <ImageView
-        android:id="@+id/iv_deletePhoto"
-        android:layout_width="@dimen/_25sdp"
-        android:layout_height="@dimen/_25sdp"
-        android:layout_toEndOf="@+id/iv_photo"
-        android:src="@drawable/cross_image"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone"
-        android:layout_marginStart="-50dp"
-        android:layout_marginTop="-30dp"
-        android:background="@drawable/ic_slide"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_photo"
-        app:layout_constraintEnd_toEndOf="@+id/iv_photo"/>
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_photo"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/roundbg"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_photo2"
+            app:layout_constraintEnd_toEndOf="@+id/iv_photo2"
+            app:layout_constraintStart_toStartOf="@+id/iv_photo2"
+            app:layout_constraintTop_toTopOf="@+id/iv_photo2"
+            app:roundBottomEnd="true"
+            app:roundBottomStart="true"
+            app:roundTopEnd="true"
+            app:roundTopStart="true"
+            app:roundedCornerRadius="@dimen/_5sdp" />
 
         <ImageView
-            android:id="@+id/iv_editPhoto"
+            android:id="@+id/iv_photo2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_10sdp"
+            android:scaleType="centerCrop"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/iv_deletePhoto"
             android:layout_width="@dimen/_25sdp"
             android:layout_height="@dimen/_25sdp"
             android:layout_toEndOf="@+id/iv_photo"
-            android:src="@drawable/edit_ic"
-            android:layout_marginStart="-50dp"
-            android:layout_marginTop="-30dp"
+            android:src="@drawable/cross_image"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:visibility="gone"
+            android:layout_marginStart="-50dp"
+            android:layout_marginTop="-30dp"
             android:background="@drawable/ic_slide"
             app:layout_constraintBottom_toBottomOf="@+id/iv_photo"
             app:layout_constraintEnd_toEndOf="@+id/iv_photo"/>
 
-    <ImageView
-        android:id="@+id/iv_addPhoto"
-        android:layout_width="@dimen/_25sdp"
-        android:layout_height="@dimen/_25sdp"
-        android:layout_toEndOf="@+id/iv_photo"
-        android:src="@drawable/plus"
-        android:visibility="visible"
-        android:layout_marginStart="-50dp"
-        android:layout_marginTop="-30dp"
-        android:background="@drawable/ic_slide"
-        android:layout_alignParentBottom="true"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_photo"
-        app:layout_constraintEnd_toEndOf="@+id/iv_photo"/>
+        <ImageView
+            android:id="@+id/iv_editPhoto"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="-40dp"
+            android:layout_marginTop="-30dp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:layout_toEndOf="@+id/iv_photo"
+            android:background="@drawable/ic_slide"
+            android:src="@drawable/edit_ic"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_photo"
+            app:layout_constraintEnd_toEndOf="@+id/iv_photo" />
+
+        <ImageView
+            android:id="@+id/iv_addPhoto"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:background="@drawable/ic_slide"
+            android:src="@drawable/add_image_grey"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+
+  />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

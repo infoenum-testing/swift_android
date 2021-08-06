@@ -241,7 +241,7 @@ class CardDetailAdapter(
             holder.tagList.add(DetailTagModel(spot.profileOfUser.drink, R.drawable.ic_drink))
         }
         if (!TextUtils.isEmpty(spot.profileOfUser.smoke)) {
-            holder.tagList.add(DetailTagModel(spot.profileOfUser.smoke, R.drawable.ic_smoke))
+            holder.tagList.add(DetailTagModel(spot.profileOfUser.smoke, R.drawable.smoke_img))
         }
         if (!TextUtils.isEmpty(spot.profileOfUser.pets)) {
             holder.tagList.add(DetailTagModel(spot.profileOfUser.pets, R.drawable.dog_ic))

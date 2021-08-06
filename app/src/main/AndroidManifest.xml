@@ -105,11 +105,15 @@
             android:name=".ui.settingScreen.SettingsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew"
-            android:windowSoftInputMode="stateHidden|adjustPan"></activity>
+            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".ui.editProfileScreen.EditProfileActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustPan" />
+            android:theme="@style/AppThemeNew"
+            android:windowSoftInputMode="stateHidden|adjustPan">
+
+        </activity>
+
         <activity
             android:name=".ui.base.CommonWebViewActivity"
             android:screenOrientation="portrait"
@@ -148,6 +152,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <provider

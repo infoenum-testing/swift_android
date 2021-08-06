@@ -55,7 +55,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         if (matchList.size() > position) {
             holder.ivDelete.setVisibility(View.VISIBLE);
             holder.ivAdd.setVisibility(View.GONE);
-            if (matchList.size() < 4) {
+            if (matchList.size() < 2) {
                 holder.ivDelete.setVisibility(View.GONE);
                 holder.ivEdit.setVisibility(View.VISIBLE);
             } else {
@@ -138,7 +138,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
             ivAdd.setOnClickListener(this);
             ivDelete.setOnClickListener(v -> onClickListener.onDeleteClick(getAdapterPosition()));
-            ivEdit.setOnClickListener(v-> onClickListener.onReplaceClick(getAdapterPosition()));
+            ivEdit.setOnClickListener(v -> onClickListener.onReplaceClick(getAdapterPosition()));
             ivPhoto.setOnClickListener(this);
 
         }
