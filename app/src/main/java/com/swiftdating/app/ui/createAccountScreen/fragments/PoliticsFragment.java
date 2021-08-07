@@ -67,7 +67,7 @@ public class PoliticsFragment extends BaseFragment implements View.OnClickListen
     }
 
     /**
-     ***  Method to Handle api Response
+     * **  Method to Handle api Response
      */
     private void subscribeModel() {
         model = ViewModelProviders.of(this).get(CreateAccountViewModel.class);
@@ -81,20 +81,20 @@ public class PoliticsFragment extends BaseFragment implements View.OnClickListen
                 case SUCCESS:
                     getBaseActivity().hideLoading();
                     if (resource.data.getSuccess()) {
-                        if(resource.data.getError()!=null && resource.data.getError().getCode().equalsIgnoreCase("401")){
+                        if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
                             getBaseActivity().openActivityOnTokenExpire();
-                        }else {
+                        } else {
                             Gson gson = new Gson();
                             String user = getBaseActivity().sp.getUser();
                             VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
                             obj.setUser(resource.data.getUser());
-                            getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(),resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                            getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
                             sendIntent();
                         }
                     } else {
                         getBaseActivity().hideLoading();
                         getBaseActivity().showSnackbar(btnContinue, resource.message);
-                        if(resource.data.getError()!=null && resource.data.getError().getCode().equalsIgnoreCase("401"))
+                        if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401"))
                             getBaseActivity().openActivityOnTokenExpire();
                     }
                     break;
@@ -108,13 +108,13 @@ public class PoliticsFragment extends BaseFragment implements View.OnClickListen
     }
 
     /**
-     ***  Method to Initialize
+     * **  Method to Initialize
      */
     private void initialize(View view) {
         btnContinue = view.findViewById(R.id.btn_continue);
-        btnContinue.setText(((CreateAccountActivity)getActivity()).btn_text);
+        btnContinue.setText(((CreateAccountActivity) getActivity()).btn_text);
         btnContinue.setOnClickListener(this);
-        if(((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit){
+        if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
             btnContinue.setText("Done");
         }
         RecyclerView rv_political = view.findViewById(R.id.rv_political);
@@ -140,15 +140,11 @@ public class PoliticsFragment extends BaseFragment implements View.OnClickListen
         for (int i = 0; i < list.size(); i++) {
             politicalList.add(new FlexModel(list.get(i)));
 
-            if(((CreateAccountActivity) getActivity()).getUserData().getPolitical()!=null &&politicalList.get(i).getName().equalsIgnoreCase(((CreateAccountActivity) getActivity()).getUserData().getPolitical())){
+            if (((CreateAccountActivity) getActivity()).getUserData().getPolitical() != null && politicalList.get(i).getName().equalsIgnoreCase(((CreateAccountActivity) getActivity()).getUserData().getPolitical())) {
                 politicalList.get(i).setChecked(true);
                 strPolitical = politicalList.get(i).getName();
-                btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
                 btnContinue.setEnabled(true);
                 lastPosition = i;
-                if (((CreateAccountActivity) getActivity()).isEdit) {
-                    btnContinue.setText("Done");
-                }
             }
         }
     }
@@ -175,11 +171,10 @@ public class PoliticsFragment extends BaseFragment implements View.OnClickListen
         adapter.notifyDataSetChanged();
         lastPosition = position;
         btnContinue.setEnabled(true);
-        btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
     }
 
     /**
-     *** Method to Skip Question/Field
+     * ** Method to Skip Question/Field
      */
     public void skipFragments() {
         strPolitical = "";

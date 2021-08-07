@@ -131,11 +131,7 @@ public class SignFragment extends BaseFragment implements View.OnClickListener {
         if (!TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getZodiacSign())) {
             selectedPos = signList.indexOf(((CreateAccountActivity) getActivity()).getUserData().getZodiacSign());
             pickerArray.setInitPosition(selectedPos);
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
             btnContinue.setEnabled(true);
-            if (((CreateAccountActivity) getActivity()).isEdit) {
-                btnContinue.setText("Done");
-            }
         }
         btnContinue.setOnClickListener(this);
 
