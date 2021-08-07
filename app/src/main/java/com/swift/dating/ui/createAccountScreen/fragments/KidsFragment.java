@@ -65,13 +65,13 @@ public class KidsFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onResume() {
         super.onResume();
-        if(!model.KidsResponse().hasObservers()){
+        if (!model.KidsResponse().hasObservers()) {
             subscribeModel();
         }
     }
 
     /**
-     ***  Method to Handle api Response
+     * **  Method to Handle api Response
      */
     private void subscribeModel() {
         model = ViewModelProviders.of(this).get(CreateAccountViewModel.class);
@@ -87,21 +87,21 @@ public class KidsFragment extends BaseFragment implements View.OnClickListener, 
                     case SUCCESS:
                         getBaseActivity().hideLoading();
                         if (resource.data.getSuccess()) {
-                            if(resource.data.getError()!=null && resource.data.getError().getCode().equalsIgnoreCase("401")){
+                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
                                 getBaseActivity().openActivityOnTokenExpire();
-                            }else {
+                            } else {
                                 Gson gson = new Gson();
                                 String user = getBaseActivity().sp.getUser();
                                 VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
                                 obj.setUser(resource.data.getUser());
-                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(),resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
                                 ((CreateAccountActivity) getActivity()).updateParseCount(7);
                                 sendIntent();
                             }
                         } else {
                             getBaseActivity().hideLoading();
                             getBaseActivity().showSnackbar(btnContinue, resource.data.getMessage());
-                            if(resource.data.getError()!=null && resource.data.getError().getCode().equalsIgnoreCase("401"))
+                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401"))
                                 getBaseActivity().openActivityOnTokenExpire();
                         }
                         break;
@@ -116,20 +116,20 @@ public class KidsFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     /**
-     ***  Method to Initialize
+     * **  Method to Initialize
      */
     private void initialize(View view) {
         btnContinue = view.findViewById(R.id.btn_continue);
-        btnContinue.setText(((CreateAccountActivity)getActivity()).btn_text);
+        btnContinue.setText(((CreateAccountActivity) getActivity()).btn_text);
         btnContinue.setOnClickListener(this);
 
-       if(((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit){
+        if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
             btnContinue.setText("Done");
         }
 
         RecyclerView rv_kids = view.findViewById(R.id.rv_kids);
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getActivity());
-        layoutManager.setFlexDirection(FlexDirection.ROW);
+        layoutManager.setFlexDirection(FlexDirection.COLUMN);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
         layoutManager.setAlignItems(AlignItems.STRETCH);
         rv_kids.setLayoutManager(layoutManager);
@@ -149,10 +149,9 @@ public class KidsFragment extends BaseFragment implements View.OnClickListener, 
         ArrayList<String> list = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.kidsArray)));
         for (int i = 0; i < list.size(); i++) {
             kidsList.add(new FlexModel(list.get(i)));
-            if(((CreateAccountActivity) getActivity()).getUserData().getKids()!=null && kidsList.get(i).getName().equalsIgnoreCase(((CreateAccountActivity) getActivity()).getUserData().getKids())){
+            if (((CreateAccountActivity) getActivity()).getUserData().getKids() != null && kidsList.get(i).getName().equalsIgnoreCase(((CreateAccountActivity) getActivity()).getUserData().getKids())) {
                 kidsList.get(i).setChecked(true);
                 strKids = kidsList.get(i).getName();
-                btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
                 btnContinue.setEnabled(true);
                 lastPosition = i;
                 if (((CreateAccountActivity) getActivity()).isEdit) {
@@ -165,12 +164,13 @@ public class KidsFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     private static final String TAG = "KidsFragment";
+
     @Override
     public void onClick(View view) {
-        if(view == btnContinue){
+        if (view == btnContinue) {
             getBaseActivity().showLoading();
             hideKeyboard();
-            Log.d(TAG, "onClick: "+strKids);
+            Log.d(TAG, "onClick: " + strKids);
             model.verifyRequest(new CreateAccountKidsModel(strKids));
         }
     }
@@ -196,13 +196,12 @@ public class KidsFragment extends BaseFragment implements View.OnClickListener, 
         adapter.notifyDataSetChanged();
         lastPosition = position;
         btnContinue.setEnabled(true);
-        btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
     }
 
     /**
-     *** Method to Skip Question/Field
+     * ** Method to Skip Question/Field
      */
-    public void skipFragments(){
+    public void skipFragments() {
         strKids = "";
         btnContinue.performClick();
     }

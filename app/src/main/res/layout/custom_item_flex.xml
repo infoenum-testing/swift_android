@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cl_item"
-    android:background="@color/white"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
 
     <RadioButton
         android:id="@+id/rb_item"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginStart="@dimen/_10sdp"
-        android:background="@drawable/toggle_selected"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/toggle_selected_new"
         android:button="@android:color/transparent"
+        android:clickable="false"
         android:fontFamily="@font/medium"
-        android:padding="@dimen/_8sdp"
+        android:gravity="center"
+        android:padding="@dimen/_10sdp"
         android:text="@string/man"
         android:textAllCaps="false"
-        android:clickable="false"
-        android:textColor="@drawable/ic_select"
+        android:textColor="@drawable/select_radio"
         android:textSize="@dimen/_12ssp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

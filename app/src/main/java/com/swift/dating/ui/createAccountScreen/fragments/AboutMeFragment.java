@@ -49,7 +49,7 @@ public class AboutMeFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onResume() {
         super.onResume();
-        if(etAboutMe!=null && !TextUtils.isEmpty(etAboutMe.getText()) && tvCounter!=null) {
+        if (etAboutMe != null && !TextUtils.isEmpty(etAboutMe.getText()) && tvCounter != null) {
             int length = etAboutMe.getText().toString().length();
             tvCounter.setText(String.valueOf(300 - length));
         }
@@ -58,7 +58,7 @@ public class AboutMeFragment extends BaseFragment implements View.OnClickListene
 
 
     /**
-     *** Method to Skip Question/Field
+     * ** Method to Skip Question/Field
      */
     public void skipFragments() {
         etAboutMe.setText("");
@@ -67,14 +67,14 @@ public class AboutMeFragment extends BaseFragment implements View.OnClickListene
 
 
     /**
-     ***  Method to Handle intent after api hit
+     * **  Method to Handle intent after api hit
      */
     private void sendIntent() {
         hideKeyboard();
         if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
             getActivity().finish();
             getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        }else {
+        } else {
             ((CreateAccountActivity) getActivity()).addFragment();
         }
     }
@@ -87,7 +87,7 @@ public class AboutMeFragment extends BaseFragment implements View.OnClickListene
 
 
     /**
-     ***  Method to Handle response on Api Hit
+     * **  Method to Handle response on Api Hit
      */
     private void subscribeModel() {
         model = ViewModelProviders.of(this).get(CreateAccountViewModel.class);
@@ -103,21 +103,21 @@ public class AboutMeFragment extends BaseFragment implements View.OnClickListene
                     case SUCCESS:
                         getBaseActivity().hideLoading();
                         if (resource.data.getSuccess()) {
-                            if(resource.data.getError()!=null && resource.data.getError().getCode().equalsIgnoreCase("401")){
+                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
                                 getBaseActivity().openActivityOnTokenExpire();
-                            }else {
+                            } else {
                                 Gson gson = new Gson();
                                 String user = getBaseActivity().sp.getUser();
                                 VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
                                 obj.setUser(resource.data.getUser());
-                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(),resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
                                 ((CreateAccountActivity) getActivity()).updateParseCount(9);
                                 sendIntent();
                             }
                         } else {
                             getBaseActivity().hideLoading();
                             getBaseActivity().showSnackbar(btnContinue, resource.message);
-                            if(resource.data.getError()!=null && resource.data.getError().getCode().equalsIgnoreCase("401"))
+                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401"))
                                 getBaseActivity().openActivityOnTokenExpire();
                         }
                         break;
@@ -131,28 +131,26 @@ public class AboutMeFragment extends BaseFragment implements View.OnClickListene
     }
 
     /**
-     ***  Method to Initialize
+     * **  Method to Initialize
      */
     private void initialize(View view) {
+
+        // please intruduce yourseldtr
+        // please answer question
         btnContinue = view.findViewById(R.id.btn_continue);
-        btnContinue.setText(((CreateAccountActivity)getActivity()).btn_text);
+        btnContinue.setText(((CreateAccountActivity) getActivity()).btn_text);
         tvCounter = view.findViewById(R.id.tvCounter);
         etAboutMe = view.findViewById(R.id.etAboutMe);
         if (!TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getAboutme())) {
             etAboutMe.setText(((CreateAccountActivity) getActivity()).getUserData().getAboutme());
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
-            btnContinue.setEnabled(true);
-            if (((CreateAccountActivity) getActivity()).isEdit) {
-                btnContinue.setText("Done");
-            }
         }
         implementClickListener();
     }
 
     /**
-     ***  Method to implement CLick Listener
+     * **  Method to implement CLick Listener
      */
-    private void implementClickListener(){
+    private void implementClickListener() {
         btnContinue.setOnClickListener(this);
         etAboutMe.addTextChangedListener(this);
     }
@@ -160,10 +158,13 @@ public class AboutMeFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onClick(View view) {
         if (view == btnContinue) {
-            getBaseActivity().showLoading();
-            String strAboutMe = etAboutMe.getText().toString();
-            model.verifyRequest(new CreateAccoutAboutModel(strAboutMe));
-
+            if (!TextUtils.isEmpty(etAboutMe.getText().toString().trim())) {
+                getBaseActivity().showLoading();
+                String strAboutMe = etAboutMe.getText().toString();
+                model.verifyRequest(new CreateAccoutAboutModel(strAboutMe));
+            } else {
+                showSnackBar(btnContinue, "Please introduce yourself");
+            }
         }
     }
 
@@ -175,13 +176,7 @@ public class AboutMeFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        if (charSequence.toString().trim().length() > 0) {
-            btnContinue.setEnabled(true);
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
-        } else {
-            btnContinue.setEnabled(false);
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.disabledbtn));
-        }
+
     }
 
     @Override

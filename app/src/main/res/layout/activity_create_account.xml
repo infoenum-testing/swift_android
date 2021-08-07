@@ -22,15 +22,8 @@
 
     <TextView
         android:id="@+id/tvskip"
-        android:layout_width="@dimen/_40ssp"
-        android:layout_height="@dimen/_30sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
-        android:fontFamily="@font/medium"
-        android:gravity="center"
+        style="@style/red_top_right_style"
         android:text="@string/skip"
-        android:textColor="@color/primaryTextColor"
-        android:textSize="@dimen/_14ssp"
         android:visibility="invisible"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,9 +32,9 @@
         android:id="@+id/fragments"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvskip"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvskip" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

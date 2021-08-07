@@ -112,6 +112,7 @@
             android:theme="@style/AppThemeNew"
             android:windowSoftInputMode="stateHidden|adjustPan">
 
+
         </activity>
 
         <activity
@@ -152,7 +153,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <provider

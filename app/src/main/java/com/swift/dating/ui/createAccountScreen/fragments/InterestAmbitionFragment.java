@@ -26,7 +26,7 @@ import com.swift.dating.ui.base.BaseFragment;
 import com.swift.dating.ui.createAccountScreen.CreateAccountActivity;
 import com.swift.dating.ui.createAccountScreen.viewmodel.CreateAccountViewModel;
 
-public class InterestAmbitionFragment  extends BaseFragment implements View.OnClickListener, TextWatcher {
+public class InterestAmbitionFragment extends BaseFragment implements View.OnClickListener, TextWatcher {
 
     private CreateAccountViewModel model;
     private Button btnContinue;
@@ -55,7 +55,7 @@ public class InterestAmbitionFragment  extends BaseFragment implements View.OnCl
         if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
             getActivity().finish();
             getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        }else {
+        } else {
             ((CreateAccountActivity) getActivity()).addFragment();
         }
     }
@@ -63,7 +63,7 @@ public class InterestAmbitionFragment  extends BaseFragment implements View.OnCl
     @Override
     public void onResume() {
         super.onResume();
-        if(etAboutMe!=null && !TextUtils.isEmpty(etAboutMe.getText()) && tvCounter!=null) {
+        if (etAboutMe != null && !TextUtils.isEmpty(etAboutMe.getText()) && tvCounter != null) {
             int length = etAboutMe.getText().toString().length();
             tvCounter.setText(String.valueOf(300 - length));
         }
@@ -76,7 +76,7 @@ public class InterestAmbitionFragment  extends BaseFragment implements View.OnCl
     }
 
     /**
-     ***  Method to Handle api Response
+     * **  Method to Handle api Response
      */
     private void subscribeModel() {
         model = ViewModelProviders.of(this).get(CreateAccountViewModel.class);
@@ -92,21 +92,21 @@ public class InterestAmbitionFragment  extends BaseFragment implements View.OnCl
                     case SUCCESS:
                         getBaseActivity().hideLoading();
                         if (resource.data.getSuccess()) {
-                            if(resource.data.getError()!=null && resource.data.getError().getCode().equalsIgnoreCase("401")){
+                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
                                 getBaseActivity().openActivityOnTokenExpire();
-                            }else {
+                            } else {
                                 Gson gson = new Gson();
                                 String user = getBaseActivity().sp.getUser();
                                 VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
                                 obj.setUser(resource.data.getUser());
-                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(),resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
                                 ((CreateAccountActivity) getActivity()).updateParseCount(10);
                                 sendIntent();
                             }
                         } else {
                             getBaseActivity().hideLoading();
                             getBaseActivity().showSnackbar(btnContinue, resource.message);
-                            if(resource.data.getError()!=null && resource.data.getError().getCode().equalsIgnoreCase("401"))
+                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401"))
                                 getBaseActivity().openActivityOnTokenExpire();
                         }
                         break;
@@ -120,20 +120,15 @@ public class InterestAmbitionFragment  extends BaseFragment implements View.OnCl
     }
 
     /**
-     ***  Method to Initialize
+     * **  Method to Initialize
      */
     private void initialize(View view) {
         btnContinue = view.findViewById(R.id.btn_continue);
-        btnContinue.setText(((CreateAccountActivity)getActivity()).btn_text);
+        btnContinue.setText(((CreateAccountActivity) getActivity()).btn_text);
         etAboutMe = view.findViewById(R.id.etAboutMe);
         tvCounter = view.findViewById(R.id.tvCounter);
-        if(!TextUtils.isEmpty(((CreateAccountActivity)getActivity()).getUserData().getAmbitions())){
-            etAboutMe.setText(((CreateAccountActivity)getActivity()).getUserData().getAmbitions());
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
-            btnContinue.setEnabled(true);
-            if(((CreateAccountActivity)getActivity()).isEdit){
-                btnContinue.setText("Done");
-            }
+        if (!TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getAmbitions())) {
+            etAboutMe.setText(((CreateAccountActivity) getActivity()).getUserData().getAmbitions());
         }
 
         btnContinue.setOnClickListener(this);
@@ -143,11 +138,14 @@ public class InterestAmbitionFragment  extends BaseFragment implements View.OnCl
     @Override
     public void onClick(View view) {
         if (view == btnContinue) {
-            getBaseActivity().showLoading();
-            hideKeyboard();
-            strAmbition = etAboutMe.getText().toString();
-            model.verifyRequest(new CreateAccoutAmbitionModel(strAmbition));
-
+            if (!TextUtils.isEmpty(etAboutMe.getText().toString().trim())) {
+                getBaseActivity().showLoading();
+                hideKeyboard();
+                strAmbition = etAboutMe.getText().toString();
+                model.verifyRequest(new CreateAccoutAmbitionModel(strAmbition));
+            } else {
+                showSnackBar(btnContinue, "Please enter your passion");
+            }
         }
     }
 
@@ -158,13 +156,7 @@ public class InterestAmbitionFragment  extends BaseFragment implements View.OnCl
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        if (charSequence.toString().trim().length() > 0) {
-            btnContinue.setEnabled(true);
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
-        } else {
-            btnContinue.setEnabled(false);
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.disabledbtn));
-        }
+
     }
 
     @Override
@@ -174,7 +166,7 @@ public class InterestAmbitionFragment  extends BaseFragment implements View.OnCl
     }
 
     /**
-     *** Method to Skip Question/Field
+     * ** Method to Skip Question/Field
      */
     public void skipFragments() {
         etAboutMe.setText("");
