@@ -27,7 +27,7 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="26dp" />
 
-    <com.swift.dating.common.wheelpicker.LoopView
+    <com.swiftdating.app.common.wheelpicker.LoopView
         android:id="@+id/picker_sign"
         android:layout_width="0dp"
         android:layout_height="@dimen/_125sdp"

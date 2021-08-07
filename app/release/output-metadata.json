@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.swift.dating",
+  "applicationId": "com.swiftdating.app",
   "variantName": "processReleaseResources",
   "elements": [
     {

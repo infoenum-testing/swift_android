@@ -60,7 +60,7 @@
         app:layout_constraintStart_toStartOf="@+id/rv_date"
         app:layout_constraintTop_toBottomOf="@+id/rv_date">
 
-        <com.swift.dating.common.wheelpicker.LoopView
+        <com.swiftdating.app.common.wheelpicker.LoopView
             android:id="@+id/picker_hours"
             android:layout_width="0dp"
             android:layout_height="150dp"
@@ -69,14 +69,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.swift.dating.common.wheelpicker.LoopView
+        <com.swiftdating.app.common.wheelpicker.LoopView
             android:id="@+id/picker_min"
             android:layout_width="0dp"
             android:layout_height="150dp"
             android:layout_weight="1"
             android:nestedScrollingEnabled="false" />
 
-        <com.swift.dating.common.wheelpicker.LoopView
+        <com.swiftdating.app.common.wheelpicker.LoopView
             android:id="@+id/picker_ampm"
             android:layout_width="0dp"
             android:layout_height="150dp"

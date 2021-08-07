@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.swift.dating.common.wheelpicker.LoopView
+    <com.swiftdating.app.common.wheelpicker.LoopView
         android:id="@+id/picker"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_140sdp"

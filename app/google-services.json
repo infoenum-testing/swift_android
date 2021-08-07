@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:469150149014:android:5ed614f46832f2836d95b7",
+        "mobilesdk_app_id": "1:469150149014:android:a6461c3d751a934a6d95b7",
         "android_client_info": {
-          "package_name": "com.swift.dating"
+          "package_name": "com.swiftdating.app"
         }
       },
       "oauth_client": [

@@ -9,7 +9,7 @@
 
     <include layout="@layout/new_module_layout" />
 
-    <com.swift.dating.common.VerticalScrollview
+    <com.swiftdating.app.common.VerticalScrollview
         android:id="@+id/verticalScrollview"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -367,7 +367,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_matches" />
-                <com.swift.dating.common.swipemenulistview.SwipeMenuListView
+                <com.swiftdating.app.common.swipemenulistview.SwipeMenuListView
                     android:id="@+id/rv_schedule_matches"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -433,7 +433,7 @@
             </RelativeLayout>-->
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.swift.dating.common.VerticalScrollview>
+    </com.swiftdating.app.common.VerticalScrollview>
 
 
     <!--<androidx.constraintlayout.widget.ConstraintLayout

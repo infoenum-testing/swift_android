@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.swift.dating">
+    package="com.swiftdating.app">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -23,7 +24,7 @@
         android:required="false" />
 
     <application
-        android:name=".BlackGentry"
+        android:name="com.swiftdating.app.BlackGentry"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -35,11 +36,11 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
-        <activity android:name=".ui.Premium_purchase_screen"></activity>
+        <activity android:name="com.swiftdating.app.ui.Premium_purchase_screen"></activity>
         <activity
-            android:name=".DummyActivity"
+            android:name="com.swiftdating.app.DummyActivity"
             android:theme="@style/AppThemeNew" />
-        <activity android:name=".ui.homeScreen.CardFilterActivity" />
+        <activity android:name="com.swiftdating.app.ui.homeScreen.CardFilterActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -53,61 +54,61 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".ui.where_do_you_live.WhereYouLiveActivity"
+            android:name="com.swiftdating.app.ui.where_do_you_live.WhereYouLiveActivity"
             android:label="@string/title_activity_maps"
             android:theme="@style/AppThemeNew" />
         <activity
-            android:name=".ui.emailScreen.PhoneActivity"
+            android:name="com.swiftdating.app.ui.emailScreen.PhoneActivity"
             android:theme="@style/AppThemeNew" />
-        <activity android:name=".ui.loginScreen.ChooseLoginFrom" />
-        <activity android:name=".ui.homeScreen.FilterActivity" />
+        <activity android:name="com.swiftdating.app.ui.loginScreen.ChooseLoginFrom" />
+        <activity android:name="com.swiftdating.app.ui.homeScreen.FilterActivity" />
         <activity
-            android:name=".ui.welcomeScreen.WelcomeActivity"
+            android:name="com.swiftdating.app.ui.welcomeScreen.WelcomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name=".ui.questionListScreen.QuestionListActivity"
+            android:name="com.swiftdating.app.ui.questionListScreen.QuestionListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.chatScreen.ChatWindow"
+            android:name="com.swiftdating.app.ui.chatScreen.ChatWindow"
             android:configChanges="keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".ui.selfieScreen.SelfieActivity"
+            android:name="com.swiftdating.app.ui.selfieScreen.SelfieActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name=".ui.loginScreen.LinkedInWebView"
+            android:name="com.swiftdating.app.ui.loginScreen.LinkedInWebView"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".ui.userCardScreen.UserCardActivity"
+            android:name="com.swiftdating.app.ui.userCardScreen.UserCardActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name=".ui.viewpagerScreen.ViewPagerActivity"
+            android:name="com.swiftdating.app.ui.viewpagerScreen.ViewPagerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name=".ui.myCardScreen.MyCardActivity"
+            android:name="com.swiftdating.app.ui.myCardScreen.MyCardActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name=".ui.answerNowScreen.AnswerNowActivity"
+            android:name="com.swiftdating.app.ui.answerNowScreen.AnswerNowActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name=".ui.itsAMatchScreen.ItsAMatchActivity"
+            android:name="com.swiftdating.app.ui.itsAMatchScreen.ItsAMatchActivity"
             android:theme="@style/Theme_Transparents" />
         <activity
-            android:name=".ui.settingScreen.SettingsActivity"
+            android:name="com.swiftdating.app.ui.settingScreen.SettingsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name=".ui.editProfileScreen.EditProfileActivity"
+            android:name="com.swiftdating.app.ui.editProfileScreen.EditProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew"
             android:windowSoftInputMode="stateHidden|adjustPan">
@@ -116,36 +117,36 @@
         </activity>
 
         <activity
-            android:name=".ui.base.CommonWebViewActivity"
+            android:name="com.swiftdating.app.ui.base.CommonWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".ui.homeScreen.HomeActivity"
+            android:name="com.swiftdating.app.ui.homeScreen.HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".ui.createAccountScreen.CreateAccountActivity"
+            android:name="com.swiftdating.app.ui.createAccountScreen.CreateAccountActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew" />
         <activity
-            android:name=".ui.base.CropImage"
+            android:name="com.swiftdating.app.ui.base.CropImage"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew" />
         <activity
-            android:name=".ui.emailScreen.EmailActivity"
+            android:name="com.swiftdating.app.ui.emailScreen.EmailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew" />
         <activity
-            android:name=".ui.verificationScreen.VerificationActivity"
+            android:name="com.swiftdating.app.ui.verificationScreen.VerificationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.loginScreen.LoginActivity"
+            android:name="com.swiftdating.app.ui.loginScreen.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew" />
         <activity
-            android:name=".ui.splashScreen.SplashActivity"
+            android:name="com.swiftdating.app.ui.splashScreen.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNew">
             <intent-filter>
@@ -191,7 +192,7 @@
             android:value="ca-app-pub-9278644902816701~1940646099" />
 
         <service
-            android:name=".notification.MyFirebaseMessagingService"
+            android:name="com.swiftdating.app.notification.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
