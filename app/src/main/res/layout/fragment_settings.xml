@@ -753,14 +753,105 @@
                 app:layout_constraintBottom_toTopOf="@id/btnlogout"
                 app:layout_constraintTop_toBottomOf="@+id/btn_bg_premium" />
 
-            <FrameLayout
+            <RelativeLayout
                 android:id="@+id/sliderFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
                 android:layout_marginTop="@dimen/_10sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnShare" />
+                app:layout_constraintTop_toBottomOf="@+id/btnShare" >
+
+                <RelativeLayout
+                    android:id="@+id/rlSlider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_stroke_sldier"
+                    android:backgroundTint="@color/pink"
+
+                    >
+
+                    <androidx.viewpager.widget.ViewPager
+                        android:id="@+id/pagerSlider"
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:orientation="horizontal" />
+
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/text_pager_indicator"
+                        android:layout_width="100dp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_below="@+id/pagerSlider"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:foregroundGravity="center"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/pagerSlider"
+                        app:tabBackground="@drawable/tab_selector"
+                        app:tabGravity="center"
+                        app:tabIndicatorHeight="0dp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:background="#f5f5F5"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp">
+
+                    <ImageView
+                        android:id="@+id/imageLogo"
+                        android:layout_width="@dimen/_40sdp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/logo" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="2dp"
+                        android:layout_toEndOf="@+id/imageLogo"
+                        android:fontFamily="@font/semi_bold"
+                        android:gravity="center"
+
+                        android:paddingTop="1dp"
+                        android:text="PREMIUM"
+                        android:textColor="@color/pink"
+                        android:textSize="17sp" />
+
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_subscribe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/_25sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@drawable/facebookbtn"
+                    android:backgroundTint="@color/pink"
+                    android:fontFamily="@font/semi_bold"
+                    android:gravity="center"
+                    android:paddingStart="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="@dimen/_5sdp"
+                    android:text="Subscribed"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/btnlogout"

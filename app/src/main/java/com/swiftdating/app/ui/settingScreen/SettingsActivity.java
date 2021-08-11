@@ -1,6 +1,7 @@
 package com.swiftdating.app.ui.settingScreen;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.webkit.ValueCallback;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,13 +32,20 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.swiftdating.app.ui.slider_fragment;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.swiftdating.app.BuildConfig;
 import com.swiftdating.app.R;
@@ -62,7 +72,7 @@ import okhttp3.ResponseBody;
 
 import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
 
-public class SettingsActivity extends BaseActivity implements View.OnClickListener, OnInAppInterface, BillingProcessor.IBillingHandler, DialogInterface.OnClickListener, CommonDialogs.onProductConsume, ApiCallback.ResetSkippedProfileCallback, CompoundButton.OnCheckedChangeListener, slider_fragment.onReceiveClickCallback {
+public class SettingsActivity extends BaseActivity implements View.OnClickListener, OnInAppInterface, BillingProcessor.IBillingHandler, DialogInterface.OnClickListener, CommonDialogs.onProductConsume, ApiCallback.ResetSkippedProfileCallback, CompoundButton.OnCheckedChangeListener, slider_fragment.onReceiveClickCallback, SliderAdapter.OnItemClicked {
 
     private static final String TAG = "SettingsActivity";
     public static boolean isSettingChanged = false;
@@ -80,7 +90,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private Switch showMeSwitch, newMatchSwitch, callSwitch, expireSwitch, matchSwitch, emailNotifySwitch, pushNotifySwitch;
     private HomeViewModel homeViewModel;
     private BillingProcessor bp;
-    private slider_fragment sliderFragment;
+    private ViewPager viewPager;
+    private TabLayout text_pager_indicator;
+    private SliderAdapter sliderAdapter;
+    int currentPage;
+    private static final long TIME_PERIOD = 3000;
+    Runnable Update;
+    private TextView tv_subscribe;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,6 +106,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("isCardScreen")) {
             isFromCardScreen = getIntent().getExtras().getBoolean("isCardScreen");
         }
+
         initialize();
         initBillingProcess();
         setSlider();
@@ -97,11 +114,63 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     private void setSlider() {
-        sliderFragment = new slider_fragment(this);
+        currentPage = 0;
+        text_pager_indicator = findViewById(R.id.text_pager_indicator);
+        RelativeLayout rlRootView = findViewById(R.id.sliderFragment);
+        viewPager = findViewById(R.id.pagerSlider);
+        tv_subscribe = findViewById(R.id.tv_subscribe);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.sliderFragment, sliderFragment).commit();
+        rlRootView.setOnClickListener(v -> {
+            openPurchaseDialog();
+        });
+
+        String[] tab_names = getResources().getStringArray(R.array.arr_premium_txt);
+        List<String> titleList = new ArrayList<>();
+        Collections.addAll(titleList, tab_names);
+        sliderAdapter = new SliderAdapter(this, titleList, this);
+        viewPager.setAdapter(sliderAdapter);
+        text_pager_indicator.setupWithViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                currentPage = position;
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+
+        Handler handler = new Handler();
+        Update = () -> {
+            if (currentPage == viewPager.getAdapter().getCount()) {
+                currentPage = 0;
+            }
+            viewPager.setCurrentItem(currentPage, true);
+            currentPage++;
+        };
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(Update);
+            }
+        }, 0, TIME_PERIOD);
+
     }
 
+    private void openPurchaseDialog() {
+        CommonDialogs.PremuimPurChaseDialog(this, this, sp);
+    }
 
     /**
      * Method to Initialize Billing Process
@@ -290,36 +359,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             }
         });
 
-
-        homeViewModel.addPremiumResponse().observe(this, new Observer<Resource<BaseModel>>() {
-            @Override
-            public void onChanged(@Nullable Resource<BaseModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        if (resource.data.getSuccess()) {
-                            sp.savePremium(true);
-                            sliderFragment.addPremiumTxt();
-                        } else if (resource.code == 401) {
-                            openActivityOnTokenExpire();
-                        } else {
-                            showSnackbar(cardTermnService, "Something went wrong");
-                        }
-                        break;
-                    case ERROR:
-                        hideLoading();
-                        showSnackbar(cardTermnService, resource.message);
-                        break;
-                }
-            }
-        });
-
-
         homeViewModel.checkSubscriptionResponse().observe(this, new Observer<Resource<BaseModel>>() {
             @Override
             public void onChanged(@Nullable Resource<BaseModel> resource) {
@@ -392,7 +431,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         hideLoading();
                         if (resource.data.getSuccess()) {
                             sp.savePremium(true);
-                            sliderFragment.addPremiumTxt();
+                            tv_subscribe.setVisibility(sp.getPremium() ? View.VISIBLE : View.GONE);
                         } else if (resource.code == 401) {
                             openActivityOnTokenExpire();
                         } else {
@@ -800,6 +839,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onPremiumCallback(String tokenType, int tokensNum, int selectedPos) {
         handleCallBack(tokenType, tokensNum, selectedPos);
+    }
+
+    @Override
+    public void onPagerItemClick() {
+        openPurchaseDialog();
     }
 
     /*bp.purchase(YOUR_ACTIVITY, "YOUR PRODUCT ID FROM GOOGLE PLAY CONSOLE HERE");

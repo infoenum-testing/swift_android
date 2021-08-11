@@ -9,10 +9,7 @@
 
     <ImageView
         android:id="@+id/iv_back"
-        android:layout_width="@dimen/_25sdp"
-        android:layout_height="@dimen/_25sdp"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:src="@drawable/back_img"
+        style="@style/back_btn_style"
         app:layout_constraintBottom_toBottomOf="@+id/tv_preview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_preview" />

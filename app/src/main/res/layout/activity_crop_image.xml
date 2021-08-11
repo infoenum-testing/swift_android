@@ -9,12 +9,11 @@
 
     <ImageView
         android:id="@+id/iv_back"
-        android:layout_width="@dimen/_30ssp"
-        android:layout_height="@dimen/_30ssp"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:src="@drawable/back_img"
+        android:padding="15dp"
+        android:src="@drawable/ic_back_svg"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -6,24 +6,12 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <LinearLayout
-        android:id="@+id/llBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingStart="@dimen/_15sdp"
-        android:paddingTop="@dimen/_5sdp"
-        android:paddingEnd="@dimen/_20sdp"
+
+    <ImageView
+        android:id="@+id/image_back"
+        style="@style/back_btn_style"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/back_img" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <com.facebook.drawee.view.SimpleDraweeView
@@ -37,7 +25,7 @@
         app:layout_constraintBottom_toTopOf="@+id/cameraIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llBack" />
+        app:layout_constraintTop_toBottomOf="@+id/image_back" />
 
 
     <ImageView

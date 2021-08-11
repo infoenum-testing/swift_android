@@ -65,12 +65,7 @@ public class ViewPagerActivity extends BaseActivity {
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager, true);
 
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        backBtn.setOnClickListener(view -> onBackPressed());
     }
 
     @Override

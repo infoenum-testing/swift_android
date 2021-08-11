@@ -14,16 +14,11 @@
 
         <ImageView
             android:id="@+id/image_back"
-            android:layout_width="@dimen/_20sdp"
-            android:layout_height="@dimen/_20sdp"
-            android:layout_marginStart="@dimen/_15sdp"
-            android:foregroundGravity="center"
-            android:src="@drawable/back_img"
+            style="@style/back_btn_style"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/scrollview"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-
             />
 
         <TextView
@@ -478,6 +473,15 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnVerifyProfile" />
 
+                <View
+                    android:id="@+id/view"
+                    style="@style/Divider"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvVerifyTxt" />
 
                 <TextView
                     android:id="@+id/tv_basic_info"
@@ -537,7 +541,7 @@
                     style="@style/edit_profile_title_style"
                     android:text="@string/aboutme"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvVerifyTxt" />
+                    app:layout_constraintTop_toBottomOf="@+id/view" />
 
 
                 <TextView

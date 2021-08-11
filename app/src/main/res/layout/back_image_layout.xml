@@ -3,16 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingStart="10dp"
-    android:paddingTop="10dp"
-    android:background="@color/white"
-    android:paddingEnd="0dp">
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/image_back"
-        android:layout_width="@dimen/_25sdp"
-        android:layout_height="@dimen/_25sdp"
-        android:src="@drawable/back_img"
+        style="@style/back_btn_style"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

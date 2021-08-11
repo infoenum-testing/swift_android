@@ -295,4 +295,14 @@
     </style>
 
 
+    <!--back button style -->
+    <style name="back_btn_style">
+        <item name="android:padding">15dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/ic_back_svg</item>
+
+    </style>
+
+
 </resources>

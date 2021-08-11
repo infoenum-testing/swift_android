@@ -1,5 +1,6 @@
 package com.swiftdating.app.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.swiftdating.app.R;
 import com.swiftdating.app.callbacks.PremiumCallback;
 import com.swiftdating.app.common.CommonDialogs;
 import com.swiftdating.app.data.network.Resource;
+import com.swiftdating.app.data.preference.SharedPreference;
 import com.swiftdating.app.model.BaseModel;
 import com.swiftdating.app.ui.base.BaseFragment;
 import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
@@ -45,14 +47,18 @@ public class slider_fragment extends BaseFragment implements CommonDialogs.onPro
     private View view;
     onReceiveClickCallback callback;
     private TextView tv_subscribe;
+    private Context context;
+    SharedPreference sp;
 
 
-    public slider_fragment(onReceiveClickCallback callback) {
+    public slider_fragment(onReceiveClickCallback callback, Context context, SharedPreference sp) {
         this.callback = callback;
+        this.context = context;
+        this.sp = sp;
     }
 
     public void addPremiumTxt() {
-        tv_subscribe.setVisibility(getBaseActivity().sp.getPremium() ? View.VISIBLE : View.GONE);
+        tv_subscribe.setVisibility(sp.getPremium() ? View.VISIBLE : View.GONE);
     }
 
     public interface onReceiveClickCallback {
@@ -75,7 +81,7 @@ public class slider_fragment extends BaseFragment implements CommonDialogs.onPro
     public void onResume() {
         super.onResume();
         try {
-            tv_subscribe.setVisibility(getBaseActivity().sp.getPremium() ? View.VISIBLE : View.GONE);
+            tv_subscribe.setVisibility(sp.getPremium() ? View.VISIBLE : View.GONE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -137,7 +143,7 @@ public class slider_fragment extends BaseFragment implements CommonDialogs.onPro
     }
 
     private void openPurchaseDialog() {
-        CommonDialogs.PremuimPurChaseDialog(getContext(), this,getBaseActivity().sp);
+        CommonDialogs.PremuimPurChaseDialog(getContext(), this, getBaseActivity().sp);
     }
 
     @Override
@@ -148,7 +154,7 @@ public class slider_fragment extends BaseFragment implements CommonDialogs.onPro
     @Override
     public void onPagerItemClick() {
         Log.e("TAG", "onPagerItemClick: ");
-        CommonDialogs.PremuimPurChaseDialog(getContext(), this,getBaseActivity().sp);
+        CommonDialogs.PremuimPurChaseDialog(getContext(), this, getBaseActivity().sp);
 
     }
 }

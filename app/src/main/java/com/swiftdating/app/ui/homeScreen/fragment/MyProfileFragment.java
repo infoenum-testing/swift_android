@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,11 +29,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -40,10 +44,13 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.swiftdating.app.R;
 import com.swiftdating.app.callbacks.OnInAppInterface;
@@ -67,6 +74,7 @@ import com.swiftdating.app.model.responsemodel.SuperLikeResponseModel;
 import com.swiftdating.app.model.responsemodel.User;
 import com.swiftdating.app.model.responsemodel.VerificationResponseModel;
 import com.swiftdating.app.ui.base.BaseActivity;
+import com.swiftdating.app.ui.settingScreen.SliderAdapter;
 import com.swiftdating.app.ui.slider_fragment;
 import com.swiftdating.app.ui.where_do_you_live.WhereYouLiveActivity;
 import com.swiftdating.app.ui.base.BaseFragment;
@@ -80,7 +88,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
 
 public class MyProfileFragment extends BaseFragment implements View.OnClickListener, OnInAppInterface,
-        BillingProcessor.IBillingHandler, CommonDialogs.onProductConsume, BaseActivity.MyProfileResponse, slider_fragment.onReceiveClickCallback {
+        BillingProcessor.IBillingHandler, CommonDialogs.onProductConsume, BaseActivity.MyProfileResponse, slider_fragment.onReceiveClickCallback, SliderAdapter.OnItemClicked {
     public static BillingProcessor bp;
     List<ImageModel> imagelist = new ArrayList<>();
     double price;
@@ -95,7 +103,13 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     private ConstraintLayout btn_bg_delux;
     private CardView card_vip, card_time, card_crush;
     private Dialog preDialog;
-    private slider_fragment sliderFragment;
+    private ViewPager viewPager;
+    private TabLayout text_pager_indicator;
+    private SliderAdapter sliderAdapter;
+    int currentPage;
+    private static final long TIME_PERIOD = 3000;
+    Runnable Update;
+    private TextView tv_subscribe;
 
     @Override
     public int getLayoutId() {
@@ -114,13 +128,65 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         } else {
             getBaseActivity().showSnackbar(view, "Please connect to internet");
         }
-        setSlider();
+        setSlider(view);
     }
 
-    private void setSlider() {
-        sliderFragment = new slider_fragment(this);
+    private void setSlider(View v) {
+        currentPage = 0;
+        text_pager_indicator = v.findViewById(R.id.text_pager_indicator);
+        RelativeLayout rlRootView = v.findViewById(R.id.sliderFragment);
+        viewPager = v.findViewById(R.id.pagerSlider);
+        tv_subscribe = v.findViewById(R.id.tv_subscribe);
 
-        getChildFragmentManager().beginTransaction().replace(R.id.sliderFragment, sliderFragment).commit();
+        rlRootView.setOnClickListener(vss -> MyProfileFragment.this.openPurchaseDialog());
+
+
+        String[] tab_names = getResources().getStringArray(R.array.arr_premium_txt);
+        List<String> titleList = new ArrayList<>();
+        Collections.addAll(titleList, tab_names);
+        sliderAdapter = new SliderAdapter(getContext(), titleList, this);
+        viewPager.setAdapter(sliderAdapter);
+        text_pager_indicator.setupWithViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                currentPage = position;
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+
+        Handler handler = new Handler();
+        Update = () -> {
+            if (currentPage == viewPager.getAdapter().getCount()) {
+                currentPage = 0;
+            }
+            viewPager.setCurrentItem(currentPage, true);
+            currentPage++;
+        };
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(Update);
+            }
+        }, 0, TIME_PERIOD);
+
+    }
+
+    private void openPurchaseDialog() {
+        CommonDialogs.PremuimPurChaseDialog(getContext(), this, getBaseActivity().sp);
     }
 
     @Override
@@ -144,6 +210,15 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                 getBaseActivity().openActivityOnTokenExpire();
             }
         }
+
+        if (getBaseActivity().sp != null) {
+            tv_subscribe.setVisibility(getBaseActivity().sp.getPremium() ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    @Override
+    public void onPagerItemClick() {
+        openPurchaseDialog();
     }
 
     /**
@@ -326,7 +401,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                         getBaseActivity().hideLoading();
                         if (resource.data.getSuccess()) {
                             getBaseActivity().sp.savePremium(true);
-                            sliderFragment.addPremiumTxt();
+                            tv_subscribe.setVisibility(getBaseActivity().sp.getPremium() ? View.VISIBLE : View.GONE);
                             tv_pre_subscribe.setVisibility(View.VISIBLE);
                             if (preDialog != null)
                                 preDialog.dismiss();

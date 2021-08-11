@@ -637,9 +637,9 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
         tvReligion.setText(obj.getRelegion() != null ? obj.getRelegion() : "");
         tvPolitics.setText(obj.getPolitical() != null ? obj.getPolitical() : "");
         tvCompletion.setVisibility(View.VISIBLE);
-        String status = "Verification status: ".concat(sp.getSelfieVerificationStatus().equalsIgnoreCase("No") ? "Not submitted " : sp.getSelfieVerificationStatus());
+        String status = "Verification status: ";
+        status = sp.getSelfieVerificationStatus().equalsIgnoreCase("No") ? status + "Not submitted " : status + sp.getSelfieVerificationStatus();
         tvVerifyTxt.setText(status);
-
     }
 
     /**
@@ -694,7 +694,7 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
         Intent intent = null;
         if (view == image_back) {
             finish();
-            overridePendingTransition(R.anim.slide_out_down_fast, R.anim.nothing_fast);
+            overridePendingTransition(R.anim.nothing_fast, R.anim.slide_out_down_fast);
         } else if (view == tvDone) {
             isOrderChanged = true;
             //callChangeOrderApi(imageList);

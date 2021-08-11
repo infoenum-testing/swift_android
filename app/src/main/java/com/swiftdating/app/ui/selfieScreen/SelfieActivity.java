@@ -7,14 +7,20 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.fxn.pix.Options;
+import com.fxn.pix.Pix;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -54,7 +60,7 @@ public class SelfieActivity extends BaseActivity implements View.OnClickListener
     SimpleDraweeView ivSelfie;
     ImageView cameraIcon;
     Button btn_continue, btnBack;
-    private LinearLayout llBack;
+    private ImageView llBack;
     boolean isEdit;
     ArrayList<String> imageList = new ArrayList<>();
 
@@ -69,7 +75,7 @@ public class SelfieActivity extends BaseActivity implements View.OnClickListener
         ivSelfie = findViewById(R.id.ivSelfie);
         btn_continue = findViewById(R.id.btn_continue);
         btnBack = findViewById(R.id.btnBack);
-        llBack = findViewById(R.id.llBack);
+        llBack = findViewById(R.id.image_back);
 
      /*   if (isEdit) {
             btn_continue.setText("Resubmit");
@@ -88,23 +94,14 @@ public class SelfieActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            EasyImage.handleActivityResult(requestCode, resultCode, data, SelfieActivity.this, new DefaultCallback() {
-                @Override
-                public void onImagesPicked(@NonNull List<File> imageFiles, EasyImage.ImageSource source, int type) {
-                    String imageUri = imageFiles.get(0).toString();
-                    imageList.clear();
-                    imageList.add(imageUri);
-                    //uploadImage();
-                    try {
-                        ivSelfie.setImageURI(Uri.fromFile(new Compressor(SelfieActivity.this).compressToFile(new File(imageFiles.get(0).toString()))));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    btn_continue.setVisibility(View.VISIBLE);
-
-                }
-            });
+        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
+            ArrayList<String> returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
+            String imageUri = returnValue.get(0);
+            imageList.clear();
+            imageList.add(imageUri);
+            Bitmap bitmap = BitmapFactory.decodeFile(imageUri);
+            ivSelfie.setImageBitmap(bitmap);
+            btn_continue.setVisibility(View.VISIBLE);
         } else {
             onBackPressed();
         }
@@ -122,30 +119,39 @@ public class SelfieActivity extends BaseActivity implements View.OnClickListener
      * **  Method to checkPermissions to add image
      */
     private void checkPermission() {
-        if (checkPermissionCG())
-            EasyImage.openCamera(SelfieActivity.this, 0);
-        else
+        if (checkPermissionCG()) {
+            openCamera();
+        } else
             requestPermissionCG();
+    }
+
+    private void openCamera() {
+        Options options = Options.init()
+                .setRequestCode(100)                                           //Request code for activity results
+                .setCount(1)                                                   //Number of images to restict selection count
+                .setFrontfacing(true)                                         //Front Facing camera on start
+                .setMode(Options.Mode.Picture)                                     //Option to select only pictures or videos or both
+                .setScreenOrientation(Options.SCREEN_ORIENTATION_PORTRAIT)     //Orientaion
+                .setPath("/pix/images");                                       //Custom Path For media Storage
+        Pix.start(this, options);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE_CG:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED &&
-                        grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                    EasyImage.openCamera(SelfieActivity.this, 0);
+        if (requestCode == PERMISSION_REQUEST_CODE_CG) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED &&
+                    grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            } else {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(SelfieActivity.this, Manifest.permission.CAMERA) ||
+                        !ActivityCompat.shouldShowRequestPermissionRationale(SelfieActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) ||
+                        !ActivityCompat.shouldShowRequestPermissionRationale(SelfieActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    alertDialogDeny(getString(R.string.camera_gallery_permission_text));
                 } else {
-                    if (!ActivityCompat.shouldShowRequestPermissionRationale(SelfieActivity.this, Manifest.permission.CAMERA) ||
-                            !ActivityCompat.shouldShowRequestPermissionRationale(SelfieActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) ||
-                            !ActivityCompat.shouldShowRequestPermissionRationale(SelfieActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                        alertDialogDeny(getString(R.string.camera_gallery_permission_text));
-                    } else {
-                        alertDialogPermission("camera");
-                    }
+                    alertDialogPermission("camera");
                 }
-                break;
+            }
         }
     }
 
@@ -228,6 +234,7 @@ public class SelfieActivity extends BaseActivity implements View.OnClickListener
                             hideLoading();
                             sp.saveSelfie(responseBean.getSelfieData().getSelfieUrl());
                             sp.saveVerified(responseBean.getSelfieData().getIsVerified());
+                            sp.saveSelfieVerificationStatus("Pending");
                             sp.saveIsRejected(false);
                             finish();
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);

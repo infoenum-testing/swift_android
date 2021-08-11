@@ -598,7 +598,7 @@ public class CommonDialogs {
                 layouts[i].setOnClickListener(v -> {
                     indexOfSelectedLayout = finalI;
                     unSelectAll(layouts);
-                    layouts[finalI].setBackgroundResource(R.drawable.ic_bg_premium_selected);
+                    layouts[finalI].setBackgroundResource(R.drawable.vip_token_red_bg);
                 });
             }
             Button btn_continue = dialog.findViewById(R.id.btn_continue);

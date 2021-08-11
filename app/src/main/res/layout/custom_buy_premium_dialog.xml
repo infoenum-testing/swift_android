@@ -141,7 +141,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="8dp"
-                        android:background="@drawable/ic_bg_premium_selected"
+                        android:background="@drawable/vip_token_red_bg"
                         android:gravity="center"
                         android:orientation="vertical">
 

@@ -192,10 +192,10 @@
     <string name="you_accepted_declined_user_date_text">You %1$s’s Date!</string>
     <string name="server_error_message">Something Went Wrong</string>
     <string name="no_internet_error">No Internet</string>
-    <string name="copythisgesture">Copy This Gesture</string>
+    <string name="copythisgesture">Copy this gesture</string>
     <string name="copythisgesture_desc">We require all profiles to selfie verify. Take a one-time selfie with your front camera and match the gesture in the picture below. We will not post your selfie on your page.
         We only use your picture to confirm that you are you. </string>
-    <string name="selfie_txt">Verifying your profile let’s users know that you are who you are. Verified profiles have a check by their names. Selfies are only used by the admin to verify your profile and will not be displayed on your profile.</string>
+    <string name="selfie_txt">Verifying your profile let’s other users know that you are who you say you are. Verified profiles have a check by their names. Selfies are only used by the admin to verify your profile and will not be displayed on your profile.</string>
 
 
     <string name="imReady_text">I\'m Ready</string>

@@ -142,4 +142,8 @@ dependencies {
     /*dot pageindicator*/
     implementation 'com.github.chahine:pageindicator:0.2.8'
 
+
+
+    implementation  'com.fxn769:pix:1.5.6'
+
 }
