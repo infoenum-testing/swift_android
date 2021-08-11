@@ -69,7 +69,10 @@
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name="com.swiftdating.app.ui.questionListScreen.QuestionListActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNew"
+
+            />
         <activity
             android:name="com.swiftdating.app.ui.chatScreen.ChatWindow"
             android:configChanges="keyboardHidden"
@@ -78,7 +81,10 @@
         <activity
             android:name="com.swiftdating.app.ui.selfieScreen.SelfieActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustPan" />
+            android:theme="@style/AppThemeNew"
+            android:windowSoftInputMode="stateHidden|adjustPan"
+
+            />
         <activity
             android:name="com.swiftdating.app.ui.loginScreen.LinkedInWebView"
             android:screenOrientation="portrait"
@@ -90,14 +96,19 @@
         <activity
             android:name="com.swiftdating.app.ui.viewpagerScreen.ViewPagerActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustPan" />
+            android:theme="@style/AppThemeNew"
+            android:windowSoftInputMode="stateHidden|adjustPan"
+            />
         <activity
             android:name="com.swiftdating.app.ui.myCardScreen.MyCardActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNew"
             android:windowSoftInputMode="stateHidden|adjustPan" />
+
         <activity
             android:name="com.swiftdating.app.ui.answerNowScreen.AnswerNowActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNew"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name="com.swiftdating.app.ui.itsAMatchScreen.ItsAMatchActivity"

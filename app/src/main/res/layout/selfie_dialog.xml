@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:scrollbars="none"
     android:layout_gravity="center"
+    android:layout_margin="@dimen/_20sdp"
     android:overScrollMode="never"
-    android:layout_margin="@dimen/_20sdp">
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,12 +34,12 @@
                 android:id="@+id/tvHeading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:fontFamily="@font/medium"
                 android:gravity="center"
                 android:text="@string/copythisgesture"
                 android:textColor="@color/primaryTextColor"
                 android:textSize="@dimen/_15ssp"
-                android:layout_marginTop="@dimen/_10sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/ivclose" />
@@ -61,7 +61,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_10sdp"
                 android:fontFamily="@font/medium"
-                android:text="@string/copythisgesture_desc"
+                android:gravity="center"
+                android:text="@string/selfie_txt"
                 android:textColor="@color/secondaryTextColor"
                 android:textSize="@dimen/_11ssp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -70,14 +71,14 @@
 
             <ImageView
                 android:id="@+id/iv_gesture"
-                android:layout_width="@dimen/_100sdp"
-                android:layout_height="@dimen/_130sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:src="@drawable/selfie_image"
                 android:scaleType="fitCenter"
-                app:layout_constraintStart_toStartOf="@+id/tvTerms"
+                android:src="@drawable/ic_selfie_svg"
                 app:layout_constraintEnd_toEndOf="@+id/tvTerms"
-                app:layout_constraintTop_toBottomOf="@+id/tvTerms"/>
+                app:layout_constraintStart_toStartOf="@+id/tvTerms"
+                app:layout_constraintTop_toBottomOf="@+id/tvTerms" />
 
             <Button
                 android:id="@+id/btn_ready"
@@ -87,7 +88,8 @@
                 android:layout_marginTop="@dimen/_20sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
                 android:layout_marginBottom="@dimen/_10sdp"
-                android:background="@drawable/gradientbtn"
+                android:background="@drawable/facebookbtn"
+                android:backgroundTint="@color/pink"
                 android:enabled="true"
                 android:fontFamily="@font/medium"
                 android:minWidth="@dimen/_200sdp"
@@ -105,14 +107,14 @@
                 android:id="@+id/tvBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Back"
-                android:textSize="@dimen/_14ssp"
-                android:textColor="@color/primaryTextColor"
                 android:layout_marginTop="@dimen/_10sdp"
+                android:text="Back"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/_14ssp"
                 android:visibility="invisible"
-                app:layout_constraintTop_toBottomOf="@+id/btn_ready"
+                app:layout_constraintEnd_toEndOf="@+id/btn_ready"
                 app:layout_constraintStart_toStartOf="@id/btn_ready"
-                app:layout_constraintEnd_toEndOf="@+id/btn_ready"/>
+                app:layout_constraintTop_toBottomOf="@+id/btn_ready" />
 
 
             <View

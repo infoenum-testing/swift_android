@@ -125,7 +125,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="1 Tokens"
+                                android:text="1 Token"
                                 android:textColor="@color/black"
                                 android:textSize="15sp" />
 

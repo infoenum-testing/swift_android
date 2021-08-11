@@ -62,7 +62,7 @@ public class ReligionFragment extends BaseFragment implements View.OnClickListen
     }
 
     /**
-     ***  Method to Handle api Response
+     * **  Method to Handle api Response
      */
     private void subscribeModel() {
         model = ViewModelProviders.of(this).get(CreateAccountViewModel.class);
@@ -78,21 +78,21 @@ public class ReligionFragment extends BaseFragment implements View.OnClickListen
                     case SUCCESS:
                         getBaseActivity().hideLoading();
                         if (resource.data.getSuccess()) {
-                            if(resource.data.getError()!=null && resource.data.getError().getCode().equalsIgnoreCase("401")){
+                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
                                 getBaseActivity().openActivityOnTokenExpire();
-                            }else {
+                            } else {
                                 Gson gson = new Gson();
                                 String user = getBaseActivity().sp.getUser();
                                 VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
                                 obj.setUser(resource.data.getUser());
-                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(),resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
                                 ((CreateAccountActivity) getActivity()).updateParseCount(9);
                                 sendIntent();
                             }
                         } else {
                             getBaseActivity().hideLoading();
                             getBaseActivity().showSnackbar(btnContinue, resource.message);
-                            if(resource.data.getError()!=null && resource.data.getError().getCode().equalsIgnoreCase("401"))
+                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401"))
                                 getBaseActivity().openActivityOnTokenExpire();
                         }
                         break;
@@ -106,12 +106,12 @@ public class ReligionFragment extends BaseFragment implements View.OnClickListen
     }
 
     /**
-     ***  Method to Initialize
+     * **  Method to Initialize
      */
     private void initialize(View view) {
         btnContinue = view.findViewById(R.id.btn_continue);
-        btnContinue.setText(((CreateAccountActivity)getActivity()).btn_text);
-        if(((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit){
+        btnContinue.setText(((CreateAccountActivity) getActivity()).btn_text);
+        if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
             btnContinue.setText("Done");
         }
         RecyclerView rv_religion = view.findViewById(R.id.rv_religion);
@@ -138,15 +138,11 @@ public class ReligionFragment extends BaseFragment implements View.OnClickListen
         ArrayList<String> list = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.religionArray)));
         for (int i = 0; i < list.size(); i++) {
             religionList.add(new FlexModel(list.get(i)));
-            if(((CreateAccountActivity) getActivity()).getUserData().getRelegion()!=null && religionList.get(i).getName().equalsIgnoreCase(((CreateAccountActivity) getActivity()).getUserData().getRelegion())){
+            if (((CreateAccountActivity) getActivity()).getUserData().getRelegion() != null && religionList.get(i).getName().equalsIgnoreCase(((CreateAccountActivity) getActivity()).getUserData().getRelegion())) {
                 religionList.get(i).setChecked(true);
                 strReligion = religionList.get(i).getName();
-                btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
                 btnContinue.setEnabled(true);
                 lastPosition = i;
-                if (((CreateAccountActivity) getActivity()).isEdit) {
-                    btnContinue.setText("Done");
-                }
             }
         }
 
@@ -187,11 +183,10 @@ public class ReligionFragment extends BaseFragment implements View.OnClickListen
         adapter.notifyDataSetChanged();
         lastPosition = position;
         btnContinue.setEnabled(true);
-        btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
     }
 
     /**
-     *** Method to Skip Question/Field
+     * ** Method to Skip Question/Field
      */
     public void skipFragments() {
         strReligion = "";

@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
@@ -45,7 +46,7 @@ public class JobFragment extends BaseFragment implements View.OnClickListener, T
     }
 
     /**
-     ***  Method to Handle api Response
+     * **  Method to Handle api Response
      */
     private void subscribeModel() {
         model = ViewModelProviders.of(this).get(CreateAccountViewModel.class);
@@ -61,14 +62,14 @@ public class JobFragment extends BaseFragment implements View.OnClickListener, T
                     case SUCCESS:
                         getBaseActivity().hideLoading();
                         if (resource.data.getSuccess()) {
-                            if(resource.data.getError()!=null && resource.data.getError().getCode().equalsIgnoreCase("401")){
+                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
                                 getBaseActivity().openActivityOnTokenExpire();
-                            }else {
+                            } else {
                                 Gson gson = new Gson();
                                 String user = getBaseActivity().sp.getUser();
                                 VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
                                 obj.setUser(resource.data.getUser());
-                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(),resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
                                 ((CreateAccountActivity) getActivity()).updateParseCount(13);
                                 sendIntent();
                             }
@@ -100,26 +101,23 @@ public class JobFragment extends BaseFragment implements View.OnClickListener, T
             getActivity().finish();
             getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         } else {
-            ((CreateAccountActivity) getActivity()).addFragment();        }
+            ((CreateAccountActivity) getActivity()).addFragment();
+        }
     }
 
     /**
-     ***  Method to Initialize
+     * **  Method to Initialize
      */
     private void initialize(View view) {
         btnContinue = view.findViewById(R.id.btn_continue);
-        btnContinue.setText(((CreateAccountActivity)getActivity()).btn_text);
+        btnContinue.setText(((CreateAccountActivity) getActivity()).btn_text);
         etJob = view.findViewById(R.id.et_job);
         btnContinue.setOnClickListener(this);
         etJob.addTextChangedListener(this);
 
-        if(!TextUtils.isEmpty(((CreateAccountActivity)getActivity()).getUserData().getOccupation())){
-            etJob.setText(((CreateAccountActivity)getActivity()).getUserData().getOccupation());
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
+        if (!TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getOccupation())) {
+            etJob.setText(((CreateAccountActivity) getActivity()).getUserData().getOccupation());
             btnContinue.setEnabled(true);
-            if(((CreateAccountActivity)getActivity()).isEdit){
-                btnContinue.setText("Done");
-            }
         }
 
 
@@ -143,13 +141,7 @@ public class JobFragment extends BaseFragment implements View.OnClickListener, T
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        if (charSequence.toString().trim().length() > 0) {
-            btnContinue.setEnabled(true);
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
-        } else {
-            btnContinue.setEnabled(false);
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.disabledbtn));
-        }
+        btnContinue.setEnabled(charSequence.toString().trim().length() > 0);
     }
 
     @Override
@@ -158,7 +150,7 @@ public class JobFragment extends BaseFragment implements View.OnClickListener, T
     }
 
     /**
-     *** Method to Skip Question/Field
+     * ** Method to Skip Question/Field
      */
     public void skipFragments() {
         etJob.setText("");

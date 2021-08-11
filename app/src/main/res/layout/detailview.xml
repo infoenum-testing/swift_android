@@ -24,6 +24,7 @@
                 android:id="@+id/item_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/roundbg"
                 android:scaleType="fitXY"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -177,9 +178,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
                             android:layout_marginTop="@dimen/_5sdp"
-                            android:fontFamily="@font/opensans_semibold"
+                            android:fontFamily="@font/medium"
                             android:text="Occupation"
-                            android:textColor="@color/primaryTextColor"
+                            android:textColor="@color/profile_txt_color"
                             android:textSize="@dimen/_12ssp" />
 
                         <TextView
@@ -190,7 +191,7 @@
                             android:layout_marginTop="@dimen/_2sdp"
                             android:layout_marginBottom="@dimen/_5sdp"
                             android:fontFamily="@font/semi_bold"
-                            android:textColor="@color/primaryTextColor"
+                            android:textColor="@color/profile_txt_color"
                             android:textSize="@dimen/_15ssp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -217,9 +218,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
                             android:layout_marginTop="@dimen/_5sdp"
-                            android:fontFamily="@font/opensans_semibold"
+                            android:fontFamily="@font/medium"
                             android:text="School Name"
-                            android:textColor="@color/primaryTextColor"
+                            android:textColor="@color/profile_txt_color"
                             android:textSize="@dimen/_12ssp" />
 
                         <TextView
@@ -230,7 +231,7 @@
                             android:layout_marginTop="@dimen/_2sdp"
                             android:layout_marginBottom="@dimen/_5sdp"
                             android:fontFamily="@font/semi_bold"
-                            android:textColor="@color/primaryTextColor"
+                            android:textColor="@color/profile_txt_color"
                             android:textSize="@dimen/_15ssp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -246,7 +247,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/rv_about"
-                    app:roundedCornerRadius="@dimen/_5ssp" />
+                    app:roundedCornerRadius="@dimen/_10sdp" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cv_interest"
@@ -269,9 +270,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
                             android:layout_marginTop="@dimen/_5sdp"
-                            android:fontFamily="@font/opensans_semibold"
+                            android:fontFamily="@font/medium"
                             android:text="Interests"
-                            android:textColor="@color/primaryTextColor"
+                            android:textColor="@color/profile_txt_color"
                             android:textSize="@dimen/_12ssp" />
 
                         <TextView
@@ -282,7 +283,7 @@
                             android:layout_marginTop="@dimen/_2sdp"
                             android:layout_marginBottom="@dimen/_5sdp"
                             android:fontFamily="@font/semi_bold"
-                            android:textColor="@color/primaryTextColor"
+                            android:textColor="@color/profile_txt_color"
                             android:textSize="@dimen/_15ssp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -385,7 +386,7 @@
                             android:layout_marginBottom="@dimen/_5sdp"
                             android:fontFamily="@font/semi_bold"
                             android:textColor="@color/primaryTextColor"
-                            android:textSize="@dimen/_15ssp"/>
+                            android:textSize="@dimen/_15ssp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -422,8 +423,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
                             android:layout_marginTop="@dimen/_5sdp"
-                            android:fontFamily="@font/opensans_semibold"
-                            android:textColor="@color/primaryTextColor"
+                            android:fontFamily="@font/medium"
+                            android:textColor="@color/profile_txt_color"
                             android:textSize="@dimen/_12ssp" />
 
                         <TextView
@@ -434,7 +435,7 @@
                             android:layout_marginTop="@dimen/_2sdp"
                             android:layout_marginBottom="@dimen/_5sdp"
                             android:fontFamily="@font/semi_bold"
-                            android:textColor="@color/primaryTextColor"
+                            android:textColor="@color/profile_txt_color"
                             android:textSize="@dimen/_15ssp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -473,9 +474,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
                             android:layout_marginTop="@dimen/_5sdp"
-                            android:fontFamily="@font/opensans_semibold"
+                            android:fontFamily="@font/medium"
                             android:text="Lives In"
-                            android:textColor="@color/primaryTextColor"
+                            android:textColor="@color/profile_txt_color"
                             android:textSize="@dimen/_12ssp" />
 
                         <TextView
@@ -486,8 +487,8 @@
                             android:layout_marginTop="@dimen/_2sdp"
                             android:layout_marginBottom="@dimen/_5sdp"
                             android:fontFamily="@font/semi_bold"
-                            android:textColor="@color/primaryTextColor"
-                            android:textSize="@dimen/_15ssp"/>
+                            android:textColor="@color/profile_txt_color"
+                            android:textSize="@dimen/_15ssp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -497,9 +498,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_5sdp"
-                    android:fontFamily="@font/opensans_semibold"
+                    android:fontFamily="@font/medium"
                     android:text="Current Location"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="@color/profile_txt_color"
                     android:textSize="@dimen/_12ssp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -514,7 +515,7 @@
                     android:paddingStart="@dimen/_10sdp"
                     android:paddingEnd="@dimen/_10sdp"
                     android:paddingBottom="@dimen/_5sdp"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="@color/profile_txt_color"
                     android:textSize="@dimen/_15ssp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -571,11 +572,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
+                        android:fontFamily="@font/opensans_semibold"
                         android:paddingStart="@dimen/_10sdp"
                         android:paddingEnd="@dimen/_10sdp"
                         android:paddingBottom="@dimen/_5sdp"
                         android:text="@string/instagramPhotos"
-                        android:fontFamily="@font/opensans_semibold"
                         android:textColor="@color/primaryTextColor"
                         android:textSize="@dimen/_12ssp" />
 
@@ -583,14 +584,13 @@
                         android:id="@+id/tab_layout"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
+                        android:layout_above="@id/view_pager"
+                        android:layout_alignParentEnd="true"
                         android:elevation="@dimen/_10sdp"
+                        android:visibility="visible"
                         app:tabBackground="@drawable/tab_selector"
                         app:tabGravity="center"
-                        app:tabIndicatorHeight="0dp"
-                        android:visibility="visible"
-                        android:layout_alignParentEnd="true"
-                        android:layout_above="@id/view_pager"
-                        />
+                        app:tabIndicatorHeight="0dp" />
 
                     <androidx.viewpager.widget.ViewPager
                         android:id="@+id/view_pager"
@@ -598,7 +598,7 @@
                         android:layout_height="@dimen/_260sdp"
                         android:layout_below="@id/tv_insta"
                         android:overScrollMode="never"
-                        android:scrollbars="none"/>
+                        android:scrollbars="none" />
                 </RelativeLayout>
 
                 <TextView
@@ -614,7 +614,7 @@
                     android:paddingEnd="@dimen/_10sdp"
                     android:paddingBottom="@dimen/_5sdp"
                     android:text="@string/reportuser"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/title_color"
                     android:textSize="@dimen/_15ssp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"

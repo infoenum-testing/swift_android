@@ -56,6 +56,7 @@ import com.swiftdating.app.ui.base.CommonWebViewActivity;
 import com.swiftdating.app.ui.homeScreen.fragment.SearchFragment;
 import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
 import com.swiftdating.app.model.responsemodel.SettingsResponseModel;
+import com.swiftdating.app.ui.where_do_you_live.WhereYouLiveActivity;
 
 import okhttp3.ResponseBody;
 
@@ -79,7 +80,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private Switch showMeSwitch, newMatchSwitch, callSwitch, expireSwitch, matchSwitch, emailNotifySwitch, pushNotifySwitch;
     private HomeViewModel homeViewModel;
     private BillingProcessor bp;
-
+    private slider_fragment sliderFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,7 +97,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     private void setSlider() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.sliderFragment, new slider_fragment(this)).commit();
+        sliderFragment = new slider_fragment(this);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.sliderFragment, sliderFragment).commit();
     }
 
 
@@ -301,6 +304,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         hideLoading();
                         if (resource.data.getSuccess()) {
                             sp.savePremium(true);
+                            sliderFragment.addPremiumTxt();
                         } else if (resource.code == 401) {
                             openActivityOnTokenExpire();
                         } else {
@@ -388,6 +392,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         hideLoading();
                         if (resource.data.getSuccess()) {
                             sp.savePremium(true);
+                            sliderFragment.addPremiumTxt();
                         } else if (resource.code == 401) {
                             openActivityOnTokenExpire();
                         } else {
@@ -540,7 +545,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     }
                 }, "Do you want to reset all skipped profiles? Users that you have skipped will appear on your card stack.");
             } else {
-                CommonDialogs.PremuimPurChaseDialog(this, this);
+                CommonDialogs.PremuimPurChaseDialog(this, this, sp);
             }
             //onBackPressed();
         } else if (view.getId() == R.id.tv_yes) {
@@ -583,7 +588,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 CommonDialogs.showAlreadyPremiumUser(this, mActivity.getResources().getString(R.string.you_have_active_subscription));
             } else {
                 //    CommonDialogs.purchaseDialog(this, "BlackGentry Premium", "", this);
-                CommonDialogs.PremuimPurChaseDialog(this, this);
+                CommonDialogs.PremuimPurChaseDialog(this, this, sp);
             }
         } else if (view.getId() == R.id.btn_bg_deluxe) {
             sp.setDialogOpen(true);
@@ -688,9 +693,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         Toast.makeText(mActivity, "Item Purchased", Toast.LENGTH_LONG).show();
         if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
             bp.consumePurchase(productId);
-            homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1", productId, price,
-                    Integer.parseInt(productId.split("_")[1]), details.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
+            homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1",
+                    productId,
+                    price,
+                    Integer.parseInt(productId.split("_")[2]),
+                    details.purchaseInfo.purchaseData.orderId,
+                    details.purchaseInfo.purchaseData.purchaseToken,
+                    CommonUtils.getDateForPurchase(details),
+                    details.purchaseInfo.signature,
                     details.purchaseInfo.purchaseData.purchaseState.toString()));
         } else if (tokenSType.equalsIgnoreCase("DeluxePurChase")) {
             bp.consumePurchase(productId);
@@ -757,14 +767,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         tokenSType = tokenType;
         selectedPosition = selectedPos;
         if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
-            // here in this case tokenNum is month or year
-            price = CommonDialogs.DeluxePriceList.get(selectedPos).getPriceValue();
-            productId = CommonDialogs.DeluxeArr[selectedPos];
-            bp.subscribe(mActivity, productId);
-        } else if (tokenType.equalsIgnoreCase("DeluxePurChase")) {
-            // here in this case tokenNum is month or year
-            price = CommonDialogs.DeluxePriceList.get(selectedPos).getPriceValue();
-            productId = CommonDialogs.DeluxeArr[selectedPos];
+            price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
+            String productId = CommonDialogs.PremiumArr[selectedPos];
             bp.subscribe(mActivity, productId);
         }
     }

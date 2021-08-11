@@ -152,12 +152,8 @@ public class LookingForFragment extends BaseFragment implements View.OnClickList
             if(((CreateAccountActivity) getActivity()).getUserData().getLookingFor()!=null && lookingForList.get(i).getName().equalsIgnoreCase(((CreateAccountActivity) getActivity()).getUserData().getLookingFor())){
                 lookingForList.get(i).setChecked(true);
                 strLookingFor = lookingForList.get(i).getName();
-                btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
                 btnContinue.setEnabled(true);
                 lastPosition = i;
-                if (((CreateAccountActivity) getActivity()).isEdit) {
-                    btnContinue.setText("Done");
-                }
             }
         }
 
@@ -200,7 +196,6 @@ public class LookingForFragment extends BaseFragment implements View.OnClickList
         adapter.notifyDataSetChanged();
         lastPosition = position;
         btnContinue.setEnabled(true);
-        btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
     }
 }
 

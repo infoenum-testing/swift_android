@@ -4,35 +4,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".dating.ui.selfieScreen.SelfieActivity">
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/llBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/_15sdp"
+        android:paddingTop="@dimen/_5sdp"
+        android:paddingEnd="@dimen/_20sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/back_img" />
+
+    </LinearLayout>
 
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/ivSelfie"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
         android:scaleType="centerInside"
-        android:layout_marginBottom="@dimen/_25sdp"
-        app:layout_constraintBottom_toBottomOf="@+id/cameraIcon"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cameraIcon"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
+        app:layout_constraintTop_toBottomOf="@+id/llBack" />
 
 
     <ImageView
         android:id="@+id/cameraIcon"
         android:layout_width="@dimen/_50sdp"
         android:layout_height="@dimen/_50sdp"
-        android:src="@drawable/ic_cameraicon"
-        android:layout_marginBottom="@dimen/_10sdp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/roundbg"
-        android:backgroundTint="@color/primaryTextColor"
         android:duplicateParentState="true"
-        android:padding="15dp"
-        app:layout_constraintBottom_toTopOf="@id/btn_continue"/>
+        android:src="@drawable/ic_cameraicon"
+        app:layout_constraintBottom_toTopOf="@id/btn_continue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_continue"
@@ -41,20 +57,21 @@
         android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_20sdp"
         android:layout_marginBottom="@dimen/_20sdp"
-        android:background="@drawable/gradientbtn"
+        android:background="@drawable/facebookbtn"
+        android:backgroundTint="@color/pink"
+        android:enabled="true"
         android:fontFamily="@font/medium"
         android:minWidth="@dimen/_200sdp"
         android:paddingTop="@dimen/_10sdp"
         android:paddingBottom="@dimen/_10sdp"
-        android:text="@string/continue_txt"
-        android:enabled="true"
+        android:text="@string/submit"
         android:textAllCaps="false"
-        android:visibility="gone"
         android:textColor="@color/white"
         android:textSize="@dimen/_14ssp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/btnBack"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btnBack"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/btnBack"
@@ -63,19 +80,20 @@
         android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_20sdp"
         android:layout_marginBottom="@dimen/_20sdp"
-        android:background="@drawable/gradientbtn"
+        android:background="@drawable/facebookbtn"
+        android:backgroundTint="@color/pink"
+        android:enabled="true"
         android:fontFamily="@font/medium"
         android:minWidth="@dimen/_200sdp"
         android:paddingTop="@dimen/_10sdp"
         android:paddingBottom="@dimen/_10sdp"
         android:text="@string/cancel_text"
-        android:enabled="true"
         android:textAllCaps="false"
-        android:visibility="gone"
         android:textColor="@color/white"
         android:textSize="@dimen/_14ssp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

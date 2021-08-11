@@ -130,7 +130,6 @@ public class CommonDialogs {
      * @return : return dialog
      */
     public static Dialog alertDialogTwoButtons(Context context, final View.OnClickListener clickListener, String message) {
-
         dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -570,7 +569,7 @@ public class CommonDialogs {
         }
     }
 
-    public static Dialog PremuimPurChaseDialog(Context ctx, final onProductConsume clickListener) {
+    public static Dialog PremuimPurChaseDialog(Context ctx, final onProductConsume clickListener, SharedPreference sp) {
         ViewPager viewPager;
         TabLayout text_pager_indicator;
         SliderAdapter sliderAdapter;
@@ -599,7 +598,7 @@ public class CommonDialogs {
                 layouts[i].setOnClickListener(v -> {
                     indexOfSelectedLayout = finalI;
                     unSelectAll(layouts);
-                    layouts[finalI].setBackgroundResource(R.drawable.bg_premium_selected);
+                    layouts[finalI].setBackgroundResource(R.drawable.ic_bg_premium_selected);
                 });
             }
             Button btn_continue = dialog.findViewById(R.id.btn_continue);
@@ -613,10 +612,15 @@ public class CommonDialogs {
                 } else {
                     clickListener.onClickToken("PremiumPurchase", 12, indexOfSelectedLayout);//59.99
                 }
-                //dialog.dismiss();
+                dialog.dismiss();
             });
 
             TextView[] tvToken1Price = new TextView[4];
+            if (sp != null) {
+                TextView tv_subscribe = dialog.findViewById(R.id.tv_subscribe);
+                tv_subscribe.setVisibility(sp.getPremium() ? View.VISIBLE : View.GONE);
+            }
+
             tvToken1Price[0] = dialog.findViewById(R.id.tvToken1Price);
             tvToken1Price[1] = dialog.findViewById(R.id.tvToken5Price);
             tvToken1Price[2] = dialog.findViewById(R.id.tvToken10Price);
@@ -680,34 +684,31 @@ public class CommonDialogs {
             wordTwo.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(ctx.getResources(), R.color.red_start, null)), 0, wordTwo.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             tv_restore.append(wordTwo);
 
-            tv_restore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PremiumTokenCountModel model;
-                    if ((myBp != null && myBp.isInitialized())) {
-                        showLoader(ctx);
-                        model = checkExistingSubscriptionForPremium(myBp, ctx);
-                        if (model != null) {
-                            new CallRestoreApi().callApi(model, new SharedPreference(ctx), subscriptiontype, new onPurchaseRestore() {
-                                @Override
-                                public void onError(String msg) {
-                                    Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
-                                    hideLoading();
-                                    dialog.dismiss();
-                                }
+            tv_restore.setOnClickListener(v -> {
+                PremiumTokenCountModel model;
+                if ((myBp != null && myBp.isInitialized())) {
+                    showLoader(ctx);
+                    model = checkExistingSubscriptionForPremium(myBp, ctx);
+                    if (model != null) {
+                        new CallRestoreApi().callApi(model, new SharedPreference(ctx), subscriptiontype, new onPurchaseRestore() {
+                            @Override
+                            public void onError(String msg) {
+                                Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
+                                hideLoading();
+                                dialog.dismiss();
+                            }
 
-                                @Override
-                                public void onSucces() {
-                                    Toast.makeText(ctx, "Purchase Restored Successfully", Toast.LENGTH_SHORT).show();
-                                    hideLoading();
-                                    dialog.dismiss();
-                                }
-                            });
-                        } else {
-                            //Toast.makeText(ctx,"Purchase Restore unavailable.",Toast.LENGTH_SHORT).show();
-                            hideLoading();
-                            //dialog.dismiss();
-                        }
+                            @Override
+                            public void onSucces() {
+                                Toast.makeText(ctx, "Purchase Restored Successfully", Toast.LENGTH_SHORT).show();
+                                hideLoading();
+                                dialog.dismiss();
+                            }
+                        });
+                    } else {
+                        //Toast.makeText(ctx,"Purchase Restore unavailable.",Toast.LENGTH_SHORT).show();
+                        hideLoading();
+                        //dialog.dismiss();
                     }
                 }
             });
@@ -841,10 +842,10 @@ public class CommonDialogs {
             layouts[3] = dialog.findViewById(R.id.tokens20Lay);
             for (int i = 0; i < layouts.length; i++) {
                 int finalI = i;
-                layouts[i].setOnClickListener(v -> {
+                layouts[i].setOnClickListener(va -> {
                     indexOfSelectedLayout = finalI;
                     unSelectAll(layouts);
-                    layouts[finalI].setBackgroundResource(R.drawable.bg_premium_selected);
+                    layouts[finalI].setBackgroundResource(R.drawable.ic_bg_premium_selected);
                 });
             }
 
@@ -1007,7 +1008,7 @@ public class CommonDialogs {
                 layouts[i].setOnClickListener(v -> {
                     indexOfSelectedLayout = finalI;
                     unSelectAll(layouts);
-                    layouts[finalI].setBackgroundResource(R.drawable.bg_premium_selected);
+                    layouts[finalI].setBackgroundResource(R.drawable.ic_bg_premium_selected);
                 });
             }
 
@@ -1152,6 +1153,25 @@ public class CommonDialogs {
         tv_no.setVisibility(View.GONE);
         tv_yes.setText("ok");
         tv_message.setText("Your are already subscribed to Deluxe and cannot downgrade to Premium until your subscription is over. Deluxe subscription has all features of Premium plus much more.");
+        tv_yes.setOnClickListener(v -> dialog.dismiss());
+    }
+
+    public static void showPendingSelfieStatus(Context mActivity) {
+        Dialog dialog = new Dialog(mActivity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setContentView(R.layout.dialog_two_button);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        Window window = dialog.getWindow();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+        TextView tv_message = dialog.findViewById(R.id.tv_message);
+        TextView tv_yes = dialog.findViewById(R.id.tv_yes);
+        TextView tv_no = dialog.findViewById(R.id.tv_no);
+        tv_no.setVisibility(View.GONE);
+        tv_yes.setText("ok");
+        tv_message.setText("Your selfie is pending verification.\n Please wait for admin to verify your profile");
         tv_yes.setOnClickListener(v -> dialog.dismiss());
     }
 

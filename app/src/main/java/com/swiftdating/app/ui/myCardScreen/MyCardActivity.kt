@@ -49,7 +49,6 @@ class MyCardActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.window.statusBarColor = this.resources.getColor(R.color.primaryTextColor)
         //setContentView(R.layout.activity_my_card)
         setContentView(R.layout.profile_layout)
         clView.visibility = GONE

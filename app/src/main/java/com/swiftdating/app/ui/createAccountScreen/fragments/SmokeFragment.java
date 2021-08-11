@@ -122,11 +122,7 @@ public class SmokeFragment extends BaseFragment implements View.OnClickListener,
                     R.id.notb : ((CreateAccountActivity) getActivity()).getUserData().getSmoke().equalsIgnoreCase("Often") ? R.id.oftentb
                     : R.id.socialltTb);
             strSmoke = ((CreateAccountActivity) getActivity()).getUserData().getSmoke();
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
             btnContinue.setEnabled(true);
-            if (((CreateAccountActivity) getActivity()).isEdit) {
-                btnContinue.setText("Done");
-            }
         }
 
     }
@@ -149,7 +145,6 @@ public class SmokeFragment extends BaseFragment implements View.OnClickListener,
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
         if (radioGroup == tgSmoke) {
             btnContinue.setEnabled(true);
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
             int selectedId = radioGroup.getCheckedRadioButtonId();
             RadioButton radioSmokeButton = view.findViewById(selectedId);
             if (radioSmokeButton != null) {

@@ -33,6 +33,7 @@ public class SharedPreference {
     private String firstImage = "firstImage";
     private String selfie = "selfie";
     private String isVerified = "isVerified";
+    private String selfieVerificationStatus = "selfieVerificationStatus";
     private String isPremium = "isPremium";
     private String firstTime = "firstTime";
     private String isChatOpen = "isChatOpen";
@@ -164,6 +165,13 @@ public class SharedPreference {
         editor.commit();
     }
 
+    public void saveSelfieVerificationStatus(String selfieVerificationStatus) {
+        editor.putString(this.selfieVerificationStatus, selfieVerificationStatus);
+        editor.apply();
+        editor.commit();
+    }
+
+
     public void savePremium(boolean isPremium) {
         editor.putBoolean(this.isPremium, isPremium);
         editor.apply();
@@ -290,6 +298,10 @@ public class SharedPreference {
 
     public String getVerified() {
         return sharedPreference.getString(isVerified, "");
+    }
+
+    public String getSelfieVerificationStatus() {
+        return sharedPreference.getString(selfieVerificationStatus, "");
     }
 
     public Boolean getPremium() {

@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlRootView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:id="@+id/rlRootView"
     android:padding="@dimen/_10sdp"
     tools:context=".ui.slider_fragment">
 
@@ -22,7 +22,7 @@
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/pagerSlider"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_70sdp"
+            android:layout_height="72dp"
             android:layout_alignParentTop="true"
             android:layout_marginTop="@dimen/_15sdp"
             android:orientation="horizontal" />
@@ -34,7 +34,6 @@
             android:layout_height="@dimen/_20sdp"
             android:layout_below="@+id/pagerSlider"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/_5sdp"
             android:layout_marginBottom="@dimen/_5sdp"
             android:foregroundGravity="center"
             app:layout_constraintEnd_toEndOf="parent"
@@ -79,6 +78,7 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/tv_subscribe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -94,7 +94,7 @@
         android:paddingBottom="@dimen/_5sdp"
         android:text="Subscribed"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:visibility="gone" />
 
 

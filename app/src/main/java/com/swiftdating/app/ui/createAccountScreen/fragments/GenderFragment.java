@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioGroup;
 
@@ -15,6 +17,9 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 import com.swiftdating.app.ui.base.BaseFragment;
@@ -34,6 +39,8 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
     private NumberPicker pickerGender;
     private String strGender = "", strShowMeTo = "";
     private int genderPos;
+    private Button btn_done;
+    private LinearLayout llBottom;
     // private ArrayList<String> genderList = new ArrayList<>();
 
     @Override
@@ -56,19 +63,22 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
         btnContinue = view.findViewById(R.id.btn_continue);
         pickerGender = view.findViewById(R.id.picker_gender);
         pickerGender.setWrapSelectorWheel(true);
-        // btnContinue.setText(((CreateAccountActivity)getActivity()).btn_text);
         tgGender = view.findViewById(R.id.tgGender);
         tgShowMeTo = view.findViewById(R.id.tgshowMeTo);
+        llBottom = view.findViewById(R.id.llBottom);
         pickerGender = view.findViewById(R.id.picker_gender);
+        btn_done = view.findViewById(R.id.btn_done);
         pickerGender.setWrapSelectorWheel(false);
         pickerGender.setMinValue(0);
         pickerGender.setMaxValue(getResources().getStringArray(R.array.genderArray).length - 1);
 
         pickerGender.setOnValueChangedListener((picker, oldVal, newVal) -> genderPos = newVal);
-
-        // genderList.addAll(Arrays.asList(getResources().getStringArray(R.array.genderArray)));
         pickerGender.setDisplayedValues(getResources().getStringArray(R.array.genderArray));
         pickerGender.setValue(genderPos);
+        btn_done.setOnClickListener(view1 -> {
+            btnContinue.performClick();
+        });
+
 
         if (((CreateAccountActivity) getActivity()).getUserData() != null && !TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getGender())) {
             if (((CreateAccountActivity) getActivity()).getUserData().getGender().equalsIgnoreCase("Male")) {
@@ -83,7 +93,13 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
                 tgGender.check(R.id.otherTb);
                 pickerGender.setVisibility(View.VISIBLE);
                 tgShowMeTo.setVisibility(View.VISIBLE);
-                //  pickerGender.setInitPosition(genderList.indexOf(((CreateAccountActivity) getActivity()).getUserData().getGender()));
+
+                int position = Arrays.asList(getContext().getResources().getStringArray(R.array.genderArray)).
+                        indexOf(((CreateAccountActivity) getActivity()).
+                                getUserData().
+                                getGender());
+                pickerGender.setValue(position);
+
                 if (!TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getShowmeto()))
                     tgShowMeTo.check(((CreateAccountActivity) getActivity()).getUserData().getShowmeto().equalsIgnoreCase("male") ?
                             R.id.tvshowMen : R.id.tvshowWomen);
@@ -99,9 +115,12 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
             }
             btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
             btnContinue.setEnabled(true);
-            /*if (((CreateAccountActivity) getActivity()).isEdit) {
-                btnContinue.setText("Done");
-            }*/
+            if (((CreateAccountActivity) getActivity()).isEdit) {
+                btnContinue.setVisibility(View.GONE);
+                llBottom.setVisibility(View.GONE);
+                btn_done.setVisibility(View.VISIBLE);
+
+            }
         }
         btnContinue.setOnClickListener(this);
         tgGender.setOnCheckedChangeListener(this);
@@ -172,7 +191,7 @@ public class GenderFragment extends BaseFragment implements View.OnClickListener
     public void onClick(View view) {
         if (view == btnContinue) {
             if (!TextUtils.isEmpty(strGender)) {
-                 getBaseActivity().showLoading();
+                getBaseActivity().showLoading();
                 hideKeyboard();
                 if (!strGender.equalsIgnoreCase("male") && !strGender.equalsIgnoreCase("female"))
                     strGender = getContext().getResources().getStringArray(R.array.genderArray)[pickerGender.getValue()];

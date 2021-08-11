@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
@@ -31,6 +32,7 @@ import com.swiftdating.app.model.responsemodel.ImageResponseModel;
 import com.swiftdating.app.model.responsemodel.SelfieResponseModel;
 import com.swiftdating.app.ui.base.BaseActivity;
 import com.swiftdating.app.ui.homeScreen.HomeActivity;
+
 import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -51,7 +53,8 @@ public class SelfieActivity extends BaseActivity implements View.OnClickListener
 
     SimpleDraweeView ivSelfie;
     ImageView cameraIcon;
-    Button btn_continue,btnBack;
+    Button btn_continue, btnBack;
+    private LinearLayout llBack;
     boolean isEdit;
     ArrayList<String> imageList = new ArrayList<>();
 
@@ -66,13 +69,17 @@ public class SelfieActivity extends BaseActivity implements View.OnClickListener
         ivSelfie = findViewById(R.id.ivSelfie);
         btn_continue = findViewById(R.id.btn_continue);
         btnBack = findViewById(R.id.btnBack);
-        if (isEdit) {
+        llBack = findViewById(R.id.llBack);
+
+     /*   if (isEdit) {
             btn_continue.setText("Resubmit");
             btnBack.setVisibility(View.VISIBLE);
             btnBack.setOnClickListener(this);
-        }
+        }*/
+
         cameraIcon = findViewById(R.id.cameraIcon);
         cameraIcon.setOnClickListener(this);
+        llBack.setOnClickListener(this);
         btn_continue.setOnClickListener(this);
         CommonDialogs.selfieDialog(SelfieActivity.this, this);
         sp.setDialogOpen(true);
@@ -105,14 +112,14 @@ public class SelfieActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onBackPressed() {
-        if(!sp.isDialogOpen()){
+        if (!sp.isDialogOpen()) {
             CommonDialogs.selfieDialog(SelfieActivity.this, this);
             sp.setDialogOpen(true);
         }
     }
 
     /**
-     ***  Method to checkPermissions to add image
+     * **  Method to checkPermissions to add image
      */
     private void checkPermission() {
         if (checkPermissionCG())
@@ -145,7 +152,7 @@ public class SelfieActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btn_ready) {
-            if (!sp.getIsFromNumber()){
+            if (!sp.getIsFromNumber()) {
                 CommonDialogs.dismiss();
                 checkPermission();
                 sp.setDialogOpen(false);
@@ -159,11 +166,14 @@ public class SelfieActivity extends BaseActivity implements View.OnClickListener
             uploadImage();
         } else if (view == btnBack) {
             finish();
+        } else if (view == llBack) {
+            finish();
         }
+
     }
 
     /**
-     *  Method to Upload Selfie Image
+     * Method to Upload Selfie Image
      */
     private void uploadImage() {
         showLoading();
@@ -219,8 +229,8 @@ public class SelfieActivity extends BaseActivity implements View.OnClickListener
                             sp.saveSelfie(responseBean.getSelfieData().getSelfieUrl());
                             sp.saveVerified(responseBean.getSelfieData().getIsVerified());
                             sp.saveIsRejected(false);
-                            startActivity(new Intent(SelfieActivity.this, HomeActivity.class));
-                            finishAffinity();
+                            finish();
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         } else if (responseBean.getError() != null && responseBean.getError().getCode().equalsIgnoreCase("401")) {
                             openActivityOnTokenExpire();
                         } else {

@@ -29,7 +29,6 @@ public class ViewPagerActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.primaryTextColor));
         setContentView(R.layout.activity_view_pager);
 
         init();

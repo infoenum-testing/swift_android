@@ -1,5 +1,7 @@
 package com.swiftdating.app.model.responsemodel;
 
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -58,6 +60,18 @@ public class User {
     @SerializedName("ImageForUser")
     @Expose
     private List<ImageForUser> imageForUser;
+    @SerializedName("selfieVerificationStatus")
+    @Expose
+    private String selfieVerificationStatus;
+
+
+    public String getSelfieVerificationStatus() {
+        return selfieVerificationStatus;
+    }
+
+    public void setSelfieVerificationStatus(String selfieVerificationStatus) {
+        this.selfieVerificationStatus = selfieVerificationStatus;
+    }
 
     public List<ReactionForUser> getReactionForUser() {
         return reactionForUser;
@@ -194,7 +208,13 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "reactionForUser=" + reactionForUser +
+                ", isVip=" + isVip +
+                ", isPremium=" + isPremium +
+                ", isDeluxe=" + isDeluxe +
+                ", VIPExpiry='" + VIPExpiry + '\'' +
+                ", viptokenAppliedOn='" + viptokenAppliedOn + '\'' +
+                ", id=" + id +
                 ", email='" + email + '\'' +
                 ", roleId=" + roleId +
                 ", status='" + status + '\'' +
@@ -205,15 +225,9 @@ public class User {
                 ", insta=" + insta +
                 ", profileOfUser=" + profileOfUser +
                 ", imageForUser=" + imageForUser +
-                ", reactionForUser=" + reactionForUser +
-                ", isVip=" + isVip +
-                ", isPremium=" + isPremium +
-                ", isDeluxe=" + isDeluxe +
-                ", VIPExpiry='" + VIPExpiry + '\'' +
-                ", viptokenAppliedOn='" + viptokenAppliedOn + '\'' +
+                ", selfieVerificationStatus='" + selfieVerificationStatus + '\'' +
                 '}';
     }
-
 
     public User(List<ReactionForUser> reactionForUser, boolean isVip, boolean isPremium, boolean isDeluxe, String VIPExpiry, String viptokenAppliedOn, Integer id, String email, Integer roleId, String status, String isLinkedinUser, String deletedAt, String createdAt, String updatedAt, ArrayList<InstagramImageModel.Datum> insta, ProfileOfUser profileOfUser, List<ImageForUser> imageForUser) {
         this.reactionForUser = reactionForUser;

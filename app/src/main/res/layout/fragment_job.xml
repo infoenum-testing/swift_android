@@ -1,51 +1,62 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--           11  Job Title-->
-<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/cljobtitle"
+<?xml version="1.0" encoding="utf-8"?><!--           11  Job Title-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cljobtitle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:paddingTop="@dimen/_20sdp"
     android:visibility="visible"
-    android:background="@color/white"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/tvskip"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:layout_constraintTop_toBottomOf="@+id/tvskip">
 
-    <TextView
-        android:id="@+id/tv_jobtitle"
-        android:layout_width="0dp"
+    <ImageView
+        android:id="@+id/imageLogo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
-        android:fontFamily="@font/semi_bold"
-        android:text="@string/myJobTitleIs"
-        android:textColor="@color/primaryTextColor"
-        android:textSize="@dimen/_20ssp"
+        android:src="@drawable/ic_occupation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/tv_jobtitle"
+        style="@style/center_title"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:text="@string/myJobTitleIs"
+        app:layout_constraintBottom_toTopOf="@+id/et_job"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageLogo" />
+
 
     <EditText
         android:id="@+id/et_job"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:background="@drawable/bg_stroke_grey"
         android:fontFamily="@font/medium"
         android:hint="@string/jobTitle"
         android:imeOptions="actionDone"
         android:inputType="textCapSentences"
         android:lines="1"
-        android:maxHeight="@dimen/_150sdp"
         android:maxLength="40"
+        android:paddingStart="@dimen/_20sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="@dimen/_10sdp"
         android:textColor="@color/primaryTextColor"
-        android:textColorHint="@color/secondaryTextColor"
+        android:textColorHint="@color/grey_new"
         android:textSize="@dimen/_14ssp"
         app:layout_constraintEnd_toEndOf="@+id/tv_jobtitle"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/tv_jobtitle"
         app:layout_constraintTop_toBottomOf="@+id/tv_jobtitle" />
+
 
     <Button
         android:id="@+id/btn_continue"
@@ -54,8 +65,8 @@
         android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_20sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:background="@drawable/disabledbtn"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:background="@drawable/btn_edit_bg_on_off"
         android:enabled="false"
         android:fontFamily="@font/medium"
         android:minWidth="@dimen/_200sdp"
@@ -65,9 +76,11 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="@dimen/_14ssp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_job" />
+
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

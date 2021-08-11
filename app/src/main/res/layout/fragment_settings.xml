@@ -129,7 +129,7 @@
                         android:layout_below="@+id/ViewEmail"
                         android:layout_marginTop="@dimen/_15sdp"
                         android:fontFamily="@font/medium"
-                        android:text="Phone No."
+                        android:text="Phone Number"
                         android:textColor="@color/pink"
                         android:textSize="@dimen/_13ssp" />
 
@@ -180,18 +180,11 @@
                         android:thumb="@drawable/thumb"
                         android:track="@drawable/switch_selector" />
 
-                    <View
-                        android:id="@+id/viewTwo"
-                        style="@style/Divider"
-                        android:layout_below="@+id/showme"
-                        android:layout_marginTop="@dimen/_10sdp" />
-
-
                     <Button
                         android:id="@+id/btn_reset_skiped_profile"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_30sdp"
-                        android:layout_below="@+id/viewTwo"
+                        android:layout_below="@+id/showme"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="@dimen/_20sdp"
                         android:layout_marginEnd="10dp"
@@ -200,7 +193,7 @@
                         android:elevation="@dimen/_5sdp"
                         android:fontFamily="@font/medium"
                         android:gravity="center"
-                        android:text="Reset skipped profiles"
+                        android:text="Reset Skipped Profiles"
                         android:textAllCaps="false"
                         android:textColor="@color/pink"
                         android:textSize="@dimen/_14ssp"

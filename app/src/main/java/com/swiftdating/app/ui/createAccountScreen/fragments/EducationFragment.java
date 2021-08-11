@@ -151,12 +151,8 @@ public class EducationFragment extends BaseFragment implements View.OnClickListe
             if (((CreateAccountActivity) getActivity()).getUserData().getEducation() != null && educationList.get(i).getName().equalsIgnoreCase(((CreateAccountActivity) getActivity()).getUserData().getEducation())) {
                 educationList.get(i).setChecked(true);
                 strEducation = educationList.get(i).getName();
-                btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
                 btnContinue.setEnabled(true);
                 lastPosition = i;
-                if (((CreateAccountActivity) getActivity()).isEdit) {
-                    btnContinue.setText("Done");
-                }
             }
         }
     }
@@ -189,7 +185,6 @@ public class EducationFragment extends BaseFragment implements View.OnClickListe
         adapter.notifyDataSetChanged();
         lastPosition = position;
         btnContinue.setEnabled(true);
-        btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
     }
 
     /**

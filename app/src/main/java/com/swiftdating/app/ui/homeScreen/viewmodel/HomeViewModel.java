@@ -112,12 +112,7 @@ public class HomeViewModel extends AndroidViewModel {
     public HomeViewModel(@NonNull Application application) {
         super(application);
 
-        signInLD = Transformations.switchMap(signIn, new Function<String, LiveData<Resource<VerificationResponseModel>>>() {
-            @Override
-            public LiveData<Resource<VerificationResponseModel>> apply(String input) {
-                return HomeRepo.get().verify(getApplication().getApplicationContext(), input);
-            }
-        });
+        signInLD = Transformations.switchMap(signIn, input -> HomeRepo.get().verify(getApplication().getApplicationContext(), input));
 
         userResponseLD = Transformations.switchMap(userListRequest, new Function<String, LiveData<Resource<UserListResponseModel>>>() {
             @Override
@@ -282,9 +277,7 @@ public class HomeViewModel extends AndroidViewModel {
     }
 
 
-    public void verifyRequest(String s) {
-        signIn.setValue(s);
-    }
+
 
     public LiveData<Resource<VerificationResponseModel>> verifyResponse() {
         return signInLD;

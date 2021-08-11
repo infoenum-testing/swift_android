@@ -5,32 +5,24 @@
     android:id="@+id/clParent2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context=".dating.ui.myCardScreen.MyCardActivity">
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/iv_back"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:paddingStart="@dimen/_10sdp"
-        android:src="@drawable/backward_black_ic"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:src="@drawable/back_img"
         app:layout_constraintBottom_toBottomOf="@+id/tv_preview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_preview" />
 
     <TextView
         android:id="@+id/tv_preview"
-        android:layout_width="wrap_content"
-        android:layout_height="?android:attr/actionBarSize"
-        android:fontFamily="@font/medium"
-        android:gravity="center"
+        style="@style/title_style_top"
         android:text="@string/my_card"
-        android:textAllCaps="false"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/_16ssp"
-        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/iv_back"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
@@ -49,13 +41,14 @@
         <include layout="@layout/detailview" />
 
     </androidx.cardview.widget.CardView>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_second_chat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:elevation="@dimen/_10sdp"
         android:layout_marginBottom="@dimen/_15sdp"
+        android:elevation="@dimen/_10sdp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -71,6 +64,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clView"
         android:layout_width="0dp"
@@ -148,18 +142,14 @@
             android:id="@+id/chat"
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_40sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
             android:contentDescription="@null"
             android:src="@drawable/ic_chat"
-            android:layout_marginEnd="@dimen/_20sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!--
-                app:layout_constraintBottom_toBottomOf="@id/love"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/superlike" -->
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabHome"

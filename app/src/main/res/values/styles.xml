@@ -279,5 +279,20 @@
         <item name="android:textSize">@dimen/_17ssp</item>
     </style>
 
+    <!--radio button style for edit profile flow-->
+
+    <style name="radioBtnStyle">
+        <item name="android:padding">@dimen/_10sdp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:button">@color/transparent</item>
+        <item name="fontFamily">@font/medium</item>
+        <item name="android:textColor">@drawable/select_radio</item>
+        <item name="android:textSize">@dimen/_12ssp</item>
+        <item name="android:background">@drawable/toggle_selected_new</item>
+        <item name="android:layout_marginStart">@dimen/_10sdp</item>
+        <item name="android:layout_marginEnd">@dimen/_10sdp</item>
+    </style>
+
 
 </resources>

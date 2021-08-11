@@ -37,18 +37,6 @@ public class QuestionListActivity extends BaseActivity implements View.OnClickLi
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-    }
-
-
-    @Override
     protected void onStart() {
         super.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),

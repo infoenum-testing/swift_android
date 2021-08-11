@@ -64,7 +64,7 @@ public class PetFragment extends BaseFragment implements View.OnClickListener, R
     }
 
     /**
-     ***  Method to Handle api Response
+     * **  Method to Handle api Response
      */
     private void subscribeModel() {
         model = ViewModelProviders.of(this).get(CreateAccountViewModel.class);
@@ -87,7 +87,7 @@ public class PetFragment extends BaseFragment implements View.OnClickListener, R
                                 String user = getBaseActivity().sp.getUser();
                                 VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
                                 obj.setUser(resource.data.getUser());
-                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(),resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
                                 ((CreateAccountActivity) getActivity()).updateParseCount(15);
                                 sendIntent();
                             }
@@ -108,11 +108,11 @@ public class PetFragment extends BaseFragment implements View.OnClickListener, R
     }
 
     /**
-     ***  Method to Initialize
+     * **  Method to Initialize
      */
     private void initialize(View view) {
         btnContinue = view.findViewById(R.id.btn_continue);
-        btnContinue.setText(((CreateAccountActivity)getActivity()).btn_text);
+        btnContinue.setText(((CreateAccountActivity) getActivity()).btn_text);
         tgPet = view.findViewById(R.id.tgPet);
         btnContinue.setOnClickListener(this);
         tgPet.setOnCheckedChangeListener(this);
@@ -120,22 +120,18 @@ public class PetFragment extends BaseFragment implements View.OnClickListener, R
             tgPet.check(((CreateAccountActivity) getActivity()).getUserData().getPets().equalsIgnoreCase("No") ?
                     R.id.noTb : R.id.yesTb);
             strPets = ((CreateAccountActivity) getActivity()).getUserData().getPets();
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
             btnContinue.setEnabled(true);
-            if (((CreateAccountActivity) getActivity()).isEdit) {
-                btnContinue.setText("Done");
-            }
         }
     }
 
     @Override
     public void onClick(View view) {
         if (view == btnContinue) {
-            if(isNetworkConnected()){
+            if (isNetworkConnected()) {
                 getBaseActivity().showLoading();
                 hideKeyboard();
                 model.verifyRequest(new CreateAccountPetModel(strPets));
-            }else{
+            } else {
                 getBaseActivity().showSnackbar(btnContinue, "Please connect to internet");
             }
         }
@@ -148,7 +144,6 @@ public class PetFragment extends BaseFragment implements View.OnClickListener, R
             RadioButton radioDrinkButton = view.findViewById(selectedId);
             if (radioDrinkButton != null) {
                 btnContinue.setEnabled(true);
-                btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
                 strPets = radioDrinkButton.getText().toString();
             } else
                 strPets = "";
@@ -156,7 +151,7 @@ public class PetFragment extends BaseFragment implements View.OnClickListener, R
     }
 
     /**
-     *** Method to Skip Question/Field
+     * ** Method to Skip Question/Field
      */
     public void skipFragments() {
         strPets = "";

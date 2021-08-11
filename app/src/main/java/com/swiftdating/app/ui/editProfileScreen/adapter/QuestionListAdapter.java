@@ -63,10 +63,10 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
         return dataList.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private ConstraintLayout cl_item;
-        private RadioButton rb_item;
+        private final ConstraintLayout cl_item;
+        private final RadioButton rb_item;
 
         private MyViewHolder(View view) {
             super(view);

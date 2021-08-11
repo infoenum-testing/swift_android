@@ -110,7 +110,7 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
     private int pos = -1;
     private String token;
     private SimpleDraweeView ivPhoto, ivPhoto2, ivPhoto3, ivPhoto4, ivPhoto5, ivPhoto6;
-    private TextView tvGender, tvDob, tvLoc, tvCompletion, tvSign, tvAboutMe, tv_ambitions, tvOccupation, tv_personality1, tvEducation, tvSchool, tvEditChemQuestions, tvHeight, tvPets, tvKids, tvDrink, tvSmoke, tvExercise, tvReligion, tvPolitics, tv_LookingFor, tv_personality2, tv_personality3, tv_personality3_answer, tv_personality2_answer, tv_personality1_answer, tvInsta;
+    private TextView tvGender, tvDob, tvLoc, tvCompletion, tvSign, tvAboutMe, tv_ambitions, tvOccupation, tv_personality1, tvEducation, tvSchool, tvEditChemQuestions, tvHeight, tvPets, tvKids, tvDrink, tvSmoke, tvExercise, tvReligion, tvPolitics, tv_LookingFor, tv_personality2, tv_personality3, tv_personality3_answer, tv_personality2_answer, tv_personality1_answer, tvInsta, tvVerifyTxt;
     private CardView cvHeight, cvKids, cvSmoke, cvDrink, cvExercise, cvReligion, cvPolitics, cvPets, cvSign, cvPersonality3, cvPersonality2, cvPersonality1, cvLookingFor, cvSelfie, cvInstagram;
     private BottomSheetDialog mBottomSheetDialog;
     private ArrayList<String> heightDigitlist;
@@ -288,6 +288,7 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
 
     }
 
+
     /**
      * **  Method to Upload Image
      */
@@ -444,6 +445,7 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
         heightDigitlist.add(7.1f);
         heightDigitlist.add(0, 3.9f);*/
         Collections.addAll(heightDigitlist, arraydigit);
+        tvVerifyTxt = findViewById(R.id.tvVerifyTxt);
         ivPhoto = findViewById(R.id.iv_photo);
         image_back = findViewById(R.id.image_back);
         rvImage = findViewById(R.id.rv_image);
@@ -478,7 +480,7 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
         cvPersonality1 = findViewById(R.id.cv_personality1);
         cvLookingFor = findViewById(R.id.cvLookingFor);
         cvSelfie = findViewById(R.id.cvSelfie);
-        btnSelfie = findViewById(R.id.tv_selfie);
+        btnSelfie = findViewById(R.id.btnVerifyProfile);
         tvReligion = findViewById(R.id.tv_religion);
         cvHeight = findViewById(R.id.cvHeight);
         tvKids = findViewById(R.id.tv_kids);
@@ -635,6 +637,9 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
         tvReligion.setText(obj.getRelegion() != null ? obj.getRelegion() : "");
         tvPolitics.setText(obj.getPolitical() != null ? obj.getPolitical() : "");
         tvCompletion.setVisibility(View.VISIBLE);
+        String status = "Verification status: ".concat(sp.getSelfieVerificationStatus().equalsIgnoreCase("No") ? "Not submitted " : sp.getSelfieVerificationStatus());
+        tvVerifyTxt.setText(status);
+
     }
 
     /**
@@ -710,10 +715,14 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
             CommonDialogs.dismiss();
             editProfileViewModel.deleteRequest(String.valueOf(imageList.get(pos).getId()));
         } else if (view == cvSelfie || view == btnSelfie) {
-            Intent i = new Intent(this, SelfieActivity.class);
-            i.putExtra("isEdit", true);
-            startActivityForResult(i, 1002);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            if (!sp.getSelfieVerificationStatus().equalsIgnoreCase("Pending")) {
+                Intent i = new Intent(this, SelfieActivity.class);
+                i.putExtra("isEdit", true);
+                startActivityForResult(i, 1002);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else {
+                CommonDialogs.showPendingSelfieStatus(this);
+            }
         } else {
             if (view == tvSign) {
                 intent = new Intent(this, CreateAccountActivity.class);

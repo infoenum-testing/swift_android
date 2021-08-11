@@ -55,7 +55,7 @@ public class DrinkFragment extends BaseFragment implements View.OnClickListener,
     }
 
     /**
-     *  Method to handle intent after Api Hit
+     * Method to handle intent after Api Hit
      */
     private void sendIntent() {
         if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
@@ -65,7 +65,7 @@ public class DrinkFragment extends BaseFragment implements View.OnClickListener,
     }
 
     /**
-     ***  Method to Handle api Response
+     * **  Method to Handle api Response
      */
     private void subscribeModel() {
         model = ViewModelProviders.of(this).get(CreateAccountViewModel.class);
@@ -88,7 +88,7 @@ public class DrinkFragment extends BaseFragment implements View.OnClickListener,
                                 String user = getBaseActivity().sp.getUser();
                                 VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
                                 obj.setUser(resource.data.getUser());
-                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(),resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
                                 ((CreateAccountActivity) getActivity()).updateParseCount(14);
                                 sendIntent();
                             }
@@ -109,11 +109,11 @@ public class DrinkFragment extends BaseFragment implements View.OnClickListener,
     }
 
     /**
-     ***  Method to Initialize
+     * **  Method to Initialize
      */
     private void initialize(View view) {
         btnContinue = view.findViewById(R.id.btn_continue);
-        btnContinue.setText(((CreateAccountActivity)getActivity()).btn_text);
+        btnContinue.setText(((CreateAccountActivity) getActivity()).btn_text);
         tgDrink = view.findViewById(R.id.tgDrink);
         btnContinue.setOnClickListener(this);
         tgDrink.setOnCheckedChangeListener(this);
@@ -122,24 +122,20 @@ public class DrinkFragment extends BaseFragment implements View.OnClickListener,
                     R.id.nevetbDrink : ((CreateAccountActivity) getActivity()).getUserData().getDrink().equalsIgnoreCase("Often") ? R.id.oftendrinktb
                     : R.id.sociallydrinktb);
             strDrink = ((CreateAccountActivity) getActivity()).getUserData().getDrink();
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
             btnContinue.setEnabled(true);
-            if (((CreateAccountActivity) getActivity()).isEdit) {
-                btnContinue.setText("Done");
-            }
         }
     }
 
     @Override
     public void onClick(View view) {
         if (view == btnContinue) {
-        if(isNetworkConnected()){
-            getBaseActivity().showLoading();
-            hideKeyboard();
-            model.verifyRequest(new CreateAccountDrinkModel(strDrink));
-        }else{
-            getBaseActivity().showSnackbar(btnContinue, "Please connect to internet");
-        }
+            if (isNetworkConnected()) {
+                getBaseActivity().showLoading();
+                hideKeyboard();
+                model.verifyRequest(new CreateAccountDrinkModel(strDrink));
+            } else {
+                getBaseActivity().showSnackbar(btnContinue, "Please connect to internet");
+            }
         }
     }
 
@@ -150,7 +146,6 @@ public class DrinkFragment extends BaseFragment implements View.OnClickListener,
             RadioButton radioDrinkButton = view.findViewById(selectedId);
             if (radioDrinkButton != null) {
                 btnContinue.setEnabled(true);
-                btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
                 strDrink = radioDrinkButton.getText().toString();
                 if (strDrink.equalsIgnoreCase("never")) {
                     strDrink = "Never";
@@ -158,8 +153,9 @@ public class DrinkFragment extends BaseFragment implements View.OnClickListener,
             }
         }
     }
+
     /**
-     *** Method to Skip Question/Field
+     * ** Method to Skip Question/Field
      */
     public void skipFragments() {
         strDrink = "";

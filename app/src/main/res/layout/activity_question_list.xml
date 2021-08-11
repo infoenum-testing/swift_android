@@ -3,58 +3,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".dating.ui.questionListScreen.QuestionListActivity">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/ivback"
         android:layout_width="@dimen/_30ssp"
         android:layout_height="@dimen/_30ssp"
         android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:gravity="center"
         android:src="@drawable/ic_back_btn"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/pink" />
 
 
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fontFamily="@font/medium"
+        android:id="@+id/tv_settings"
+        style="@style/title_style_top"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:paddingStart="@dimen/_5sdp"
+        android:paddingEnd="0dp"
         android:text="Select a Prompt"
-        android:textSize="@dimen/_16ssp"
-        android:gravity="center"
-        android:textColor="@color/primaryTextColor"
-        app:layout_constraintStart_toEndOf="@+id/ivback"
-        app:layout_constraintEnd_toStartOf="@+id/ivback2"
-        app:layout_constraintTop_toTopOf="@+id/ivback"
-        app:layout_constraintBottom_toBottomOf="@+id/ivback"/>
-
-    <ImageView
-        android:id="@+id/ivback2"
-        android:layout_width="@dimen/_30ssp"
-        android:layout_height="@dimen/_30ssp"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:gravity="center"
-        android:src="@drawable/ic_back_btn"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/ivback"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvQuestions"
-        android:layout_marginTop="@dimen/_10sdp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        app:layout_constraintTop_toBottomOf="@+id/ivback"
+        android:layout_margin="@dimen/_10sdp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/ivback" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

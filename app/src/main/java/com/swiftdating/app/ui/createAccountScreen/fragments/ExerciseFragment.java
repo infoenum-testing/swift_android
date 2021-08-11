@@ -119,11 +119,7 @@ public class ExerciseFragment extends BaseFragment implements View.OnClickListen
                     R.id.nevetbExercise : ((CreateAccountActivity) getActivity()).getUserData().getExercise().equalsIgnoreCase("Often") ? R.id.oftenExercisetb
                     : R.id.sometimesExercisetb);
             strExercise = ((CreateAccountActivity) getActivity()).getUserData().getExercise();
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
             btnContinue.setEnabled(true);
-            if (((CreateAccountActivity) getActivity()).isEdit) {
-                btnContinue.setText("Done");
-            }
         }
         tgExercise.setOnCheckedChangeListener(this);
         btnContinue.setOnClickListener(this);
@@ -150,7 +146,6 @@ public class ExerciseFragment extends BaseFragment implements View.OnClickListen
             RadioButton radioDrinkButton = view.findViewById(selectedId);
             if (radioDrinkButton != null) {
                 btnContinue.setEnabled(true);
-                btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
                 strExercise = radioDrinkButton.getText().toString();
             }
         }

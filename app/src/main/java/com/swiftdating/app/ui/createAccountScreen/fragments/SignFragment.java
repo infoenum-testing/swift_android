@@ -127,7 +127,6 @@ public class SignFragment extends BaseFragment implements View.OnClickListener {
         pickerArray.setArrayList(signList);
         pickerArray.setInitPosition(selectedPos);
 
-
         if (!TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getZodiacSign())) {
             selectedPos = signList.indexOf(((CreateAccountActivity) getActivity()).getUserData().getZodiacSign());
             pickerArray.setInitPosition(selectedPos);

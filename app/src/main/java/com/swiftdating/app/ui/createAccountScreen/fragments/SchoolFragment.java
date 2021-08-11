@@ -117,11 +117,8 @@ public class SchoolFragment extends BaseFragment implements TextWatcher, View.On
         btnContinue.setOnClickListener(this);
         if (!TextUtils.isEmpty(((CreateAccountActivity) getActivity()).getUserData().getSchool())) {
             etSchool.setText(((CreateAccountActivity) getActivity()).getUserData().getSchool());
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
-            btnContinue.setEnabled(true);
-            if (((CreateAccountActivity) getActivity()).isEdit) {
-                btnContinue.setText("Done");
-            }
+             btnContinue.setEnabled(true);
+
         }
 
 
@@ -135,13 +132,7 @@ public class SchoolFragment extends BaseFragment implements TextWatcher, View.On
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        if (charSequence.toString().trim().length() > 0) {
-            btnContinue.setEnabled(true);
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.gradientbtn));
-        } else {
-            btnContinue.setEnabled(false);
-            btnContinue.setBackground(getContext().getResources().getDrawable(R.drawable.disabledbtn));
-        }
+        btnContinue.setEnabled(charSequence.toString().trim().length() > 0);
     }
 
     @Override

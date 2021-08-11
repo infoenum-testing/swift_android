@@ -1,9 +1,13 @@
 package com.swiftdating.app.ui.createAccountScreen.fragments;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 //import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,7 +36,7 @@ import com.swiftdating.app.ui.base.BaseFragment;
 import com.swiftdating.app.ui.createAccountScreen.CreateAccountActivity;
 import com.swiftdating.app.ui.createAccountScreen.viewmodel.CreateAccountViewModel;
 
-public class LocationFragment extends BaseFragment {
+public class LocationFragment extends BaseFragment{
     private final String US = "United States";
     private final String TAG = LocationFragment.class.getSimpleName();
     private final String[] us_state_names = new String[]{"Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "IllinoisIndiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "MontanaNebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "PennsylvaniaRhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"};
@@ -49,6 +53,8 @@ public class LocationFragment extends BaseFragment {
     private ArrayList<String> stateList;
     boolean isUsSelected = false;
     private RelativeLayout rlState, rlCountry;
+    private Button btn_done;
+    private LinearLayout llBottom;
 
 
     @Override
@@ -102,8 +108,12 @@ public class LocationFragment extends BaseFragment {
         rlState = view.findViewById(R.id.rlState);
         tv_state = view.findViewById(R.id.tv_state);
         tv_country = view.findViewById(R.id.tv_country);
+        llBottom = view.findViewById(R.id.llBottom);
+        btn_done = view.findViewById(R.id.btn_done);
+        TextView tv_title = view.findViewById(R.id.tv_title);
 
-     /*   spin_country = view.findViewById(R.id.spin_country);
+
+      /*   spin_country = view.findViewById(R.id.spin_country);
         spin_state = view.findViewById(R.id.spin_state);
      */
         country = new ArrayList<>();
@@ -184,17 +194,22 @@ public class LocationFragment extends BaseFragment {
 
 
         btn_continue = view.findViewById(R.id.btn_continue);
-       /* if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
-            btn_continue.setText("Done");
-        }*/
+        if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
+            btn_continue.setVisibility(View.GONE);
+            llBottom.setVisibility(View.GONE);
+            btn_done.setVisibility(View.VISIBLE);
+        }
 
+        btn_done.setOnClickListener(view1 -> {
+            btn_continue.performClick();
+        });
 
         btn_continue.setOnClickListener(v -> {
+
             if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
-                CreateAccountActivity.location = "" + edit_city.getText().toString() + ", " +country.get(countryPos);
+                CreateAccountActivity.location = "" + edit_city.getText().toString() + ", " + country.get(countryPos);
             }
             if (!TextUtils.isEmpty(contry)) {
-                //if (spin_state.getVisibility() == View.VISIBLE) {
                 if (isUsSelected) {
                     if (!TextUtils.isEmpty(state)) {
                         if (!TextUtils.isEmpty(edit_city.getText().toString())) {
@@ -221,53 +236,6 @@ public class LocationFragment extends BaseFragment {
             }
 
         });
-
-     /*   ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, country);
-        spin_country.setAdapter(adapter);
-        spin_country.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position != 0) {
-                    edit_city.setVisibility(View.VISIBLE);
-                    if (country.get(position).equalsIgnoreCase(US)) {
-                        edit_city.setVisibility(View.GONE);
-                    }
-                    setVisibility(country.get(position).equalsIgnoreCase(US));
-                    contry = country.get(position);
-
-                } else {
-                    edit_city.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        spin_state.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position != 0) {
-                    state = us_state_names[position];
-                    edit_city.setVisibility(View.VISIBLE);
-                } else {
-                    edit_city.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        //   tv_state = view.findViewById(R.id.tv_state);
-        ArrayList<String> list = new ArrayList<>();
-        list.addAll(Arrays.asList(us_state_names));
-        ArrayAdapter<String> adapter_state = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, list);
-        spin_state.setAdapter(adapter_state);*/
-
-
     }
 
     private void setVisibility(boolean visible) {
@@ -283,46 +251,43 @@ public class LocationFragment extends BaseFragment {
 
     private void subscribeModel() {
         model = ViewModelProviders.of(this).get(CreateAccountViewModel.class);
-        model.locationResponse().observe(this, new Observer<Resource<VerificationResponseModel>>() {
-            @Override
-            public void onChanged(@Nullable Resource<VerificationResponseModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        getBaseActivity().hideLoading();
-                        if (resource.data.getSuccess()) {
-                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
-                                getBaseActivity().openActivityOnTokenExpire();
-                            } else {
-                                Gson gson = new Gson();
-                                String user = getBaseActivity().sp.getUser();
-                                VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
-                                obj.setUser(resource.data.getUser());
-                                getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
-                                if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
-                                    ((CreateAccountActivity) getActivity()).onBackPressed();
-                                } else {
-                                    ((CreateAccountActivity) getActivity()).updateParseCount(3);
-                                    ((CreateAccountActivity) getActivity()).addFragment();
-                                }
-                            }
+        model.locationResponse().observe(this, (Observer<Resource<VerificationResponseModel>>) resource -> {
+            if (resource == null) {
+                return;
+            }
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    getBaseActivity().hideLoading();
+                    if (resource.data.getSuccess()) {
+                        if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
+                            getBaseActivity().openActivityOnTokenExpire();
                         } else {
-                            getBaseActivity().hideLoading();
-                            getBaseActivity().showSnackbar(btn_continue, resource.data.getMessage());
-                            if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401"))
-                                getBaseActivity().openActivityOnTokenExpire();
+                            Gson gson = new Gson();
+                            String user = getBaseActivity().sp.getUser();
+                            VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
+                            obj.setUser(resource.data.getUser());
+                            getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), resource.data.getUser().getProfileOfUser().getCompleted().toString());
+                            if (((CreateAccountActivity) Objects.requireNonNull(getActivity())).isEdit) {
+                                ((CreateAccountActivity) getActivity()).onBackPressed();
+                            } else {
+                                ((CreateAccountActivity) getActivity()).updateParseCount(3);
+                                ((CreateAccountActivity) getActivity()).addFragment();
+                            }
                         }
-
-                        break;
-                    case ERROR:
+                    } else {
                         getBaseActivity().hideLoading();
-                        getBaseActivity().showSnackbar(btn_continue, resource.message);
-                        break;
-                }
+                        getBaseActivity().showSnackbar(btn_continue, resource.data.getMessage());
+                        if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401"))
+                            getBaseActivity().openActivityOnTokenExpire();
+                    }
+
+                    break;
+                case ERROR:
+                    getBaseActivity().hideLoading();
+                    getBaseActivity().showSnackbar(btn_continue, resource.message);
+                    break;
             }
         });
     }

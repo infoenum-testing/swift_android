@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -45,6 +47,7 @@ import java.util.Objects;
 
 import com.swiftdating.app.R;
 import com.swiftdating.app.callbacks.OnInAppInterface;
+import com.swiftdating.app.callbacks.PremiumCallback;
 import com.swiftdating.app.common.CommonUtils;
 import com.swiftdating.app.common.CommonDialogs;
 import com.swiftdating.app.common.GpsTracker;
@@ -61,6 +64,7 @@ import com.swiftdating.app.model.requestmodel.VipTokenRequestModel;
 import com.swiftdating.app.model.responsemodel.ProfileOfUser;
 import com.swiftdating.app.model.responsemodel.SubscriptionDetailResponseModel;
 import com.swiftdating.app.model.responsemodel.SuperLikeResponseModel;
+import com.swiftdating.app.model.responsemodel.User;
 import com.swiftdating.app.model.responsemodel.VerificationResponseModel;
 import com.swiftdating.app.ui.base.BaseActivity;
 import com.swiftdating.app.ui.slider_fragment;
@@ -81,7 +85,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     List<ImageModel> imagelist = new ArrayList<>();
     double price;
     String productId, tokenSType, lat, lon;
-    private ImageButton ivEdit, ivSettings;
+    private LinearLayout llEdit, llSettings;
     private TextView tv_complete, tv_deluxe_subscribe, tv_pre_subscribe, tvName, tvAddress, tvPremium, tvUnlimitedView, tv_active, tvCrushToken, tv_vipNum, tvVipToken, tvTimeTokenTxt;
     private CircleImageView ivProfileImage;
     private HomeViewModel homeViewModel;
@@ -91,6 +95,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     private ConstraintLayout btn_bg_delux;
     private CardView card_vip, card_time, card_crush;
     private Dialog preDialog;
+    private slider_fragment sliderFragment;
 
     @Override
     public int getLayoutId() {
@@ -113,7 +118,9 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void setSlider() {
-        getChildFragmentManager().beginTransaction().replace(R.id.sliderFragment, new slider_fragment(this)).commit();
+        sliderFragment = new slider_fragment(this);
+
+        getChildFragmentManager().beginTransaction().replace(R.id.sliderFragment, sliderFragment).commit();
     }
 
     @Override
@@ -143,7 +150,6 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
      * **  Method to Initialize
      */
     private void initialize(View view) {
-
         tv_pre_subscribe = view.findViewById(R.id.tv_pre_subscribe);
         tv_deluxe_subscribe = view.findViewById(R.id.tv_deluxe_subscribe);
         tv_complete = view.findViewById(R.id.tv_complete);
@@ -157,10 +163,10 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         card_time = view.findViewById(R.id.card_time);
         card_vip = view.findViewById(R.id.card_vip);
         btn_bg_delux = view.findViewById(R.id.btn_bg_delux);
-        ivSettings = view.findViewById(R.id.iv_settings);
+        llSettings = view.findViewById(R.id.llSettings);
         tvName = view.findViewById(R.id.tv_name);
         tvAddress = view.findViewById(R.id.tv_address);
-        ivEdit = view.findViewById(R.id.iv_edit);
+        llEdit = view.findViewById(R.id.llEdit);
         ivProfileImage = view.findViewById(R.id.iv_profile);
         btnBGPremium = view.findViewById(R.id.btn_bg_premium);
         tvPremium = view.findViewById(R.id.premium);
@@ -199,6 +205,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                             Gson gson = new Gson();
                             String user = getBaseActivity().sp.getUser();
                             VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
+                            Log.e("TAG", "onChanged: " + obj);
                             obj.setUser(resource.data.getUser());
                             getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), obj.getProfileCompleted().toString());
                             setData();
@@ -319,6 +326,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                         getBaseActivity().hideLoading();
                         if (resource.data.getSuccess()) {
                             getBaseActivity().sp.savePremium(true);
+                            sliderFragment.addPremiumTxt();
                             tv_pre_subscribe.setVisibility(View.VISIBLE);
                             if (preDialog != null)
                                 preDialog.dismiss();
@@ -423,8 +431,8 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         card_time.setOnClickListener(this);
         card_crush.setOnClickListener(this);
         card_vip.setOnClickListener(this);
-        ivSettings.setOnClickListener(this);
-        ivEdit.setOnClickListener(this);
+        llSettings.setOnClickListener(this);
+        llEdit.setOnClickListener(this);
         btnBGPremium.setOnClickListener(this);
         ivProfileImage.setOnClickListener(this);
         btn_bg_delux.setOnClickListener(this);
@@ -456,8 +464,12 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             if (obj.getLatitude() != null && obj.getLongitude() != null) {
                 lat = obj.getLatitude();
                 lon = obj.getLongitude();
+
+
                 tvAddress.setText(CommonUtils.getCityAddress(getContext(), obj.getLatitude(), obj.getLongitude()));
             }
+
+
             setCrushTokens(obj);
             setTimeToken(obj);
             setVipTokens(obj);
@@ -471,14 +483,13 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             tv_deluxe_subscribe.setVisibility(View.VISIBLE);
             tv_pre_subscribe.setVisibility(View.GONE);
         } else {
-            if (!getBaseActivity().sp.getDeluxe() && GpsTracker.getInstance(getContext()).canGetLocation()) {
+            if (!getBaseActivity().sp.getPremium() && GpsTracker.getInstance(getContext()).canGetLocation()) {
                 if (TextUtils.isEmpty(lat) || !lat.equalsIgnoreCase("" + GpsTracker.getInstance(getContext()).getLatitude())) {
                     lat = "" + GpsTracker.getInstance(getContext()).getLatitude();
                     lon = "" + GpsTracker.getInstance(getContext()).getLongitude();
                     String add = CommonUtils.getCityAddress(getContext(), lat, lon);
                     if (!TextUtils.isEmpty(add))
                         tvAddress.setText(add);
-                    Log.e("TAG", "setData: ne  " + tvAddress.getText().toString());
                 }
             } else {
                 GpsTracker.getInstance(getContext()).showSettingsAlert();
@@ -509,12 +520,16 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         return 0;
     }
 
+    private static final String TAG = "MyProfileFragment";
+
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.iv_settings) {
+        if (view == llSettings) {
+            Log.e(TAG, "onClick: settings");
             startActivityForResult(new Intent(getContext(), SettingsActivity.class), 1010);
             getActivity().overridePendingTransition(R.anim.slide_in_top, R.anim.nothing);
-        } else if (view.getId() == R.id.iv_edit) {
+        } else if (view == llEdit) {
+            Log.e(TAG, "onClick: edit");
             startActivityForResult(new Intent(getContext(), EditProfileActivity.class), 1010);
             getActivity().overridePendingTransition(R.anim.slide_in_top, R.anim.nothing);
         } else if (view.getId() == R.id.card_time) {
@@ -528,7 +543,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             } else if (getBaseActivity().sp.getPremium()) {
                 CommonDialogs.showAlreadyPremiumUser(getContext(), getContext().getResources().getString(R.string.you_have_active_subscription));
             } else {
-                preDialog = CommonDialogs.PremuimPurChaseDialog(getContext(), this);
+                preDialog = CommonDialogs.PremuimPurChaseDialog(getContext(), this, getBaseActivity().sp);
             }
         } else if (view.getId() == R.id.iv_profile) {
             startActivity(new Intent(getContext(), MyCardActivity.class));
@@ -612,7 +627,8 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     public void onProductPurchased(String productId, TransactionDetails details) {
-        Log.e("TAG", "onProductPurchased: " + details);
+        Log.e("TAG", "onProductPurchased: " + productId);
+
         /*
          * Called when requested PRODUCT ID was successfully purchased
          */
@@ -630,9 +646,14 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             homeViewModel.addVipToken(new VipTokenRequestModel(selectedPosition, price));
         } else if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
             bp.consumePurchase(productId);
-            homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1", productId, price,
-                    Integer.parseInt(productId.split("_")[1]), details.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
+            homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1",
+                    productId,
+                    price,
+                    Integer.parseInt(productId.split("_")[2]),
+                    details.purchaseInfo.purchaseData.orderId,
+                    details.purchaseInfo.purchaseData.purchaseToken,
+                    CommonUtils.getDateForPurchase(details),
+                    details.purchaseInfo.signature,
                     details.purchaseInfo.purchaseData.purchaseState.toString()));
 
         } else if (tokenSType.equalsIgnoreCase("DeluxePurChase")) {

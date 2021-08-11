@@ -146,6 +146,11 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.e(TAG, "onViewCreated: FindMatchFragment")
+        initBillingProcess() /// remove it when uncommenting the whole code
+        subscribeModel()        // i am calling it here to just satisfying my some condition
+
+
+
         /*  init(view)
           if (baseActivity.isNetworkConnected) {
               if (baseActivity.sp.isSettingsChanged || (activity as HomeActivity).cardList.isEmpty()) {
@@ -551,7 +556,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                                 img_filter?.isEnabled = false
                                 imageView.visibility = GONE
                             }
-                            SharedPreference(context).saveVerified("No")
+                            SharedPreference(context).saveSelfieVerificationStatus("No")
                         } else if (resource.data.error != null && resource.data.error.code == "404") {
                             Log.d("TAG_My", "subscribeModel: visisble setting" + 404)
                             img_vip_star?.isEnabled = false
@@ -570,7 +575,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                             img_filter?.isEnabled = true
                             rewind?.isEnabled = true
                             cardStackView!!.visibility = VISIBLE
-                            SharedPreference(context).saveVerified("Yes")
+                            SharedPreference(context).saveSelfieVerificationStatus("Yes")
                         }
                     } else {
                         baseActivity.sp.saveisSettingsChanged(false)
@@ -1008,10 +1013,12 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                                 productId = resource.data.subscription.subscriptionForUser.subscriptionId
                                 checkSubscription(isSubscribed, productId, resource.data.subscription.subscriptionForUser.purchaseToken)
                             }
-                        } else {
+                        }
+                        else {
                             /*if (baseActivity.sp.deluxe) {
                                 checkExistingSubscriptionDeluxe()
                             } else {*/
+                            Log.e(TAG, "subscribeModel:  " )
                             checkExistingSubscription()
                             //}
                         }

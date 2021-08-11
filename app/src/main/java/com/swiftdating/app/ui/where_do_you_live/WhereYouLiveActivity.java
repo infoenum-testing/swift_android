@@ -1,9 +1,11 @@
 package com.swiftdating.app.ui.where_do_you_live;
 
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.AlertDialog;
@@ -47,10 +49,12 @@ import java.util.List;
 import com.swiftdating.app.R;
 import com.swiftdating.app.common.CommonDialogs;
 import com.swiftdating.app.common.CommonUtils;
+import com.swiftdating.app.data.network.Resource;
 import com.swiftdating.app.data.preference.SharedPreference;
 import com.swiftdating.app.model.BaseModel;
 import com.swiftdating.app.model.requestmodel.DeluxeTokenCountModel;
 import com.swiftdating.app.model.requestmodel.LocationModel;
+import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.swiftdating.app.model.responsemodel.ProfileOfUser;
 import com.swiftdating.app.ui.homeScreen.fragment.SearchFragment;
 import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
@@ -108,7 +112,6 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
     private void initViews() {
         sp = new SharedPreference(this);
         constraint_main = findViewById(R.id.constraint_main);
-        LinearLayout addressLayout = findViewById(R.id.addressLayout);
         tv_addres = findViewById(R.id.tv_addres);
         ImageView image_back = findViewById(R.id.image_back);
         CardView cardSearch = findViewById(R.id.cardSearch);
@@ -118,7 +121,6 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
         image_back.setOnClickListener(this::oClick);
         btn_set_crt_loc.setOnClickListener(this::oClick);
         btn_save_loc.setOnClickListener(this::oClick);
-        addressLayout.setOnClickListener(this::oClick);
         cardSearch.setOnClickListener(this::oClick);
 
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
@@ -140,10 +142,18 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
                         openActivityOnTokenExpire();
                     } else {
                         BaseModel model = resource.data;
-                        // showSnackBar(constraint_main, model.getMessage());
+                         showSnackBar(constraint_main, model.getMessage());
                         ProfileOfUser obj = new Gson().fromJson(sp.getUser(), ProfileOfUser.class);
+                        Log.e(TAG, "initViews:1--- "+obj.getLatitude() );
+                        Log.e(TAG, "initViews:2--- "+obj.getLongitude() );
+
+
                         obj.setLatitude("" + model.getLatitude());
                         obj.setLongitude("" + model.getLongitude());
+
+                        Log.e(TAG, "initViews:3 "+obj.getLatitude() );
+                        Log.e(TAG, "initViews:4 "+obj.getLongitude() );
+
                         sp.saveUserData(obj, sp.getProfileCompleted());
                         sp.saveLocation(true);
                         if (!TextUtils.isEmpty(sp.getMyString(SearchFragment.SearchResponse))) {
@@ -159,17 +169,18 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
             }
         });
 
-        homeViewModel.addDeluxeResponse().observe(this, resource -> {
-            if (resource == null)
-                return;
+        homeViewModel.addPremiumResponse().observe(this, resource -> {
+            if (resource == null) return;
             switch (resource.status) {
                 case LOADING:
                     break;
                 case SUCCESS:
                     hideLoading();
                     if (resource.data.getSuccess()) {
-                        sp.savePremium(false);
-                        sp.saveDeluxe(true);
+                        sp.savePremium(true);
+                        showSnackBar(constraint_main, resource.data.getMessage());
+                       /* tvPremium.setVisibility(View.INVISIBLE);
+                        tvUnlimitedView.setVisibility(View.INVISIBLE);*/
                     } else if (resource.code == 401) {
                         openActivityOnTokenExpire();
                     } else {
@@ -182,6 +193,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
                     break;
             }
         });
+
         Intent intent = getIntent();
         if (intent != null && !TextUtils.isEmpty(intent.getStringExtra("lat")) && !TextUtils.isEmpty(intent.getStringExtra("lon"))) {
             lat = intent.getStringExtra("lat");
@@ -214,21 +226,21 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
             case R.id.image_back:
                 finish();
                 break;
-            case R.id.addressLayout:
             case R.id.cardSearch:
                 ActionPlacesAPI();
                 break;
             case R.id.btn_save_loc:
                 if (CommonUtils.checkLocationEnabled(this)) {
-                    if (sp.getDeluxe()) {
+                    if (sp.getPremium()) {
                         if (!isLocationNull) {
                             showLoading();
+
                             homeViewModel.sendLatLong(new LocationModel("" + latLng.latitude, "" + latLng.longitude));
                         } else {
                             new AlertDialog.Builder(this).setMessage("You cannot choose this location.").setPositiveButton("OK", null).show();
                         }
                     } else {
-                        CommonDialogs.PremuimPurChaseDialog(WhereYouLiveActivity.this, WhereYouLiveActivity.this);
+                        CommonDialogs.PremuimPurChaseDialog(WhereYouLiveActivity.this, WhereYouLiveActivity.this,sp);
                     }
                 }
                 break;
@@ -328,7 +340,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
     public void showSnackBar(View v, String text) {
         Snackbar snack = Snackbar.make(v, text, Snackbar.LENGTH_LONG);
         View view = snack.getView();
-        view.setBackgroundColor(ContextCompat.getColor(this, R.color.primaryTextColor));
+        view.setBackgroundColor(ContextCompat.getColor(this, R.color.pink));
         TextView tv = view.findViewById(R.id.snackbar_text);
         tv.setTextColor(Color.WHITE);
         snack.show();
@@ -363,19 +375,25 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
     @Override
     public void onClickToken(String tokenType, int tokensNum, int selectedPos) {
         selectedPosition = tokensNum;
-        if (tokenType.equalsIgnoreCase("DeluxePurChase")) {
-            price = CommonDialogs.DeluxePriceList.get(selectedPos).getPriceValue();
-            String productId = CommonDialogs.DeluxeArr[selectedPos];
+        if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
+            price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
+            String productId = CommonDialogs.PremiumArr[selectedPos];
             bp.subscribe(WhereYouLiveActivity.this, productId);
         }
     }
 
     @Override
     public void onProductPurchased(String productId, TransactionDetails details) {
-        //if (tokenSType.equalsIgnoreCase("DeluxePurChase")) {
         bp.consumePurchase(productId);
-        homeViewModel.addDeluxeRequest(new DeluxeTokenCountModel("2", productId, price, selectedPosition, details.purchaseInfo.purchaseData.orderId, details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature, details.purchaseInfo.purchaseData.purchaseState.toString()));
-        // }
+        homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1",
+                productId,
+                price,
+                selectedPosition,
+                details.purchaseInfo.purchaseData.orderId,
+                details.purchaseInfo.purchaseData.purchaseToken,
+                CommonUtils.getDateForPurchase(details),
+                details.purchaseInfo.signature,
+                details.purchaseInfo.purchaseData.purchaseState.toString()));
     }
 
     @Override

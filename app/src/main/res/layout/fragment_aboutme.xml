@@ -15,7 +15,7 @@
         android:id="@+id/imageLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/about_me"
+        android:src="@drawable/ic_about_me"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -42,7 +42,7 @@
         android:background="@drawable/card_stroke_bg"
         android:fontFamily="@font/medium"
         android:gravity="top"
-        android:hint="About Yourself"
+        android:hint="Introduce Yourself"
         android:imeOptions="actionNext"
         android:inputType="textMultiLine|textCapSentences"
         android:maxLength="300"

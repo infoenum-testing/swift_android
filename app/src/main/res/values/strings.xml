@@ -63,7 +63,7 @@
     <string name="heightQues">What is your height? </string>
     <string name="kids_ques">Do you have kids?</string>
     <string name="what_is_sign">What is your sign?</string>
-    <string name="jobTitle">Occupation</string>
+    <string name="jobTitle">Enter your occupation</string>
     <string name="myJobTitleIs">What is your occupation?</string>
     <string name="facebook_app_id">2841062159443728</string>
     <string name="fb_login_protocol_scheme">fb2749591848461723</string>
@@ -141,7 +141,7 @@
     <string name="maxDistance">Maximum Distance</string>
     <string name="logout">Logout</string>
     <string name="agerange">Age Range</string>
-    <string name="hideProfile">Show my profile on swift</string>
+    <string name="hideProfile">Show my profile on Swift</string>
     <string name="notification">Notifications</string>
     <string name="newMatches">New Matches</string>
     <string name="calls">Call Reminders</string>
@@ -195,6 +195,9 @@
     <string name="copythisgesture">Copy This Gesture</string>
     <string name="copythisgesture_desc">We require all profiles to selfie verify. Take a one-time selfie with your front camera and match the gesture in the picture below. We will not post your selfie on your page.
         We only use your picture to confirm that you are you. </string>
+    <string name="selfie_txt">Verifying your profile let’s users know that you are who you are. Verified profiles have a check by their names. Selfies are only used by the admin to verify your profile and will not be displayed on your profile.</string>
+
+
     <string name="imReady_text">I\'m Ready</string>
     <string name="interest">Interests</string>
     <string name="personalityQuestions">Personality Prompt</string>
@@ -575,7 +578,7 @@
         <string name="premium_subheading"><![CDATA[BlackGentry Premium enables unlimited profiles send unlimited Likes, & hide ads Consider purchasing BlackGentry Deluxe to get even more features.]]></string>
     -->
     <string name="premium_subheading"><![CDATA[BlackGentry Premium enables unlimited profile views, sending unlimited likes & hiding ads. Consider purchasing BlackGentry Deluxe to get even more features.]]></string>
-    <string name="non_refunde_premium_txt">By clicking Continue your payment will be charged to your Google Play account. Subscriptions will automatically renew for the same package length unless auto-renew is turned off and you cancel at least 24 hours before the end of your current period. You agree to our Terms and Privacy Policy. All purchases are non-refundable.</string>
+    <string name="non_refunde_premium_txt">By clicking Continue your payment will be charged to your Google Play account. Subscriptions will automatically renew for the same package length unless auto-renew is turned off and you cancel at least 24 hours before the end of your current period. You agree to our Terms and Privacy Policy. All purchases are final and non-refundable.</string>
     <string name="refer_friend_crush_toekn"><u>Click here to refer a friend and get a free crush Token</u></string>
     <string-array name="CrushStringArray">
         <item>Crush tokens are used to let users know that you like them.</item>
@@ -665,5 +668,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="premium">PREMIUM</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="no">No</string>
 
 </resources>

@@ -7,40 +7,6 @@
     android:layout_height="match_parent">
 
 
-    <LinearLayout
-        android:id="@+id/addressLayout"
-        android:layout_width="match_parent"
-        android:layout_height="40sp"
-        android:layout_below="@+id/headrLayout"
-        android:layout_margin="15sp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title">
-
-
-        <View
-            android:layout_width="1sp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="5sp"
-            android:layout_marginBottom="5sp"
-            android:background="@color/colorPrimary" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="13sp"
-                android:layout_height="13sp"
-                android:src="@drawable/ic_loc" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -52,7 +18,22 @@
         tools:context=".dating.ui.where_do_you_live.WhereYouLiveActivity" />
 
 
-    <include layout="@layout/back_image_layout" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_15sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/image_back"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:src="@drawable/back_img"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -81,6 +81,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 if (intent.getExtras().getBoolean("approved")) {
                     sp.saveVerified("Yes");
                     sp.saveIsRejected(false);
+
                     //Save Date for Daily Popup
                     /*SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
                     String today = simpleDateFormat.format(new Date());
@@ -146,7 +147,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 NotificationModel notificationModel = (NotificationModel) intent.getExtras().getSerializable("match");
                 Log.e("BroadCaste", "onReceive: " + notificationModel.getMessage());
                 snackbar = TSnackbar.make(findViewById(android.R.id.content), notificationModel.getMessage(), TSnackbar.LENGTH_LONG);
-                if ((isLikeScreen ||isCardScreen) && notificationModel.getMessage().contains("liked")) {//XYZ has liked you.
+                if ((isLikeScreen || isCardScreen) && notificationModel.getMessage().contains("liked")) {//XYZ has liked you.
                     getMyProfile(myProfileResponse);
                 }
             }
@@ -233,11 +234,16 @@ public abstract class BaseActivity extends AppCompatActivity {
                             sp.saveUserData(obj, null);
                             sp.saveString(SharedPreference.userEmail, resource.data.getUser().getEmail());
                             sp.saveString(SharedPreference.userPhone, resource.data.getUser().getMobile());
+                            Log.e(TAG, "onChanged: " + resource.data.getUser().getSelfieVerificationStatus());
+                            if (resource.data.getUser() != null && !TextUtils.isEmpty(resource.data.getUser().getSelfieVerificationStatus())) {
+                                sp.saveSelfieVerificationStatus(resource.data.getUser().getSelfieVerificationStatus());
+                            }
+
                             if (myProfileResponse != null)
                                 myProfileResponse.setProfileData();
                             if (!sp.getVerified().equals(resource.data.getUser().getIsVerified()) /*|| sp.isRejected() != resource.data.getUser().getisRejected().equals("1")*/) {
                                 sp.saveVerified(resource.data.getUser().getIsVerified());
-                           //     sp.saveIsRejected(resource.data.getUser().getisRejected().equals("1"));
+                                //     sp.saveIsRejected(resource.data.getUser().getisRejected().equals("1"));
                                 if (isCardScreen) {
                                     ((HomeActivity) mActivity).onTabSelected(((HomeActivity) mActivity).tabHome.getTabAt(0));
                                 } else if (isMatchScreen) {
@@ -249,8 +255,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                     case ERROR:
                         isMyProfileApiCall = false;
                         hideLoading();
-                        if (isLikeScreen){
-                            LikesFrament.MyLikeCount=-1;
+                        if (isLikeScreen) {
+                            LikesFrament.MyLikeCount = -1;
                             if (myProfileResponse != null)
                                 myProfileResponse.setProfileData();
                         }

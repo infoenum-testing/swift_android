@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,10 +34,12 @@ public class AnswerNowActivity extends BaseActivity implements View.OnClickListe
 
     EditText etAnswer1;
     ImageView backBtn;
-    TextView tvQuestion1;
+    TextView tvQuestion1, tvCounter;
     Button btnSubmit, btnUpdate;
     MatchViewModel matchViewModel;
-    String strQuestion = "";
+    String strQuestion = "", counter;
+
+    private static final String TAG = "AnswerNowActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +50,17 @@ public class AnswerNowActivity extends BaseActivity implements View.OnClickListe
     }
 
     /**
-     ***  Method to Initialize
+     * **  Method to Initialize
      */
     private void init() {
         etAnswer1 = findViewById(R.id.et_answer1);
         tvQuestion1 = findViewById(R.id.tvQuestion1);
         etAnswer1 = findViewById(R.id.et_answer1);
         etAnswer1 = findViewById(R.id.et_answer1);
-        backBtn = findViewById(R.id.backBtn);
+        backBtn = findViewById(R.id.ivback);
         btnSubmit = findViewById(R.id.btn_submit);
         btnUpdate = findViewById(R.id.btn_update);
+        tvCounter = findViewById(R.id.tvCounter);
 
         handleData();
         implementClickLister();
@@ -64,25 +68,26 @@ public class AnswerNowActivity extends BaseActivity implements View.OnClickListe
     }
 
     /**
-     ***  Method to handle Data through Intent
+     * **  Method to handle Data through Intent
      */
     private void handleData() {
-        if (getIntent().hasExtra("Question")) {
+        if (getIntent().hasExtra("Question")) { // Coming from Question screen
             tvQuestion1.setText(getIntent().getExtras().getString("Question"));
             btnUpdate.setVisibility(View.GONE);
-        } else if (getIntent().hasExtra("question")) {
+
+        } else if (getIntent().hasExtra("question")) {// Coming direct from edit profile screen
             tvQuestion1.setText(getIntent().getExtras().getString("question"));
             etAnswer1.setText(getIntent().getExtras().getString("answer"));
             btnUpdate.setVisibility(View.VISIBLE);
             strQuestion = getIntent().getExtras().getString("question");
-
             btnSubmit.setEnabled(true);
-            btnSubmit.setBackground(AnswerNowActivity.this.getResources().getDrawable(R.drawable.gradientbtn));
         }
+        counter = String.valueOf(150 - etAnswer1.getText().toString().trim().length());
+        tvCounter.setText(counter);
     }
 
     /**
-     ***  Method to Implement ClickListener
+     * **  Method to Implement ClickListener
      */
     private void implementClickLister() {
         backBtn.setOnClickListener(this);
@@ -92,7 +97,7 @@ public class AnswerNowActivity extends BaseActivity implements View.OnClickListe
     }
 
     /**
-     ***  Method to Handle Response of Api
+     * **  Method to Handle Response of Api
      */
     private void subscribeModel() {
         matchViewModel = ViewModelProviders.of(this).get(MatchViewModel.class);
@@ -118,13 +123,13 @@ public class AnswerNowActivity extends BaseActivity implements View.OnClickListe
                                 finishAffinity();
                             } else {
                                 hideKeyboard();
-                                sp.saveUserData(resource.data.getUser().getProfileOfUser(),resource.data.getProfileCompleted().toString());
+                                sp.saveUserData(resource.data.getUser().getProfileOfUser(), resource.data.getProfileCompleted().toString());
                                 setResult(RESULT_OK, new Intent());
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             }
                         } else {
-                            showSnackbar(etAnswer1,resource.data.getMessage());
+                            showSnackbar(etAnswer1, resource.data.getMessage());
                         }
                         break;
                     case ERROR:
@@ -178,13 +183,9 @@ public class AnswerNowActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (!TextUtils.isEmpty(s.toString().trim())) {
-            btnSubmit.setEnabled(true);
-            btnSubmit.setBackground(AnswerNowActivity.this.getResources().getDrawable(R.drawable.gradientbtn));
-        } else {
-            btnSubmit.setEnabled(false);
-            btnSubmit.setBackground(AnswerNowActivity.this.getResources().getDrawable(R.drawable.disabledbtn));
-        }
+        btnSubmit.setEnabled(!TextUtils.isEmpty(s.toString().trim()));
+        counter = String.valueOf(150 - etAnswer1.getText().toString().trim().length());
+        tvCounter.setText(counter);
     }
 
     @Override

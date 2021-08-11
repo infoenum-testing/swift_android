@@ -1,88 +1,82 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--           16  Exercise-->
-<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/clExercise"
+<?xml version="1.0" encoding="utf-8"?><!--           16  Exercise-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/clExercise"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:paddingTop="@dimen/_20sdp"
     android:visibility="visible"
-    android:background="@color/white"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/tvskip"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:layout_constraintTop_toBottomOf="@+id/tvskip">
 
-    <TextView
-        android:id="@+id/tv_Exercise"
-        android:layout_width="0dp"
+
+    <ImageView
+        android:id="@+id/imageLogo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
-        android:fontFamily="@font/semi_bold"
-        android:text="@string/exercise_ques"
-        android:textColor="@color/primaryTextColor"
-        android:textSize="@dimen/_20ssp"
+        android:src="@drawable/exercise_svg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/tv_Exercise"
+        style="@style/center_title"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:text="@string/exercise_ques"
+        app:layout_constraintBottom_toTopOf="@+id/tgExercise"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageLogo"
+
+        />
+
     <RadioGroup
         android:id="@+id/tgExercise"
-        android:layout_width="wrap_content"
-        android:layout_height="?actionBarSize"
-        android:layout_marginTop="@dimen/_30ssp"
-        android:maxHeight="@dimen/_150sdp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@id/tv_Exercise"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:gravity="top"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/btn_continue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_Exercise">
 
         <RadioButton
             android:id="@+id/sometimesExercisetb"
-            android:layout_width="wrap_content"
+            style="@style/radioBtnStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/toggle_selected"
-            android:button="@color/transparent"
-            android:fontFamily="@font/medium"
-            android:padding="@dimen/_10sdp"
-            android:textAllCaps="false"
-            android:textColor="@drawable/ic_select"
+            android:layout_marginTop="@dimen/_10sdp"
             android:text="@string/sometimes"
-            android:textSize="@dimen/_12ssp" />
+            />
 
         <RadioButton
             android:id="@+id/oftenExercisetb"
-            android:layout_width="wrap_content"
+            style="@style/radioBtnStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/toggle_selected"
-            android:button="@color/transparent"
-            android:checked="false"
-            android:fontFamily="@font/medium"
-            android:padding="@dimen/_10sdp"
-            android:textAllCaps="false"
-            android:textColor="@drawable/ic_select"
+            android:layout_marginTop="@dimen/_10sdp"
             android:text="@string/often"
-            android:textSize="@dimen/_12ssp" />
+            />
 
         <RadioButton
             android:id="@+id/nevetbExercise"
-            android:layout_width="wrap_content"
+            style="@style/radioBtnStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/toggle_selected"
-            android:checked="false"
-            android:button="@color/transparent"
-            android:fontFamily="@font/medium"
-            android:padding="@dimen/_10sdp"
-            android:textAllCaps="false"
-            android:textColor="@drawable/ic_select"
+            android:layout_marginTop="@dimen/_10sdp"
             android:text="@string/almostnever"
-            android:textSize="@dimen/_12ssp" />
+            />
+
 
     </RadioGroup>
+
     <Button
         android:id="@+id/btn_continue"
         android:layout_width="0dp"
@@ -90,8 +84,8 @@
         android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_20sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:background="@drawable/disabledbtn"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:background="@drawable/btn_edit_bg_on_off"
         android:enabled="false"
         android:fontFamily="@font/medium"
         android:minWidth="@dimen/_200sdp"
@@ -101,9 +95,11 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="@dimen/_14ssp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tgExercise" />
+
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

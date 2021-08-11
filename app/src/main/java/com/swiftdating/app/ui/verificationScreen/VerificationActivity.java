@@ -164,6 +164,10 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
         hideLoading();
         if (response.getSuccess()) {
             sp.saveString(SharedPreference.userStatus, response.getUser().getStatus());
+            if (response.getUser() != null && !TextUtils.isEmpty(response.getUser().getSelfieVerificationStatus())) {
+                sp.saveSelfieVerificationStatus(response.getUser().getSelfieVerificationStatus());
+            }
+
             if (response.getUser().getProfileOfUser() != null) {
                 sp.saveUserData(response.getUser().getProfileOfUser(), response.getUser().getProfileOfUser().getCompleted().toString());
                 sp.saveToken("bearer " + response.getToken(), String.valueOf(response.getUser().getProfileOfUser().getUserId()), true);
@@ -171,7 +175,6 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                 sp.saveToken("bearer " + response.getToken(), String.valueOf(response.getUser().getId()), true);
             }
             sp.savePremium(response.getUser().getIsPremium().equalsIgnoreCase("Yes"));
-//            sp.saveDeluxe(response.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
             sp.saveLinkedIn(!TextUtils.isEmpty(linkedinId));
             sp.saveString(SharedPreference.userEmail, response.getUser().getEmail());
             sp.saveString(SharedPreference.userPhone, response.getUser().getMobile());
@@ -181,6 +184,8 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
             if (response.getUser().getSelfiesForUser() != null && response.getUser().getSelfiesForUser().getSelfieUrl() != null) {
                 sp.saveSelfie(response.getUser().getSelfiesForUser().getSelfieUrl());
                 sp.saveVerified(response.getUser().getIsVerified());
+                sp.saveVerified(response.getUser().getIsVerified());
+
                 //   sp.saveIsRejected(response.getUser().getisRejected().equals("1"));
             }
             preference.setIsFromEmail(true);

@@ -688,7 +688,7 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
                             if (resource.data.swipesData == null || resource.data.swipesData.updatedAt == null) {
                                 sp.isDialogOpen = true
 
-                                CommonDialogs.PremuimPurChaseDialog(mActivity, this)
+                                CommonDialogs.PremuimPurChaseDialog(mActivity, this,sp)
                                 /*"BlackGentry Premium", "You have reached the likes limit. You can send more likes " + "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Premium."*/
                             }
                         } else {

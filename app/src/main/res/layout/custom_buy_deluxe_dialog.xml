@@ -177,7 +177,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="8dp"
-                                android:background="@drawable/bg_premium_selected"
+                                android:background="@drawable/ic_bg_premium_selected"
                                 android:gravity="center"
                                 android:orientation="vertical">
 
