@@ -79,6 +79,7 @@
                 android:fontFamily="@font/semi_bold"
                 android:maxLines="1"
                 android:paddingStart="@dimen/_10sdp"
+                android:text="sdfsdfsd"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_24ssp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -90,12 +91,22 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/semi_bold"
                 android:maxLines="1"
-                android:paddingBottom="@dimen/_2sdp"
+                android:text="21"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_16ssp"
+                android:textSize="@dimen/_22ssp"
                 app:layout_constraintBottom_toBottomOf="@+id/name"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/name" />
+
+            <ImageView
+                android:id="@+id/ivVerifyLogo"
+                android:layout_width="20dp"
+                android:visibility="gone"
+                android:layout_height="20dp"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:src="@drawable/ic_verify_right"
+                app:layout_constraintBottom_toBottomOf="@+id/name"
+                app:layout_constraintStart_toEndOf="@id/tvage"
+                app:layout_constraintTop_toTopOf="@+id/name" />
 
 
             <LinearLayout

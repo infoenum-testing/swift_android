@@ -67,13 +67,13 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_home);
-       /* if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().containsKey("replace")) {
+        if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().containsKey("replace")) {
             isShowDirect = MatchFragment.isShowDirect;
             isShowSecondChance = LikesFrament.showSencondChance;
             tabPos = getIntent().getExtras().getInt("replace");
-        }*/
-        // setToolbar(); v
-        //  onNewIntent(getIntent());
+        }
+         setToolbar();
+          onNewIntent(getIntent());
         sp = new SharedPreference(this);
         // sp.setDislikeApi(true);
         init(tabPos);
@@ -263,10 +263,10 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
         super.onNewIntent(intent);
         if (extra != null) {
             if (extra.containsKey("approved")) {
-                sp.saveVerified("Yes");
+              //sp.saveVerified("Yes");
                 sp.saveIsRejected(false);
             } else if (extra.containsKey("rejected")) {
-                sp.saveVerified("No");
+             //   sp.saveVerified("No");
                 sp.saveIsRejected(true);
             } else if (extra.containsKey("deactivated")) {
                 openActivityOnTokenExpire();

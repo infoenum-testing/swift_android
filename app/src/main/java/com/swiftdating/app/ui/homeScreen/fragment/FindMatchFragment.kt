@@ -22,6 +22,7 @@ import android.os.Handler
 import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
@@ -30,39 +31,11 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.*
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
-import com.swiftdating.app.R
-import com.swiftdating.app.callbacks.OnInAppInterface
-import com.swiftdating.app.callbacks.ReportInterface
-import com.swiftdating.app.common.AppConstants.LICENSE_KEY
-import com.swiftdating.app.common.AppConstants.PERMISSION_REQUEST_CODE_LOC
-import com.swiftdating.app.common.CommonDialogs
-import com.swiftdating.app.common.CommonUtils
-import com.swiftdating.app.common.ScreenUtils
-import com.swiftdating.app.common.ShakeListener
-import com.swiftdating.app.data.network.ApiUtils
-import com.swiftdating.app.data.network.CallServer
-import com.swiftdating.app.data.network.Resource
-import com.swiftdating.app.data.network.Status
-import com.swiftdating.app.data.preference.SharedPreference
-import com.swiftdating.app.model.BaseModel
-import com.swiftdating.app.model.requestmodel.*
-import com.swiftdating.app.model.responsemodel.ProfileOfUser
-import com.swiftdating.app.model.responsemodel.ReactResponseModel
-import com.swiftdating.app.model.responsemodel.User
-import com.swiftdating.app.model.responsemodel.UserListResponseModel
-import com.swiftdating.app.ui.base.BaseActivity
-import com.swiftdating.app.ui.base.BaseFragment
-import com.swiftdating.app.ui.chatScreen.ChatWindow
-import com.swiftdating.app.ui.homeScreen.HomeActivity
-import com.swiftdating.app.ui.homeScreen.adapter.CardDetailAdapter
-import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel
-import com.swiftdating.app.ui.settingScreen.SettingsActivity
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.bumptech.glide.Glide
@@ -75,10 +48,30 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
+import com.swiftdating.app.R
+import com.swiftdating.app.callbacks.OnInAppInterface
+import com.swiftdating.app.callbacks.ReportInterface
+import com.swiftdating.app.common.*
+import com.swiftdating.app.common.AppConstants.LICENSE_KEY
+import com.swiftdating.app.common.AppConstants.PERMISSION_REQUEST_CODE_LOC
+import com.swiftdating.app.data.network.*
+import com.swiftdating.app.data.preference.SharedPreference
+import com.swiftdating.app.model.BaseModel
+import com.swiftdating.app.model.requestmodel.*
+import com.swiftdating.app.model.responsemodel.*
+import com.swiftdating.app.ui.base.BaseActivity
+import com.swiftdating.app.ui.base.BaseFragment
+import com.swiftdating.app.ui.chatScreen.ChatWindow
+import com.swiftdating.app.ui.homeScreen.HomeActivity
+import com.swiftdating.app.ui.homeScreen.adapter.CardDetailAdapter
+import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel
+import com.warkiz.widget.IndicatorSeekBar
+import com.warkiz.widget.OnSeekChangeListener
+import com.warkiz.widget.SeekParams
 import com.yuyakaido.android.cardstackview.*
 import kotlinx.android.synthetic.main.fragment_find_match.*
-import kotlinx.android.synthetic.main.layout_verify.*
 import kotlinx.android.synthetic.main.native_ads_view.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -86,8 +79,13 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
-class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, OnInAppInterface, BillingProcessor.IBillingHandler, ShakeListener.OnShakeListener, View.OnClickListener, CommonDialogs.onProductConsume, BaseActivity.MyProfileResponse {
+@Suppress("CAST_NEVER_SUCCEEDS")
+class FindMatchFragment : BaseFragment(), CardStackListener,
+        ReportInterface, OnInAppInterface, BillingProcessor.IBillingHandler,
+        ShakeListener.OnShakeListener, View.OnClickListener, CommonDialogs.onProductConsume,
+        BaseActivity.MyProfileResponse, ApiCallback.FilterCallBack {
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_find_match
@@ -101,7 +99,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
     private val chat by lazy { view?.findViewById<ImageView>(R.id.chat) }
     private val like by lazy { view?.findViewById<ImageView>(R.id.love) }
     private val superlike2 by lazy { view?.findViewById<ImageView>(R.id.superlike2) }
-    private val img_filter by lazy { view?.findViewById<ImageView>(R.id.img_filter) }
+    private val rlFilter by lazy { view?.findViewById<RelativeLayout>(R.id.rlFilter) }
     private val tv_likeCount by lazy { view?.findViewById<TextView>(R.id.tv_likeCount) }
 
     //   val img_vip_star = view.findViewById(R.id.img_vip_star) as ImageView
@@ -126,50 +124,54 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
     private var tokenSType: String = ""
     private var productId: String = ""
     private var purchaseType: Int = 0
-    lateinit var imageView: ImageView
-    lateinit var clView: ConstraintLayout
+
+    // lateinit var imageView: ImageView
+    lateinit var clView: LinearLayout
     private var pos = -1
     var isExpired = false
     var price = 0.0
-
+    private lateinit var contextMy: Context
+    var filterRequest: FilterRequest? = null
     override fun onResume() {
         super.onResume()
-        /*BaseActivity.mActivity = this.activity
+        BaseActivity.mActivity = this.activity
         baseActivity.isCardScreen = true
         baseActivity.sp.saveFirstTime("true")
         (activity as HomeActivity).swipeCount = 0
         //(activity as HomeActivity?)!!.setToolbarWithTitle("Blackgentry")
         (activity as HomeActivity?)!!.mToolbar.visibility = GONE
-        */
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.e(TAG, "onViewCreated: FindMatchFragment")
-        initBillingProcess() /// remove it when uncommenting the whole code
-        subscribeModel()        // i am calling it here to just satisfying my some condition
-
-
-
-        /*  init(view)
-          if (baseActivity.isNetworkConnected) {
-              if (baseActivity.sp.isSettingsChanged || (activity as HomeActivity).cardList.isEmpty()) {
-                  list = (activity as HomeActivity).cardList
-                  checkLocationPermission()
-              } else {
-                  list = (activity as HomeActivity).cardList
-                  setupCardStackView()
-              }
-          } else {
-              baseActivity.showSnackbar(view, "Please connect to internet")
-          }*/
+        init(view)
+        contextMy = this.context!!
+        if (baseActivity.isNetworkConnected) {
+            if (baseActivity.sp.isSettingsChanged || (activity as HomeActivity).cardList.isEmpty()) {
+                list = (activity as HomeActivity).cardList
+                checkLocationPermission()
+            } else {
+                list = (activity as HomeActivity).cardList
+                setupCardStackView()
+            }
+        } else {
+            baseActivity.showSnackbar(view, "Please connect to internet")
+        }
     }
 
     /**
      * Method to initialize
      */
     private fun init(view: View) {
-        (activity as HomeActivity?)!!.setIsDeluxePopOpen { CommonDialogs.DeluxePurChaseDialog(mActivity, this) }
+        if (baseActivity.sp.filterModel != null) {
+            filterRequest = baseActivity.sp.filterModel
+        }
+
+        /* (activity as HomeActivity?)!!.setIsDeluxePopOpen {
+               CommonDialogs.DeluxePurChaseDialog(mActivity, this)
+         }*/
+
         baseActivity.getMyProfile(this);
         /*  val rectUser = baseActivity.sp.noOfLikes
 
@@ -193,17 +195,17 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
             intent.data = uri
             startActivityForResult(intent, 4040)
         }
-        clView = view?.findViewById<ConstraintLayout>(R.id.clView)
+        clView = view.findViewById(R.id.clView)
         baseActivity.sp.saveisSettingsChanged(false)
         shakeListener = ShakeListener(context)
         //shakeListener!!.setOnShakeListener(this)
         MobileAds.initialize(context) {}
         mAdView = view.findViewById(R.id.adView)
         tvNoMatch.visibility = GONE
-        constraint_verify.visibility = GONE
+        // constraint_verify.visibility = GONE
         img_vip_star?.isEnabled = true
         chat?.isEnabled = true
-        img_filter?.isEnabled = true
+        rlFilter?.isEnabled = true
         superlike2?.visibility = GONE
         love.visibility = VISIBLE
         cancel.isEnabled = false
@@ -263,11 +265,186 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
         })
 
 
-        imageView = view?.findViewById<ImageView>(R.id.imageView)
-        Glide.with(this)
-                .load(R.raw.bg)
-                .into(imageView)
+        // imageView = view.findViewById(R.id.imageView)
+        // Glide.with(this).load(R.raw.bg).into(imageView)
     }
+
+    private fun callAlertForVipConsume() {
+        val dialog = Dialog(mActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        Objects.requireNonNull(dialog.window)!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setContentView(R.layout.dialog_two_button)
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(false)
+        val window = dialog.window
+        window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.show()
+        val tv_message = dialog.findViewById<TextView>(R.id.tv_message)
+        val tv_yes = dialog.findViewById<TextView>(R.id.tv_yes)
+        val tv_no = dialog.findViewById<TextView>(R.id.tv_no)
+        tv_message.text = getString(R.string.vip_msg_one)
+        tv_yes.setOnClickListener { v: View? ->
+            baseActivity.showLoading()
+            homeViewModel.applyVipToken(ApplyVipTokenRequest(30, 1))
+            dialog.dismiss()
+        }
+        tv_no.setOnClickListener { view: View? -> dialog.dismiss() }
+    }
+
+    private fun showDistanceBottomsheet() {
+        val ageArrayList: ArrayList<String> = arrayListOf()
+        var interseted = "Both"
+        if (filterRequest == null) {
+            filterRequest = FilterRequest()
+        }
+        val bottomSheetDialog: BottomSheetDialog?
+        bottomSheetDialog = BottomSheetDialog(contextMy, R.style.BottomSheetDialogStyle)
+
+        val view = LayoutInflater.from(context).inflate(R.layout.filter_sheet, null)
+        bottomSheetDialog.setContentView(view)
+        val tvDistance = view.findViewById<TextView>(R.id.tvDistance)
+        val btnApply = view.findViewById<Button>(R.id.btnApply)
+        val btnReset = view.findViewById<Button>(R.id.btnReset)
+        val tvAgeRange = view.findViewById<TextView>(R.id.tvAgeRange)
+        val tgGender = view.findViewById<RadioGroup>(R.id.tgGender)
+        val otherTb = view.findViewById<RadioButton>(R.id.otherTb)
+        val tbMale = view.findViewById<RadioButton>(R.id.tbMale)
+        val femaleTb = view.findViewById<RadioButton>(R.id.femaleTb)
+        val seekDistance: IndicatorSeekBar = view.findViewById(R.id.seek_distance)
+        val seekAgeRange: RangeSeekBar<Int> = view.findViewById(R.id.seek_age_range)
+        val ivClose = view.findViewById<ImageView>(R.id.ivClose)
+
+
+        ivClose.setOnClickListener(OnClickListener(fun(v: View?) {
+            bottomSheetDialog.cancel()
+        }))
+        for (i in 18..80) {
+            ageArrayList.add("" + i)
+        }
+        tgGender.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener(fun(radioGroup: RadioGroup, i: Int) {
+            when (i) {
+                R.id.tbMale -> {
+                    filterRequest!!.interested = "Men"
+                    interseted = "Men"
+                }
+                R.id.femaleTb -> {
+                    filterRequest!!.interested = "Women"
+                    interseted = "Women"
+                }
+                R.id.otherTb -> {
+                    filterRequest!!.interested = "Both"
+                    interseted = "Both"
+                }
+            }
+        }))
+        val size = ageArrayList.size - 1
+        seekAgeRange.setRangeValues(0 as Int?, size as Int?)
+        seekAgeRange.selectedMinValue = 0
+        seekAgeRange.selectedMaxValue = size
+
+        seekAgeRange.setOnRangeSeekBarChangeListener(fun(bar: RangeSeekBar<out Number>, minValue: Number, maxValue: Number) {
+            tvAgeRange.text = ageArrayList[minValue as Int] + " to " + ageArrayList[maxValue as Int]
+            filterRequest!!.maxAgePrefer = ageArrayList[maxValue.toInt()].toInt()
+            filterRequest!!.minAgePrefer = ageArrayList[minValue.toInt()].toInt()
+        })
+
+        seekDistance.onSeekChangeListener = object : OnSeekChangeListener {
+            override fun onSeeking(seekParams: SeekParams) {
+                tvDistance.text = seekParams.progress.toString() + " " + getString(R.string.miles)
+                filterRequest!!.distance = seekDistance.progress
+            }
+
+            override fun onStartTrackingTouch(seekBar: IndicatorSeekBar) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: IndicatorSeekBar) {
+
+            }
+        }
+
+/////////////////////////////////        setting data to view from shared pref model ////////////////////////
+
+        if (filterRequest != null && !TextUtils.isEmpty(filterRequest!!.interested)) {
+            when (filterRequest!!.interested) {
+                "Men" -> {
+                    tbMale.isChecked = true
+                    femaleTb.isChecked = false
+                    otherTb.isChecked = false
+                    interseted = "Men"
+                }
+                "Women" -> {
+                    tbMale.isChecked = false
+                    femaleTb.isChecked = true
+                    otherTb.isChecked = false
+                    interseted = "Women"
+                }
+                "Both" -> {
+                    tbMale.isChecked = false
+                    femaleTb.isChecked = false
+                    otherTb.isChecked = true
+                    interseted = "Both"
+                }
+            }
+        }
+
+
+
+        if (filterRequest != null) {
+            for (i in ageArrayList.indices) {
+                if (ageArrayList[i].equals("" + filterRequest!!.minAgePrefer, ignoreCase = true)) {
+                    seekAgeRange.selectedMinValue = i
+                    break
+                }
+            }
+            for (i in ageArrayList.indices) {
+                if (ageArrayList[i].equals("" + filterRequest!!.maxAgePrefer, ignoreCase = true)) {
+                    seekAgeRange.selectedMaxValue = i
+                    break
+                }
+            }
+            tvAgeRange.text = ageArrayList[seekAgeRange.selectedMinValue as Int] + " to " + ageArrayList[seekAgeRange.selectedMaxValue as Int]
+        }
+
+        if (filterRequest != null) {
+            seekDistance.setProgress(filterRequest!!.distance.toFloat())
+            tvDistance.text = "" + filterRequest!!.distance + " miles"
+        } else {
+            seekDistance.setProgress(500f)
+        }
+
+
+        /////////////////////////////////        setting data to view from shared pref model ////////////////////////
+        btnApply.setOnClickListener(OnClickListener(fun(v: View?) {
+            baseActivity.sp.saveFilterModel(filterRequest)
+            val map = HashMap<String, Any>()
+            map["distance"] = seekDistance.progress
+            map["minAgePrefer"] = ageArrayList[seekAgeRange.selectedMinValue].toInt()
+            map["maxAgePrefer"] = ageArrayList[seekAgeRange.selectedMaxValue].toInt()
+            map["interested"] = interseted
+            baseActivity.showLoading()
+            ApiCall.setFilters(baseActivity.sp.token, map, this)
+            bottomSheetDialog.cancel()
+        }))
+
+        btnReset.setOnClickListener(OnClickListener {
+            filterRequest?.distance = 500
+            filterRequest?.maxAgePrefer = 80
+            filterRequest?.minAgePrefer = 18
+            filterRequest?.gender = "Both"
+            baseActivity.sp.saveFilterModel(filterRequest)
+            seekAgeRange.selectedMinValue = 0
+            seekAgeRange.selectedMaxValue = size
+            tvAgeRange.text = "18 to 80"
+            seekDistance.setProgress(500f)
+            tvDistance.text = "500 miles"
+            otherTb.isChecked = true
+            tbMale.isChecked = false
+            femaleTb.isChecked = false
+        })
+        bottomSheetDialog.show()
+    }
+
 
     private fun callAlertForVipTokenWithNoAction(afterConsume: Boolean) {
         val dialog = Dialog(mActivity)
@@ -294,28 +471,6 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
         }
     }
 
-    private fun callAlertForVipConsume() {
-        val dialog = Dialog(mActivity)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        Objects.requireNonNull(dialog.window)!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setContentView(R.layout.dialog_two_button)
-        dialog.setCancelable(false)
-        dialog.setCanceledOnTouchOutside(false)
-        val window = dialog.window
-        window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        dialog.show()
-        val tv_message = dialog.findViewById<TextView>(R.id.tv_message)
-        val tv_yes = dialog.findViewById<TextView>(R.id.tv_yes)
-        val tv_no = dialog.findViewById<TextView>(R.id.tv_no)
-        tv_message.text = getString(R.string.vip_msg_one)
-        tv_yes.setOnClickListener { v: View? ->
-            homeViewModel.applyVipToken(ApplyVipTokenRequest(30, 1))
-            dialog.dismiss()
-        }
-        tv_no.setOnClickListener { view: View? -> dialog.dismiss() }
-
-
-    }
 
     /**
      * Method to initialize Billing
@@ -332,7 +487,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
      */
     private fun checkSubscription(isSubscribed: Boolean, productId: String, purchaseToken: String) {
         Log.e(TAG, "checkSubscription: 329 $productId")
-      // var productid = productId
+        // var productid = productId
         if (bp!!.loadOwnedPurchasesFromGoogle()) {
             if (bp!!.getSubscriptionTransactionDetails(productId) != null /*||
                     bp!!.getSubscriptionTransactionDetails("deluxe_3") != null ||
@@ -343,33 +498,33 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                     bp!!.getSubscriptionTransactionDetails("premium_6") != null ||
                     bp!!.getSubscriptionTransactionDetails("premium_12") != null*/) {
                 Log.e("subscribed", "subscribed")
-               /* when {
-                    bp!!.getSubscriptionTransactionDetails("deluxe_1") != null -> {
-                        productid = "deluxe_1"
-                    }
-                    bp!!.getSubscriptionTransactionDetails("deluxe_3") != null -> {
-                        productid = "deluxe_3"
-                    }
-                    bp!!.getSubscriptionTransactionDetails("deluxe_6") != null -> {
-                        productid = "deluxe_6"
-                    }
-                    bp!!.getSubscriptionTransactionDetails("deluxe_12") != null -> {
-                        productid = "deluxe_12"
-                    }
-                    bp!!.getSubscriptionTransactionDetails("premium_1") != null -> {
-                        productid = "premium_1"
-                    }
-                    bp!!.getSubscriptionTransactionDetails("premium_3") != null -> {
-                        productid = "premium_3"
-                    }
-                    bp!!.getSubscriptionTransactionDetails("premium_6") != null -> {
-                        productid = "premium_6"
-                    }
-                    bp!!.getSubscriptionTransactionDetails("premium_12") != null -> {
-                        productid = "premium_12"
-                    }
+                /* when {
+                     bp!!.getSubscriptionTransactionDetails("deluxe_1") != null -> {
+                         productid = "deluxe_1"
+                     }
+                     bp!!.getSubscriptionTransactionDetails("deluxe_3") != null -> {
+                         productid = "deluxe_3"
+                     }
+                     bp!!.getSubscriptionTransactionDetails("deluxe_6") != null -> {
+                         productid = "deluxe_6"
+                     }
+                     bp!!.getSubscriptionTransactionDetails("deluxe_12") != null -> {
+                         productid = "deluxe_12"
+                     }
+                     bp!!.getSubscriptionTransactionDetails("premium_1") != null -> {
+                         productid = "premium_1"
+                     }
+                     bp!!.getSubscriptionTransactionDetails("premium_3") != null -> {
+                         productid = "premium_3"
+                     }
+                     bp!!.getSubscriptionTransactionDetails("premium_6") != null -> {
+                         productid = "premium_6"
+                     }
+                     bp!!.getSubscriptionTransactionDetails("premium_12") != null -> {
+                         productid = "premium_12"
+                     }
 
-                }*/
+                 }*/
                 Log.e(TAG, "checkSubscription: 369 $productId   $purchaseToken  ${bp!!.getSubscriptionTransactionDetails(productId)!!.purchaseInfo.purchaseData.purchaseToken}")
                 if (purchaseToken == bp!!.getSubscriptionTransactionDetails(productId)!!.purchaseInfo.purchaseData.purchaseToken) {
                     /*baseActivity.sp.savePremium(true)
@@ -402,13 +557,13 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
     }
 
     private fun callApiSub(status: String, productId: String, bool: Boolean) {
-        if (productId.contains("deluxe")) {
+/*        if (productId.contains("deluxe")) {
             baseActivity.sp.saveDeluxe(bool)
             homeViewModel.changePremiumRequest(PremiumStatusChange(productId, status, 2))
-        } else {
-            baseActivity.sp.savePremium(bool)
-            homeViewModel.changePremiumRequest(PremiumStatusChange(productId, status, 1))
-        }
+        } else {*/
+        baseActivity.sp.savePremium(bool)
+        homeViewModel.changePremiumRequest(PremiumStatusChange(productId, status, 1))
+        //      }
     }
 
     var subscriptiontype = ""
@@ -420,59 +575,34 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
         var productid = ""
         var price = 0.0
         if (bp!!.loadOwnedPurchasesFromGoogle()) {
-            if (
-                    bp!!.getSubscriptionTransactionDetails("deluxe_1") != null ||
-                    bp!!.getSubscriptionTransactionDetails("deluxe_3") != null ||
-                    bp!!.getSubscriptionTransactionDetails("deluxe_6") != null ||
-                    bp!!.getSubscriptionTransactionDetails("deluxe_12") != null ||
-                    bp!!.getSubscriptionTransactionDetails("premium_1") != null ||
-                    bp!!.getSubscriptionTransactionDetails("premium_3") != null ||
-                    bp!!.getSubscriptionTransactionDetails("premium_6") != null ||
-                    bp!!.getSubscriptionTransactionDetails("premium_12") != null) {
+            if (bp!!.getSubscriptionTransactionDetails("swift_premium_1") != null ||
+                    bp!!.getSubscriptionTransactionDetails("swift_premium_3") != null ||
+                    bp!!.getSubscriptionTransactionDetails("swift_premium_6") != null ||
+                    bp!!.getSubscriptionTransactionDetails("swift_premium_12") != null) {
                 Log.e("subscribed", "subscribed")
                 when {
-                    bp!!.getSubscriptionTransactionDetails("deluxe_1") != null -> {
-                        productid = "deluxe_1"
-                        price = CommonDialogs.DeluxePriceList[0].priceValue
-                    }
-                    bp!!.getSubscriptionTransactionDetails("deluxe_3") != null -> {
-                        productid = "deluxe_3"
-                        price = CommonDialogs.DeluxePriceList[1].priceValue
-                    }
-                    bp!!.getSubscriptionTransactionDetails("deluxe_6") != null -> {
-                        productid = "deluxe_6"
-                        price = CommonDialogs.DeluxePriceList[2].priceValue
-                    }
-                    bp!!.getSubscriptionTransactionDetails("deluxe_12") != null -> {
-                        productid = "deluxe_12"
-                        price = CommonDialogs.DeluxePriceList[3].priceValue
-                    }
-                    bp!!.getSubscriptionTransactionDetails("premium_1") != null -> {
-                        productid = "premium_1"
+                    bp!!.getSubscriptionTransactionDetails("swift_premium_1") != null -> {
+                        productid = "swift_premium_1"
                         price = CommonDialogs.PremiumPriceList[0].priceValue
                     }
-                    bp!!.getSubscriptionTransactionDetails("premium_3") != null -> {
-                        productid = "premium_3"
+                    bp!!.getSubscriptionTransactionDetails("swift_premium_3") != null -> {
+                        productid = "swift_premium_3"
                         price = CommonDialogs.PremiumPriceList[1].priceValue
                     }
-                    bp!!.getSubscriptionTransactionDetails("premium_6") != null -> {
-                        productid = "premium_6"
+                    bp!!.getSubscriptionTransactionDetails("swift_premium_6") != null -> {
+                        productid = "swift_premium_6"
                         price = CommonDialogs.PremiumPriceList[2].priceValue
                     }
-                    bp!!.getSubscriptionTransactionDetails("premium_12") != null -> {
-                        productid = "premium_12"
+                    bp!!.getSubscriptionTransactionDetails("swift_premium_12") != null -> {
+                        productid = "swift_premium_12"
                         price = CommonDialogs.PremiumPriceList[3].priceValue
                     }
                 }
-                subscriptiontype = if (productid.contains("deluxe")) {
-                    "2"
-                } else {
-                    "1"
-                }
+                subscriptiontype = "1"
                 val c: Date = bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.purchaseData.purchaseTime
                 val df = SimpleDateFormat("yyyy-MM-dd HH:mm:sss")
                 val formattedDate = df.format(c)
-                callApi(PremiumTokenCountModel(subscriptiontype, productid, price, productid!!.split("_").toTypedArray()[1].toInt(),
+                callApi(PremiumTokenCountModel(subscriptiontype, productid, price, productid.split("_").toTypedArray()[2].toInt(),
                         bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.purchaseData.orderId,
                         bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.purchaseData.purchaseToken,
                         formattedDate,
@@ -497,27 +627,13 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                     if (response.isSuccessful) {
                         Log.e("check1", response.body().toString())
                         val responseBean: BaseModel = gson.fromJson(response.body()!!.string(), BaseModel::class.java)
-                        /* if (responseBean.isavaiable) {
-                             baseActivity.sp.savePremium(false)
-                         } else {
-                             baseActivity.sp.savePremium(true)
-                         }*/
                         if (responseBean.isavaiable) {
-                            if (subscriptiontype == "1")
-                                spr.savePremium(false)
-                            else if (subscriptiontype == "2") {
-                                spr.saveDeluxe(false)
-                            }
+                            spr.savePremium(false)
                         } else {
-                            if (subscriptiontype == "1")
-                                spr.savePremium(true)
-                            else if (subscriptiontype == "2")
-                                spr.saveDeluxe(true)
+                            spr.savePremium(true)
                         }
-
                     } else {
                         Log.e("check1", response.errorBody().toString())
-
                     }
                 } catch (e: java.lang.Exception) {
                     e.printStackTrace()
@@ -543,36 +659,39 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> {
+                    baseActivity.hideLoading()
                     if (resource.data!!.success!!) {
                         baseActivity.sp.saveisSettingsChanged(false)
                         if (resource.data.error != null && resource.data.error.code == "401") {
                             baseActivity.openActivityOnTokenExpire()
-                        } else if (resource.data.message == "SELFIE NOT VERIFIED YET !") {
+                        }/* else if (resource.data.message == "SELFIE NOT VERIFIED YET !") {
                             if (baseActivity != null && !baseActivity.sp.isRejected) {
                                 constraint_verify.visibility = VISIBLE
                                 img_vip_star?.isEnabled = false
                                 rewind?.isEnabled = false
                                 chat?.isEnabled = false
-                                img_filter?.isEnabled = false
+                                rlFilter?.isEnabled = false
                                 imageView.visibility = GONE
                             }
                             SharedPreference(context).saveSelfieVerificationStatus("No")
-                        } else if (resource.data.error != null && resource.data.error.code == "404") {
+                        }*/
+                        else if (resource.data.error != null && resource.data.error.code == "404") {
                             Log.d("TAG_My", "subscribeModel: visisble setting" + 404)
                             img_vip_star?.isEnabled = false
                             chat?.isEnabled = false
-                            img_filter?.isEnabled = false
+                            rlFilter?.isEnabled = false
                             tvNoMatch.visibility = VISIBLE
                             btn_settings.visibility = VISIBLE
-                            imageView.visibility = GONE
+                            clView.visibility = GONE
+                            // imageView.visibility = GONE
                         } else {
                             list = resource.data.users
                             Log.e(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>subscribeModel: >>>>>>>>>>>>${list.size}")
                             setupCardStackView()
-                            constraint_verify.visibility = GONE
+                            // constraint_verify.visibility = GONE
                             img_vip_star?.isEnabled = true
                             chat?.isEnabled = true
-                            img_filter?.isEnabled = true
+                            rlFilter?.isEnabled = true
                             rewind?.isEnabled = true
                             cardStackView!!.visibility = VISIBLE
                             SharedPreference(context).saveSelfieVerificationStatus("Yes")
@@ -581,14 +700,16 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                         baseActivity.sp.saveisSettingsChanged(false)
                         img_vip_star?.isEnabled = false
                         chat?.isEnabled = false
-                        img_filter?.isEnabled = false
+                        rlFilter?.isEnabled = false
                         tvNoMatch.visibility = VISIBLE
                         btn_settings.visibility = VISIBLE
-                        imageView.visibility = GONE
+                        clView.visibility = GONE
+                        // imageView.visibility = GONE
                         cardStackView!!.visibility = GONE
                     }
                 }
                 Status.ERROR -> {
+                    baseActivity.hideLoading()
                     baseActivity.sp.saveisSettingsChanged(false)
                     baseActivity.showSnackbar(card_stack_view, resource.message)
                 }
@@ -602,6 +723,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> {
+                    baseActivity.hideLoading()
                     if (resource.data!!.success!!) {
                         if (resource.data.react.reaction.contains("dislike")) {
                             baseActivity.sp.dislikeApi = true
@@ -634,7 +756,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                         if (cardSwipeCount == 0) {
                             btn_settings.isEnabled = true
                         }
-                        if (baseActivity.sp.swipeCount % 20 == 0 && !baseActivity.sp.premium && !baseActivity.sp.deluxe) {
+                        if (baseActivity.sp.swipeCount % 18 == 0 && !baseActivity.sp.premium) {
                             showAd()
                         }
                     } else if (resource.data.error != null && resource.data.error.code.contains("401")) {
@@ -646,51 +768,52 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                             /*CommonDialogs.purchaseDialog(context, "Crush Tokens", "You have run out of crush tokens. " +"Purchase more tokens below.", this)*/
                         } else if (resource.data.message.contains("REACHED TO 100", ignoreCase = true)) {
                             isSwipedCalled = true
-                            if (resource.data.swipesData != null && resource.data.swipesData.updatedAt != null) {
-                                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                                formatter.timeZone = TimeZone.getTimeZone("UTC")
-                                val result = formatter.parse(resource.data.swipesData.updatedAt.replace("T", " ").split("\\.").toTypedArray()[0])
-                                val calendar = Calendar.getInstance()
-                                calendar.time = result
-                                calendar.add(Calendar.HOUR_OF_DAY, 12)
-                                Log.e("Time here", calendar.time.toString())
-                                var hours = calendar.time.hours
-                                val min = calendar.time.minutes
-                                var am = "AM"
-                                if (hours >= 12) {
-                                    hours -= 12
-                                    am = "PM"
-                                }
-                                if (hours == 0) {
-                                    hours = 12
-                                    am = "AM"
-                                }
-                                timer = if (min < 10) {
-                                    "$hours:0$min $am"
-                                } else {
-                                    "$hours:$min $am"
-                                }
-                                baseActivity.sp.isDialogOpen = true
-                                if (!TextUtils.isEmpty(timer)) {
-                                    //CommonDialogs.PremuimPurChaseDialog(context, this)
-                                    CommonDialogs.DeluxePurChaseDialogWithMessage(context, this, "You have reached the likes limit. You will get more likes at $timer. Want unlimited likes? Subscribe below to BlackGentry Deluxe.")
-                                    /* CommonDialogs.purchaseDialog(context, "BlackGentry Premium", "You have reached the likes limit. You can send more likes " +
-                                            "at $timer. Want unlimited likes? Subscribe below to BlackGentry Premium.", this)*/
+                            /* if (resource.data.swipesData != null && resource.data.swipesData.updatedAt != null)
+                             {
+                                 val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                                 formatter.timeZone = TimeZone.getTimeZone("UTC")
+                                 val result = formatter.parse(resource.data.swipesData.updatedAt.replace("T", " ").split("\\.").toTypedArray()[0])
+                                 val calendar = Calendar.getInstance()
+                                 calendar.time = result
+                                 calendar.add(Calendar.HOUR_OF_DAY, 12)
+                                 Log.e("Time here", calendar.time.toString())
+                                 var hours = calendar.time.hours
+                                 val min = calendar.time.minutes
+                                 var am = "AM"
+                                 if (hours >= 12) {
+                                     hours -= 12
+                                     am = "PM"
+                                 }
+                                 if (hours == 0) {
+                                     hours = 12
+                                     am = "AM"
+                                 }
+                                 timer = if (min < 10) {
+                                     "$hours:0$min $am"
+                                 } else {
+                                     "$hours:$min $am"
+                                 }
+                                 baseActivity.sp.isDialogOpen = true
+                                 if (!TextUtils.isEmpty(timer)) {
+                                     //CommonDialogs.PremuimPurChaseDialog(context, this)
+                                     CommonDialogs.DeluxePurChaseDialogWithMessage(context, this, "You have reached the likes limit. You will get more likes at $timer. Want unlimited likes? Subscribe below to BlackGentry Deluxe.")
+                                     *//* CommonDialogs.purchaseDialog(context, "BlackGentry Premium", "You have reached the likes limit. You can send more likes " +
+                                            "at $timer. Want unlimited likes? Subscribe below to BlackGentry Premium.", this)*//*
                                 } else {
                                     Log.e("test", "test")
                                     baseActivity.sp.isDialogOpen = true
                                     //CommonDialogs.PremuimPurChaseDialog(context, this)
                                     CommonDialogs.DeluxePurChaseDialogWithMessage(context, this, "You have reached the likes limit. You will get more likes " + "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Deluxe.")
-                                    /*CommonDialogs.purchaseDialog(context, "BlackGentry Premium", "You have reached the likes limit. You can send more likes " +
-                                            "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Premium.", this)*/
+                                    *//*CommonDialogs.purchaseDialog(context, "BlackGentry Premium", "You have reached the likes limit. You can send more likes " +
+                                            "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Premium.", this)*//*
                                 }
                             } else {
                                 baseActivity.sp.isDialogOpen = true
                                 // CommonDialogs.PremuimPurChaseDialog(context, this)
                                 CommonDialogs.DeluxePurChaseDialogWithMessage(context, this, "You have reached the likes limit. You will get more likes " + "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Deluxe.")
-                                /*  CommonDialogs.purchaseDialog(context, "BlackGentry Premium", "You have reached the likes limit. You can send more likes " +
-                                          "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Premium.", this)*/
-                            }
+                                *//*  CommonDialogs.purchaseDialog(context, "BlackGentry Premium", "You have reached the likes limit. You can send more likes " +
+                                          "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Premium.", this)*//*
+                            }*/
 
                         } else {
                             baseActivity.showSnackbar(card_stack_view, resource.data.message)
@@ -708,6 +831,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                          if (list.isEmpty())
                              onCardDis()
                      }*/
+                    baseActivity.hideLoading()
                     baseActivity.showSnackbar(card_stack_view, resource.message)
                     btn_settings.isEnabled = true
                 }
@@ -721,6 +845,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> {
+                    baseActivity.hideLoading()
                     isCardDisCalled = true
                     if (resource.data!!.success!!) {
                         if (resource.data.react.reaction.contains("dislike")) {
@@ -742,7 +867,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                         if (cardSwipeCount == 0) {
                             btn_settings.isEnabled = true
                         }
-                        if (baseActivity.sp.swipeCount % 20 == 0 && !baseActivity.sp.premium && !baseActivity.sp.deluxe) {
+                        if (baseActivity.sp.swipeCount % 20 == 0 && !baseActivity.sp.premium) {
                             showAd()
                         }
                     } else if (resource.data.error != null && resource.data.error.code.contains("401")) {
@@ -765,51 +890,53 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                                 cardStackView?.rewind()
                             }
 
-                            if (resource.data.swipesData != null && resource.data.swipesData.updatedAt != null) {
-                                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                                formatter.timeZone = TimeZone.getTimeZone("UTC")
-                                val result = formatter.parse(resource.data.swipesData.updatedAt.replace("T", " ").split("\\.").toTypedArray()[0])
-                                val calendar = Calendar.getInstance()
-                                calendar.time = result
-                                calendar.add(Calendar.HOUR_OF_DAY, 12)
-                                Log.e("Time here", calendar.time.toString())
-                                var hours = calendar.time.hours
-                                val min = calendar.time.minutes
-                                var am = "AM"
-                                if (hours >= 12) {
-                                    hours -= 12
-                                    am = "PM"
-                                }
-                                if (hours == 0) {
-                                    hours = 12
-                                    am = "AM"
-                                }
-                                timer = if (min < 10) {
-                                    "$hours:0$min $am"
-                                } else {
-                                    "$hours:$min $am"
-                                }
-                                baseActivity.sp.isDialogOpen = true
-                                if (!TextUtils.isEmpty(timer)) {
-                                    //CommonDialogs.PremuimPurChaseDialog(context, this)
-                                    CommonDialogs.DeluxePurChaseDialogWithMessage(context, this, "You have reached the likes limit. You can send more likes at $timer. Want unlimited likes? Subscribe below to BlackGentry Deluxe.")
-                                    /*  CommonDialogs.purchaseDialog(context, "BlackGentry Premium", "You have reached the likes limit. You can send more likes " +
-                                              "at $timer. Want unlimited likes? Subscribe below to BlackGentry Premium.", this)*/
+                            /* if (resource.data.swipesData != null && resource.data.swipesData.updatedAt != null) {
+                                 val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                                 formatter.timeZone = TimeZone.getTimeZone("UTC")
+                                 val result = formatter.parse(resource.data.swipesData.updatedAt.replace("T", " ").split("\\.").toTypedArray()[0])
+                                 val calendar = Calendar.getInstance()
+                                 calendar.time = result
+                                 calendar.add(Calendar.HOUR_OF_DAY, 12)
+                                 Log.e("Time here", calendar.time.toString())
+                                 var hours = calendar.time.hours
+                                 val min = calendar.time.minutes
+                                 var am = "AM"
+                                 if (hours >= 12) {
+                                     hours -= 12
+                                     am = "PM"
+                                 }
+                                 if (hours == 0) {
+                                     hours = 12
+                                     am = "AM"
+                                 }
+                                 timer = if (min < 10) {
+                                     "$hours:0$min $am"
+                                 } else {
+                                     "$hours:$min $am"
+                                 }
+                                 baseActivity.sp.isDialogOpen = true
+                                 if (!TextUtils.isEmpty(timer)) {
+                                     //CommonDialogs.PremuimPurChaseDialog(context, this)
+                                     CommonDialogs.DeluxePurChaseDialogWithMessage(context, this, "You have reached the likes limit. You can send more likes at $timer. Want unlimited likes? Subscribe below to BlackGentry Deluxe.")
+                                     *//*  CommonDialogs.purchaseDialog(context, "BlackGentry Premium", "You have reached the likes limit. You can send more likes " +
+                                              "at $timer. Want unlimited likes? Subscribe below to BlackGentry Premium.", this)*//*
                                 } else {
                                     Log.e("test", "test")
                                     baseActivity.sp.isDialogOpen = true
                                     //CommonDialogs.PremuimPurChaseDialog(context, this)
                                     CommonDialogs.DeluxePurChaseDialogWithMessage(context, this, "You have reached the likes limit. You can send more likes " + "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Deluxe.")
-                                    /* CommonDialogs.purchaseDialog(context, "BlackGentry Premium", "You have reached the likes limit. You can send more likes " +
-                                             "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Premium.", this)*/
+                                    *//* CommonDialogs.purchaseDialog(context, "BlackGentry Premium", "You have reached the likes limit. You can send more likes " +
+                                             "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Premium.", this)*//*
                                 }
                             } else {
                                 baseActivity.sp.isDialogOpen = true
                                 //CommonDialogs.PremuimPurChaseDialog(context, this)
                                 CommonDialogs.DeluxePurChaseDialogWithMessage(context, this, "You have reached the likes limit. You can send more likes " + "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Deluxe.")
-                                /*    CommonDialogs.purchaseDialog(context, "BlackGentry Premium", "You have reached the likes limit. You can send more likes " +
-                                            "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Premium.", this)*/
-                            }
+                                *//*    CommonDialogs.purchaseDialog(context, "BlackGentry Premium", "You have reached the likes limit. You can send more likes " +
+                                            "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Premium.", this)*//*
+                            }*/
+
+
                         } else {
                             baseActivity.showSnackbar(card_stack_view, resource.data.message)
                         }
@@ -821,6 +948,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                     }
                 }
                 Status.ERROR -> {
+                    baseActivity.hideLoading()
                     if (list.size == manager.topPosition) {
                         onCardDis()
                     }
@@ -848,6 +976,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> {
+                    baseActivity.hideLoading()
                     if (resource.data!!.success!!) {
                         (activity as HomeActivity).swipeCount--
                         val setting = RewindAnimationSetting.Builder()
@@ -864,6 +993,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                     }
                 }
                 Status.ERROR -> {
+                    baseActivity.hideLoading()
                     baseActivity.showSnackbar(card_stack_view, resource.message)
                 }
             }
@@ -876,6 +1006,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> if (resource.data!!.success) {
+                    baseActivity.hideLoading()
                     if (resource.data.error != null && resource.data.error.code.contains("401")) {
                         baseActivity.openActivityOnTokenExpire()
                     } else {
@@ -883,15 +1014,21 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                         val obj: ProfileOfUser = Gson().fromJson(user, ProfileOfUser::class.java)
                         baseActivity.sp.saveUserData(obj, baseActivity.sp.profileCompleted)
                         if (obj.visible == "True") {
-                            if (baseActivity.sp.verified == "Yes") {
-                                imageView.visibility = VISIBLE
+                            if (baseActivity.sp.status == Global.statusActive) {
+                                img_vip_star!!.isEnabled = true
+                                chat!!.isEnabled = true
+                                baseActivity.showLoading()
+                                // imageView.visibility = VISIBLE
                                 homeViewModel.getUserListRequest(baseActivity.sp.token)
+                            } else {
+                                img_vip_star!!.isEnabled = false
+                                chat!!.isEnabled = false
                             }
                         }
                     }
                 }
                 Status.ERROR -> {
-
+                    baseActivity.hideLoading()
                 }
             }
         })
@@ -1004,21 +1141,20 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                         baseActivity.openActivityOnTokenExpire()
                     } else {
                         if (resource.data.subscription != null) {
-                            var isSubscribed = resource.data.subscription.isDeluxe.equals("Yes", ignoreCase = true)
-                            if (!isSubscribed!!) {
-                                isSubscribed = resource.data.subscription.isPremium.equals("Yes", ignoreCase = true)
-                            }
+/*                            var isSubscribed = resource.data.subscription.isDeluxe.equals("Yes", ignoreCase = true)
+                            if (!isSubscribed!!) {*/
+                            val isSubscribed = resource.data.subscription.isPremium.equals("Yes", ignoreCase = true)
+                            //                          }
                             var productId: String = ""
                             if (isSubscribed) {
                                 productId = resource.data.subscription.subscriptionForUser.subscriptionId
                                 checkSubscription(isSubscribed, productId, resource.data.subscription.subscriptionForUser.purchaseToken)
                             }
-                        }
-                        else {
+                        } else {
                             /*if (baseActivity.sp.deluxe) {
                                 checkExistingSubscriptionDeluxe()
                             } else {*/
-                            Log.e(TAG, "subscribeModel:  " )
+                            Log.e(TAG, "subscribeModel:  ")
                             checkExistingSubscription()
                             //}
                         }
@@ -1083,31 +1219,6 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                 }
                 Status.ERROR -> {
                     baseActivity.hideLoading()
-                }
-            }
-        })
-        homeViewModel.addDeluxeResponse().observe(this, Observer { resource ->
-            if (resource == null) return@Observer
-            when (resource.status) {
-                Status.LOADING -> {
-                }
-                Status.SUCCESS -> {
-                    baseActivity.hideLoading()
-                    if (resource.data!!.success) {
-                        baseActivity.sp.savePremium(false)
-                        baseActivity.sp.saveDeluxe(true)
-                        baseActivity.showSnackbar(cardStackView, resource.data.message)
-                        /* tvPremium.setVisibility(View.INVISIBLE);
-                            tvUnlimitedView.setVisibility(View.INVISIBLE);*/
-                    } else if (resource.code == 401) {
-                        baseActivity.openActivityOnTokenExpire()
-                    } else {
-                        baseActivity.showSnackbar(cardStackView, "Something went wrong")
-                    }
-                }
-                Status.ERROR -> {
-                    baseActivity.hideLoading()
-                    baseActivity.showSnackbar(cardStackView, resource.message)
                 }
             }
         })
@@ -1349,9 +1460,9 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
      * check permission for location
      */
     private fun checkLocationPermission() {
-        if (imageView != null) {
-            imageView.visibility = VISIBLE
-        }
+        /* if (imageView != null) {
+             imageView.visibility = VISIBLE
+         }*/
         if (checkPermissionLOC()) {
             checkLocation()
         } else
@@ -1364,9 +1475,19 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
     @TargetApi(Build.VERSION_CODES.M)
     fun requestPermissionLOC() {
         // requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSION_REQUEST_CODE_LOC)
-        if (ActivityCompat.shouldShowRequestPermissionRationale(baseActivity, Manifest.permission.ACCESS_FINE_LOCATION)
-                && ActivityCompat.shouldShowRequestPermissionRationale(baseActivity, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSION_REQUEST_CODE_LOC)
+        if (ActivityCompat.shouldShowRequestPermissionRationale
+                (baseActivity,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                &&
+                ActivityCompat.shouldShowRequestPermissionRationale
+                (baseActivity,
+                        Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            requestPermissions(
+                    arrayOf
+                    (Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                    ),
+                    PERMISSION_REQUEST_CODE_LOC)
         } else {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSION_REQUEST_CODE_LOC)
         }
@@ -1398,12 +1519,12 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
 
     override fun onPause() {
         super.onPause()
-      /*  if (baseActivity.isNetworkConnected) {
-            baseActivity.isCardScreen = false
-            baseActivity.sp.saveFirstTime("false")
-            (activity as HomeActivity?)!!.cardList = arrayListOf<User>()
-            (activity as HomeActivity?)!!.cardList = list
-        }*/
+        /*  if (baseActivity.isNetworkConnected) {
+              baseActivity.isCardScreen = false
+              baseActivity.sp.saveFirstTime("false")
+              (activity as HomeActivity?)!!.cardList = arrayListOf<User>()
+              (activity as HomeActivity?)!!.cardList = list
+          }*/
     }
 
     /**
@@ -1482,9 +1603,10 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                 val user = baseActivity.sp.user
                 val obj = gson.fromJson(user, ProfileOfUser::class.java)
                 if (obj.visible.equals("True", ignoreCase = true)) {
+                    baseActivity.showLoading()
                     homeViewModel.getUserListRequest(baseActivity.sp.token)
                 } else {
-                    imageView.visibility = GONE
+                    // imageView.visibility = GONE
                     btn_unhide.visibility = VISIBLE
                     tvHideProfile.visibility = VISIBLE
                     cl_hide.visibility = VISIBLE
@@ -1511,7 +1633,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                 // Got last known location. In some rare situations this can be null.
                 if (currentLocation != null) {
                     val latLng: LatLng
-                    if (baseActivity != null && baseActivity.sp != null && baseActivity.sp.isLocation && baseActivity.sp.deluxe) {
+                    if (baseActivity != null && baseActivity.sp != null && baseActivity.sp.isLocation && baseActivity.sp.premium) {
                         Log.d(TAG, "getLocation: else")
                         val gson = Gson()
                         val user: String = baseActivity.sp.user
@@ -1588,11 +1710,12 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
      */
     private fun hitLocApi() {
         if (baseActivity != null) {
-            if (constraint_verify != null)
+            /*if (constraint_verify != null)
                 constraint_verify.visibility == GONE
+            */
             img_vip_star?.isEnabled = true
             chat?.isEnabled = true
-            img_filter?.isEnabled = true
+            rlFilter?.isEnabled = true
             val gson = Gson()
             val user = baseActivity.sp.user
             val obj = gson.fromJson(user, ProfileOfUser::class.java)
@@ -1603,31 +1726,32 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                 baseActivity.sp.saveUserData(obj, baseActivity.sp.profileCompleted)
                 homeViewModel.sendLatLong(LocationModel(lat, lng))
                 if (obj.visible == "True") {
-                    if (baseActivity.sp.verified == "Yes") {
+                    if (baseActivity.sp.status == Global.statusActive) {
                         btn_unhide.visibility = GONE
                         tvHideProfile.visibility = GONE
                         cardStackView!!.visibility = GONE
                     } else {
-                        if (!baseActivity.sp.isRejected) {
-                            constraint_verify.visibility = VISIBLE
-                            tvProfileReject.visibility = GONE
-                        } else {
-                            tvProfileReject.visibility = VISIBLE
-                            constraint_verify.visibility = GONE
-                        }
-                        imageView.visibility = GONE
+                        /* if (!baseActivity.sp.isRejected) {
+                             constraint_verify.visibility = VISIBLE
+                             tvProfileReject.visibility = GONE
+                         } else {
+                             tvProfileReject.visibility = VISIBLE
+                             constraint_verify.visibility = GONE
+                         }*/
+                        // imageView.visibility = GONE
                         clView.visibility = GONE
                         img_vip_star?.isEnabled = false
                         rewind?.isEnabled = false
                         chat?.isEnabled = false
-                        img_filter?.isEnabled = false
+                        rlFilter?.isEnabled = true
                     }
                 } else {
-                    imageView.visibility = GONE
+                    // imageView.visibility = GONE
                     btn_unhide.visibility = VISIBLE
                     tvHideProfile.visibility = VISIBLE
                     cl_hide.visibility = VISIBLE
                     btn_unhide.setOnClickListener {
+                        baseActivity.showLoading()
                         homeViewModel.settingsRequest(SettingsRequestModel("True",
                                 if (obj.matchNotify == "on") "On" else "Off", if (obj.emailNotify == "on") "On" else "Off", if (obj.reactionNotify == "on") "On" else "Off", if (obj.expiredMatches == "on") "On" else "Off",
                                 if (obj.chatNotify == "on") "On" else "Off", obj.maxAgePrefer, obj.minAgePrefer, obj.distance.toInt()))
@@ -1678,6 +1802,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                         Log.e("manager pos", "1441  " + manager.topPosition)
                         Log.e("manager pos", "1441  " + list[manager.topPosition - 1].id)
                         cardId = list[manager.topPosition - 1].id
+                        baseActivity.showLoading()
                         homeViewModel.getUserReactRequest1(ReactRequestModel("like", list[manager.topPosition - 1].id))
                         if (rewind != null) {
                             handleDirection = Direction.Right
@@ -1709,6 +1834,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                         } else {
                             if (list.isNotEmpty() && list.size >= manager.topPosition) {
                                 cardId = list[manager.topPosition - 1].id
+                                baseActivity.showLoading()
                                 homeViewModel.getUserReactRequest1(ReactRequestModel("dislike", list[manager.topPosition - 1].id))
                                 handleDirection = Direction.Left
                                 rewind.isEnabled = true
@@ -1752,7 +1878,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
     override fun onCardAppeared(view: View, position: Int) {
         try {
             clView.visibility = VISIBLE
-            imageView.visibility = GONE
+            // imageView.visibility = GONE
             cancel.isEnabled = true
             superlike.isEnabled = true
             love.isEnabled = true
@@ -1767,8 +1893,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                 img_vip_star?.isEnabled = true
             if (chat != null)
                 chat?.isEnabled = true
-            if (img_filter != null)
-                img_filter?.isEnabled = true
+            if (rlFilter != null)
+                rlFilter?.isEnabled = true
         } catch (e: Exception) {
         }
     }
@@ -1787,7 +1913,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                     love.isEnabled = false
                     btn_settings.isEnabled = true
                     if (obj.visible == "True") {
-                        imageView.visibility = VISIBLE
+                        baseActivity.showLoading()
+                        // imageView.visibility = VISIBLE
                         homeViewModel.getUserListRequest((activity as HomeActivity).sp.token)
                     }
                 }
@@ -1806,7 +1933,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
         love.isEnabled = false
         btn_settings.isEnabled = true
         if (obj.visible == "True") {
-            imageView.visibility = VISIBLE
+            baseActivity.showLoading()
+            // imageView.visibility = VISIBLE
             homeViewModel.getUserListRequest((activity as HomeActivity).sp.token)
         }
     }
@@ -1820,15 +1948,16 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
         if (list.isEmpty()) {
             img_vip_star?.isEnabled = false
             chat?.isEnabled = false
-            img_filter?.isEnabled = false
+            rlFilter?.isEnabled = false
             tvNoMatch.visibility = VISIBLE
             btn_settings.visibility = VISIBLE
-            imageView.visibility = GONE
+            clView.visibility = GONE
+            // imageView.visibility = GONE
         } else {
             clView.visibility = View.VISIBLE
             img_vip_star?.isEnabled = true
             chat?.isEnabled = true
-            img_filter?.isEnabled = true
+            rlFilter?.isEnabled = true
             tvNoMatch.visibility = GONE
             btn_settings.visibility = GONE
             cardStackView!!.visibility = VISIBLE
@@ -1876,13 +2005,15 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
             percent = baseActivity.sp.profileCompleted.toDouble()
         else
             baseActivity.openActivityOnTokenExpire()
-        /* img_filter?.setOnClickListener {
-             if (percent >= 75) {
-                 startActivityForResult(Intent(mContext, ChatWindow::class.java), 6565)
-                 baseActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-             } else baseActivity.showSnackbar(img_filter, context!!.resources.getString(R.string.less_than_75))
+        rlFilter?.setOnClickListener {
+            showDistanceBottomsheet()
+/*
+            if (percent >= 75) {
+                showDistanceBottomsheet()
+            } else baseActivity.showSnackbar(rlFilter, context!!.resources.getString(R.string.less_than_75))
+*/
 
-         }*/
+        }
         val dislike = view?.findViewById<View>(R.id.cancel)
         dislike?.setOnClickListener {
             //isMySwiped = false
@@ -1906,6 +2037,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                     if (list.isNotEmpty() && list.size > manager.topPosition) {
                         cardId = list[manager.topPosition].id
                         Log.d(TAG, "setupButton: 1802   " + cardId)
+                        baseActivity.showLoading()
                         homeViewModel.getUserReactRequest(ReactRequestModel("dislike", list[manager.topPosition].id))
                         handleDirection = Direction.Left
                         rewind.isEnabled = true
@@ -1925,17 +2057,18 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
 
         val rewind = view?.findViewById<View>(R.id.rewind)
         rewind?.setOnClickListener {
-            if (baseActivity.sp.deluxe || baseActivity.sp.premium) {
-                //baseActivity.showSnackBar(card_stack_view, "Rewinding...")
+            if (baseActivity.sp.premium) {
+                baseActivity.showLoading()
                 homeViewModel.rewindRequest(cardId.toString())
             } else {
-                CommonDialogs.DeluxePurChaseDialog(mActivity, this)
+                CommonDialogs.PremuimPurChaseDialog(mActivity, this, baseActivity.sp)
             }
-
         }
 
         chat?.setOnClickListener {
-            if (percent >= 75) {
+            baseActivity.showSnackbar(cardStackView, "Not included in this module")
+
+           /* if (percent >= 75) {
                 if (linear.visibility == VISIBLE) {
                     card_stack_view.visibility = VISIBLE
                     superlike2?.visibility = GONE
@@ -1962,7 +2095,9 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                     handleDirection = Direction.Top
                 } else
                     baseActivity.showSnackbar(cardStackView, context!!.resources.getString(R.string.less_than_75))
-            }
+            }*/
+
+
         }
 
         like?.setOnClickListener {
@@ -1979,6 +2114,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                 isLiked = false
                 if (list.size > manager.topPosition) {
                     cardId = list[manager.topPosition].id
+                    baseActivity.showLoading()
                     homeViewModel.getUserReactRequest(ReactRequestModel("like", list[manager.topPosition].id))
                     if (rewind != null) {
                         handleDirection = Direction.Right
@@ -2018,8 +2154,9 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                         val user1 = baseActivity.sp.user
                         val obj1 = gson1.fromJson(user1, ProfileOfUser::class.java)
                         if (obj1.superLikesCount > 0 && list.size > manager.topPosition) {
-                            cardId = list.get(manager.topPosition).id
-                            homeViewModel.getUserReactRequest(ReactRequestModel("superlike", list.get(manager.topPosition).id))
+                            cardId = list[manager.topPosition].id
+                            baseActivity.showLoading()
+                            homeViewModel.getUserReactRequest(ReactRequestModel("superlike", list[manager.topPosition].id))
                             obj1.superLikesCount = obj1.superLikesCount - 1
                             baseActivity.sp.saveUserData(obj1, baseActivity.sp.profileCompleted)
                             if (rewind != null) {
@@ -2053,8 +2190,11 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
 
         val btnSettings = view?.findViewById<Button>(R.id.btn_settings)
         btnSettings?.setOnClickListener {
-            startActivityForResult(Intent(context, SettingsActivity::class.java)
-                    .putExtra("isCardScreen", true), 20000)
+
+            showDistanceBottomsheet()
+            /* startActivityForResult(Intent(context, SettingsActivity::class.java)
+                     .putExtra("isCardScreen", true), 20000)
+             */
         }
 
     }
@@ -2094,25 +2234,24 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
          */
         Toast.makeText(context, "Item Purchased", Toast.LENGTH_LONG).show()
         mActivity.showLoading()
-        if (tokenSType.equals("crushToken", ignoreCase = true)) {
-            bp!!.consumePurchase(productId)
-            homeViewModel.addSuperLikeRequest(SuperLikeCountModel(selectedPosition, price))
-        } else if (tokenSType.equals("vipToken", ignoreCase = true)) {
-            bp!!.consumePurchase(productId)
-            homeViewModel.addVipToken(VipTokenRequestModel(selectedPosition, price))
-        } else if (tokenSType.equals("PremiumPurchase", ignoreCase = true)) {
-            bp!!.consumePurchase(productId)
-            homeViewModel.addPremiumRequest(PremiumTokenCountModel("1", productId, price, productId!!.split("_").toTypedArray()[1].toInt(), details!!.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
-                    details.purchaseInfo.purchaseData.purchaseState.toString()))
-        } else if (tokenSType.equals("DeluxePurChase", ignoreCase = true)) {
-            bp!!.consumePurchase(productId)
-            homeViewModel.addDeluxeRequest(DeluxeTokenCountModel("2", productId,
-                    price,
-                    selectedPosition,
-                    details!!.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
-                    details.purchaseInfo.purchaseData.purchaseState.toString()))
+        when {
+            tokenSType.equals("crushToken", ignoreCase = true) -> {
+                bp!!.consumePurchase(productId)
+                baseActivity.showLoading()
+                homeViewModel.addSuperLikeRequest(SuperLikeCountModel(selectedPosition, price))
+            }
+            tokenSType.equals("vipToken", ignoreCase = true) -> {
+                bp!!.consumePurchase(productId)
+                baseActivity.showLoading()
+                homeViewModel.addVipToken(VipTokenRequestModel(selectedPosition, price))
+            }
+            tokenSType.equals("PremiumPurchase", ignoreCase = true) -> {
+                bp!!.consumePurchase(productId)
+                baseActivity.showLoading()
+                homeViewModel.addPremiumRequest(PremiumTokenCountModel("1", productId, price, productId!!.split("_").toTypedArray()[2].toInt(), details!!.purchaseInfo.purchaseData.orderId,
+                        details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
+                        details.purchaseInfo.purchaseData.purchaseState.toString()))
+            }
         }
     }
 
@@ -2127,7 +2266,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
         /*
          * Called when BillingProcessor was initialized and it's ready to purchase
          */
-        if (CommonDialogs.vipTokenPriceList.size == 0 || CommonDialogs.timeTokenPriceList.size == 0 || CommonDialogs.crushTokenPriceList.size == 0 || CommonDialogs.PremiumPriceList.size == 0 || CommonDialogs.DeluxePriceList.size == 0) {
+        if (CommonDialogs.vipTokenPriceList.size == 0 || CommonDialogs.timeTokenPriceList.size == 0 || CommonDialogs.crushTokenPriceList.size == 0 || CommonDialogs.PremiumPriceList.size == 0) {
             CommonDialogs.onBillingInitialized(bp)
         }
         CommonDialogs.setBilling(bp)
@@ -2192,61 +2331,47 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
         (dialog.findViewById<View>(R.id.tv_behave) as TextView).paint.maskFilter = mm4
         lls[0] = dialog.findViewById(R.id.ll_photo)
         lls[1] = dialog.findViewById(R.id.ll_content)
-        lls[2] = dialog.findViewById(R.id.ll_age)
+        lls[2] = dialog.findViewById(R.id.ll_behave)
         lls[3] = dialog.findViewById(R.id.ll_stolen)
-        lls[4] = dialog.findViewById(R.id.ll_behave)
+        lls[4] = dialog.findViewById(R.id.ll_age)
         lls[5] = dialog.findViewById(R.id.ll_other)
-        val btn_submit = dialog.findViewById<Button>(R.id.btn_submit)
-        //lls[0]?.setBackground(mActivity.getDrawable(R.drawable.img_rectangle_outline))
-        //lls[0]?.getBackground()?.setColorFilter(mActivity.resources.getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP)
+        val btnSubmit: Button = dialog.findViewById<Button>(R.id.btn_submit)
+        btnSubmit.setOnClickListener(OnClickListener {
+            Log.e(TAG, "OnReportClick: cancel ")
+            dialog.dismiss()
+        })
+
         for (i in lls.indices) {
             lls[i]?.setOnClickListener(OnClickListener { v: View? ->
                 pos = i
-                btn_submit.setEnabled(true)
-                btn_submit.setBackground(mActivity.getDrawable(R.drawable.gradientbtn))
-                for (j in lls.indices) {
-                    lls[j]?.background = mActivity.getDrawable(R.drawable.rounded_sheet)
-                    lls[j]?.background?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
+                if (i == 5) {
+                    dialog.dismiss()
+                    showOtherDialog(dialog, id)
+                } else {
+                    var reason = ""
+                    baseActivity.showLoading()
+                    baseActivity.hideKeyboard()
+                    when (pos) {
+                        0 -> {
+                            reason = "Inappropriate Photos"
+                        }
+                        1 -> {
+                            reason = "Inappropriate Content"
+                        }
+                        2 -> {
+                            reason = "Inappropriate Behaviour"
+                        }
+                        3 -> {
+                            reason = "Stolen Photo"
+                        }
+                        4 -> {
+                            reason = "Under 18"
+                        }
+                    }
+                    dialog.dismiss()
+                    homeViewModel.reportRequest(ReportRequestModel(id, reason))
                 }
-                lls[i]?.background = mActivity.getDrawable(R.drawable.img_rectangle_outline)
-                lls[i]?.background?.setColorFilter(mActivity.resources.getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP)
-                if (i == 5) showOtherDialog(dialog, id)
-
             })
-        }
-
-        val img_cancel = dialog.findViewById<ImageView>(R.id.img_cancel)
-        img_cancel.setOnClickListener { v: View? -> dialog.dismiss() }
-
-        btn_submit.setOnClickListener { v: View? ->
-            dialog.dismiss()
-            var reason = ""
-            // baseActivity.showLoading()
-            baseActivity.hideKeyboard()
-            if (pos < 0) {
-                Toast.makeText(context, "Please select the reason for report", Toast.LENGTH_LONG).show()
-            } else {
-                when (pos) {
-                    0 -> {
-                        reason = "Inappropriate Photos"
-                    }
-                    1 -> {
-                        reason = "Inappropriate Content"
-                    }
-                    2 -> {
-                        reason = "Inappropriate Behaviour"
-                    }
-                    3 -> {
-                        reason = "Stolen Photo"
-                    }
-                    4 -> {
-                        reason = "Under 18"
-                    }
-
-                }
-                homeViewModel.reportRequest(ReportRequestModel(id, reason))
-            }
-
         }
     }
 
@@ -2265,7 +2390,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
         val ivCross = dialog.findViewById<ImageView>(R.id.ivcross)
         val btnOk = dialog.findViewById<Button>(R.id.btn_ok)
         tvMessage.text = this.resources.getString(R.string.reasontoReport)
-
+        btnOk.text = "Report"
         ivCross.setOnClickListener {
             baseActivity.hideKeyboardFromView(etReason)
             dialog.dismiss()
@@ -2292,43 +2417,43 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
     override fun onClickToken(tokenType: String, tokensNum: Int, selectedPos: Int) {
         tokenSType = tokenType
         selectedPosition = tokensNum
-        if (tokenType.equals("crushToken", ignoreCase = true)) {
-            price = CommonDialogs.crushTokenPriceList.get(selectedPos).getPriceValue();
-            productId = CommonDialogs.crushTokenArr[selectedPos];
-            //homeViewModel.addSuperLikeRequest(new SuperLikeCountModel(tokensNum, price));
-        } else if (tokenType.equals("vipToken", ignoreCase = true)) {
-            price = CommonDialogs.vipTokenPriceList.get(selectedPos).getPriceValue();
-            productId = CommonDialogs.vipTokenArr[selectedPos];
-            //homeViewModel.addVipToken(new VipTokenRequestModel(tokensNum, price));
-        } else if (tokenType.equals("PremiumPurchase", ignoreCase = true)) {
-            val dialog = Dialog(mActivity)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            Objects.requireNonNull(dialog.window)?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.setContentView(R.layout.dialog_two_button)
-            dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(false)
-            val window = dialog.window
-            window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            dialog.show()
-            val tv_message = dialog.findViewById<TextView>(R.id.tv_message)
-            val tv_yes = dialog.findViewById<TextView>(R.id.tv_yes)
-            val tv_no = dialog.findViewById<TextView>(R.id.tv_no)
-            tv_message.text = getString(R.string.premium_note_txt)
-            tv_yes.setOnClickListener { v: View? ->
-                price = CommonDialogs.PremiumPriceList[selectedPos].priceValue
-                productId = CommonDialogs.PremiumArr[selectedPos]
-                bp!!.subscribe(mActivity, productId)
-                CommonDialogs.dismiss()
-                dialog.dismiss()
+        when {
+            tokenType.equals("crushToken", ignoreCase = true) -> {
+                price = CommonDialogs.crushTokenPriceList[selectedPos].priceValue;
+                productId = CommonDialogs.crushTokenArr[selectedPos];
+                //homeViewModel.addSuperLikeRequest(new SuperLikeCountModel(tokensNum, price));
             }
-            tv_no.setOnClickListener { view: View? -> dialog.dismiss() }
-        } else if (tokenType.equals("DeluxePurChase", ignoreCase = true)) {
-            price = CommonDialogs.DeluxePriceList.get(selectedPos).getPriceValue();
-            productId = CommonDialogs.DeluxeArr[selectedPos];
-            bp?.subscribe(mActivity, productId);
+            tokenType.equals("vipToken", ignoreCase = true) -> {
+                price = CommonDialogs.vipTokenPriceList[selectedPos].priceValue;
+                productId = CommonDialogs.vipTokenArr[selectedPos];
+                //homeViewModel.addVipToken(new VipTokenRequestModel(tokensNum, price));
+            }
+            tokenType.equals("PremiumPurchase", ignoreCase = true) -> {
+                val dialog = Dialog(mActivity)
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                Objects.requireNonNull(dialog.window)?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                dialog.setContentView(R.layout.dialog_two_button)
+                dialog.setCancelable(false)
+                dialog.setCanceledOnTouchOutside(false)
+                val window = dialog.window
+                window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                dialog.show()
+                val tv_message = dialog.findViewById<TextView>(R.id.tv_message)
+                val tv_yes = dialog.findViewById<TextView>(R.id.tv_yes)
+                val tv_no = dialog.findViewById<TextView>(R.id.tv_no)
+                tv_message.text = getString(R.string.premium_note_txt)
+                tv_yes.setOnClickListener { v: View? ->
+                    price = CommonDialogs.PremiumPriceList[selectedPos].priceValue
+                    productId = CommonDialogs.PremiumArr[selectedPos]
+                    bp!!.subscribe(mActivity, productId)
+                    CommonDialogs.dismiss()
+                    dialog.dismiss()
+                }
+                tv_no.setOnClickListener { view: View? -> dialog.dismiss() }
+            }
         }
-        if (!tokenType.equals("PremiumPurchase", ignoreCase = true) && !tokenType.equals("DeluxePurChase", ignoreCase = true)) {
-            bp?.purchase(getActivity(), productId);
+        if (!tokenType.equals("PremiumPurchase", ignoreCase = true)) {
+            bp?.purchase(activity, productId);
         }
 
     }
@@ -2347,5 +2472,32 @@ class FindMatchFragment : BaseFragment(), CardStackListener, ReportInterface, On
                 tv_likeCount?.text = "0"
             }
         }
+    }
+
+    override fun onSuccessFilter(filterRequestResponse: FilterResponse?) {
+        baseActivity.hideLoading()
+        if (filterRequestResponse != null && filterRequestResponse.success) {
+            val resObj = filterRequestResponse.settings
+            Log.e(TAG, "onSuccessFilter: $filterRequestResponse")
+            filterRequest?.interested = resObj?.interested
+            filterRequest?.distance = resObj?.distance
+            filterRequest?.minAgePrefer = resObj?.minAgePrefer
+            filterRequest?.maxAgePrefer = resObj?.maxAgePrefer
+            baseActivity.sp.saveFilterModel(filterRequest)
+            if (baseActivity.sp.status == Global.statusActive) {
+                baseActivity.showLoading()
+                // imageView.visibility = VISIBLE
+                homeViewModel.getUserListRequest(baseActivity.sp.token)
+            }
+
+        } else {
+            baseActivity.showSnackbar(like, filterRequestResponse?.message)
+        }
+    }
+
+    override fun onError(error: String?) {
+        baseActivity.hideLoading()
+        baseActivity.showSnackbar(like, error)
+        Log.e(TAG, "onError: ")
     }
 }

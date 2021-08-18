@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.swiftdating.app.model.requestmodel.ApplyVipTokenRequest;
 import com.swiftdating.app.model.requestmodel.DeluxeTokenCountModel;
+import com.swiftdating.app.model.requestmodel.FilterRequest;
 import com.swiftdating.app.model.requestmodel.MessageListRequestModel;
 import com.swiftdating.app.model.requestmodel.LocationModel;
 import com.swiftdating.app.model.requestmodel.AnswerProfileRequest;
@@ -43,6 +44,7 @@ import com.swiftdating.app.model.requestmodel.createaccountmodel.CreateAccountSm
 import com.swiftdating.app.model.requestmodel.createaccountmodel.CreateAccoutAboutModel;
 import com.swiftdating.app.model.requestmodel.createaccountmodel.CreateAccoutAmbitionModel;
 import com.swiftdating.app.model.requestmodel.createaccountmodel.CreateAccoutLookingModel;
+import com.swiftdating.app.model.responsemodel.FilterResponse;
 import com.swiftdating.app.model.responsemodel.PhoneLoginResponse;
 import com.swiftdating.app.model.responsemodel.VerificationResponseModel;
 
@@ -403,4 +405,11 @@ public interface ApiUtils {
 
     @DELETE("matches/resetSkippedProfiles")
     Call<ResponseBody> resetAllSkippedProfile(@Header("Authorization") String header);
+
+    @GET("filters")
+    Call<ResponseBody> getFilters(@Header("Authorization") String header);
+
+    @PUT("filters")
+    Call<FilterResponse> setFilters(@Header("Authorization") String header, @Body HashMap<String, Object> map);
+
 }

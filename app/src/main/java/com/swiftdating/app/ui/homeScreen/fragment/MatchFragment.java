@@ -47,6 +47,7 @@ import java.util.Objects;
 
 import com.swiftdating.app.callbacks.OnItemClickListenerType;
 import com.swiftdating.app.common.CommonDialogs;
+import com.swiftdating.app.common.Global;
 import com.swiftdating.app.data.network.CallServer;
 import com.swiftdating.app.model.requestmodel.DeluxeTokenCountModel;
 import com.swiftdating.app.ui.base.BaseActivity;
@@ -235,7 +236,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                         break;
                     case ERROR:
                         getBaseActivity().hideLoading();
-                        if (getBaseActivity().sp.getVerified().equalsIgnoreCase("Yes"))
+                        if (getBaseActivity().sp.getStatus().equalsIgnoreCase(Global.statusActive))
                             getBaseActivity().showSnackbar(rv_new_matches, resource.message);
                         break;
                 }

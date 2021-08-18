@@ -1067,51 +1067,27 @@ public class CommonDialogs {
         Window window = dialog.getWindow();
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         LinearLayout[] lls = new LinearLayout[6];
-        clearTextViewTxt(((TextView) dialog.findViewById(R.id.tv_photo)));
-        clearTextViewTxt(((TextView) dialog.findViewById(R.id.tv_content)));
-        clearTextViewTxt(((TextView) dialog.findViewById(R.id.tv_behave)));
-        clearTextViewTxt(((TextView) dialog.findViewById(R.id.tv_stolen)));
-        clearTextViewTxt(((TextView) dialog.findViewById(R.id.tv_age)));
-        clearTextViewTxt(((TextView) dialog.findViewById(R.id.tv_other)));
-       /* ((TextView) dialog.findViewById(R.id.tv_photo)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        MaskFilter mm = ((TextView) dialog.findViewById(R.id.tv_photo)).getPaint().setMaskFilter(null);
-        ((TextView) dialog.findViewById(R.id.tv_photo)).getPaint().setMaskFilter(mm);*/
         lls[0] = dialog.findViewById(R.id.ll_photo);
         lls[1] = dialog.findViewById(R.id.ll_content);
         lls[2] = dialog.findViewById(R.id.ll_age);
         lls[3] = dialog.findViewById(R.id.ll_stolen);
         lls[4] = dialog.findViewById(R.id.ll_behave);
         lls[5] = dialog.findViewById(R.id.ll_other);
-        Button btn_submit = dialog.findViewById(R.id.btn_submit);
-        //lls[0].setBackground(mActivity.getDrawable(R.drawable.img_rectangle_outline));
-        //lls[0].getBackground().setColorFilter(mActivity.getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        dialog.findViewById(R.id.btn_submit).setOnClickListener(view -> dialog.dismiss());
 
         for (int i = 0; i < lls.length; i++) {
             int k = i;
             lls[i].setOnClickListener(v -> {
                 finalI = k;
-                btn_submit.setEnabled(true);
-                btn_submit.setBackground(mActivity.getDrawable(R.drawable.gradientbtn));
-                for (int j = 0; j < lls.length; j++) {
-                    lls[j].setBackground(mActivity.getDrawable(R.drawable.rounded_sheet));
-                    lls[j].getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-                }
-                lls[finalI].setBackground(mActivity.getDrawable(R.drawable.img_rectangle_outline));
-                lls[finalI].getBackground().setColorFilter(mActivity.getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+
                 if (k == 5)
                     click.callDefaultDialog(k);
+
+                click.callDefaultDialog(finalI);
+
             });
         }
 
-        ImageView img_cancel = dialog.findViewById(R.id.img_cancel);
-        btn_submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                click.callDefaultDialog(finalI);
-            }
-        });
-        img_cancel.setOnClickListener(v -> dialog.dismiss());
     }
 
     private static void clearTextViewTxt(TextView viewById) {

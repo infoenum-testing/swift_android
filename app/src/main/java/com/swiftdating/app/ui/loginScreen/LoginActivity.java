@@ -236,12 +236,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         sp.saveToken("bearer " + data.getToken(), String.valueOf(data.getUser().getProfileOfUser().getUserId()), true);
         if (data.getImagedata() != null)
             sp.saveUserImage(data.getImagedata().getData());
-        if (data.getUser().getSelfiesForUser() != null &&
-                data.getUser().getSelfiesForUser().getSelfieUrl() != null) {
+        if (data.getUser().getSelfiesForUser() != null &&data.getUser().getSelfiesForUser().getSelfieUrl() != null) {
             sp.saveSelfie(data.getUser().getSelfiesForUser().getSelfieUrl());
-            sp.saveVerified(data.getUser().getIsVerified());
+           // sp.saveVerified(data.getUser().getIsVerified());
         }
-        sp.saveVerified(data.getUser().getIsVerified());
+        sp.saveStatus(data.getUser().getStatus());
         //     sp.saveIsRejected(data.getUser().getisRejected().equals("1"));
         Intent i;
         if (TextUtils.isEmpty(data.getUser().getProfileOfUser().getName())) {

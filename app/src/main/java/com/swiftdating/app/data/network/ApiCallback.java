@@ -1,6 +1,8 @@
 package com.swiftdating.app.data.network;
 
 
+import com.swiftdating.app.model.requestmodel.FilterRequest;
+import com.swiftdating.app.model.responsemodel.FilterResponse;
 import com.swiftdating.app.model.responsemodel.PhoneLoginResponse;
 import com.swiftdating.app.model.responsemodel.VerificationResponseModel;
 import com.swiftdating.app.model.responsemodel.WhoLikedYouReponce;
@@ -51,5 +53,10 @@ public interface ApiCallback {
         void onSuccessDislikedList(WhoLikedYouReponce response);
 
         void onErrorNoDeluxe(String errorMessage);
+    }
+
+
+     interface FilterCallBack extends BaseInterFace {
+        void onSuccessFilter(FilterResponse filterRequest);
     }
 }

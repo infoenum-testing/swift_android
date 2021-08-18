@@ -31,6 +31,7 @@ import java.util.List;
 import com.swiftdating.app.R;
 import com.swiftdating.app.common.CommonDialogs;
 import com.swiftdating.app.common.CommonUtils;
+import com.swiftdating.app.common.Global;
 import com.swiftdating.app.common.MyProgressDialog;
 import com.swiftdating.app.data.network.ApiCall;
 import com.swiftdating.app.data.network.ApiCallback;
@@ -210,7 +211,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
             }
         }
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-        if (getBaseActivity().sp.getVerified().equalsIgnoreCase("Yes")) {
+        if (getBaseActivity().sp.getStatus().equalsIgnoreCase(Global.statusActive)) {
             recycle.setVisibility(View.GONE);
             if (getBaseActivity().sp.getFilterModel() == null) {
                 isFilterApply = false;

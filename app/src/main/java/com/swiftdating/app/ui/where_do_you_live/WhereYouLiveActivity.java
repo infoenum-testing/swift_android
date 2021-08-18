@@ -114,7 +114,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
         constraint_main = findViewById(R.id.constraint_main);
         tv_addres = findViewById(R.id.tv_addres);
         ImageView image_back = findViewById(R.id.image_back);
-        CardView cardSearch = findViewById(R.id.cardSearch);
+        LinearLayout cardSearch = findViewById(R.id.llcardSearch);
 
         Button btn_save_loc = findViewById(R.id.btn_save_loc);
         Button btn_set_crt_loc = findViewById(R.id.btn_set_crt_loc);
@@ -226,7 +226,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
             case R.id.image_back:
                 finish();
                 break;
-            case R.id.cardSearch:
+            case R.id.llcardSearch:
                 ActionPlacesAPI();
                 break;
             case R.id.btn_save_loc:

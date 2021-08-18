@@ -1,6 +1,253 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <ImageView
+        android:id="@+id/ivClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10sdp"
+        android:src="@drawable/ic_cancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:fontFamily="@font/medium"
+        android:gravity="center"
+        android:text="Card Filter"
+        android:textColor="@color/title_color"
+        android:textSize="@dimen/_16ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/distance"
+        style="@style/edit_profile_title_style"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:text="Distance"
+        app:layout_constraintBottom_toTopOf="@+id/seek_distance"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivClose" />
+
+    <TextView
+        android:id="@+id/tvDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:fontFamily="@font/medium"
+        android:textAllCaps="false"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintBottom_toTopOf="@+id/seek_distance"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <com.warkiz.widget.IndicatorSeekBar
+        android:id="@+id/seek_distance"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        app:isb_max="500"
+        app:isb_min="20"
+        app:isb_progress_value_float="false"
+        app:isb_seek_smoothly="true"
+        app:isb_show_indicator="none"
+        app:isb_show_thumb_text="false"
+        app:isb_show_tick_texts="false"
+        app:isb_thumb_color="@color/white"
+        app:isb_thumb_drawable="@drawable/thumb"
+        app:isb_thumb_size="@dimen/_30sdp"
+        app:isb_track_background_color="@color/grey_new"
+        app:isb_track_background_size="5dp"
+        app:isb_track_progress_color="@color/pink"
+        app:isb_track_progress_size="4dp"
+        app:isb_track_rounded_corners="true"
+        app:layout_constraintBottom_toTopOf="@+id/txtGender" />
+
+
+    <TextView
+        android:id="@+id/txtGender"
+        style="@style/edit_profile_title_style"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:text="Gender"
+        app:layout_constraintBottom_toTopOf="@+id/tgGender"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/tgGender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        app:layout_constraintBottom_toTopOf="@+id/ageRange"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <RadioButton
+            android:id="@+id/tbMale"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_filter_sheet"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:fontFamily="@font/medium"
+            android:gravity="center"
+            android:text="@string/man"
+            android:textAllCaps="false"
+            android:textColor="@drawable/selector_filter_sheet"
+            android:textSize="@dimen/_12ssp"
+
+            />
+
+        <RadioButton
+            android:id="@+id/femaleTb"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_filter_sheet"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:fontFamily="@font/medium"
+            android:gravity="center"
+            android:text="@string/Woman"
+            android:textAllCaps="false"
+            android:textColor="@drawable/selector_filter_sheet"
+            android:textSize="@dimen/_12ssp" />
+
+
+        <RadioButton
+            android:id="@+id/otherTb"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_filter_sheet"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:fontFamily="@font/medium"
+            android:gravity="center"
+            android:text="@string/everyone"
+            android:textAllCaps="false"
+            android:textColor="@drawable/selector_filter_sheet"
+            android:textSize="@dimen/_12ssp" />
+
+    </RadioGroup>
+
+
+    <TextView
+        android:id="@+id/ageRange"
+        style="@style/edit_profile_title_style"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:text="Age Range"
+        app:layout_constraintBottom_toTopOf="@+id/seek_age_range"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvAgeRange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:fontFamily="@font/medium"
+        android:paddingTop="@dimen/_10sdp"
+        android:textAllCaps="false"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintBottom_toTopOf="@+id/seek_age_range"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <com.swiftdating.app.common.RangeSeekBar
+        android:id="@+id/seek_age_range"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        app:activeColor="@color/pink"
+        app:barHeight="4dp"
+        app:defaultColor="@color/grey_new"
+        app:layout_constraintBottom_toTopOf="@+id/btnReset"
+        app:thumbNormal="@drawable/thumb"
+        app:thumbPressed="@drawable/thumb" />
+
+
+    <Button
+        android:id="@+id/btnReset"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_15sdp"
+        android:background="@drawable/white_bg"
+        android:elevation="@dimen/_10sdp"
+        android:fontFamily="@font/medium"
+        android:paddingStart="@dimen/_20sdp"
+        android:paddingTop="@dimen/_5sdp"
+        android:paddingEnd="@dimen/_20sdp"
+        android:paddingBottom="@dimen/_5sdp"
+        android:text="Reset"
+        android:textAllCaps="false"
+        android:textColor="@color/pink"
+        android:textSize="@dimen/_17ssp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/space"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnApply"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnReset" />
+
+    <Button
+        android:id="@+id/btnApply"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_15sdp"
+        android:background="@drawable/vip_token_btn_bg"
+        android:fontFamily="@font/medium"
+        android:paddingStart="@dimen/_20sdp"
+        android:paddingTop="@dimen/_5sdp"
+        android:paddingEnd="@dimen/_20sdp"
+        android:paddingBottom="@dimen/_5sdp"
+        android:text="Apply"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_17ssp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/space" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

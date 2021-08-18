@@ -34,15 +34,6 @@
     <color name="yellow_end">#FDC800</color>
     <color name="card_border_color">#E1E1E1</color>
     <color name="profile_txt_color">#585858</color>
-
-
-
-
-
-
-
-
-
-    05C7FD
+    <color name="filter_btn_color">#E3E3E3</color>
 
 </resources>

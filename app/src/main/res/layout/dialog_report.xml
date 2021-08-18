@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,8 +14,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#FAFAFA"
-            android:background="@drawable/koloda_card_view_background">
+            android:background="@drawable/koloda_card_view_background"
+            android:backgroundTint="@color/white">
 
 
             <TextView
@@ -26,217 +27,190 @@
                 android:gravity="center"
                 android:lineSpacingExtra="@dimen/_5sdp"
                 android:text="Report User"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/black"
                 android:textSize="@dimen/_15sdp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/img_cancel"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:padding="5dp"
-                android:src="@drawable/close_black_ic"
-                android:tint="@color/colorPrimary"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
             <TextView
                 android:id="@+id/tv_msg"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_25sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_25sdp"
+                android:fontFamily="@font/medium"
                 android:gravity="center"
-                android:text="Tell us why you are reporting the user. This is anonymous"
-                android:textColor="@color/black"
+                android:text="Tell us why you are reporting the user.\nThis is anonymous"
+                android:textColor="@color/grey_new"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
-            <!--  <ImageView
-                  android:id="@+id/ivcross"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:src="@drawable/close_black_ic"
-                  android:layout_margin="@dimen/_10sdp"
-                  app:layout_constraintTop_toTopOf="@id/tv_message"
-                  app:layout_constraintBottom_toBottomOf="@id/tv_message"
-                  app:layout_constraintEnd_toEndOf="parent"/>-->
             <LinearLayout
                 android:id="@+id/et_reason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_15sdp"
+                android:layout_margin="@dimen/_10sdp"
                 android:orientation="vertical"
-                android:padding="@dimen/_10sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_msg">
 
+
                 <LinearLayout
+                    android:id="@+id/ll_photo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/transparent"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@drawable/card_bg"
+                    android:elevation="10dp"
+                    android:padding="@dimen/_8sdp">
 
-                    <LinearLayout
-                        android:id="@+id/ll_photo"
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/rounded_sheet"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:padding="10dp"
-                            android:src="@drawable/img_inappropriate" />
-
-                        <TextView
-                            android:id="@+id/tv_photo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="Inappropriate\nPhotos"
-                            android:textColor="@color/black"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_content"
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/rounded_sheet"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:padding="10dp"
-                            android:src="@drawable/img_content" />
-
-                        <TextView
-                            android:id="@+id/tv_content"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="Inappropriate\nContent"
-                            android:textColor="@color/black"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_behave"
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/rounded_sheet"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:padding="10dp"
-                            android:src="@drawable/img_behave" />
-
-                        <TextView
-                            android:id="@+id/tv_behave"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="Inappropriate\nBehaviour"
-                            android:textColor="@color/black"
-                            android:textSize="12sp" />
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/_10sdp"
+                        android:elevation="@dimen/_100sdp"
+                        android:gravity="center_vertical"
+                        android:text="Inappropriate Photos"
+                        android:textColor="@color/profile_txt_color"
+                        android:textSize="14sp"
+                        app:drawableEndCompat="@drawable/right_arrow"
+                        app:drawableStartCompat="@drawable/ic_report_camera" />
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/transparent"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@drawable/card_bg"
+                    android:elevation="10dp"
+                    android:padding="@dimen/_8sdp">
 
-                    <LinearLayout
-                        android:id="@+id/ll_stolen"
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/rounded_sheet"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:padding="10dp"
-                            android:src="@drawable/img_stolen" />
-
-                        <TextView
-                            android:id="@+id/tv_stolen"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="Stolen\nPhoto"
-                            android:textColor="@color/black"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_age"
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/rounded_sheet"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:padding="10dp"
-                            android:src="@drawable/img_under18" />
-
-                        <TextView
-                            android:id="@+id/tv_age"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="Under\n18"
-                            android:textColor="@color/black"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_other"
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/rounded_sheet"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:padding="10dp"
-                            android:src="@drawable/img_report_other" />
-
-                        <TextView
-                            android:id="@+id/tv_other"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="Other\n"
-                            android:textColor="@color/black"
-                            android:textSize="12sp" />
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/_10sdp"
+                        android:elevation="@dimen/_100sdp"
+                        android:gravity="center_vertical"
+                        android:text="Inappropriate Content"
+                        android:textColor="@color/profile_txt_color"
+                        android:textSize="14sp"
+                        app:drawableEndCompat="@drawable/right_arrow"
+                        app:drawableStartCompat="@drawable/ic_report_content" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_behave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@drawable/card_bg"
+                    android:elevation="10dp"
+                    android:padding="@dimen/_8sdp">
+
+                    <TextView
+                        android:id="@+id/tv_behave"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/_10sdp"
+                        android:elevation="@dimen/_100sdp"
+                        android:gravity="center_vertical"
+                        android:text="Inappropriate Behaviour"
+                        android:textColor="@color/profile_txt_color"
+                        android:textSize="14sp"
+                        app:drawableEndCompat="@drawable/right_arrow"
+                        app:drawableStartCompat="@drawable/ic_report_behavior" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_stolen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@drawable/card_bg"
+                    android:elevation="10dp"
+                    android:padding="@dimen/_8sdp">
+
+                    <TextView
+                        android:id="@+id/tv_stolen"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/_10sdp"
+                        android:elevation="@dimen/_100sdp"
+                        android:gravity="center_vertical"
+                        android:text="Stolen Photo"
+                        android:textColor="@color/profile_txt_color"
+                        android:textSize="14sp"
+                        app:drawableEndCompat="@drawable/right_arrow"
+                        app:drawableStartCompat="@drawable/ic_report_photo" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@drawable/card_bg"
+                    android:elevation="10dp"
+                    android:padding="@dimen/_10sdp">
+
+                    <TextView
+                        android:id="@+id/tv_age"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/_10sdp"
+                        android:elevation="@dimen/_100sdp"
+                        android:gravity="center_vertical"
+                        android:text="Under 18"
+                        android:textColor="@color/profile_txt_color"
+                        android:textSize="14sp"
+                        app:drawableEndCompat="@drawable/right_arrow"
+                        app:drawableStartCompat="@drawable/ic_report_age" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_other"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:background="@drawable/card_bg"
+                    android:elevation="10dp"
+                    android:padding="@dimen/_10sdp">
+
+                    <TextView
+                        android:id="@+id/tv_other"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/_10sdp"
+                        android:elevation="@dimen/_100sdp"
+                        android:gravity="center_vertical"
+                        android:text="Other"
+                        android:textColor="@color/profile_txt_color"
+                        android:textSize="14sp"
+                        app:drawableEndCompat="@drawable/right_arrow"
+                        app:drawableStartCompat="@drawable/ic_report_other" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <Button
@@ -247,13 +221,13 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
                 android:layout_marginBottom="@dimen/_10sdp"
-                android:background="@drawable/disabledbtn"
-                android:fontFamily="@font/medium"
+                android:background="@drawable/facebookbtn"
+                android:backgroundTint="@color/pink"
+                 android:fontFamily="@font/medium"
                 android:minWidth="@dimen/_200sdp"
                 android:paddingTop="@dimen/_10sdp"
                 android:paddingBottom="@dimen/_10sdp"
-                android:enabled="false"
-                android:text="Submit"
+                android:text="Cancel"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_14ssp"

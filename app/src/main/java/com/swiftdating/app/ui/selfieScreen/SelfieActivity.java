@@ -233,7 +233,7 @@ public class SelfieActivity extends BaseActivity implements View.OnClickListener
                         if (response.code() == 200) {
                             hideLoading();
                             sp.saveSelfie(responseBean.getSelfieData().getSelfieUrl());
-                            sp.saveVerified(responseBean.getSelfieData().getIsVerified());
+                          //  sp.saveVerified(responseBean.getSelfieData().getIsVerified());
                             sp.saveSelfieVerificationStatus("Pending");
                             sp.saveIsRejected(false);
                             finish();

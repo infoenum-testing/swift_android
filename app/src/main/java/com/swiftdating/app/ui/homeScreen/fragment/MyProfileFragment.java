@@ -2,10 +2,12 @@ package com.swiftdating.app.ui.homeScreen.fragment;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -110,6 +113,10 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     private static final long TIME_PERIOD = 3000;
     Runnable Update;
     private TextView tv_subscribe;
+    private GpsTracker gpsTracker;
+
+    AlertDialog.Builder alertDialog;
+    AlertDialog dialog;
 
     @Override
     public int getLayoutId() {
@@ -119,8 +126,13 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mActivity = (BaseActivity) getActivity();
 
+        mActivity = (BaseActivity) getActivity();
+        gpsTracker = GpsTracker.getInstance(getContext());
+        gpsTracker.dilaog();
+        alertDialog = new AlertDialog.Builder(getContext());
+        dialog = alertDialog.create();
+        Log.e(TAG, "onViewCreated: ");
         if (getBaseActivity().isNetworkConnected()) {
             initialize(view);
             setData();
@@ -558,19 +570,24 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             tv_deluxe_subscribe.setVisibility(View.VISIBLE);
             tv_pre_subscribe.setVisibility(View.GONE);
         } else {
-            if (!getBaseActivity().sp.getPremium() && GpsTracker.getInstance(getContext()).canGetLocation()) {
-                if (TextUtils.isEmpty(lat) || !lat.equalsIgnoreCase("" + GpsTracker.getInstance(getContext()).getLatitude())) {
-                    lat = "" + GpsTracker.getInstance(getContext()).getLatitude();
-                    lon = "" + GpsTracker.getInstance(getContext()).getLongitude();
+            final LocationManager manager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(Context.LOCATION_SERVICE);
+
+            if (getBaseActivity().sp.getPremium() && manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                //  if (!getBaseActivity().sp.getPremium() && GpsTracker.getInstance(getContext()).canGetLocation()) {
+                if (TextUtils.isEmpty(lat) || !lat.equalsIgnoreCase("" + gpsTracker.getLatitude())) {
+                    lat = "" + gpsTracker.getLatitude();
+                    lon = "" + gpsTracker.getLongitude();
                     String add = CommonUtils.getCityAddress(getContext(), lat, lon);
                     if (!TextUtils.isEmpty(add))
                         tvAddress.setText(add);
                 }
             } else {
-                GpsTracker.getInstance(getContext()).showSettingsAlert();
+                gpsTracker.showSettingsAlert();
             }
         }
-        if (getBaseActivity().sp.getPremium()) {
+        if (
+
+                getBaseActivity().sp.getPremium()) {
             if (!getBaseActivity().sp.getDeluxe())
                 tv_pre_subscribe.setVisibility(View.VISIBLE);
         }

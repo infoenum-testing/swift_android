@@ -47,6 +47,11 @@ public class FilterRequest {
     @Expose
     private String smoke;
 
+    @SerializedName("interested")
+    @Expose
+    private String interested;
+
+
     public FilterRequest(Integer pageNumber, Integer limit, Integer distance, String gender, Integer maxAgePrefer, Integer minAgePrefer, String lookingFor, String maxHeight, String minHeight, String education, String kids, String political, String religion, String smoke) {
         this.pageNumber = pageNumber;
         this.limit = limit;
@@ -65,6 +70,15 @@ public class FilterRequest {
     }
 
     public FilterRequest() {
+    }
+
+
+    public String getInterested() {
+        return interested;
+    }
+
+    public void setInterested(String interested) {
+        this.interested = interested;
     }
 
     public String getPageNumberKey() {
@@ -252,6 +266,7 @@ public class FilterRequest {
                 ", political='" + political + '\'' +
                 ", religion='" + religion + '\'' +
                 ", smoke='" + smoke + '\'' +
+                ", interested='" + interested + '\'' +
                 '}';
     }
 }

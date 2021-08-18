@@ -69,7 +69,7 @@ public class GpsTracker extends Service implements LocationListener {
                     if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions((Activity) mContext, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
                     }
-                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,MIN_TIME_BW_UPDATES,MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
 
                     Log.d("Network", "Network");
                     if (locationManager != null) {
@@ -165,13 +165,18 @@ public class GpsTracker extends Service implements LocationListener {
      * Function to show settings alert dialog
      * On pressing Settings button will lauch Settings Options
      */
-    AlertDialog.Builder alertDialog;
 
-    public void showSettingsAlert() {
+    AlertDialog.Builder alertDialog;
+    AlertDialog dialogss;
+
+    public  synchronized void dilaog() {
         if (alertDialog == null) {
             alertDialog = new AlertDialog.Builder(mContext);
+            dialogss = alertDialog.create();
         }
+    }
 
+    public void showSettingsAlert() {
         // Setting Dialog Title
         alertDialog.setTitle("GPS is settings");
 
@@ -187,9 +192,8 @@ public class GpsTracker extends Service implements LocationListener {
         // on pressing cancel button
         alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
-        AlertDialog dialog = alertDialog.create();
-        if (!dialog.isShowing())
-            alertDialog.show();
+        Log.e("TAG", "showSettingsAlert: " + dialogss.isShowing());
+        alertDialog.show();
     }
 
     @Override

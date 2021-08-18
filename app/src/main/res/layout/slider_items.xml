@@ -8,7 +8,6 @@
         android:id="@+id/image"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:src="@drawable/skip_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

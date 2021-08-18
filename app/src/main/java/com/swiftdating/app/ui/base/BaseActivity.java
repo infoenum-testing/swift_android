@@ -38,6 +38,7 @@ import com.google.gson.Gson;
 
 import com.swiftdating.app.R;
 import com.swiftdating.app.common.CommonUtils;
+import com.swiftdating.app.common.Global;
 import com.swiftdating.app.common.MyProgressDialog;
 import com.swiftdating.app.data.network.Resource;
 import com.swiftdating.app.data.preference.SharedPreference;
@@ -79,7 +80,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                     intent.getExtras().getString("message");
             if (intent.getExtras().containsKey("approved")) {
                 if (intent.getExtras().getBoolean("approved")) {
-                    sp.saveVerified("Yes");
+                    // sp.saveVerified("Yes");
                     sp.saveIsRejected(false);
 
                     //Save Date for Daily Popup
@@ -96,7 +97,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 }
             } else if (intent.getExtras().containsKey("rejected")) {
                 snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
-                sp.saveVerified("No");
+                // sp.saveVerified("No");
                 sp.saveIsRejected(true);
                 if (isCardScreen) {
                     ((HomeActivity) mActivity).onTabSelected(((HomeActivity) mActivity).tabHome.getTabAt(0));
@@ -186,7 +187,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (editProfileViewModel == null) {
             editProfileViewModel = ViewModelProviders.of(this).get(EditProfileViewModel.class);
         }
-        if (sp.isloggedIn().equalsIgnoreCase("true") && !sp.getVerified().equalsIgnoreCase("Yes")) {
+        if (sp.isloggedIn().equalsIgnoreCase("true") && !sp.getStatus().equalsIgnoreCase(Global.statusActive)) {
             editProfileViewModel.myProfileRequest(sp.getToken());
         }
     }
@@ -196,7 +197,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (sp == null) {
             sp = new SharedPreference(this);
         }
-        if (myProfileResponse != null && sp.getVerified().equalsIgnoreCase("Yes") && !isMyProfileApiCall) {
+        if (myProfileResponse != null && sp.getStatus().equalsIgnoreCase(Global.statusActive) && !isMyProfileApiCall) {
             if (editProfileViewModel == null) {
                 editProfileViewModel = ViewModelProviders.of(this).get(EditProfileViewModel.class);
             }
@@ -241,15 +242,15 @@ public abstract class BaseActivity extends AppCompatActivity {
 
                             if (myProfileResponse != null)
                                 myProfileResponse.setProfileData();
-                            if (!sp.getVerified().equals(resource.data.getUser().getIsVerified()) /*|| sp.isRejected() != resource.data.getUser().getisRejected().equals("1")*/) {
-                                sp.saveVerified(resource.data.getUser().getIsVerified());
-                                //     sp.saveIsRejected(resource.data.getUser().getisRejected().equals("1"));
+
+                            sp.saveStatus(resource.data.getUser().getStatus());
+                            /*if (!sp.getVerified().equals(resource.data.getUser().getIsVerified()) *//*|| sp.isRejected() != resource.data.getUser().getisRejected().equals("1")*//*) {
                                 if (isCardScreen) {
                                     ((HomeActivity) mActivity).onTabSelected(((HomeActivity) mActivity).tabHome.getTabAt(0));
                                 } else if (isMatchScreen) {
                                     ((HomeActivity) mActivity).onTabSelected(((HomeActivity) mActivity).tabHome.getTabAt(3));
                                 }
-                            }
+                            }*/
                         }
                         break;
                     case ERROR:

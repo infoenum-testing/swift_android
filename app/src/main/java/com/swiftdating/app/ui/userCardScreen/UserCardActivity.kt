@@ -938,8 +938,6 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
             })
         }
 
-        val img_cancel = dialog.findViewById<ImageView>(R.id.img_cancel)
-        img_cancel.setOnClickListener { dialog.dismiss() }
 
         btn_submit.setOnClickListener {
             dialog.dismiss()

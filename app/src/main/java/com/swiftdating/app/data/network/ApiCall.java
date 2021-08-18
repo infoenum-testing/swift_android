@@ -10,7 +10,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 
+import com.swiftdating.app.model.requestmodel.FilterRequest;
 import com.swiftdating.app.model.requestmodel.ReportRequestModel;
+import com.swiftdating.app.model.responsemodel.FilterResponse;
 import com.swiftdating.app.model.responsemodel.PhoneLoginResponse;
 import com.swiftdating.app.model.responsemodel.VerificationResponseModel;
 import com.swiftdating.app.model.responsemodel.WhoLikedYouReponce;
@@ -36,7 +38,7 @@ public class ApiCall {
                     JSONObject object = null;
                     try {
                         object = new JSONObject(response.errorBody().string());
-                        if (response.code() == 404 && object.getString("message")!=null) {
+                        if (response.code() == 404 && object.getString("message") != null) {
                             //callBack.onError("Your account has been banned for activity that violates our terms & policies.");
                             callBack.onError(object.getString("message"));
                         } else
@@ -61,6 +63,7 @@ public class ApiCall {
 
 
     }
+
     public static void getListWhoLikedYou(String token, String pagecount, ApiCallback.GetListWhoLikedYouCallback callBack) {
         ApiUtils apiInterface = CallServer.getClient().create(ApiUtils.class);
         Call<ResponseBody> forgotPassword = apiInterface.getUserListWhoLikedYou(token, pagecount);
@@ -403,5 +406,57 @@ public class ApiCall {
         });
 
     }
+
+
+    public static void setFilters(String token, HashMap<String, Object> map, ApiCallback.FilterCallBack callBack) {
+        ApiUtils apiInterface = CallServer.getClient().create(ApiUtils.class);
+        Call<FilterResponse> filterCallBackCall = apiInterface.setFilters(token, map);
+        filterCallBackCall.enqueue(new Callback<FilterResponse>() {
+            @Override
+            public void onResponse(Call<FilterResponse> call, Response<FilterResponse> response) {
+                if (response.isSuccessful()) {
+                    callBack.onSuccessFilter(response.body());
+
+                  /*  JSONObject object = null;
+                    try {
+                        object = new JSONObject(response.errorBody().string());
+                        callBack.onError(object.getString("message"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }*/
+
+                } else {
+                    if (response.code() == 500) {
+                        callBack.onError("User has already been reported.");
+                    } else if (response.code() == 401) {
+                        callBack.onError("401");
+                    } else if (response.code() == 404) {
+                        callBack.onError("404");
+                    } else {
+                        JSONObject object = null;
+                        try {
+                            object = new JSONObject(response.errorBody().string());
+                            callBack.onError(object.getString("message"));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FilterResponse> call, Throwable t) {
+                if (t instanceof IOException) {
+                    callBack.onError("Server not responding. Please try again later." + call.toString());
+                } else {
+                    t.printStackTrace();
+                    callBack.onError("Something went wrong Please try again later.");
+                }
+            }
+        });
+
+    }
+
 
 }

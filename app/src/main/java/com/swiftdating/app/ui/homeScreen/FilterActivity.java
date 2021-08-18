@@ -277,7 +277,6 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
         RadioGroup tgGender = view.findViewById(R.id.tgGender);
         tgGender.setOnCheckedChangeListener(this);
         TextView tv_gender = view.findViewById(R.id.tv_gender);
-       // RadioButton bothTb = view.findViewById(R.id.bothTb);
         RadioButton otherTb = view.findViewById(R.id.otherTb);
         RadioButton tbMale = view.findViewById(R.id.tbMale);
         RadioButton femaleTb = view.findViewById(R.id.femaleTb);
@@ -297,7 +296,6 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
                     break;
             }
         }
-        //bothTb.setVisibility(View.VISIBLE);
         setupCrossandContinuebtn(view);
         btnContinue.setOnClickListener(v -> {
             if (filterRequest == null) {
@@ -357,17 +355,20 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
         bottomSheetDialog.setContentView(view);
         // LoopView picker_age = view.findViewById(R.id.picker_age);
         // LoopView picker_age_to = view.findViewById(R.id.picker_age_to);
-        RangeSeekBar seekAgeRange = view.findViewById(R.id.sb_age);
+        RangeSeekBar<Integer> seekAgeRange = view.findViewById(R.id.sb_age);
         TextView tvRange = view.findViewById(R.id.tvRange);
         setupCrossandContinuebtn(view);
         seekAgeRange.setRangeValues(0, list.size() - 1);
         seekAgeRange.setSelectedMinValue(0);
         seekAgeRange.setSelectedMaxValue(list.size() - 1);
-        seekAgeRange.setOnRangeSeekBarChangeListener((bar, minValue, maxValue) -> {
-            try {
-                tvRange.setText(list.get((int) minValue) + " to " + list.get((int) maxValue));
-            } catch (Exception e) {
-                Log.e(TAG, "showAgeBottomsheet: " + e.toString());
+        seekAgeRange.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener() {
+            @Override
+            public void onRangeSeekBarValuesChanged(RangeSeekBar bar, Object minValue, Object maxValue) {
+                try {
+                    tvRange.setText(list.get((int) minValue) + " to " + list.get((int) maxValue));
+                } catch (Exception e) {
+                    Log.e(TAG, "showAgeBottomsheet: " + e.toString());
+                }
             }
         });
         // picker_age.setNotLoop();

@@ -220,6 +220,10 @@ public class RangeSeekBar<T extends Number> extends AppCompatImageView {
         setValuePrimAndNumberType();
     }
 
+
+
+
+
     public void setTextAboveThumbsColor(int textAboveThumbsColor) {
         this.mTextAboveThumbsColor = textAboveThumbsColor;
         invalidate();

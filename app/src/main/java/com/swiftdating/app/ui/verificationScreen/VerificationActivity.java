@@ -183,8 +183,8 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                 sp.saveUserImage(response.getImagedata().getData());
             if (response.getUser().getSelfiesForUser() != null && response.getUser().getSelfiesForUser().getSelfieUrl() != null) {
                 sp.saveSelfie(response.getUser().getSelfiesForUser().getSelfieUrl());
-                sp.saveVerified(response.getUser().getIsVerified());
-                sp.saveVerified(response.getUser().getIsVerified());
+               // sp.saveVerified(response.getUser().getIsVerified());
+                sp.saveStatus(response.getUser().getStatus());
 
                 //   sp.saveIsRejected(response.getUser().getisRejected().equals("1"));
             }
@@ -229,7 +229,6 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                 sp.saveToken("bearer " + response.getToken(), String.valueOf(response.getUser().getProfileOfUser().getUserId()), true);
             }
             sp.savePremium(response.getUser().getIsPremium().equalsIgnoreCase("Yes"));
-            //          sp.saveDeluxe(response.getUser().getIsDeluxe().equalsIgnoreCase("Yes"));
             sp.saveLinkedIn(!TextUtils.isEmpty(linkedinId));
 
             if (response.getImagedata() != null)
@@ -237,8 +236,8 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
             if (response.getUser().getSelfiesForUser() != null &&
                     response.getUser().getSelfiesForUser().getSelfieUrl() != null) {
                 sp.saveSelfie(response.getUser().getSelfiesForUser().getSelfieUrl());
-                sp.saveVerified(response.getUser().getIsVerified());
-                //    sp.saveIsRejected(response.getUser().getisRejected().equals("1"));
+               // sp.saveVerified(response.getUser().getIsVerified());
+                sp.saveStatus(response.getUser().getStatus());
             }
             sp.saveString(SharedPreference.userEmail, response.getUser().getEmail());
             sp.saveString(SharedPreference.userPhone, response.getUser().getMobile());

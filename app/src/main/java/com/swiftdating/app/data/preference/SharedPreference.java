@@ -51,6 +51,7 @@ public class SharedPreference {
     private String FilterReq = "FilterReq";
     private Context context;
     private String disLiked = "Disliked";
+    private String status = "status";
     public static final String userStatus = "userStatus";
 
 
@@ -164,6 +165,14 @@ public class SharedPreference {
         editor.apply();
         editor.commit();
     }
+
+    public void saveStatus(String status) {
+        editor.putString(this.status, status);
+        editor.apply();
+        editor.commit();
+    }
+
+
 
     public void saveSelfieVerificationStatus(String selfieVerificationStatus) {
         editor.putString(this.selfieVerificationStatus, selfieVerificationStatus);
@@ -299,6 +308,12 @@ public class SharedPreference {
     public String getVerified() {
         return sharedPreference.getString(isVerified, "");
     }
+
+
+    public String getStatus() {
+        return sharedPreference.getString(status, "");
+    }
+
 
     public String getSelfieVerificationStatus() {
         return sharedPreference.getString(selfieVerificationStatus, "");
