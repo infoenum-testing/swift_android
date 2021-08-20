@@ -13,13 +13,14 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,15 +31,14 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.swiftdating.app.R;
 import com.swiftdating.app.common.CommonDialogs;
 import com.swiftdating.app.common.CommonUtils;
 import com.swiftdating.app.data.network.ApiCall;
 import com.swiftdating.app.data.network.ApiCallback;
-import com.swiftdating.app.data.network.Resource;
-import com.swiftdating.app.model.BaseModel;
-import com.swiftdating.app.model.requestmodel.DeluxeTokenCountModel;
+import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.swiftdating.app.model.responsemodel.User;
 import com.swiftdating.app.model.responsemodel.WhoLikedYouReponce;
 import com.swiftdating.app.ui.base.BaseActivity;
@@ -64,8 +64,10 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
     int myIntentReqCode;
     GridLayoutManager manager;
     private TabLayout tab_like;
-    private String TAG = LikesFrament.class.getSimpleName();
+    private final String TAG = LikesFrament.class.getSimpleName();
     private TextView tv_subscribe, tv_no_result;
+    private RelativeLayout rlNoResult;
+    private ImageView ivNoResult;
     private String[] subscribe_txts, btn_txt;
     private Button btn_see_people;
     private LinearLayout llRootView;
@@ -114,27 +116,27 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
 
     private void setAdapter(List<User> list) {
         if (mActivity != null)
-            recycle.setAdapter(new LikesImagesAdapter(mActivity, list, onBtnClick, this, this));
+            recycle.setAdapter(new LikesImagesAdapter(mActivity, list, onBtnClick, this, this,getBaseActivity().sp));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-/*        if (list != null)
+        if (list != null)
             ((HomeActivity) getActivity()).LikeUserlist = list;
-        if (disLikelist!=null){
+        if (disLikelist != null) {
             ((HomeActivity) getActivity()).DisLikeUserlist = disLikelist;
         }
-        getBaseActivity().isLikeScreen = false;*/
+        getBaseActivity().isLikeScreen = false;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-/*        mActivity = (BaseActivity) getActivity();
+        mActivity = (BaseActivity) getActivity();
         getBaseActivity().isLikeScreen = true;
         //((HomeActivity) Objects.requireNonNull(getActivity())).setToolbarWithTitle("Likes");
-        ((HomeActivity) getActivity()).mToolbar.setVisibility(View.GONE);*/
+        ((HomeActivity) getActivity()).mToolbar.setVisibility(View.GONE);
     }
          /*CommonDialogs dialog = CommonDialogs.DeluxePurChaseDialog(getContext(), this);
         dialog.setOnDeluxeContinuebtn(this);*/
@@ -142,14 +144,14 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-    /*    Log.e(TAG, "onViewCreated: LikesFragment");
+        Log.e(TAG, "onViewCreated: LikesFragment");
         mActivity = (BaseActivity) getActivity();
         getBaseActivity().isLikeScreen = true;
         if (getBaseActivity().isNetworkConnected())
             initViews(view);
         else {
             getBaseActivity().showSnackbar(view, "Please connect to internet");
-        }*/
+        }
     }
 
     private void initViews(View view) {
@@ -160,16 +162,19 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
         isFromOnCreate = true;
         recycle = view.findViewById(R.id.recycle);
         tv_no_result = view.findViewById(R.id.tv_no_result);
+        rlNoResult = view.findViewById(R.id.rlNoResult);
+        ivNoResult = view.findViewById(R.id.ivNoResult);
         tv_subscribe = view.findViewById(R.id.tv_subscribe);
         btn_see_people = view.findViewById(R.id.btn_see_people);
-        if (getBaseActivity().sp.getDeluxe()) {
-            setDeluxeData();
+        if (getBaseActivity().sp.getPremium()) {
+            setPremiumData();
         } else {
             Log.e(TAG, "initViews: " + onBtnClick);
         }
         if (getBaseActivity().sp.getNoOfLikes().getUsers() == 0) {
             recycle.setVisibility(View.GONE);
             tv_no_result.setVisibility(View.VISIBLE);
+            rlNoResult.setVisibility(View.VISIBLE);
             tv_no_result.setText("New likes will appear here. You don't have any likes right now.");
         }
         if (!((HomeActivity) getActivity()).LikeUserlist.isEmpty()) {
@@ -183,10 +188,10 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
         } else if (getBaseActivity().sp.getNoOfLikes().getUsers() > 0) {
             showLoading();
         }
-        if (!((HomeActivity) getActivity()).DisLikeUserlist.isEmpty()){
-            disLikelist=((HomeActivity) getActivity()).DisLikeUserlist;
+        if (!((HomeActivity) getActivity()).DisLikeUserlist.isEmpty()) {
+            disLikelist = ((HomeActivity) getActivity()).DisLikeUserlist;
         }
-            initBillingProcess();
+        initBillingProcess();
         tab_like = view.findViewById(R.id.tab_like);
 
         tv_no_result.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -247,41 +252,37 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
 
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
 
-        homeViewModel.addDeluxeResponse().observe(this, new Observer<Resource<BaseModel>>() {
-            @Override
-            public void onChanged(Resource<BaseModel> resource) {
-                if (resource == null)
-                    return;
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        if (resource.data.getSuccess()) {
-                          /*  onBtnClick = true;
-                            tv_subscribe.setVisibility(View.GONE);
-                            btn_see_people.setVisibility(View.GONE);
-                            recycle.setAdapter(new LikesImagesAdapter(getContext(), list, onBtnClick));*/
-                            getBaseActivity().sp.saveDeluxe(true);
-                            setDeluxeData();
-                            ((LikesImagesAdapter) recycle.getAdapter()).setUnlock(onBtnClick);
-                            recycle.getAdapter().notifyDataSetChanged();
-                           /* tvPremium.setVisibility(View.INVISIBLE);
-                            tvUnlimitedView.setVisibility(View.INVISIBLE);*/
-                        } else if (resource.code == 401) {
-                            getBaseActivity().openActivityOnTokenExpire();
-                        } else {
-                            getBaseActivity().showSnackbar(llRootView, "Something went wrong");
-                        }
-                        break;
-                    case ERROR:
-                        hideLoading();
-                        getBaseActivity().showSnackbar(llRootView, resource.message);
-                        break;
-                }
-
+        homeViewModel.addPremiumResponse().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) return;
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    getBaseActivity().hideLoading();
+                    if (resource.data.getSuccess()) {
+                      /*  onBtnClick = true;
+                        tv_subscribe.setVisibility(View.GONE);
+                        btn_see_people.setVisibility(View.GONE);
+                        recycle.setAdapter(new LikesImagesAdapter(getContext(), list, onBtnClick));*/
+                        getBaseActivity().sp.savePremium(true);
+                        setPremiumData();
+                        ((LikesImagesAdapter) Objects.requireNonNull(recycle.getAdapter())).setUnlock(onBtnClick);
+                        recycle.getAdapter().notifyDataSetChanged();
+                       /* tvPremium.setVisibility(View.INVISIBLE);
+                        tvUnlimitedView.setVisibility(View.INVISIBLE);*/
+                    } else if (resource.code == 401) {
+                        getBaseActivity().openActivityOnTokenExpire();
+                    } else {
+                        getBaseActivity().showSnackbar(llRootView, "Something went wrong");
+                    }
+                    break;
+                case ERROR:
+                    getBaseActivity().hideLoading();
+                    getBaseActivity().showSnackbar(llRootView, resource.message);
+                    break;
             }
         });
+
         setupTabIcons();
         /*if (isShowDirect) {
             tabCount = 1;
@@ -307,9 +308,7 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
 
     private void onClick(View view) {
         getBaseActivity().sp.setDialogOpen(true);
-        CommonDialogs.isDialogOpen = true;
-        //CommonDialogs.purchaseDialog(getContext(), "BlackGentry Premium", "", this);
-        CommonDialogs.DeluxePurChaseDialog(getContext(), this);
+        CommonDialogs.PremuimPurChaseDialog(getContext(), this, getBaseActivity().sp);
     }
 
     /**
@@ -349,10 +348,12 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
                         recycle.setVisibility(View.GONE);
                         tv_no_result.setText("");
                         callDislikedApi();
-                    }else {
+                    } else {
                         if (disliked == 0) {
                             recycle.setVisibility(View.GONE);
                             tv_no_result.setVisibility(View.VISIBLE);
+                            rlNoResult.setVisibility(View.VISIBLE);
+                            ivNoResult.setImageResource(R.drawable.second_chance_img);
                             tv_no_result.setText("You don't have any unseen skipped profiles right now.");
                         } else {
                             recycle.setVisibility(View.VISIBLE);
@@ -367,7 +368,7 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
                         tv_no_result.setText("");
                         callApi(pagecount);
                     } else if (iscallApiforlike) {
-                        iscallApiforlike=false;
+                        iscallApiforlike = false;
                         pagecount = 1;
                         recycle.setVisibility(View.GONE);
                         tv_no_result.setText("");
@@ -375,6 +376,8 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
                     } else {
                         if (LikedUser == 0) {
                             tv_no_result.setVisibility(View.VISIBLE);
+                            rlNoResult.setVisibility(View.VISIBLE);
+                            ivNoResult.setImageResource(R.drawable.no_like_img);
                             recycle.setVisibility(View.GONE);
                             tv_no_result.setText("New likes will appear here. You don't have any likes right now.");
                         } else {
@@ -410,11 +413,11 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
 
     @Override
     public void OnClickContinue() {
-        setDeluxeData();
+        setPremiumData();
     }
 
-    void setDeluxeData() {
-        Log.e(TAG, "setDeluxeData: " + onBtnClick);
+    void setPremiumData() {
+        Log.e(TAG, "setPremiumData: " + onBtnClick);
         onBtnClick = true;
         tv_subscribe.setVisibility(View.GONE);
         btn_see_people.setVisibility(View.GONE);
@@ -427,24 +430,28 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
     public void onClickToken(String tokenType, int tokensNum, int selectedPos) {
         tokenSType = tokenType;
         selectedPosition = tokensNum;
-        if (tokenType.equalsIgnoreCase("DeluxePurChase")) {
-            price = CommonDialogs.DeluxePriceList.get(selectedPos).getPriceValue();
-            productId = CommonDialogs.DeluxeArr[selectedPos];
+        if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
+            price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
+            productId = CommonDialogs.PremiumArr[selectedPos];
             bp.subscribe(getActivity(), productId);
         }
     }
 
     @Override
     public void onProductPurchased(String productId, TransactionDetails details) {
-        if (tokenSType.equalsIgnoreCase("DeluxePurChase")) {
+        if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
             Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_LONG).show();
             mActivity.showLoading();
-            homeViewModel.addDeluxeRequest(new DeluxeTokenCountModel("2", productId,
+            homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1",
+                    productId,
                     price,
-                    selectedPosition,
+                    Integer.parseInt(productId.split("_")[2]),
                     details.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
+                    details.purchaseInfo.purchaseData.purchaseToken,
+                    CommonUtils.getDateForPurchase(details),
+                    details.purchaseInfo.signature,
                     details.purchaseInfo.purchaseData.purchaseState.toString()));
+
             Log.e(TAG, "purchase success DeluxePurChase: " + details.purchaseInfo.responseData);
         }
     }
@@ -479,6 +486,8 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
             if (response.getUsers() != null && response.getUsers().size() == 0) {
                 recycle.setVisibility(View.GONE);
                 tv_no_result.setVisibility(View.VISIBLE);
+                rlNoResult.setVisibility(View.VISIBLE);
+                ivNoResult.setImageResource(R.drawable.no_like_img);
                 tv_no_result.setText("New likes will appear here. You don't have any likes right now.");
             } else {
                 recycle.setVisibility(View.VISIBLE);
@@ -528,6 +537,8 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
                 if (list.size() == 0) {
                     recycle.setVisibility(View.GONE);
                     tv_no_result.setVisibility(View.VISIBLE);
+                    rlNoResult.setVisibility(View.VISIBLE);
+                    ivNoResult.setImageResource(R.drawable.no_like_img);
                     tv_no_result.setText("New likes will appear here. You don't have any likes right now.");
                 }
                 //getBaseActivity().getMyProfile(this);
@@ -540,6 +551,8 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
                 if (disLikelist.size() == 0) {
                     recycle.setVisibility(View.GONE);
                     tv_no_result.setVisibility(View.VISIBLE);
+                    rlNoResult.setVisibility(View.VISIBLE);
+                    ivNoResult.setImageResource(R.drawable.second_chance_img);
                     tv_no_result.setText("You don't have any unseen skipped profiles right now.");
                 }
                 // getBaseActivity().getMyProfile(this);
@@ -549,26 +562,32 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
         }
     }
 
+
     @Override
     public void onSuccessDislikedList(WhoLikedYouReponce response) {
         hideLoading();
         try {
             getBaseActivity().sp.setDislikeApi(false);
-            if (response.getUsers()==null||response.getUsers().size() == 0) {
+            if (response.getUsers() == null || response.getUsers().size() == 0) {
                 disliked = 0;
                 recycle.setVisibility(View.GONE);
                 tv_no_result.setVisibility(View.VISIBLE);
+                rlNoResult.setVisibility(View.VISIBLE);
+                ivNoResult.setImageResource(R.drawable.second_chance_img);
                 tv_no_result.setText("You don't have any unseen skipped profiles right now.");
             } else {
                 recycle.setVisibility(View.VISIBLE);
                 tv_no_result.setVisibility(View.GONE);
+                rlNoResult.setVisibility(View.GONE);
                 disLikelist = response.getUsers();
-                disliked=disLikelist.size();
+                disliked = disLikelist.size();
                 setAdapter(disLikelist);
             }
         } catch (Exception e) {
-            if (tv_no_result!=null){
+            if (tv_no_result != null) {
                 tv_no_result.setVisibility(View.VISIBLE);
+                ivNoResult.setImageResource(R.drawable.second_chance_img);
+                rlNoResult.setVisibility(View.VISIBLE);
                 tv_no_result.setText("You don't have any unseen skipped profiles right now.");
             }
             e.printStackTrace();
@@ -605,6 +624,8 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
                 ((HomeActivity) getActivity()).LikeUserlist.clear();
             recycle.setVisibility(View.GONE);
             tv_no_result.setVisibility(View.VISIBLE);
+            ivNoResult.setImageResource(R.drawable.no_like_img);
+            rlNoResult.setVisibility(View.VISIBLE);
             tv_no_result.setText("New likes will appear here. You don't have any likes right now.");
         }
         if (getBaseActivity() != null) {
@@ -649,14 +670,14 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
         posAdapter = pos;
         Intent intent = new Intent(mContext, UserCardActivity.class);
         if (tab_like.getSelectedTabPosition() == 0) {
-            if (list.size()>pos)
-            intent.putExtra("userid", list.get(pos).getId());
+            if (list.size() > pos)
+                intent.putExtra("userid", list.get(pos).getId());
             showSencondChance = false;
             myIntentReqCode = 111;
         } else {
             showSencondChance = true;
-            if (disLikelist.size()>pos)
-            intent.putExtra("userid", disLikelist.get(pos).getId());
+            if (disLikelist.size() > pos)
+                intent.putExtra("userid", disLikelist.get(pos).getId());
             myIntentReqCode = 222;
         }
         intent.putExtra("tabPos", 1);

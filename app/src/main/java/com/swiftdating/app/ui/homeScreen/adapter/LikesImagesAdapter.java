@@ -23,10 +23,12 @@ import com.bumptech.glide.request.transition.Transition;
 
 import java.util.List;
 
+import com.facebook.share.model.SharePhoto;
 import com.swiftdating.app.R;
 import com.swiftdating.app.common.CommonDialogs;
 import com.swiftdating.app.common.CommonUtils;
 import com.swiftdating.app.data.network.CallServer;
+import com.swiftdating.app.data.preference.SharedPreference;
 import com.swiftdating.app.model.responsemodel.ImageForUser;
 import com.swiftdating.app.model.responsemodel.ProfileOfUser;
 import com.swiftdating.app.model.responsemodel.User;
@@ -41,13 +43,15 @@ public class LikesImagesAdapter extends RecyclerView.Adapter<LikesImagesAdapter.
     private CommonDialogs.onProductConsume clickListener;
     private static final String TAG = "LikesImagesAdapter";
     OnLikeUserClick onLikeItemClick;
+    private SharedPreference sp;
 
-    public LikesImagesAdapter(Context context, List<User> list, boolean isUnlock, CommonDialogs.onProductConsume clickListener, OnLikeUserClick onLikeItemClick) {
+    public LikesImagesAdapter(Context context, List<User> list, boolean isUnlock, CommonDialogs.onProductConsume clickListener, OnLikeUserClick onLikeItemClick, SharedPreference sp) {
         this.context = context;
         this.list = list;
         this.isUnlock = isUnlock;
         this.clickListener = clickListener;
         this.onLikeItemClick = onLikeItemClick;
+        this.sp = sp;
     }
 
     public void setUnlock(boolean unlock) {
@@ -113,11 +117,11 @@ public class LikesImagesAdapter extends RecyclerView.Adapter<LikesImagesAdapter.
                     }
                 });
             }
-            if (user != null&&user.getName()!=null) {
+            if (user != null && user.getName() != null) {
                 tv_name.setText(user.getDob() != null ? user.getName() + ", " + CommonUtils.getAge(user.getDob()) : user.getName() + ", 0");
             }
             if (!isUnlock) {
-                card_likes.setOnClickListener(v -> CommonDialogs.DeluxePurChaseDialog(context, clickListener));
+                card_likes.setOnClickListener(v -> CommonDialogs.PremuimPurChaseDialog(context, clickListener, sp));
                 float radius = tv_name.getTextSize() / 3;
                 BlurMaskFilter filter = new BlurMaskFilter(radius, BlurMaskFilter.Blur.NORMAL);
                 tv_name.getPaint().setMaskFilter(filter);

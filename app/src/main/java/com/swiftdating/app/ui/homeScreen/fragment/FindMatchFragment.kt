@@ -2350,7 +2350,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         })
 
         for (i in lls.indices) {
-            lls[i]?.setOnClickListener(OnClickListener { v: View? ->
+            lls[i]?.setOnClickListener({ v: View? ->
                 pos = i
                 if (i == 5) {
                     dialog.dismiss()

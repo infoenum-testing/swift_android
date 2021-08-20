@@ -79,7 +79,6 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
     lateinit var superlike: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.window.statusBarColor = this.resources.getColor(R.color.primaryTextColor)
         setContentView(R.layout.activity_my_card)
         like = findViewById(R.id.love)
         superlike = findViewById(R.id.superlike)
@@ -427,8 +426,12 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
             if (hetS.contains(".")) {
                 val het = hetS.toFloat()
                 hetS = when {
-                    het < 4 -> { "< 4'0\"" }
-                    het > 7 -> { "> 7'0\"" }
+                    het < 4 -> {
+                        "< 4'0\""
+                    }
+                    het > 7 -> {
+                        "> 7'0\""
+                    }
                     else -> hetS.replace(".", "'") + "\""
                 }
             }
@@ -512,7 +515,7 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
     }
 
     private fun showOtherDialog(dialog1: Dialog) {
-        val dialog = Dialog(mActivity!!)
+        val dialog = Dialog(mActivity, R.style.PauseDialog)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         Objects.requireNonNull(dialog.window)!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setContentView(R.layout.dialog_edit_text)
@@ -525,7 +528,7 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
         val etReason = dialog.findViewById<EditText>(R.id.et_reason)
         val ivcross = dialog.findViewById<ImageView>(R.id.ivcross)
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
-        tv_message.text = this.getResources().getString(R.string.reasontoReport)
+        tv_message.text = this.resources.getString(R.string.reasontoReport)
 
         ivcross.setOnClickListener {
             hideKeyboardFromView(etReason)
@@ -536,7 +539,6 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
                 showMyLoading()
                 hideKeyboardFromView(etReason)
                 ApiCall.reportUser(sp.token, ReportRequestModel(intent.extras!!.getInt("userid"), etReason.text.toString()), this)
-                //homeViewModel.reportRequest(ReportRequestModel(intent.extras!!.getInt("userid"), etReason.text.toString()))
                 dialog.dismiss()
                 dialog1.dismiss()
             } else {
@@ -576,11 +578,20 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
                     if (resource.data!!.data != null) {
                         Log.e("token_________", resource.data.data.profileOfUser.toString())//sp.token)
                         val obj = resource.data.data.profileOfUser
-                        val data = resource.data.data.getisLinkedinUser()
+                        var data = resource.data.data.getisLinkedinUser()
                         val imagelist = resource.data.data.imageForUser
                         val instaList = resource.data.data.insta
                         setupCardStackView(resource.data.data)
-                        setData(obj, imagelist, data, instaList, "" + resource.data.data.id)
+                        Log.e(TAG, "subscribeModel: " + data)
+                        if (TextUtils.isEmpty(data)) {
+                            data = ""
+                        }
+                        setData(obj,
+                                imagelist,
+                                data,
+                                instaList,
+                                "" +
+                                        resource.data.data.id)
                         clParent2.visibility = VISIBLE
                     }
                 }
@@ -669,8 +680,8 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
                 }
                 Status.SUCCESS -> {
                     if (resource.data!!.success!!) {
-                        if (resource.data.react.reaction.contains("dislike")){
-                            sp.dislikeApi=true
+                        if (resource.data.react.reaction.contains("dislike")) {
+                            sp.dislikeApi = true
                         }
                         sp.isDialogOpen = false
                         card_stack_viewMy.swipe()
@@ -688,7 +699,7 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
                             if (resource.data.swipesData == null || resource.data.swipesData.updatedAt == null) {
                                 sp.isDialogOpen = true
 
-                                CommonDialogs.PremuimPurChaseDialog(mActivity, this,sp)
+                                CommonDialogs.PremuimPurChaseDialog(mActivity, this, sp)
                                 /*"BlackGentry Premium", "You have reached the likes limit. You can send more likes " + "within 12 hours. Want unlimited likes? Subscribe below to BlackGentry Premium."*/
                             }
                         } else {
@@ -888,9 +899,9 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
 
                 homeViewModel.reportRequest(ReportRequestModel(id, reason))*/
         var pos = -1
-        val dialog = Dialog(mActivity)
+        val dialog = Dialog(mActivity, R.style.PauseDialog)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        Objects.requireNonNull(dialog.window)!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        Objects.requireNonNull(dialog.window)?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setContentView(R.layout.dialog_report)
         dialog.setCancelable(false)
         dialog.setCanceledOnTouchOutside(false)
@@ -915,58 +926,52 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
         (dialog.findViewById<View>(R.id.tv_behave) as TextView).paint.maskFilter = mm4
         lls[0] = dialog.findViewById(R.id.ll_photo)
         lls[1] = dialog.findViewById(R.id.ll_content)
-        lls[2] = dialog.findViewById(R.id.ll_age)
+        lls[2] = dialog.findViewById(R.id.ll_behave)
         lls[3] = dialog.findViewById(R.id.ll_stolen)
-        lls[4] = dialog.findViewById(R.id.ll_behave)
+        lls[4] = dialog.findViewById(R.id.ll_age)
         lls[5] = dialog.findViewById(R.id.ll_other)
+
+
         val btn_submit = dialog.findViewById<Button>(R.id.btn_submit)
         //lls[0]?.setBackground(mActivity.getDrawable(R.drawable.img_rectangle_outline))
         //lls[0]?.getBackground()?.setColorFilter(mActivity.resources.getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP)
         for (i in lls.indices) {
-            lls[i]?.setOnClickListener(View.OnClickListener { v: View? ->
+            lls[i]?.setOnClickListener { v: View? ->
                 pos = i
-                btn_submit.isEnabled = true
-                btn_submit.background = mActivity.getDrawable(R.drawable.gradientbtn)
-                for (j in lls.indices) {
-                    lls[j]?.background = mActivity.getDrawable(R.drawable.rounded_sheet)
-                    lls[j]?.background?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
+                if (i == 5) {
+                    dialog.dismiss()
+                    showOtherDialog(dialog)
+                } else {
+                    var reason = ""
+                    showMyLoading()
+                    hideKeyboard()
+                    when (pos) {
+                        0 -> {
+                            reason = "Inappropriate Photos"
+                        }
+                        1 -> {
+                            reason = "Inappropriate Content"
+                        }
+                        2 -> {
+                            reason = "Inappropriate Behaviour"
+                        }
+                        3 -> {
+                            reason = "Stolen Photo"
+                        }
+                        4 -> {
+                            reason = "Under 18"
+                        }
+                    }
+                    dialog.dismiss()
+                    homeViewModel.reportRequest(ReportRequestModel(id, reason))
                 }
-                lls[i]?.background = mActivity.getDrawable(R.drawable.img_rectangle_outline)
-                lls[i]?.background?.setColorFilter(mActivity.resources.getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP)
-                if (i == 5) showOtherDialog(dialog)
-
-            })
+            }
         }
+
 
 
         btn_submit.setOnClickListener {
             dialog.dismiss()
-            var reason = ""
-            showMyLoading()
-            hideKeyboard()
-            if (pos < 0) {
-                Toast.makeText(mActivity, "Please select the reason for report", Toast.LENGTH_LONG).show()
-            } else {
-                when (pos) {
-                    0 -> {
-                        reason = "Inappropriate Photos"
-                    }
-                    1 -> {
-                        reason = "Inappropriate Content"
-                    }
-                    2 -> {
-                        reason = "Inappropriate Behaviour"
-                    }
-                    3 -> {
-                        reason = "Stolen Photo"
-                    }
-                    4 -> {
-                        reason = "Under 18"
-                    }
-                }
-                ApiCall.reportUser(sp.token, ReportRequestModel(id, reason), this)
-                //homeViewModel.reportRequest(ReportRequestModel(id, reason))
-            }
         }
     }
 

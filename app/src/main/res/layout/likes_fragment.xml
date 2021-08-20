@@ -6,25 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/new_module_layout" />
+
+    <TextView
+        style="@style/title_style_top"
+        android:layout_gravity="center"
+        android:text="Likes" />
 
     <RelativeLayout
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="Likes"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20sp" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -38,10 +26,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_margin="10dp"
-                android:background="@drawable/continue_to_btn_bg"
                 android:elevation="10dp"
                 app:tabGravity="fill"
-                app:tabIndicatorColor="@color/colorPrimary"
+                app:tabIndicatorColor="@color/pink"
                 app:tabIndicatorFullWidth="false"
                 app:tabSelectedTextColor="@color/primaryTextColor"
                 app:tabTextAppearance="@style/MyCustomTextAppearance"
@@ -61,23 +48,21 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:background="@color/quantum_grey" />
+                android:background="@color/grey_new" />
         </RelativeLayout>
     </RelativeLayout>
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/tv_subscribe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="20dp"
         android:gravity="center"
         android:text="@string/likes_subscribe_deluxe_txt" />
 
     <Button
-        android:visibility="gone"
         android:id="@+id/btn_see_people"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -85,7 +70,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/facebookbtn"
-        android:backgroundTint="@color/light_red"
+        android:backgroundTint="@color/pink"
         android:elevation="10dp"
         android:text="@string/like_btn_who_like_txt"
         android:textAllCaps="true"
@@ -93,21 +78,31 @@
         android:textSize="18sp" />
 
     <RelativeLayout
-        android:visibility="gone"
+        android:id="@+id/rlNoResult"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ivNoResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tv_no_result"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/_50sdp"
+            android:src="@drawable/no_like_img"
+            />
 
         <TextView
             android:id="@+id/tv_no_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="No User Found"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:gravity="center"
-            android:layout_marginEnd="10dp"
-            android:textSize="@dimen/_10ssp"
-            android:layout_marginStart="10dp"
-            android:textColor="@color/quantum_grey" />
+            android:text="No User Found"
+            android:textColor="@color/grey_new"
+            android:textSize="@dimen/_10ssp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycle"

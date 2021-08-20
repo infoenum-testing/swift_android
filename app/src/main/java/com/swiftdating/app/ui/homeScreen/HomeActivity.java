@@ -1,6 +1,7 @@
 package com.swiftdating.app.ui.homeScreen;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -211,21 +213,19 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
     @Override
     protected void onStart() {
         super.onStart();
-/*
         LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
                 new IntentFilter("MyData"));
-*/
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        //    LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
     @Override
     protected void onResume() {
-        /*isHomeScreen = true;
+        isHomeScreen = true;
         if (getIntent().hasExtra("type")) {
             type = getIntent().getExtras().getInt("type");
         }
@@ -233,14 +233,13 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
         if (sp.getVerified().equals("Yes")) {
             homeViewModel.unreadRequest(sp.getToken());
         }
-        */
         super.onResume();
 
     }
 
     @Override
     protected void onPause() {
-        // isHomeScreen = false;
+         isHomeScreen = false;
         super.onPause();
 
     }

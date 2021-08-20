@@ -569,8 +569,8 @@
     <string name="and"> &amp;</string>
     <string name="you_have_active_subscription">You have an active BlackGentry Premium subscription.</string>
     <string name="you_have_active_deluxe_subscription">You have an active BlackGentry Deluxe subscription.</string>
-    <string name="likes_subscribe_deluxe_txt">Upgrade to Deluxe to see people who have already liked you.</string><!--Upgrade to Deluxe to search for users-->
-    <string name="likes_subscribe_profile_deluxe_txt">Want a second chance? Upgrade to Deluxe and see the last 100 profiles you skipped.</string>
+    <string name="likes_subscribe_deluxe_txt">Upgrade to Premium to see people who have already liked you.</string><!--Upgrade to Deluxe to search for users-->
+    <string name="likes_subscribe_profile_deluxe_txt">Want a second chance? Upgrade to Premium and see the last 100 profiles you skipped.</string>
     <string name="like_btn_skip_txt">See People You Skipped</string>
     <string name="like_btn_who_like_txt">See Who Likes You</string>
     <string name="crush_tokens_txt">Increase the odds by letting users know you already liked them. Users that you use a crush token on will see a crush symbol on your profile.</string>

@@ -26,10 +26,10 @@
     <application
         android:name="com.swiftdating.app.BlackGentry"
         android:allowBackup="false"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:hardwareAccelerated="true"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
@@ -94,6 +94,7 @@
         <activity
             android:name="com.swiftdating.app.ui.userCardScreen.UserCardActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNew"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name="com.swiftdating.app.ui.viewpagerScreen.ViewPagerActivity"
