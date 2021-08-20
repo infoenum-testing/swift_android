@@ -80,6 +80,7 @@ import retrofit2.Retrofit
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.log
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 class FindMatchFragment : BaseFragment(), CardStackListener,
@@ -144,9 +145,10 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e(TAG, "onViewCreated: FindMatchFragment")
         init(view)
         contextMy = this.context!!
+
+
         if (baseActivity.isNetworkConnected) {
             if (baseActivity.sp.isSettingsChanged || (activity as HomeActivity).cardList.isEmpty()) {
                 list = (activity as HomeActivity).cardList
@@ -234,35 +236,6 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
             }*/
         }
 
-        homeViewModel.useApplyVipTokenResponse().observe(this, Observer { resource ->
-            if (resource == null) {
-                return@Observer
-            }
-            when (resource.status) {
-                Status.LOADING -> {
-                }
-                Status.SUCCESS -> {
-                    mActivity.hideLoading()
-                    if (resource.data!!.success) {
-                        if (resource.data.error != null && resource.data.error.code.contains("401")) {
-                            mActivity.openActivityOnTokenExpire()
-                        } else {
-                            val gson = Gson()
-                            val user: String = baseActivity.sp.user
-                            val obj = gson.fromJson(user, ProfileOfUser::class.java)
-                            obj.vipToken = obj.vipToken - 1
-                            baseActivity.sp.saveUserData(obj, baseActivity.sp.profileCompleted)
-                            callAlertForVipTokenWithNoAction(true)
-                            //baseActivity.showSnackBar(card_stack_view, "One Vip Token Consumed Successfully")
-                        }
-                    }
-                }
-                Status.ERROR -> {
-                    mActivity.hideLoading()
-                    baseActivity.showSnackbar(card_stack_view, resource.message)
-                }
-            }
-        })
 
 
         // imageView = view.findViewById(R.id.imageView)
@@ -848,6 +821,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                     baseActivity.hideLoading()
                     isCardDisCalled = true
                     if (resource.data!!.success!!) {
+
                         if (resource.data.react.reaction.contains("dislike")) {
                             baseActivity.sp.dislikeApi = true
                         }
@@ -1333,6 +1307,35 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         })*/
+        homeViewModel.useApplyVipTokenResponse().observe(this, Observer { resource ->
+            if (resource == null) {
+                return@Observer
+            }
+            when (resource.status) {
+                Status.LOADING -> {
+                }
+                Status.SUCCESS -> {
+                    mActivity.hideLoading()
+                    if (resource.data!!.success) {
+                        if (resource.data.error != null && resource.data.error.code.contains("401")) {
+                            mActivity.openActivityOnTokenExpire()
+                        } else {
+                            val gson = Gson()
+                            val user: String = baseActivity.sp.user
+                            val obj = gson.fromJson(user, ProfileOfUser::class.java)
+                            obj.vipToken = obj.vipToken - 1
+                            baseActivity.sp.saveUserData(obj, baseActivity.sp.profileCompleted)
+                            callAlertForVipTokenWithNoAction(true)
+                            //baseActivity.showSnackBar(card_stack_view, "One Vip Token Consumed Successfully")
+                        }
+                    }
+                }
+                Status.ERROR -> {
+                    mActivity.hideLoading()
+                    baseActivity.showSnackbar(card_stack_view, resource.message)
+                }
+            }
+        })
     }
 
     /**
@@ -1771,7 +1774,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         else
             baseActivity.openActivityOnTokenExpire()
         if (percent < 75) {
-            baseActivity.showSnackbar(cardStackView, context!!.resources.getString(R.string.less_than_75))
+            CommonDialogs.showAlreadyPremiumUser(contextMy, getString(R.string.dialog_txt))
         }
         /* if (direction == Direction.Right || direction == Direction.Left) {
              isMySwiped = true
@@ -1810,8 +1813,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         }
                     }
                 } else {
-                    baseActivity.showSnackbar(cardStackView, context!!.resources.getString(R.string.less_than_75))
-                }
+                    CommonDialogs.showAlreadyPremiumUser(contextMy, getString(R.string.dialog_txt))
+                 }
             } else {
                 if (direction == Direction.Left) {
                     isMySwiped = true
@@ -1847,8 +1850,9 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                             love.visibility = VISIBLE
                             linear.visibility = INVISIBLE
                             mAdView.visibility = INVISIBLE
-                        } else
-                            baseActivity.showSnackbar(cardStackView, context!!.resources.getString(R.string.less_than_75))
+                        } else {
+                            CommonDialogs.showAlreadyPremiumUser(contextMy, getString(R.string.dialog_txt))
+                         }
                     }
                 } else {
                     if (rewind != null)
@@ -1969,7 +1973,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         manager.setSwipeThreshold(0.3f)
         manager.setMaxDegree(80.0f)
         var percent = 75.0
-        if (baseActivity.sp.profileCompleted != null && !baseActivity.sp.profileCompleted.equals(""))
+        if (baseActivity.sp.profileCompleted != null && baseActivity.sp.profileCompleted != "")
             percent = baseActivity.sp.profileCompleted.toDouble()
         else
             baseActivity.openActivityOnTokenExpire()
@@ -2001,7 +2005,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
      */
     private fun setupButton() {
         var percent = 75.0
-        if (baseActivity.sp.profileCompleted != null && !baseActivity.sp.profileCompleted.equals(""))
+        if (baseActivity.sp.profileCompleted != null && baseActivity.sp.profileCompleted != "")
             percent = baseActivity.sp.profileCompleted.toDouble()
         else
             baseActivity.openActivityOnTokenExpire()
@@ -2010,7 +2014,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
 /*
             if (percent >= 75) {
                 showDistanceBottomsheet()
-            } else baseActivity.showSnackbar(rlFilter, context!!.resources.getString(R.string.less_than_75))
+            } else                     CommonDialogs.showAlreadyPremiumUser(contextMy, getString(R.string.dialog_txt))
+
 */
 
         }
@@ -2050,8 +2055,9 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                     love.visibility = VISIBLE
                     linear.visibility = INVISIBLE
                     mAdView.visibility = INVISIBLE
-                } else
-                    baseActivity.showSnackbar(dislike, context!!.resources.getString(R.string.less_than_75))
+                } else {
+                    CommonDialogs.showAlreadyPremiumUser(contextMy, getString(R.string.dialog_txt))
+                }
             }
         }
 
@@ -2068,34 +2074,35 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         chat?.setOnClickListener {
             baseActivity.showSnackbar(cardStackView, "Not included in this module")
 
-           /* if (percent >= 75) {
-                if (linear.visibility == VISIBLE) {
-                    card_stack_view.visibility = VISIBLE
-                    superlike2?.visibility = GONE
-                    love.visibility = VISIBLE
-                    linear.visibility = INVISIBLE
-                    mAdView.visibility = INVISIBLE
-                    handleDirection = Direction.Top
-                } else if (list.isNotEmpty() && list.size > manager.topPosition) {
-                    startActivityForResult(Intent(mContext, ChatWindow::class.java).putExtra("id", list[manager.topPosition].id)
-                            .putExtra("name", list[manager.topPosition].profileOfUser.name)
-                            .putExtra("tabPos", 0)
-                            .putExtra("isExpired", false)
-                            .putExtra("isFromCard", true)
-                            .putExtra("image", list[manager.topPosition].imageForUser[0].imageUrl), 10000)
-                    baseActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                }
-            } else {
-                if (linear.visibility == VISIBLE) {
-                    card_stack_view.visibility = VISIBLE
-                    superlike2?.visibility = GONE
-                    love.visibility = VISIBLE
-                    linear.visibility = INVISIBLE
-                    mAdView.visibility = INVISIBLE
-                    handleDirection = Direction.Top
-                } else
-                    baseActivity.showSnackbar(cardStackView, context!!.resources.getString(R.string.less_than_75))
-            }*/
+            /* if (percent >= 75) {
+                 if (linear.visibility == VISIBLE) {
+                     card_stack_view.visibility = VISIBLE
+                     superlike2?.visibility = GONE
+                     love.visibility = VISIBLE
+                     linear.visibility = INVISIBLE
+                     mAdView.visibility = INVISIBLE
+                     handleDirection = Direction.Top
+                 } else if (list.isNotEmpty() && list.size > manager.topPosition) {
+                     startActivityForResult(Intent(mContext, ChatWindow::class.java).putExtra("id", list[manager.topPosition].id)
+                             .putExtra("name", list[manager.topPosition].profileOfUser.name)
+                             .putExtra("tabPos", 0)
+                             .putExtra("isExpired", false)
+                             .putExtra("isFromCard", true)
+                             .putExtra("image", list[manager.topPosition].imageForUser[0].imageUrl), 10000)
+                     baseActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                 }
+             } else {
+                 if (linear.visibility == VISIBLE) {
+                     card_stack_view.visibility = VISIBLE
+                     superlike2?.visibility = GONE
+                     love.visibility = VISIBLE
+                     linear.visibility = INVISIBLE
+                     mAdView.visibility = INVISIBLE
+                     handleDirection = Direction.Top
+                 } else
+                 CommonDialogs.showAlreadyPremiumUser(contextMy, getString(R.string.dialog_txt))
+
+             }*/
 
 
         }
@@ -2122,7 +2129,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                     }
                 }
             } else {
-                baseActivity.showSnackbar(like, context!!.resources.getString(R.string.less_than_75))
+                CommonDialogs.showAlreadyPremiumUser(contextMy, getString(R.string.dialog_txt))
             }
         }
 
@@ -2179,8 +2186,9 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         linear.visibility = INVISIBLE
                         mAdView.visibility = INVISIBLE
                         handleDirection = Direction.Top
-                    } else
-                        baseActivity.showSnackbar(superlike, context!!.resources.getString(R.string.less_than_75))
+                    } else {
+                        CommonDialogs.showAlreadyPremiumUser(contextMy, getString(R.string.dialog_txt))
+                    }
                 }
             } else {
                 CommonDialogs.CrushPurChaseDialog(mActivity, this)
@@ -2304,7 +2312,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
     }
 
     override fun OnReportClick(id: Int) {
-        val dialog = Dialog(mActivity)
+        val dialog = Dialog(mActivity, R.style.PauseDialog)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         Objects.requireNonNull(dialog.window)!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setContentView(R.layout.dialog_report)
@@ -2376,7 +2384,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
     }
 
     private fun showOtherDialog(dialog1: Dialog, myId: Int) {
-        val dialog = Dialog(mContext!!)
+        val dialog = Dialog(mContext!!, R.style.PauseDialog)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setContentView(R.layout.dialog_edit_text)

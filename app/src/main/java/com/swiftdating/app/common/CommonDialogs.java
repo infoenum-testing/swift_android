@@ -65,7 +65,7 @@ public class CommonDialogs {
     public static final String[] PremiumArr = new String[]{"swift_premium_1", "swift_premium_3", "swift_premium_6", "swift_premium_12"};
 
     public static final String[] DeluxeArr = new String[]{"deluxe_1", "deluxe_3", "deluxe_6", "deluxe_12"};
-    public static final Double[] DeluxePriceArr = new Double[]{19.99, 49.99, 79.99, 119.99};
+   // public static final Double[] DeluxePriceArr = new Double[]{19.99, 49.99, 79.99, 119.99};
     public static final Double[] PremiumPriceArr = new Double[]{19.99, 39.99, 59.99, 89.99};
     private static final long TIME_PERIOD = 3000;
     public static List<InAppPriceValue> timeTokenPriceList = new ArrayList<>();

@@ -36,6 +36,7 @@ public class GpsTracker extends Service implements LocationListener {
     double latitude; // latitude
     double longitude; // longitude
     private static GpsTracker gpsTracker;
+    private boolean dialogIsShowing = false;
 
     public GpsTracker(Context context) {
         this.mContext = context;
@@ -169,7 +170,7 @@ public class GpsTracker extends Service implements LocationListener {
     AlertDialog.Builder alertDialog;
     AlertDialog dialogss;
 
-    public  synchronized void dilaog() {
+    public synchronized void dilaog() {
         if (alertDialog == null) {
             alertDialog = new AlertDialog.Builder(mContext);
             dialogss = alertDialog.create();
@@ -185,15 +186,22 @@ public class GpsTracker extends Service implements LocationListener {
 
         // On pressing Settings button
         alertDialog.setPositiveButton("Settings", (dialog, which) -> {
+            dialogIsShowing = false;
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             mContext.startActivity(intent);
         });
 
         // on pressing cancel button
-        alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        alertDialog.setNegativeButton("Cancel", (dialog, which) -> {
+            dialogIsShowing = false;
+            dialog.cancel();
+        });
 
         Log.e("TAG", "showSettingsAlert: " + dialogss.isShowing());
-        alertDialog.show();
+        if (!dialogIsShowing) {
+            alertDialog.show();
+            dialogIsShowing = true;
+        }
     }
 
     @Override

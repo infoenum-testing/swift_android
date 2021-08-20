@@ -115,9 +115,6 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     private TextView tv_subscribe;
     private GpsTracker gpsTracker;
 
-    AlertDialog.Builder alertDialog;
-    AlertDialog dialog;
-
     @Override
     public int getLayoutId() {
         return R.layout.fragment_profile;
@@ -130,8 +127,6 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         mActivity = (BaseActivity) getActivity();
         gpsTracker = GpsTracker.getInstance(getContext());
         gpsTracker.dilaog();
-        alertDialog = new AlertDialog.Builder(getContext());
-        dialog = alertDialog.create();
         Log.e(TAG, "onViewCreated: ");
         if (getBaseActivity().isNetworkConnected()) {
             initialize(view);
@@ -571,18 +566,19 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             tv_pre_subscribe.setVisibility(View.GONE);
         } else {
             final LocationManager manager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(Context.LOCATION_SERVICE);
-
-            if (getBaseActivity().sp.getPremium() && manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                //  if (!getBaseActivity().sp.getPremium() && GpsTracker.getInstance(getContext()).canGetLocation()) {
-                if (TextUtils.isEmpty(lat) || !lat.equalsIgnoreCase("" + gpsTracker.getLatitude())) {
-                    lat = "" + gpsTracker.getLatitude();
-                    lon = "" + gpsTracker.getLongitude();
-                    String add = CommonUtils.getCityAddress(getContext(), lat, lon);
-                    if (!TextUtils.isEmpty(add))
-                        tvAddress.setText(add);
+            if (getBaseActivity().sp.getPremium()) {
+                if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    //  if (&& GpsTracker.getInstance(getContext()).canGetLocation()) {
+                    if (TextUtils.isEmpty(lat) || !lat.equalsIgnoreCase("" + gpsTracker.getLatitude())) {
+                        lat = "" + gpsTracker.getLatitude();
+                        lon = "" + gpsTracker.getLongitude();
+                        String add = CommonUtils.getCityAddress(getContext(), lat, lon);
+                        if (!TextUtils.isEmpty(add))
+                            tvAddress.setText(add);
+                    }
+                } else {
+                    gpsTracker.showSettingsAlert();
                 }
-            } else {
-                gpsTracker.showSettingsAlert();
             }
         }
         if (
@@ -874,18 +870,11 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                 ));*/
             });
             tv_no.setOnClickListener(view -> dialog.dismiss());
-        } else if (tokenType.equalsIgnoreCase("DeluxePurChase")) {
-            price = CommonDialogs.DeluxePriceList.get(selectedPos).getPriceValue();
-            productId = CommonDialogs.DeluxeArr[selectedPos];
-            bp.subscribe(mActivity, productId);
         }
-        if (!tokenType.equalsIgnoreCase("PremiumPurchase") && !tokenType.equalsIgnoreCase("DeluxePurChase")) {
+        if (!tokenType.equalsIgnoreCase("PremiumPurchase")) {
             bp.purchase(getActivity(), productId);
         }
     }
-
-
-
 
 
 

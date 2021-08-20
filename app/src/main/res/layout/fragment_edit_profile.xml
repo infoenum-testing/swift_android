@@ -533,6 +533,7 @@
                     style="@style/edit_profile_data_txt_style"
                     android:background="@drawable/card_stroke_bg"
                     android:hint="I Live in"
+                    android:textColor="@color/title_color"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_dob" />
