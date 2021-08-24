@@ -8,8 +8,8 @@
     android:background="@color/white">
 
     <ImageView
-        style="@style/back_btn_style"
         android:id="@+id/iv_back"
+        style="@style/back_btn_style"
         app:layout_constraintBottom_toBottomOf="@+id/tv_preview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_preview" />
@@ -74,20 +74,17 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_70sdp"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/_15sdp"
+            android:layout_marginBottom="@dimen/_25sdp"
             android:clickable="true"
             android:elevation="@dimen/_10sdp"
-            android:foregroundGravity="center"
-            android:paddingBottom="@dimen/_10sdp"
             android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:paddingBottom="@dimen/_15sdp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -97,25 +94,36 @@
                     android:id="@+id/cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_15sdp"
+                    android:background="@drawable/btn_bg_shadow"
                     android:contentDescription="@null"
+                    android:elevation="10dp"
                     android:src="@drawable/ic_icdislike" />
 
                 <ImageView
                     android:id="@+id/love"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_15sdp"
+                    android:background="@drawable/btn_bg_shadow"
                     android:contentDescription="@null"
+                    android:elevation="10dp"
                     android:src="@drawable/ic_love_btn_home" />
 
                 <ImageView
                     android:id="@+id/superlike2"
-                    android:layout_width="@dimen/_60sdp"
-                    android:layout_height="@dimen/_60sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_15sdp"
+                    android:background="@drawable/btn_bg_shadow"
                     android:contentDescription="@null"
-                    android:elevation="@dimen/_20sdp"
+                    android:elevation="10dp"
                     android:src="@drawable/ic_love_btn_home"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -126,9 +134,12 @@
                     android:id="@+id/chat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_15sdp"
+                    android:background="@drawable/btn_bg_shadow"
                     android:contentDescription="@null"
-                    android:elevation="@dimen/_10sdp"
+                    android:elevation="10dp"
                     android:src="@drawable/ic_chat_blue" />
 
 
@@ -136,8 +147,11 @@
                     android:id="@+id/superlike"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginBottom="@dimen/_15sdp"
+                    android:background="@drawable/btn_bg_shadow"
                     android:contentDescription="@null"
-                    android:elevation="@dimen/_10sdp"
+                    android:elevation="10dp"
                     android:src="@drawable/ic_star_crush"
                     android:visibility="visible" />
 

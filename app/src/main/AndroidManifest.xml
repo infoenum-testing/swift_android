@@ -79,6 +79,7 @@
             android:name="com.swiftdating.app.ui.chatScreen.ChatWindow"
             android:configChanges="keyboardHidden"
             android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNew"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name="com.swiftdating.app.ui.selfieScreen.SelfieActivity"

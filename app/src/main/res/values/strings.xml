@@ -15,7 +15,7 @@
     <string name="location_permission_text">For using app feature, you need to enable location permission in your settings.</string>
     <string name="proceed_text">Proceed</string>
     <string name="exit_text">Exit</string>
-    <string name="do_you_want_to_logout_text">Do you want to Log Out?</string>
+    <string name="do_you_want_to_logout_text">Do you really want to logout?</string>
     <string name="account_exist">Account is already exist with this email id</string>
     <string name="yes_text">Yes</string>
     <string name="cancel_text">Cancel</string>
@@ -70,7 +70,7 @@
 
     <string name="notification_channel_id">BlackGentry_01</string>
     <string name="notification_channel_name">BlackGentry_app</string>
-    <string name="send_text">Send</string>
+    <string name="send_text">SEND</string>
     <string name="my_email_is">My email is</string>
     <string name="youhaveamatch">You have a match!</string>
     <string name="youhave48">You have 24 hours to connect with %1$s. You can chat with %2$s before the match expires.</string>
@@ -183,7 +183,7 @@
     <string name="schoolname">School Name</string>
     <string name="religion">Religion</string>
     <string name="socket_not_connected_text">Socket Not Connected</string>
-    <string name="type_your_message_text">Type your message</string>
+    <string name="type_your_message_text">Type your message…</string>
     <string name="declined_text">Declined</string>
     <string name="accepted_text">Accepted</string>
     <string name="waiting_for_response_text">Waiting For Response</string>
@@ -632,7 +632,7 @@
     <string name="height_defualt">4\'0\" to 7\'0\"</string>
     <string name="upgrade_txt">Upgrade</string>
     <string name="not_now_txt">Not Now</string>
-    <string name="direct_msg_title_popup">You are out of free Direct Messages for the day. Don’t want to wait? Upgrade to Deluxe and send unlimited Direct Messages.</string>
+    <string name="direct_msg_title_popup">You are out of free Direct Messages for the day. Don’t want to wait? Upgrade to Premium and send unlimited Direct Messages.</string>
     <string name="direct_msg_message_popup">Note: Direct Messages are messages sent to  users that you have not matched with. You can still send likes and match with users in order to communicate.</string>
     <string name="restore_deluxe_txt"><u>Already paid for Deluxe? Restore Purchase.</u></string>
     <string name="restore_premium_txt">Already paid for Premium? Restore Purchase.</string>
@@ -672,6 +672,6 @@
     <string name="no">No</string>
 
     <string name="dialog_txt">People need to know more about you so they can get to know you more swiftly. You must complete 75% of your profile before sending likes.</string>
-    <string name="loading_txt">Loading...</string>
+    <string name="loading_txt">Loading…</string>
 
 </resources>

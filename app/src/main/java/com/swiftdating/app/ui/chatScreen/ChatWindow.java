@@ -48,7 +48,7 @@ import com.swiftdating.app.R;
 import com.swiftdating.app.callbacks.OnInAppInterface;
 import com.swiftdating.app.callbacks.OnItemClickListener;
 import com.swiftdating.app.callbacks.OnItemClickListenerType;
-import com.swiftdating.app.model.requestmodel.DeluxeTokenCountModel;
+import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.swiftdating.app.ui.chatScreen.adapter.ChatAdapter;
 import com.swiftdating.app.ui.chatScreen.viewModel.ChatViewModel;
 import com.swiftdating.app.model.requestmodel.ApplyTimeTokenRequest;
@@ -88,11 +88,10 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
     int selectedPosition;
     boolean fromOutSide;
     private Double price;
-    private TextView tvCancel, tvUnMatch, tvReport, tvExpired, tvTime1;
+    private TextView tvCancel, tvUnMatch, tvReport, tvExpired, fab_send;
     private TextView tvEditProfile;
     private EditText etMessage;
     private SimpleDraweeView ivUserImage, iv_userImage;
-    private FloatingActionButton fab_send;
     private RecyclerView rv_chat;
     private ConstraintLayout parent;
     private LinearLayoutManager linearLayoutManager;
@@ -113,13 +112,21 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
     private int tabPos = 3;
     private boolean isfromDirect = false;
     private boolean isFromSearch = false;
+    private Context context;
+
+    /*
+     * cardo rpfoie --> gone report user , time label , expire iamge
+     * match se
+     *
+     * */
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN, WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.primaryTextColor));
         setContentView(R.layout.activity_chat_window);
+        context = this;
         initialize();
         implementListeners();
         id = getIntent().getIntExtra("id", 0);
@@ -206,7 +213,7 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
      * **  Method to Initialize Billing Process
      */
     private void initBillingProcess() {
-        bp = new BillingProcessor(ChatWindow.this, LICENSE_KEY, this);
+        bp = new BillingProcessor(context, LICENSE_KEY, this);
         bp.initialize();
     }
 
@@ -216,145 +223,87 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
     private void subscribeModel() {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         chatViewModel = ViewModelProviders.of(this).get(ChatViewModel.class);
-        homeViewModel.addDeluxeResponse().observe(this, new Observer<Resource<BaseModel>>() {
-            @Override
-            public void onChanged(Resource<BaseModel> resource) {
-                if (resource == null)
-                    return;
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        if (resource.data.getSuccess()) {
-                            sp.saveDeluxe(true);
-                            //setDeluxeData();
-                           /* tvPremium.setVisibility(View.INVISIBLE);
-                            tvUnlimitedView.setVisibility(View.INVISIBLE);*/
-                        } else if (resource.code == 401) {
+
+        homeViewModel.reportResponse().observe(this, resource -> {
+            if (resource == null) {
+                return;
+            }
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    hideLoading();
+                    hideKeyboard();
+                    if (resource.data.getSuccess()) {
+                        if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
                             openActivityOnTokenExpire();
                         } else {
-                            showSnackbar(ivUserImage, "Something went wrong");
+                            showSnackbar(ivUserImage, "User successfully reported");
                         }
-                        break;
-                    case ERROR:
-                        hideLoading();
-                        showSnackbar(ivUserImage, resource.message);
-                        break;
-                }
-
-            }
-        });
-        homeViewModel.reportResponse().observe(this, new Observer<Resource<BaseModel>>() {
-
-            @Override
-            public void onChanged(@Nullable Resource<BaseModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        hideKeyboard();
-                        if (resource.data.getSuccess()) {
-                            if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
-                                openActivityOnTokenExpire();
-                            } else {
-                                showSnackbar(ivUserImage, "User successfully reported");
-                            }
-                        } else {
-                            //showSnackBar(ivUserImage, resource.data.getMessage());
-                            showSnackbar(ivUserImage, "User has already been reported.");
-                        }
-                        break;
-                    case ERROR:
-                        hideLoading();
-                        showSnackbar(ivUserImage, resource.message);
-                        break;
-                }
+                    } else {
+                        //showSnackBar(ivUserImage, resource.data.getMessage());
+                        showSnackbar(ivUserImage, "User has already been reported.");
+                    }
+                    break;
+                case ERROR:
+                    hideLoading();
+                    showSnackbar(ivUserImage, resource.message);
+                    break;
             }
         });
 
-        homeViewModel.unMatchResponse().observe(this, new Observer<Resource<BaseModel>>() {
-
-            @Override
-            public void onChanged(@Nullable Resource<BaseModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        if (resource.data.getSuccess()) {
-                            if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
-                                openActivityOnTokenExpire();
-                            } else {
-                                bottomSheetGallery.setVisibility(View.GONE);
-                                onBackPressed();
-                            }
+        homeViewModel.unMatchResponse().observe(this, resource -> {
+            if (resource == null) {
+                return;
+            }
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    hideLoading();
+                    if (resource.data.getSuccess()) {
+                        if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
+                            openActivityOnTokenExpire();
                         } else {
-                            showSnackbar(ivUserImage, resource.message);
+                            bottomSheetGallery.setVisibility(View.GONE);
+                            onBackPressed();
                         }
-                        break;
-                    case ERROR:
-                        hideLoading();
+                    } else {
                         showSnackbar(ivUserImage, resource.message);
-                        break;
-                }
+                    }
+                    break;
+                case ERROR:
+                    hideLoading();
+                    showSnackbar(ivUserImage, resource.message);
+                    break;
             }
         });
 
-        chatViewModel.readStatusResponse().observe(this, new Observer<Resource<BaseModel>>() {
-
-            @Override
-            public void onChanged(@Nullable Resource<BaseModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        if (resource.data.getSuccess()) {
-                            if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
-                                openActivityOnTokenExpire();
-                            } else {
-                                Log.e("TAG", "onChanged: "+backPress );
-                                if (backPress) {
-                                    if (isFromSearch) {
-                                        finish();
-                                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                                    } else  if (isFromCard) {
-                                        //Log.e("TAG", "onChanged: isFromCard 338 " );
-                                        //setResult(9898);
-                                        finish();
-                                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                                    } else {
-                                        Intent intent = new Intent(ChatWindow.this, HomeActivity.class);
-                                        intent.putExtra("replace", tabPos);//3);
-                                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                                        startActivity(intent);
-                                        finishAffinity();
-                                    }
-                                }
-                            }
+        chatViewModel.readStatusResponse().observe(this, resource -> {
+            if (resource == null) {
+                return;
+            }
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    hideLoading();
+                    if (resource.data.getSuccess()) {
+                        if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
+                            openActivityOnTokenExpire();
                         } else {
+                            Log.e("TAG", "onChanged: " + backPress);
                             if (backPress) {
                                 if (isFromSearch) {
                                     finish();
                                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                                } else  if (isFromCard) {
-                                    //Log.e("TAG", "onChanged: isFromCard 356 " );
+                                } else if (isFromCard) {
+                                    //Log.e("TAG", "onChanged: isFromCard 338 " );
                                     //setResult(9898);
                                     finish();
                                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                                 } else {
-                                    Intent intent = new Intent(ChatWindow.this, HomeActivity.class);
+                                    Intent intent = new Intent(context, HomeActivity.class);
                                     intent.putExtra("replace", tabPos);//3);
                                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                                     startActivity(intent);
@@ -362,145 +311,174 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
                                 }
                             }
                         }
-                        break;
-                    case ERROR:
-                        hideLoading();
-                        showSnackbar(ivUserImage, resource.message);
-                        Log.e("TAG", "onChanged: "+backPress );
+                    } else {
                         if (backPress) {
                             if (isFromSearch) {
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                            } else  if (isFromCard) {
-                                //Log.e("TAG", "onChanged: isFromCard"+backPress );
-                               // setResult(9898);
+                            } else if (isFromCard) {
+                                //Log.e("TAG", "onChanged: isFromCard 356 " );
+                                //setResult(9898);
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             } else {
-                                Intent intent = new Intent(ChatWindow.this, HomeActivity.class);
-                                intent.putExtra("replace", 3);
+                                Intent intent = new Intent(context, HomeActivity.class);
+                                intent.putExtra("replace", tabPos);//3);
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                                 startActivity(intent);
                                 finishAffinity();
                             }
                         }
-                        break;
-                }
-            }
-        });
-
-        chatViewModel.chatMessageResponse().observe(this, new Observer<Resource<MessageListModel>>() {
-
-            @Override
-            public void onChanged(@Nullable Resource<MessageListModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        hideKeyboard();
-                        if (resource.data.getSuccess()) {
-                            if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
-                                openActivityOnTokenExpire();
-                            } else {
-                                chatList.addAll(resource.data.getChatModels());
-                                /*if (chatList.size()==0)
-                                    ivMenu.setVisibility(View.GONE);
-                                else {
-                                    ivMenu.setVisibility(View.VISIBLE);
-                                }*/
-                                chatAdapter = new ChatAdapter(ChatWindow.this, chatList,
-                                        CallServer.BaseImage + imageUrl, ChatWindow.this);
-                                rv_chat.setAdapter(chatAdapter);
-                                rv_chat.scrollToPosition(chatList.size() - 1);
-                                if (chatList.size() > 0) {
-                                    tvExpired.setVisibility(View.GONE);
-                                    tvTime1.setVisibility(View.GONE);
-                                    iv_userImage.setVisibility(View.GONE);
-                                }
-                            }
+                    }
+                    break;
+                case ERROR:
+                    hideLoading();
+                    showSnackbar(ivUserImage, resource.message);
+                    Log.e("TAG", "onChanged: " + backPress);
+                    if (backPress) {
+                        if (isFromSearch) {
+                            finish();
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        } else if (isFromCard) {
+                            //Log.e("TAG", "onChanged: isFromCard"+backPress );
+                            // setResult(9898);
+                            finish();
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         } else {
-                            showSnackbar(ivUserImage, "User Already Reported");
+                            Intent intent = new Intent(context, HomeActivity.class);
+                            intent.putExtra("replace", 3);
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                            startActivity(intent);
+                            finishAffinity();
                         }
-                        break;
-                    case ERROR:
-                        hideLoading();
-                        showSnackbar(ivUserImage, resource.message);
-                        break;
-                }
+                    }
+                    break;
             }
         });
 
-        homeViewModel.timeTokenResponse().observe(this, new Observer<Resource<SuperLikeResponseModel>>() {
-            @Override
-            public void onChanged(@Nullable Resource<SuperLikeResponseModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        if (resource.data.isSuccess()) {
+        chatViewModel.chatMessageResponse().observe(this, resource -> {
+            if (resource == null) {
+                return;
+            }
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    hideLoading();
+                    hideKeyboard();
+                    if (resource.data.getSuccess()) {
+                        if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
+                            openActivityOnTokenExpire();
+                        } else {
+                            chatList.addAll(resource.data.getChatModels());
+                            /*if (chatList.size()==0)
+                                ivMenu.setVisibility(View.GONE);
+                            else {
+                                ivMenu.setVisibility(View.VISIBLE);
+                            }*/
+                            chatAdapter = new ChatAdapter(ChatWindow.this, chatList,
+                                    CallServer.BaseImage + imageUrl, ChatWindow.this);
+                            rv_chat.setAdapter(chatAdapter);
+                            rv_chat.scrollToPosition(chatList.size() - 1);
+                            if (chatList.size() > 0) {
+                                tvExpired.setVisibility(View.GONE);
+                                iv_userImage.setVisibility(View.GONE);
+                            }
+                        }
+                    } else {
+                        showSnackbar(ivUserImage, "User Already Reported");
+                    }
+                    break;
+                case ERROR:
+                    hideLoading();
+                    showSnackbar(ivUserImage, resource.message);
+                    break;
+            }
+        });
+
+        homeViewModel.timeTokenResponse().observe(this, resource -> {
+            if (resource == null) {
+                return;
+            }
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    hideLoading();
+                    if (resource.data.isSuccess()) {
+                        Gson gson = new Gson();
+                        String user = sp.getUser();
+                        ProfileOfUser obj = gson.fromJson(user, ProfileOfUser.class);
+                        Log.e("TAG", "onChanged: " + resource.data.getTotalTimeTokens());
+                        obj.setTimeTokenCount(resource.data.getTotalTimeTokens() - 1);
+                        sp.saveUserData(obj, sp.getProfileCompleted());
+                        homeViewModel.useTimeToken(new ApplyTimeTokenRequest(id,
+                                72, 1));
+                    } else if (resource.code == 401) {
+                        openActivityOnTokenExpire();
+                    } else {
+                        showSnackbar(ivUserImage, "Something went wrong");
+                    }
+                    break;
+                case ERROR:
+                    hideLoading();
+                    showSnackbar(ivUserImage, resource.message);
+                    break;
+            }
+        });
+
+        homeViewModel.useTimeTokenResponse().observe(this, resource -> {
+            if (resource == null) {
+                return;
+            }
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    hideLoading();
+                    if (resource.data.getSuccess()) {
+                        if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
+                            openActivityOnTokenExpire();
+                        } else {
                             Gson gson = new Gson();
                             String user = sp.getUser();
                             ProfileOfUser obj = gson.fromJson(user, ProfileOfUser.class);
-                            Log.e("TAG", "onChanged: " + resource.data.getTotalTimeTokens());
-                            obj.setTimeTokenCount(resource.data.getTotalTimeTokens() - 1);
+                            obj.setTimeTokenCount(obj.getTimeTokenCount() - 1);
                             sp.saveUserData(obj, sp.getProfileCompleted());
-                            homeViewModel.useTimeToken(new ApplyTimeTokenRequest(id,
-                                    24, 1));
-                        } else if (resource.code == 401) {
-                            openActivityOnTokenExpire();
-                        } else {
-                            showSnackbar(ivUserImage, "Something went wrong");
+                            isExpired = false;
+                            ivTime.setVisibility(View.INVISIBLE);
                         }
-                        break;
-                    case ERROR:
-                        hideLoading();
-                        showSnackbar(ivUserImage, resource.message);
-                        break;
-                }
+                    }
+                    break;
+                case ERROR:
+                    hideLoading();
+                    showSnackbar(ivUserImage, resource.message);
+                    break;
             }
         });
 
-        homeViewModel.useTimeTokenResponse().observe(this, new Observer<Resource<BaseModel>>() {
-
-            @Override
-            public void onChanged(@Nullable Resource<BaseModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        if (resource.data.getSuccess()) {
-                            if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
-                                openActivityOnTokenExpire();
-                            } else {
-                                Gson gson = new Gson();
-                                String user = sp.getUser();
-                                ProfileOfUser obj = gson.fromJson(user, ProfileOfUser.class);
-                                obj.setTimeTokenCount(obj.getTimeTokenCount() - 1);
-                                sp.saveUserData(obj, sp.getProfileCompleted());
-                                isExpired = false;
-                                ivTime.setVisibility(View.INVISIBLE);
-                            }
-                        }
-                        break;
-                    case ERROR:
-                        hideLoading();
-                        showSnackbar(ivUserImage, resource.message);
-                        break;
-                }
+        homeViewModel.addPremiumResponse().observe(this, resource -> {
+            if (resource == null) return;
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    hideLoading();
+                    if (resource.data!=null&&resource.data.getSuccess()!=null) {
+                        sp.savePremium(true);
+                    } else if (resource.code == 401) {
+                        openActivityOnTokenExpire();
+                    } else {
+                        showSnackbar(ivUserImage, "Something went wrong");
+                    }
+                    break;
+                case ERROR:
+                    hideLoading();
+                    showSnackbar(ivUserImage, resource.message);
+                    break;
             }
         });
+
     }
 
     /**
@@ -530,7 +508,6 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
         ivUserImage = findViewById(R.id.ivUserImage);
         iv_userImage = findViewById(R.id.iv_userImage);
         tvExpired = findViewById(R.id.tvTime);
-        tvTime1 = findViewById(R.id.tvTime1);
         tvReport = findViewById(R.id.tvReport);
         tvUnMatch = findViewById(R.id.tvUnMatch);
         if (isfromDirect) {
@@ -569,14 +546,15 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
                 int min = (int) (timeLeft % 60);
                 tvExpired.setVisibility(View.VISIBLE);
                 iv_userImage.setVisibility(View.VISIBLE);
-                tvTime1.setVisibility(View.VISIBLE);
+                String timeExpireStr;
                 if (hours > 1) {
-                    tvExpired.setText("Time left: " + hours + " hours");
+                    timeExpireStr = "Time Remaining : " + hours + " hours";
                 } else if (hours == 1) {
-                    tvExpired.setText("Time left: " + hours + " hour");
+                    timeExpireStr = "Time Remaining : " + hours + " hour";
                 } else {
-                    tvExpired.setText("Time left: " + min + " minutes");
+                    timeExpireStr = "Time Remaining : " + min + " minutes";
                 }
+                tvExpired.setText(timeExpireStr);
             } else {
                 iv_userImage.setVisibility(View.GONE);
             }
@@ -662,32 +640,28 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
                     }.getType();
                     List<ImageModel> imageList = gson.fromJson(jsonImage, type);
                     if (!isFromCard)
-                        WebSocketService.getInstance().sendMessage(ChatWindow.this, sp.getUserId(), id + "", etMessage.getText().toString().trim(), imageList.get(0).getImageUrl(), obj.getName());
+                        WebSocketService.getInstance().sendMessage(context, sp.getUserId(), id + "", etMessage.getText().toString().trim(), imageList.get(0).getImageUrl(), obj.getName());
                     else {
-                        if (obj.getDirectMessageCount() > 0 || sp.getDeluxe()) {
-                            if (!sp.getDeluxe()) {
+                        if (obj.getDirectMessageCount() > 0 || sp.getPremium()) {
+                            if (!sp.getPremium()) {
                                 obj.setDirectMessageCount(obj.getDirectMessageCount() - 1);
                                 sp.saveUserData(obj, null);
                             }
-                            WebSocketService.getInstance().sendMessage(ChatWindow.this, sp.getUserId(), id + "", etMessage.getText().toString().trim(), imageList.get(0).getImageUrl(), obj.getName());
+                            WebSocketService.getInstance().sendMessage(context, sp.getUserId(), id + "", etMessage.getText().toString().trim(), imageList.get(0).getImageUrl(), obj.getName());
                         } else {
-                            CommonDialogs.alertDialogDailyDelux(this, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    CommonDialogs.dismiss();
-                                    CommonDialogs.DeluxePurChaseDialog(ChatWindow.this, ChatWindow.this);
-                                }
+                            CommonDialogs.alertDialogDailyDelux(this, view -> {
+                                CommonDialogs.dismiss();
+                                CommonDialogs.PremuimPurChaseDialog(context, ChatWindow.this, sp);
                             });
                         }
                     }
                     tvExpired.setVisibility(View.GONE);
-                    tvTime1.setVisibility(View.GONE);
                     iv_userImage.setVisibility(View.GONE);
                 }
             }
         } else
 
-            showSnackbar(ivBack, ChatWindow.this.getResources().getString(R.string.no_internet_error));
+            showSnackbar(ivBack, context.getResources().getString(R.string.no_internet_error));
 
     }
 
@@ -696,11 +670,11 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
         String user = sp.getUser();
         ProfileOfUser obj = gson.fromJson(user, ProfileOfUser.class);
         if (obj.getTimeTokenCount() > 0) {
-            CommonDialogs.alertDialogTwoButtons(ChatWindow.this, this, "This match has expired. Do you want to use a time token" +
-                    " to add another 24 hours and enable chatting?");
+            CommonDialogs.alertDialogTwoButtons(context, this, "This match has expired. Do you want to use a time token" +
+                    " to add another 72 hours and enable chatting?");
         } else {
-            CommonDialogs.TimeTokenPurChaseDialog(ChatWindow.this, ChatWindow.this);
-            //CommonDialogs.purchaseDialog(ChatWindow.this, "Time Tokens", "This match has expired and you are out of Time Tokens. To extend time and chat, buy more tokens below.", this);
+            CommonDialogs.TimeTokenPurChaseDialog(context, this);
+            //CommonDialogs.purchaseDialog(context, "Time Tokens", "This match has expired and you are out of Time Tokens. To extend time and chat, buy more tokens below.", this);
         }
     }
 
@@ -734,12 +708,11 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
                 ChatModel chatModel = (ChatModel) intent.getSerializableExtra("chatModel");
                 if (action.equalsIgnoreCase("0")) { // for date created
                     if (chatList != null && chatAdapter != null) {
-                      if (chatList.isEmpty()){
-                          ChatWindow.this.setResult(9898);
-                      }
+                        if (chatList.isEmpty()) {
+                            ChatWindow.this.setResult(9898);
+                        }
                         chatList.add(chatModel);
                         tvExpired.setVisibility(View.GONE);
-                        tvTime1.setVisibility(View.GONE);
                         iv_userImage.setVisibility(View.GONE);
                         rv_chat.scrollToPosition(chatList.size() - 1);
                         chatAdapter.updateReceiptsList(chatList);
@@ -761,8 +734,6 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-
-            case R.id.iv_back:
             case R.id.ivback:
                 if (bottomSheetGallery.getVisibility() == View.VISIBLE) {
                     bottomSheetGallery.setVisibility(View.GONE);
@@ -777,7 +748,7 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
                 String json = sp.getUser();
                 ProfileOfUser obj = gson.fromJson(json, ProfileOfUser.class);
                 if (obj.getTimeTokenCount() > 0) {
-                    homeViewModel.useTimeToken(new ApplyTimeTokenRequest(id, 24, 1));
+                    homeViewModel.useTimeToken(new ApplyTimeTokenRequest(id, 72, 1));
                 } else {
                     CommonDialogs.TimeTokenPurChaseDialog(mActivity, this);
                 }
@@ -832,7 +803,7 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
             case R.id.ivUserImage:
             case R.id.tv_editProfile:
                 //if (!isFromCard)
-                startActivity(new Intent(ChatWindow.this, UserCardActivity.class)
+                startActivity(new Intent(context, UserCardActivity.class)
                         .putExtra("userid", id));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
@@ -885,7 +856,7 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
                     homeViewModel.reportRequest(new ReportRequestModel(id, etReason.getText().toString()));
                     CommonDialogs.dismiss();
                 } else {
-                    Toast.makeText(ChatWindow.this, "Please enter the reason for report", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Please enter the reason for report", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -978,7 +949,7 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
     @Override
     public void OnItemClick(int position, int type, String id) {
         selectedPosition = position;
-        bp.purchase(ChatWindow.this, id);
+        bp.purchase(this, id);
     }
 
     @Override
@@ -1014,14 +985,15 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
         if (tokenSType.equalsIgnoreCase("timeToken")) {
             bp.consumePurchase(productId);
             homeViewModel.addTimeToken(new TimeTokenRequestModel(selectedPosition, price));
-        } else if (tokenSType.equalsIgnoreCase("DeluxePurChase")) {
+        } else if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
             Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
             bp.consumePurchase(productId);
-            homeViewModel.addDeluxeRequest(new DeluxeTokenCountModel("2", productId,
+            homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1", productId,
                     price,
                     selectedPosition,
                     details.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
+                    details.purchaseInfo.purchaseData.purchaseToken,
+                    CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
                     details.purchaseInfo.purchaseData.purchaseState.toString()));
         }
         // homeViewModel.addTimeToken(new TimeTokenRequestModel(selectedPosition, price));
@@ -1085,8 +1057,8 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
             //homeViewModel.addTimeToken(new TimeTokenRequestModel(tokensNum, price));
             bp.purchase(this, productId);
         } else if (tokenType.equalsIgnoreCase("DeluxePurChase")) {
-            price = CommonDialogs.DeluxePriceList.get(selectedPos).getPriceValue();
-            productId = CommonDialogs.DeluxeArr[selectedPos];
+            price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
+            productId = CommonDialogs.PremiumArr[selectedPos];
             bp.subscribe(mActivity, productId);
         }
 

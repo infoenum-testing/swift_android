@@ -57,7 +57,6 @@ import com.swiftdating.app.data.network.ApiCallback;
 import com.swiftdating.app.data.network.Resource;
 import com.swiftdating.app.data.preference.SharedPreference;
 import com.swiftdating.app.model.BaseModel;
-import com.swiftdating.app.model.requestmodel.DeluxeTokenCountModel;
 import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.swiftdating.app.model.requestmodel.SettingsRequestModel;
 import com.swiftdating.app.model.responsemodel.ProfileOfUser;
@@ -76,7 +75,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private static final String TAG = "SettingsActivity";
     public static boolean isSettingChanged = false;
-    ConstraintLayout btnBGPremium, rootLay;
+    ConstraintLayout rootLay;
     TextView tvRestoreSubscription, tvVersion;
     CardView cardTermnService, cardHelp, cardPrivacyPolicy;
     boolean isFromCardScreen;
@@ -84,7 +83,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     String productId, tokenSType;
     int selectedPosition;
     boolean isRangeChange = false;
-    private Button btnLogout, btnShare, btn_reset_skiped_profile;
+    private Button btnLogout,  btn_reset_skiped_profile;
     private TextView tv_done, tv_delete, tvPhone, tvEmail;
     ImageView tv_cancel;
     private Switch showMeSwitch, newMatchSwitch, callSwitch, expireSwitch, matchSwitch, emailNotifySwitch, pushNotifySwitch;
@@ -218,7 +217,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         tvEmail = findViewById(R.id.tvEmail);
         tvPhone = findViewById(R.id.tvPhone);
         btnLogout = findViewById(R.id.btnlogout);
-        btnShare = findViewById(R.id.btnShare);
         tv_cancel = findViewById(R.id.tv_cancel);
         tv_done = findViewById(R.id.tv_done);
         tv_delete = findViewById(R.id.tvdelete);
@@ -233,7 +231,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         callSwitch = findViewById(R.id.callSwitch);
         matchSwitch = findViewById(R.id.messageSwitch);
         expireSwitch = findViewById(R.id.expiredSwitch);
-        btnBGPremium = findViewById(R.id.btn_bg_premium);
         try {
 //            PackageInfo pInfo = mContext.getPackageManager().getPackageInfo("app.blackgentry", 0);
 //            String version = pInfo.versionName;
@@ -263,8 +260,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         tv_cancel.setOnClickListener(this);
         tv_delete.setOnClickListener(this);
         tv_done.setOnClickListener(this);
-        btnBGPremium.setOnClickListener(this);
-        btnShare.setOnClickListener(this);
         tvRestoreSubscription.setOnClickListener(this);
         cardHelp.setOnClickListener(this);
         cardTermnService.setOnClickListener(this);
@@ -446,31 +441,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             }
         });
 
-        homeViewModel.addDeluxeResponse().observe(this, new Observer<Resource<BaseModel>>() {
-            @Override
-            public void onChanged(Resource<BaseModel> resource) {
-                if (resource == null)
-                    return;
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        if (resource.data.getSuccess()) {
-                            sp.saveDeluxe(true);
-                        } else if (resource.code == 401) {
-                            openActivityOnTokenExpire();
-                        } else {
-                            showSnackbar(rootLay, "Something went wrong");
-                        }
-                        break;
-                    case ERROR:
-                        hideLoading();
-                        showSnackbar(rootLay, resource.message);
-                        break;
-                }
-            }
-        });
     }
 
     /**
@@ -605,50 +575,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             TextView tv_no = dialog.findViewById(R.id.tv_no);
             tv_message.setText(this.getResources().getString(R.string.do_you_want_to_delete_text));
 
-            tv_yes.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                    showLoading();
-                    homeViewModel.deleteRequest(sp.getToken());
-                }
+            tv_yes.setOnClickListener(view14 -> {
+                dialog.dismiss();
+                showLoading();
+                homeViewModel.deleteRequest(sp.getToken());
             });
-            tv_no.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                }
-            });
-        } else if (view.getId() == R.id.btn_bg_premium) {
-            sp.setDialogOpen(true);
-            if (sp.getDeluxe()) {
-                CommonDialogs.showAlreadyDeluxe(mActivity);
-            } else if (sp.getPremium()) {
-                CommonDialogs.showAlreadyPremiumUser(this, mActivity.getResources().getString(R.string.you_have_active_subscription));
-            } else {
-                //    CommonDialogs.purchaseDialog(this, "BlackGentry Premium", "", this);
-                CommonDialogs.PremuimPurChaseDialog(this, this, sp);
-            }
-        } else if (view.getId() == R.id.btn_bg_deluxe) {
-            sp.setDialogOpen(true);
-            if (sp.getDeluxe()) {
-                CommonDialogs.showAlreadyPremiumUser(this, mActivity.getResources().getString(R.string.you_have_active_deluxe_subscription));
-            } else {
-                CommonDialogs.DeluxePurChaseDialog(this, this);
-                //CommonDialogs.purchaseDialog(this, "BlackGentry Premium", "", this);
-            }
-        } else if (view == btnShare) {
-            try {
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("text/plain");
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "BlackGentry");
-                String shareMessage = "\nCheck out the BlackGentry App.\n\n";
-                shareMessage = shareMessage + "http://onelink.to/shzeps" + "\n\n";
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                startActivity(Intent.createChooser(shareIntent, "choose one"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            tv_no.setOnClickListener(view15 -> dialog.dismiss());
         } else if (view == cardPrivacyPolicy) {
             startActivity(new Intent(this, CommonWebViewActivity.class)
                     .putExtra("url", "https://swiftdatingapp.com/privacy/"));
@@ -741,16 +673,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     CommonUtils.getDateForPurchase(details),
                     details.purchaseInfo.signature,
                     details.purchaseInfo.purchaseData.purchaseState.toString()));
-        } else if (tokenSType.equalsIgnoreCase("DeluxePurChase")) {
-            bp.consumePurchase(productId);
-            homeViewModel.addDeluxeRequest(new DeluxeTokenCountModel("2", productId,
-                    price,
-                    selectedPosition,
-                    details.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
-                    details.purchaseInfo.purchaseData.purchaseState.toString()));
         }
-        Log.e("DeluxePurChaseSuccess", details.purchaseInfo.responseData);
+        Log.e(TAG, details.purchaseInfo.responseData);
     }
 
     @Override

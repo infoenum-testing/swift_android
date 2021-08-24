@@ -66,7 +66,6 @@ import com.swiftdating.app.data.network.Resource;
 import com.swiftdating.app.data.preference.SharedPreference;
 import com.swiftdating.app.model.BaseModel;
 import com.swiftdating.app.model.ImageModel;
-import com.swiftdating.app.model.requestmodel.DeluxeTokenCountModel;
 import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.swiftdating.app.model.requestmodel.SuperLikeCountModel;
 import com.swiftdating.app.model.requestmodel.TimeTokenRequestModel;
@@ -97,13 +96,11 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     double price;
     String productId, tokenSType, lat, lon;
     private LinearLayout llEdit, llSettings;
-    private TextView tv_complete, tv_deluxe_subscribe, tv_pre_subscribe, tvName, tvAddress, tvPremium, tvUnlimitedView, tv_active, tvCrushToken, tv_vipNum, tvVipToken, tvTimeTokenTxt;
+    private TextView tv_complete, tvName, tvAddress, tvPremium, tvUnlimitedView, tv_active, tvCrushToken, tv_vipNum, tvVipToken, tvTimeTokenTxt;
     private CircleImageView ivProfileImage;
     private HomeViewModel homeViewModel;
     private Button /*btnLikeGetMore, btnExtend, btn_vip,*/ btn_change;
-    private ConstraintLayout btnBGPremium;
     private int purchaseType, selectedPosition;
-    private ConstraintLayout btn_bg_delux;
     private CardView card_vip, card_time, card_crush;
     private Dialog preDialog;
     private ViewPager viewPager;
@@ -232,8 +229,6 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
      * **  Method to Initialize
      */
     private void initialize(View view) {
-        tv_pre_subscribe = view.findViewById(R.id.tv_pre_subscribe);
-        tv_deluxe_subscribe = view.findViewById(R.id.tv_deluxe_subscribe);
         tv_complete = view.findViewById(R.id.tv_complete);
         tvCrushToken = view.findViewById(R.id.tvCrushToken);
         tvVipToken = view.findViewById(R.id.tvVipToken);
@@ -244,15 +239,11 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         btn_change.setOnClickListener(this);
         card_time = view.findViewById(R.id.card_time);
         card_vip = view.findViewById(R.id.card_vip);
-        btn_bg_delux = view.findViewById(R.id.btn_bg_delux);
         llSettings = view.findViewById(R.id.llSettings);
         tvName = view.findViewById(R.id.tv_name);
         tvAddress = view.findViewById(R.id.tv_address);
         llEdit = view.findViewById(R.id.llEdit);
         ivProfileImage = view.findViewById(R.id.iv_profile);
-        btnBGPremium = view.findViewById(R.id.btn_bg_premium);
-        tvPremium = view.findViewById(R.id.premium);
-        tvUnlimitedView = view.findViewById(R.id.ads);
         listener();
         subscribeModel();
         initBillingProcess();
@@ -272,41 +263,38 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     private void subscribeModel() {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
 
-        homeViewModel.verifyResponse().observe(this, new Observer<Resource<VerificationResponseModel>>() {
-            @Override
-            public void onChanged(@Nullable Resource<VerificationResponseModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        getBaseActivity().hideLoading();
-                        if (resource.data.getSuccess()) {
-                            Gson gson = new Gson();
-                            String user = getBaseActivity().sp.getUser();
-                            VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
-                            Log.e("TAG", "onChanged: " + obj);
-                            obj.setUser(resource.data.getUser());
-                            getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), obj.getProfileCompleted().toString());
-                            setData();
-                        } else if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
-                            getBaseActivity().openActivityOnTokenExpire();
-                        } else {
-                            getBaseActivity().showSnackbar(ivProfileImage, resource.data.getMessage());
-                        }
-                        break;
-                    case ERROR:
-                        getBaseActivity().hideLoading();
-                        getBaseActivity().showSnackbar(ivProfileImage, resource.message);
-                        break;
-                }
+        homeViewModel.verifyResponse().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) {
+                return;
+            }
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    getBaseActivity().hideLoading();
+                    if (resource.data.getSuccess()) {
+                        Gson gson = new Gson();
+                        String user = getBaseActivity().sp.getUser();
+                        VerificationResponseModel obj = gson.fromJson(user, VerificationResponseModel.class);
+                        Log.e("TAG", "onChanged: " + obj);
+                        obj.setUser(resource.data.getUser());
+                        getBaseActivity().sp.saveUserData(obj.getUser().getProfileOfUser(), obj.getProfileCompleted().toString());
+                        setData();
+                    } else if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
+                        getBaseActivity().openActivityOnTokenExpire();
+                    } else {
+                        getBaseActivity().showSnackbar(ivProfileImage, resource.data.getMessage());
+                    }
+                    break;
+                case ERROR:
+                    getBaseActivity().hideLoading();
+                    getBaseActivity().showSnackbar(ivProfileImage, resource.message);
+                    break;
             }
         });
 
         // super like == crush token
-        homeViewModel.addSuperLikeResponse().observe(this, resource -> {
+        homeViewModel.addSuperLikeResponse().observe(getViewLifecycleOwner(), resource -> {
             if (resource == null) {
                 return;
             }
@@ -335,7 +323,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             }
         });
 
-        homeViewModel.vipTokenResponse().observe(this, resource -> {
+        homeViewModel.vipTokenResponse().observe(getViewLifecycleOwner(), resource -> {
             if (resource == null) {
                 return;
             }
@@ -365,128 +353,85 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         });
 
 
-        homeViewModel.timeTokenResponse().observe(this, new Observer<Resource<SuperLikeResponseModel>>() {
-            @Override
-            public void onChanged(@Nullable Resource<SuperLikeResponseModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        getBaseActivity().hideLoading();
-                        if (resource.data.isSuccess()) {
-                            Gson gson = new Gson();
-                            String user = getBaseActivity().sp.getUser();
-                            ProfileOfUser obj = gson.fromJson(user, ProfileOfUser.class);
-                            obj.setTimeTokenCount(resource.data.getTotalTimeTokens());
-                            getBaseActivity().sp.saveUserData(obj, getBaseActivity().sp.getProfileCompleted());
-                            setTimeToken(obj);
-                        } else if (resource.code == 401) {
-                            getBaseActivity().openActivityOnTokenExpire();
-                        } else {
-                            getBaseActivity().showSnackbar(ivProfileImage, "Something went wrong");
-                        }
-                        break;
-                    case ERROR:
-                        getBaseActivity().hideLoading();
-                        getBaseActivity().showSnackbar(ivProfileImage, resource.message);
-                        break;
-                }
+        homeViewModel.timeTokenResponse().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) {
+                return;
+            }
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    getBaseActivity().hideLoading();
+                    if (resource.data.isSuccess()) {
+                        Gson gson = new Gson();
+                        String user = getBaseActivity().sp.getUser();
+                        ProfileOfUser obj = gson.fromJson(user, ProfileOfUser.class);
+                        obj.setTimeTokenCount(resource.data.getTotalTimeTokens());
+                        getBaseActivity().sp.saveUserData(obj, getBaseActivity().sp.getProfileCompleted());
+                        setTimeToken(obj);
+                    } else if (resource.code == 401) {
+                        getBaseActivity().openActivityOnTokenExpire();
+                    } else {
+                        getBaseActivity().showSnackbar(ivProfileImage, "Something went wrong");
+                    }
+                    break;
+                case ERROR:
+                    getBaseActivity().hideLoading();
+                    getBaseActivity().showSnackbar(ivProfileImage, resource.message);
+                    break;
             }
         });
 
-        homeViewModel.addPremiumResponse().observe(this, new Observer<Resource<BaseModel>>() {
-            @Override
-            public void onChanged(@Nullable Resource<BaseModel> resource) {
-                if (resource == null) return;
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        getBaseActivity().hideLoading();
-                        if (resource.data.getSuccess()) {
-                            getBaseActivity().sp.savePremium(true);
-                            tv_subscribe.setVisibility(getBaseActivity().sp.getPremium() ? View.VISIBLE : View.GONE);
-                            tv_pre_subscribe.setVisibility(View.VISIBLE);
-                            if (preDialog != null)
-                                preDialog.dismiss();
-                            //getBaseActivity().showSnackBar(ivProfileImage, resource.data.getMessage());
-                           /* tvPremium.setVisibility(View.INVISIBLE);
-                            tvUnlimitedView.setVisibility(View.INVISIBLE);*/
-                        } else if (resource.code == 401) {
-                            getBaseActivity().openActivityOnTokenExpire();
-                        } else {
-                            getBaseActivity().showSnackbar(ivProfileImage, "Something went wrong");
-                        }
-                        break;
-                    case ERROR:
-                        getBaseActivity().hideLoading();
-                        getBaseActivity().showSnackbar(ivProfileImage, resource.message);
-                        break;
-                }
+        homeViewModel.addPremiumResponse().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) return;
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    getBaseActivity().hideLoading();
+                    if (resource.data.getSuccess()) {
+                        getBaseActivity().sp.savePremium(true);
+                        tv_subscribe.setVisibility(getBaseActivity().sp.getPremium() ? View.VISIBLE : View.GONE);
+                        if (preDialog != null)
+                            preDialog.dismiss();
+                        //getBaseActivity().showSnackBar(ivProfileImage, resource.data.getMessage());
+                       /* tvPremium.setVisibility(View.INVISIBLE);
+                        tvUnlimitedView.setVisibility(View.INVISIBLE);*/
+                    } else if (resource.code == 401) {
+                        getBaseActivity().openActivityOnTokenExpire();
+                    } else {
+                        getBaseActivity().showSnackbar(ivProfileImage, "Something went wrong");
+                    }
+                    break;
+                case ERROR:
+                    getBaseActivity().hideLoading();
+                    getBaseActivity().showSnackbar(ivProfileImage, resource.message);
+                    break;
             }
         });
 
-        homeViewModel.addDeluxeResponse().observe(this, new Observer<Resource<BaseModel>>() {
-            @Override
-            public void onChanged(Resource<BaseModel> resource) {
-                if (resource == null)
-                    return;
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        getBaseActivity().hideLoading();
-                        if (resource.data.getSuccess()) {
-                            getBaseActivity().sp.savePremium(false);
-                            getBaseActivity().sp.saveDeluxe(true);
-                            tv_deluxe_subscribe.setVisibility(View.VISIBLE);
-                            tv_pre_subscribe.setVisibility(View.GONE);
-                            //getBaseActivity().showSnackBar(ivProfileImage, resource.data.getMessage());
-                            /* tvPremium.setVisibility(View.INVISIBLE);
-                            tvUnlimitedView.setVisibility(View.INVISIBLE);*/
-                        } else if (resource.code == 401) {
-                            getBaseActivity().openActivityOnTokenExpire();
+        homeViewModel.subscriptionResponse().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null)
+                return;
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    getBaseActivity().hideLoading();
+                    if (resource.data.getSuccess()) {
+                        if (resource.data.getSubscription() != null) {
+                            boolean isSubscribed = resource.data.getSubscription().getIsPremium().equalsIgnoreCase("Yes");
+                            String productId = "";
+                            if (isSubscribed)
+                                productId = resource.data.getSubscription().getSubscriptionForUser().getSubscriptionId();
+                            // new FindMatchFragment().checkSubscription(isSubscribed, productId, resource.data.getSubscription().getSubscriptionForUser().getPurchaseToken());
                         } else {
-                            getBaseActivity().showSnackbar(ivProfileImage, "Something went wrong");
+                            //new FindMatchFragment().checkExistingSubscription();
                         }
-                        break;
-                    case ERROR:
-                        getBaseActivity().hideLoading();
-                        getBaseActivity().showSnackbar(ivProfileImage, resource.message);
-                        break;
-                }
-
-            }
-        });
-
-        homeViewModel.subscriptionResponse().observe(this, new Observer<Resource<SubscriptionDetailResponseModel>>() {
-            @Override
-            public void onChanged(Resource<SubscriptionDetailResponseModel> resource) {
-                if (resource == null)
-                    return;
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        getBaseActivity().hideLoading();
-                        if (resource.data.getSuccess()) {
-                            if (resource.data.getSubscription() != null) {
-                                Boolean isSubscribed = resource.data.getSubscription().getIsPremium().equalsIgnoreCase("Yes");
-                                String productId = "";
-                                if (isSubscribed)
-                                    productId = resource.data.getSubscription().getSubscriptionForUser().getSubscriptionId();
-                                // new FindMatchFragment().checkSubscription(isSubscribed, productId, resource.data.getSubscription().getSubscriptionForUser().getPurchaseToken());
-                            } else {
-                                //new FindMatchFragment().checkExistingSubscription();
-                            }
-                        } else if (resource.code == 401) {
-                            getBaseActivity().openActivityOnTokenExpire();
-                        }
-                        break;
-                }
+                    } else if (resource.code == 401) {
+                        getBaseActivity().openActivityOnTokenExpire();
+                    }
+                    break;
             }
         });
     }
@@ -515,9 +460,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         card_vip.setOnClickListener(this);
         llSettings.setOnClickListener(this);
         llEdit.setOnClickListener(this);
-        btnBGPremium.setOnClickListener(this);
         ivProfileImage.setOnClickListener(this);
-        btn_bg_delux.setOnClickListener(this);
     }
 
     /**
@@ -561,33 +504,21 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                 tv_complete.setText("" + getBaseActivity().sp.getProfileCompleted() + "%");
             }
         }
-        if (getBaseActivity().sp.getDeluxe()) {
-            tv_deluxe_subscribe.setVisibility(View.VISIBLE);
-            tv_pre_subscribe.setVisibility(View.GONE);
-        } else {
-            final LocationManager manager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(Context.LOCATION_SERVICE);
-            if (getBaseActivity().sp.getPremium()) {
-                if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    //  if (&& GpsTracker.getInstance(getContext()).canGetLocation()) {
-                    if (TextUtils.isEmpty(lat) || !lat.equalsIgnoreCase("" + gpsTracker.getLatitude())) {
-                        lat = "" + gpsTracker.getLatitude();
-                        lon = "" + gpsTracker.getLongitude();
-                        String add = CommonUtils.getCityAddress(getContext(), lat, lon);
-                        if (!TextUtils.isEmpty(add))
-                            tvAddress.setText(add);
-                    }
-                } else {
-                    gpsTracker.showSettingsAlert();
+        final LocationManager manager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(Context.LOCATION_SERVICE);
+        if (getBaseActivity().sp.getPremium()) {
+            if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                //  if (&& GpsTracker.getInstance(getContext()).canGetLocation()) {
+                if (TextUtils.isEmpty(lat) || !lat.equalsIgnoreCase("" + gpsTracker.getLatitude())) {
+                    lat = "" + gpsTracker.getLatitude();
+                    lon = "" + gpsTracker.getLongitude();
+                    String add = CommonUtils.getCityAddress(getContext(), lat, lon);
+                    if (!TextUtils.isEmpty(add))
+                        tvAddress.setText(add);
                 }
+            } else {
+                gpsTracker.showSettingsAlert();
             }
         }
-        if (
-
-                getBaseActivity().sp.getPremium()) {
-            if (!getBaseActivity().sp.getDeluxe())
-                tv_pre_subscribe.setVisibility(View.VISIBLE);
-        }
-
     }
 
     private int getAgeFromDob(String sdate) {
@@ -624,28 +555,12 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             CommonDialogs.TimeTokenPurChaseDialog(getContext(), this);
         } else if (view.getId() == R.id.card_crush) {
             CommonDialogs.CrushPurChaseDialog(getContext(), this);
-        } else if (view.getId() == R.id.btn_bg_premium) {
-            getBaseActivity().sp.setDialogOpen(true);
-            if (getBaseActivity().sp.getDeluxe()) {
-                CommonDialogs.showAlreadyDeluxe(mActivity);
-            } else if (getBaseActivity().sp.getPremium()) {
-                CommonDialogs.showAlreadyPremiumUser(getContext(), getContext().getResources().getString(R.string.you_have_active_subscription));
-            } else {
-                preDialog = CommonDialogs.PremuimPurChaseDialog(getContext(), this, getBaseActivity().sp);
-            }
         } else if (view.getId() == R.id.iv_profile) {
             startActivity(new Intent(getContext(), MyCardActivity.class));
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (view.getId() == R.id.card_vip) {
             CommonDialogs.VIPPurChaseDialog(getContext(), this);
-        } /*else if (view.getId() == R.id.btn_bg_delux) {
-            getBaseActivity().sp.setDialogOpen(true);
-            if (getBaseActivity().sp.getDeluxe()) {
-                CommonDialogs.showAlreadyPremiumUser(getContext(), getContext().getResources().getString(R.string.you_have_active_deluxe_subscription));
-            } else {
-                CommonDialogs.DeluxePurChaseDialog(getContext(), this);
-            }
-        } */ else if (view.getId() == R.id.btn_change) {
+        } else if (view.getId() == R.id.btn_change) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (mActivity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2021);
@@ -688,7 +603,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         /*
          * Called when BillingProcessor was initialized and it's ready to purchase
          */
-        if (CommonDialogs.vipTokenPriceList.size() == 0 || CommonDialogs.timeTokenPriceList.size() == 0 || CommonDialogs.crushTokenPriceList.size() == 0 || CommonDialogs.PremiumPriceList.size() == 0 || CommonDialogs.DeluxePriceList.size() == 0) {
+        if (CommonDialogs.vipTokenPriceList.size() == 0 || CommonDialogs.timeTokenPriceList.size() == 0 || CommonDialogs.crushTokenPriceList.size() == 0 || CommonDialogs.PremiumPriceList.size() == 0) {
             CommonDialogs.onBillingInitialized(bp);
         }
         CommonDialogs.setBilling(bp);
@@ -744,14 +659,6 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                     details.purchaseInfo.signature,
                     details.purchaseInfo.purchaseData.purchaseState.toString()));
 
-        } else if (tokenSType.equalsIgnoreCase("DeluxePurChase")) {
-            bp.consumePurchase(productId);
-            homeViewModel.addDeluxeRequest(new DeluxeTokenCountModel("2", productId,
-                    price,
-                    selectedPosition,
-                    details.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
-                    details.purchaseInfo.purchaseData.purchaseState.toString()));
         }
         Log.e("purchase success", details.purchaseInfo.responseData);
     }
@@ -790,14 +697,6 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             lat = user.getLatitude();
             lon = user.getLongitude();
             tvAddress.setText(CommonUtils.getCityAddress(mActivity, user.getLatitude(), user.getLongitude()));
-            if (getBaseActivity().sp.getDeluxe()) {
-                tv_deluxe_subscribe.setVisibility(View.VISIBLE);
-                tv_pre_subscribe.setVisibility(View.GONE);
-            }
-            if (getBaseActivity().sp.getPremium()) {
-                if (!getBaseActivity().sp.getDeluxe())
-                    tv_pre_subscribe.setVisibility(View.VISIBLE);
-            }
         }
         if (requestCode == 1010) setData();
     }

@@ -229,11 +229,12 @@ public class CommonDialogs {
         return dialog;
     }
 
-    public static void showAlreadyPremiumUser(Context context, String message) {
-        final Dialog dialog = new Dialog(Objects.requireNonNull(context));
+
+    public static Dialog newTwoButtonsDialog(Context context, final View.OnClickListener clickListener, String message) {
+        dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setContentView(R.layout.dialog_two_button);
+        dialog.setContentView(R.layout.new_dialog_two_button);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         Window window = dialog.getWindow();
@@ -242,16 +243,45 @@ public class CommonDialogs {
         TextView tv_message = dialog.findViewById(R.id.tv_message);
         TextView tv_yes = dialog.findViewById(R.id.tv_yes);
         TextView tv_no = dialog.findViewById(R.id.tv_no);
-        tv_no.setVisibility(View.GONE);
-        tv_yes.setText("OK");
+        tv_yes.setText("Yes");
         tv_message.setText(message);
+        tv_yes.setOnClickListener(view -> {
+            tv_no.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.btn_bg_shadow, null));
+            tv_no.setTextColor(context.getResources().getColor(R.color.pink));
+            tv_yes.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.pink_btn_bg, null));
+            tv_yes.setTextColor(context.getResources().getColor(R.color.white));
 
-        tv_yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
         });
+        tv_no.setOnClickListener(view -> {
+            tv_no.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.pink_btn_bg, null));
+            tv_no.setTextColor(context.getResources().getColor(R.color.white));
+            tv_yes.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.btn_bg_shadow, null));
+            tv_yes.setTextColor(context.getResources().getColor(R.color.pink));
+            dialog.dismiss();
+        });
+        return dialog;
+    }
+
+    public static void showAlreadyPremiumUser(Context context, String message) {
+        if (dialog == null || !dialog.isShowing()) {
+            dialog = new Dialog(Objects.requireNonNull(context));
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.setContentView(R.layout.dialog_two_button);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            Window window = dialog.getWindow();
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.show();
+            TextView tv_message = dialog.findViewById(R.id.tv_message);
+            TextView tv_yes = dialog.findViewById(R.id.tv_yes);
+            TextView tv_no = dialog.findViewById(R.id.tv_no);
+            tv_no.setVisibility(View.GONE);
+            tv_yes.setText("OK");
+            tv_message.setText(message);
+
+            tv_yes.setOnClickListener(view -> dialog.dismiss());
+        }
     }
 
     /*
@@ -530,9 +560,6 @@ public class CommonDialogs {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
                         dialog.setCancelable(false);
             dialog.setCanceledOnTouchOutside(false);*/
-
-
-
 
 
             TextView[] tvToken1Price = new TextView[4];

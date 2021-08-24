@@ -3,6 +3,7 @@ package com.swiftdating.app.ui.homeScreen.adapter
 import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -33,6 +34,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.swiftdating.app.R
 import com.swiftdating.app.ui.base.BaseActivity
+import kotlinx.android.synthetic.main.activity_insta_test.*
 
 class CardDetailAdapter(
         var context: Context?,

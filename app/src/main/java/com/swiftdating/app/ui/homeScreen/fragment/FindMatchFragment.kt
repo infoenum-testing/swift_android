@@ -10,7 +10,6 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.location.LocationListener
@@ -522,8 +521,6 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         } else {
             Log.e("notSubscribed", "notSubscribed")
             if (isSubscribed) {
-                /*  baseActivity.sp.savePremium(false)
-                  homeViewModel.changePremiumRequest(PremiumStatusChange(productId, "Cancelled"))*/
                 callApiSub("Cancelled", productId, false)
             }
         }
@@ -531,10 +528,6 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
     }
 
     private fun callApiSub(status: String, productId: String, bool: Boolean) {
-/*        if (productId.contains("deluxe")) {
-            baseActivity.sp.saveDeluxe(bool)
-            homeViewModel.changePremiumRequest(PremiumStatusChange(productId, status, 2))
-        } else {*/
         baseActivity.sp.savePremium(bool)
         homeViewModel.changePremiumRequest(PremiumStatusChange(productId, status, 1))
         //      }
@@ -1191,18 +1184,18 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
             }
         })
 
-        homeViewModel.addPremiumResponse().observe(viewLifecycleOwner, Observer { resource ->
-            if (resource == null) {
+        homeViewModel.addPremiumResponse().observe(viewLifecycleOwner, Observer {
+            if (it == null) {
                 return@Observer
             }
-            when (resource.status) {
+            when (it.status) {
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> {
                     baseActivity.hideLoading()
-                    if (resource.data!!.success) {
+                    if (it.data!!.success) {
                         baseActivity.sp.savePremium(true)
-                    } else if (resource.code == 401) {
+                    } else if (it.code == 401) {
                         baseActivity.openActivityOnTokenExpire()
                     }
                 }
@@ -1220,7 +1213,6 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> {
-                    baseActivity.hideLoading()
                     if (resource.code == 401) {
                         baseActivity.openActivityOnTokenExpire()
                     }
@@ -1494,7 +1486,6 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
      */
     @TargetApi(Build.VERSION_CODES.M)
     fun requestPermissionLOC() {
-        // requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSION_REQUEST_CODE_LOC)
         if (ActivityCompat.shouldShowRequestPermissionRationale
                 (baseActivity,
                         Manifest.permission.ACCESS_FINE_LOCATION)
@@ -2091,9 +2082,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         }
 
         chat?.setOnClickListener {
-            baseActivity.showSnackbar(cardStackView, "Not included in this module")
-
-            /* if (percent >= 75) {
+              if (percent >= 75) {
                  if (linear.visibility == VISIBLE) {
                      card_stack_view.visibility = VISIBLE
                      superlike2?.visibility = GONE
@@ -2102,7 +2091,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                      mAdView.visibility = INVISIBLE
                      handleDirection = Direction.Top
                  } else if (list.isNotEmpty() && list.size > manager.topPosition) {
-                     startActivityForResult(Intent(mContext, ChatWindow::class.java).putExtra("id", list[manager.topPosition].id)
+                     startActivityForResult(Intent(mContext, ChatWindow::class.java).
+                     putExtra("id", list[manager.topPosition].id)
                              .putExtra("name", list[manager.topPosition].profileOfUser.name)
                              .putExtra("tabPos", 0)
                              .putExtra("isExpired", false)
@@ -2120,10 +2110,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                      handleDirection = Direction.Top
                  } else
                  CommonDialogs.showAlreadyPremiumUser(contextMy, getString(R.string.dialog_txt))
-
-             }*/
-
-
+             }
         }
 
         like?.setOnClickListener {
@@ -2228,53 +2215,19 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
 
 
     override fun onProductPurchased(productId: String?, details: TransactionDetails?) {
-        /* if (purchaseType == 0)
-         {
-             bp!!.consumePurchase(productId)
-             var price = 49.99
-             if (productId.equals("crush_token_25", ignoreCase = true)) {
-                 price = 27.99
-             } else if (productId.equals("crush_token_5", ignoreCase = true)) {
-                 price = 6.99
-             }
-             homeViewModel.addSuperLikeRequest(SuperLikeCountModel(selectedPosition, price))
-         } else {
-             Log.e("purchase success", details!!.purchaseInfo.responseData)
-             val c = details.purchaseInfo.purchaseData.purchaseTime
-             println("Current time => $c")
-             val df = SimpleDateFormat("yyyy-MM-dd HH:mm:sss")
-             val formattedDate = df.format(c)
-             bp?.consumePurchase(productId)
-             baseActivity.showLoading()
-             var price = 49.99
-             if (productId.equals("premium_6", ignoreCase = true)) {
-                 price = 29.99
-             } else if (productId.equals("premium_1", ignoreCase = true)) {
-                 price = 9.99
-             }
-             homeViewModel.addPremiumRequest(PremiumTokenCountModel("1", productId, price, productId!!.split("_").toTypedArray()[1].toInt(), details.purchaseInfo.purchaseData.orderId,
-                     details.purchaseInfo.purchaseData.purchaseToken, formattedDate, details.purchaseInfo.signature,
-                     details.purchaseInfo.purchaseData.purchaseState.toString()))
-         }*/
-        /*
-         * Called when requested PRODUCT ID was successfully purchased
-         */
         Toast.makeText(context, "Item Purchased", Toast.LENGTH_LONG).show()
         mActivity.showLoading()
         when {
             tokenSType.equals("crushToken", ignoreCase = true) -> {
                 bp!!.consumePurchase(productId)
-                baseActivity.showLoading()
                 homeViewModel.addSuperLikeRequest(SuperLikeCountModel(selectedPosition, price))
             }
             tokenSType.equals("vipToken", ignoreCase = true) -> {
                 bp!!.consumePurchase(productId)
-                baseActivity.showLoading()
                 homeViewModel.addVipToken(VipTokenRequestModel(selectedPosition, price))
             }
             tokenSType.equals("PremiumPurchase", ignoreCase = true) -> {
                 bp!!.consumePurchase(productId)
-                baseActivity.showLoading()
                 homeViewModel.addPremiumRequest(PremiumTokenCountModel("1", productId, price, productId!!.split("_").toTypedArray()[2].toInt(), details!!.purchaseInfo.purchaseData.orderId,
                         details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
                         details.purchaseInfo.purchaseData.purchaseState.toString()))

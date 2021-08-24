@@ -219,7 +219,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                         break;
                     case SUCCESS:
                         isMyProfileApiCall = false;
-                        hideLoading();
                         if (resource.data.getSuccess()) {
                             if (resource.data.getNoOfLikes() != null) {
                                 if (isLikeScreen) {
@@ -255,7 +254,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                         break;
                     case ERROR:
                         isMyProfileApiCall = false;
-                        hideLoading();
                         if (isLikeScreen) {
                             LikesFrament.MyLikeCount = -1;
                             if (myProfileResponse != null)

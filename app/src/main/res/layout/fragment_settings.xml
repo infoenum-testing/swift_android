@@ -654,104 +654,6 @@
             </androidx.cardview.widget.CardView>
 
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/btn_bg_deluxe"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:background="@drawable/facebookbtn"
-                android:backgroundTint="@color/white"
-                android:elevation="@dimen/_2sdp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@+id/btn_bg_premium"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cv_legal">>
-                <!--#413960-->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_30sdp"
-                    android:drawableStart="@drawable/ic_premium"
-                    android:drawablePadding="@dimen/_5sdp"
-                    android:drawableTint="@color/primaryTextColor"
-                    android:fontFamily="@font/medium"
-                    android:gravity="center"
-                    android:paddingStart="@dimen/_10sdp"
-                    android:text="@string/videe_delux"
-                    android:textAllCaps="true"
-                    android:textColor="#413960"
-                    android:textSize="@dimen/_14ssp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/btn_bg_premium"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:background="@drawable/facebookbtn"
-                android:backgroundTint="@color/white"
-                android:elevation="@dimen/_2sdp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@+id/btnShare"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btn_bg_deluxe">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_30sdp"
-                    android:drawableStart="@drawable/ic_premium"
-                    android:drawablePadding="@dimen/_5sdp"
-                    android:drawableTint="@color/primaryTextColor"
-                    android:enabled="false"
-                    android:fontFamily="@font/medium"
-                    android:gravity="center"
-                    android:paddingStart="@dimen/_10sdp"
-                    android:text="@string/videe_premium"
-                    android:textAllCaps="true"
-                    android:textColor="#413960"
-                    android:textSize="@dimen/_14ssp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <Button
-                android:id="@+id/btnShare"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:layout_marginBottom="@dimen/_10sdp"
-                android:background="@drawable/facebookbtn"
-                android:backgroundTint="@color/white"
-                android:elevation="@dimen/_5sdp"
-                android:fontFamily="@font/medium"
-                android:gravity="center"
-                android:minWidth="@dimen/_200sdp"
-                android:paddingStart="60dp"
-                android:paddingTop="@dimen/_10sdp"
-                android:paddingEnd="60dp"
-                android:paddingBottom="@dimen/_10sdp"
-                android:text="@string/sharevidee"
-                android:textAllCaps="false"
-                android:textColor="#FD884E"
-                android:textSize="@dimen/_12ssp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/btnlogout"
-                app:layout_constraintTop_toBottomOf="@+id/btn_bg_premium" />
 
             <RelativeLayout
                 android:id="@+id/sliderFragment"
@@ -762,7 +664,7 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnShare" >
+                app:layout_constraintTop_toBottomOf="@+id/cv_legal" >
 
                 <RelativeLayout
                     android:id="@+id/rlSlider"

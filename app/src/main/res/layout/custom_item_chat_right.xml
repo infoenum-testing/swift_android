@@ -12,16 +12,16 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/_5sdp"
-        android:gravity="center"
-        android:text=""
-        android:padding="@dimen/_5ssp"
-        android:textSize="@dimen/_10ssp"
         android:fontFamily="@font/medium"
-        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="center"
+        android:padding="@dimen/_5ssp"
+        android:text=""
+        android:textColor="@color/grey_new"
+        android:textSize="@dimen/_10ssp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textColor="@color/secondaryTextColor"
-        android:visibility="gone" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <com.facebook.drawee.view.SimpleDraweeView
@@ -44,17 +44,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_5sdp"
-        android:layout_marginEnd="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_5sdp"
-        android:elevation="@dimen/_2sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
         android:background="@drawable/custom_background_chat_right"
+        android:elevation="@dimen/_2sdp"
         android:paddingStart="@dimen/_15sdp"
         android:paddingTop="@dimen/_5sdp"
-        android:paddingEnd="@dimen/_15sdp"
+        android:paddingEnd="@dimen/_5sdp"
         android:paddingBottom="@dimen/_5sdp"
         app:layout_constrainedWidth="true"
-        app:layout_constraintTop_toBottomOf="@+id/msg_date"
-        app:layout_constraintEnd_toStartOf="@+id/iv_picture">
+        app:layout_constraintEnd_toStartOf="@+id/iv_picture"
+        app:layout_constraintTop_toBottomOf="@+id/msg_date">
 
         <TextView
             android:id="@+id/tv_message"
@@ -62,28 +62,29 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/medium"
             android:gravity="start"
+            android:maxWidth="@dimen/_180sdp"
             android:paddingStart="@dimen/_2sdp"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="@dimen/_12ssp"
             app:layout_constrainedWidth="true"
-            android:maxWidth="@dimen/_180sdp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+
+            />
 
         <TextView
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:fontFamily="@font/medium"
             android:letterSpacing="0.06"
             android:text=""
-            android:layout_marginTop="2dp"
             android:textColor="@color/white"
             android:textSize="@dimen/_8ssp"
             android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="@id/tv_message"
-            app:layout_constraintTop_toBottomOf="@+id/tv_message"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_message" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

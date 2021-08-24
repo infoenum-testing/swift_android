@@ -653,6 +653,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/btn_bg_shadow"
             android:layout_gravity="center"
             android:elevation="@dimen/_10sdp"
             android:src="@drawable/ic_icdislike" />
@@ -670,6 +671,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:elevation="@dimen/_10sdp"
+            android:background="@drawable/btn_bg_shadow"
             android:src="@drawable/ic_love_btn_home" />
 
     </FrameLayout>
@@ -684,6 +686,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="@drawable/btn_bg_shadow"
             android:elevation="@dimen/_10sdp"
             android:src="@drawable/superlikebtn" />
 

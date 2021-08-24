@@ -6,211 +6,189 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:clipToPadding="false"
-    tools:context=".dating.ui.chatScreen.ChatWindow">
+    android:clipToPadding="false">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/toolbar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:minHeight="?actionBarSize"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:minHeight="?actionBarSize"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageView
+            android:id="@+id/ivback"
+            style="@style/back_btn_style"
             android:visibility="visible"
-            android:fitsSystemWindows="true"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-
-            <ImageView
-                android:id="@+id/ivback"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:fontFamily="@font/medium"
-                android:src="@drawable/ic_back_btn"
-                android:tint="@color/primaryTextColor"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/ivUserImage"
-                android:layout_width="@dimen/_25sdp"
-                android:layout_height="@dimen/_25sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                app:layout_constraintEnd_toStartOf="@+id/ivmenu"
-                app:layout_constraintStart_toEndOf="@+id/ivback"
-                app:layout_constraintTop_toTopOf="parent"
-                app:roundAsCircle="true" />
-
-            <TextView
-                android:id="@+id/tv_editProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/medium"
-                android:gravity="center"
-                android:text=""
-                android:textAllCaps="false"
-                android:textColor="@color/primaryTextColor"
-                android:textSize="@dimen/_10ssp"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="@+id/ivUserImage"
-                app:layout_constraintStart_toStartOf="@+id/ivUserImage"
-                app:layout_constraintTop_toBottomOf="@+id/ivUserImage" />
-
-            <ImageView
-                android:id="@+id/ivTime"
-                android:layout_width="@dimen/_25ssp"
-                android:layout_height="0dp"
-                android:layout_marginStart="@dimen/_20ssp"
-                android:fontFamily="@font/medium"
-                android:src="@drawable/timefinal"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/ivmenu"
-                app:layout_constraintStart_toEndOf="@+id/ivUserImage"
-                app:layout_constraintTop_toTopOf="@id/ivmenu" />
-
-            <ImageView
-                android:id="@+id/ivmenu"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/_25sdp"
-                android:fontFamily="@font/medium"
-                android:padding="@dimen/_5ssp"
-                android:src="@drawable/dots"
-                android:tint="@color/primaryTextColor"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/ivback"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/ivback" />
-
-            <View
-                android:id="@+id/line"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/_2sdp"
-                android:background="@color/transparent_alpha"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/iv_back"
-                app:layout_constraintTop_toBottomOf="@+id/tv_editProfile" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_chat"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="@dimen/_5sdp"
-            android:background="@drawable/btn_white_border"
-            android:nestedScrollingEnabled="false"
-            android:orientation="vertical"
-            android:overScrollMode="never"
-            android:stackFromBottom="true"
-            android:transcriptMode="alwaysScroll"
-            app:layout_constraintBottom_toTopOf="@+id/et_message"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/iv_userImage"
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_80sdp"
-            android:elevation="@dimen/_10sdp"
-            android:visibility="gone"
-            app:actualImageResource="@drawable/selfie_image"
-            app:layout_constraintBottom_toBottomOf="@+id/rv_chat"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/rv_chat"
-            app:roundAsCircle="true"
-            app:roundedCornerRadius="@dimen/_25ssp" />
+            android:id="@+id/ivUserImage"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            app:layout_constraintEnd_toStartOf="@+id/ivmenu"
+            app:layout_constraintStart_toEndOf="@+id/ivback"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundAsCircle="true" />
 
         <TextView
-            android:id="@+id/tvTime"
+            android:id="@+id/tv_editProfile"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_height="wrap_content"
             android:fontFamily="@font/medium"
             android:gravity="center"
             android:text=""
-            android:textColor="@color/primaryTextColor"
-            android:textSize="@dimen/_14ssp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_userImage" />
-
-        <TextView
-            android:id="@+id/tvTime1"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:fontFamily="@font/medium"
-            android:gravity="center"
-            android:text="Start chatting now before the match expires"
-            android:textColor="@color/primaryTextColor"
+            android:textAllCaps="false"
+            android:textColor="@color/grey_new"
             android:textSize="@dimen/_10ssp"
-            android:visibility="gone"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="@+id/ivUserImage"
+            app:layout_constraintStart_toStartOf="@+id/ivUserImage"
+            app:layout_constraintTop_toBottomOf="@+id/ivUserImage" />
+
+        <ImageView
+            android:id="@+id/ivTime"
+            android:layout_width="@dimen/_25ssp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/_20ssp"
+            android:fontFamily="@font/medium"
+            android:src="@drawable/timefinal"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/ivmenu"
+            app:layout_constraintStart_toEndOf="@+id/ivUserImage"
+            app:layout_constraintTop_toTopOf="@id/ivmenu" />
+
+        <ImageView
+            android:id="@+id/ivmenu"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_25sdp"
+            android:fontFamily="@font/medium"
+            android:padding="@dimen/_5ssp"
+            android:src="@drawable/dots"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/ivback"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTime" />
+            app:layout_constraintTop_toTopOf="@id/ivback"
+            app:tint="@color/grey_new" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_2sdp"
+            android:background="@color/transparent_alpha"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/ivback"
+            app:layout_constraintTop_toBottomOf="@+id/tv_editProfile" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_chat"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/_5sdp"
+        android:background="@drawable/btn_white_border"
+        android:nestedScrollingEnabled="false"
+        android:orientation="vertical"
+        android:overScrollMode="never"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"
+        app:layout_constraintBottom_toTopOf="@+id/clEtMessage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/iv_userImage"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_80sdp"
+        android:elevation="@dimen/_10sdp"
+        android:visibility="gone"
+        app:actualImageResource="@drawable/ic_selfie_svg"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_chat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rv_chat"
+        app:roundAsCircle="true"
+        app:roundedCornerRadius="@dimen/_25ssp" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:fontFamily="@font/medium"
+        android:gravity="center"
+        android:textColor="@color/pink"
+        android:textSize="@dimen/_14ssp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_userImage" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clEtMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:background="@drawable/edit_message_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <EditText
             android:id="@+id/et_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="@dimen/_5sdp"
-            android:background="@drawable/offwhitebg"
+            android:background="@null"
             android:hint="@string/type_your_message_text"
             android:inputType="textMultiLine"
             android:maxLines="9"
+            android:text=""
             android:padding="@dimen/_10ssp"
-            android:textColorHint="@color/secondaryTextColor"
+            android:textColorHint="@color/grey_new"
             android:textSize="@dimen/_12ssp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/cl_fab"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rv_chat" />
+            app:layout_constraintEnd_toStartOf="@+id/fab_send"
+            app:layout_constraintStart_toStartOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_fab"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:background="@color/white"
-            app:layout_constraintBottom_toBottomOf="@id/et_message"
+
+        <TextView
+            android:id="@+id/fab_send"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:enabled="false"
+            android:gravity="center"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_20sdp"
+            android:text="@string/send_text"
+            android:textColor="@color/pink"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/et_message">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_send"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="@dimen/_2sdp"
-                android:enabled="false"
-                android:rotation="180"
-                android:scaleType="center"
-                android:src="@drawable/back"
-                android:visibility="visible"
-                app:elevation="0dp"
-                app:fabCustomSize="@dimen/_35sdp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-
-        <include
-            android:id="@+id/loader"
-            layout="@layout/layout_loader"
-            android:visibility="gone" />
-
-        <include
-            layout="@layout/layout_bottom_sheet_menu"
-            android:visibility="gone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <include
+        android:id="@+id/loader"
+        layout="@layout/layout_loader"
+        android:visibility="gone" />
+
+    <include
+        layout="@layout/layout_bottom_sheet_menu"
+        android:visibility="gone" />
+</androidx.constraintlayout.widget.ConstraintLayout>

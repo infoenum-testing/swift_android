@@ -123,9 +123,9 @@ public class WebSocketService {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onMessage(String s) {
+                        Log.e("Socket_Message_Received", s);
 
                         try {
-                            Log.e("Socket_Message_Received", s);
 
                             JSONObject response = new JSONObject(s);
 

@@ -224,7 +224,7 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!getBaseActivity().sp.getDeluxe()) {
+                if (!getBaseActivity().sp.getPremium()) {
                     int currFirstPos = manager.findFirstCompletelyVisibleItemPosition();
                     int currLastPos = manager.findLastCompletelyVisibleItemPosition();
                     if (oldFirstPos == -1) {
@@ -244,7 +244,7 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
                     if (manager.getItemCount() > 6 && !scrollDown && !CommonDialogs.isDialogOpen && totalItemsViewed != 0 && totalItemsViewed % 6 == 0) {
                         totalItemsViewed = 0;
                         CommonDialogs.isDialogOpen = true;
-                        CommonDialogs.DeluxePurChaseDialog(getContext(), LikesFrament.this);
+                        CommonDialogs.PremuimPurChaseDialog(getContext(), LikesFrament.this,getBaseActivity().sp);
                         recyclerView.stopScroll();
                     }
                 }

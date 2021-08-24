@@ -28,7 +28,7 @@ public class CallServer {
     public static final String BASE_URL = (BuildConfig.SERVER_URL+"api/");
 
     // Web Socket Url for Chat
-    public static final String SocketUrl = "ws://54.175.7.197:8443";  //for production
+    public static final String SocketUrl = "ws://52.54.232.96:8443";  //for production
 
     //public static final String SocketUrl = "ws://54.234.31.215:8443"; //for dev
 
