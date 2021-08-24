@@ -33,6 +33,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -624,7 +625,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
      */
     private fun subscribeModel() {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        homeViewModel.userListResponse().observe(this, Observer<Resource<UserListResponseModel>> { resource ->
+        homeViewModel.userListResponse().observe(viewLifecycleOwner, Observer<Resource<UserListResponseModel>> { resource ->
             if (resource == null) {
                 return@Observer
             }
@@ -632,10 +633,10 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> {
-                    baseActivity.hideLoading()
                     if (resource.data!!.success!!) {
                         baseActivity.sp.saveisSettingsChanged(false)
                         if (resource.data.error != null && resource.data.error.code == "401") {
+                            baseActivity.hideLoading()
                             baseActivity.openActivityOnTokenExpire()
                         }/* else if (resource.data.message == "SELFIE NOT VERIFIED YET !") {
                             if (baseActivity != null && !baseActivity.sp.isRejected) {
@@ -649,6 +650,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                             SharedPreference(context).saveSelfieVerificationStatus("No")
                         }*/
                         else if (resource.data.error != null && resource.data.error.code == "404") {
+                            baseActivity.hideLoading()
                             Log.d("TAG_My", "subscribeModel: visisble setting" + 404)
                             img_vip_star?.isEnabled = false
                             chat?.isEnabled = false
@@ -667,9 +669,11 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                             rlFilter?.isEnabled = true
                             rewind?.isEnabled = true
                             cardStackView!!.visibility = VISIBLE
-                            SharedPreference(context).saveSelfieVerificationStatus("Yes")
+                           // baseActivity.hideLoading()
+                            //SharedPreference(context).saveSelfieVerificationStatus("Yes")
                         }
                     } else {
+                        baseActivity.hideLoading()
                         baseActivity.sp.saveisSettingsChanged(false)
                         img_vip_star?.isEnabled = false
                         chat?.isEnabled = false
@@ -688,7 +692,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         })
-        homeViewModel.userReactResponse().observe(this, Observer<Resource<ReactResponseModel>> { resource ->
+
+        homeViewModel.userReactResponse().observe(viewLifecycleOwner, Observer<Resource<ReactResponseModel>> { resource ->
             if (resource == null) {
                 return@Observer
             }
@@ -696,6 +701,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> {
+                    Log.e(TAG, "userReactResponse: " )
                     baseActivity.hideLoading()
                     if (resource.data!!.success!!) {
                         if (resource.data.react.reaction.contains("dislike")) {
@@ -708,8 +714,6 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         } else {
                             isSecond = false
                         }
-                        Log.e(TAG, "subscribeModel: " + list.size)
-                        Log.e(TAG, "subscribeModel: " + list[manager.topPosition].id + "   ${resource.data.react.toId}")
                         /*if (removeItemFromList) {
                             (activity as HomeActivity).swipeCount--
                             removeItemFromList = false
@@ -810,7 +814,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         })
-        homeViewModel.userReactResponse1().observe(this, Observer<Resource<ReactResponseModel>> { resource ->
+
+        homeViewModel.userReactResponse1().observe(viewLifecycleOwner, Observer<Resource<ReactResponseModel>> { resource ->
             if (resource == null) {
                 return@Observer
             }
@@ -818,6 +823,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> {
+                    Log.e(TAG, "userReactResponse1: " )
                     baseActivity.hideLoading()
                     isCardDisCalled = true
                     if (resource.data!!.success!!) {
@@ -841,7 +847,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         if (cardSwipeCount == 0) {
                             btn_settings.isEnabled = true
                         }
-                        if (baseActivity.sp.swipeCount % 20 == 0 && !baseActivity.sp.premium) {
+                        if (baseActivity.sp.swipeCount % 18 == 0 && !baseActivity.sp.premium) {
                             showAd()
                         }
                     } else if (resource.data.error != null && resource.data.error.code.contains("401")) {
@@ -942,7 +948,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         })
-        homeViewModel.rewindResponse().observe(this, Observer<Resource<BaseModel>> { resource ->
+
+        homeViewModel.rewindResponse().observe(viewLifecycleOwner, Observer<Resource<BaseModel>> { resource ->
             if (resource == null) {
                 return@Observer
             }
@@ -964,6 +971,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         rewind.isEnabled = false
                     } else if (resource.data.error != null && resource.data.error.code.contains("401")) {
                         baseActivity.openActivityOnTokenExpire()
+                    }else{
+                        baseActivity.showSnackbar(card_stack_view, resource.data.message)
                     }
                 }
                 Status.ERROR -> {
@@ -972,7 +981,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         })
-        homeViewModel.sendLatLongResponse().observe(this, Observer { resource ->
+
+        homeViewModel.sendLatLongResponse().observe(viewLifecycleOwner, Observer { resource ->
             if (resource == null) {
                 return@Observer
             }
@@ -980,8 +990,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> if (resource.data!!.success) {
-                    baseActivity.hideLoading()
                     if (resource.data.error != null && resource.data.error.code.contains("401")) {
+                        baseActivity.hideLoading()
                         baseActivity.openActivityOnTokenExpire()
                     } else {
                         val user = baseActivity.sp.user
@@ -991,10 +1001,10 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                             if (baseActivity.sp.status == Global.statusActive) {
                                 img_vip_star!!.isEnabled = true
                                 chat!!.isEnabled = true
-                                baseActivity.showLoading()
                                 // imageView.visibility = VISIBLE
                                 homeViewModel.getUserListRequest(baseActivity.sp.token)
                             } else {
+                                baseActivity.hideLoading()
                                 img_vip_star!!.isEnabled = false
                                 chat!!.isEnabled = false
                             }
@@ -1006,7 +1016,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         })
-        homeViewModel.addSuperLikeResponse().observe(this, Observer { resource ->
+
+        homeViewModel.addSuperLikeResponse().observe(viewLifecycleOwner, Observer { resource ->
             if (resource == null) {
                 return@Observer
             }
@@ -1036,7 +1047,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         })
-        homeViewModel.reportResponse().observe(this, Observer { resource ->
+
+        homeViewModel.reportResponse().observe(viewLifecycleOwner, Observer { resource ->
             if (resource == null) {
                 return@Observer
             }
@@ -1053,7 +1065,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
 
                         } else {
                             showSnackBar(card_stack_view, "User successfully reported.")
-                            view?.findViewById<View>(R.id.cancel)!!.performClick()
+                           // view?.findViewById<View>(R.id.cancel)!!.performClick()
                             rewind.isEnabled = false
                         }
                     } else {
@@ -1067,7 +1079,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         })
-        homeViewModel.settingsResponse().observe(this, Observer { resource ->
+
+        homeViewModel.settingsResponse().observe(viewLifecycleOwner, Observer { resource ->
             if (resource == null) {
                 return@Observer
             }
@@ -1102,7 +1115,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         })
-        homeViewModel.subscriptionResponse().observe(this, Observer { resource ->
+
+        homeViewModel.subscriptionResponse().observe(viewLifecycleOwner, Observer { resource ->
             if (resource == null) {
                 return@Observer
             }
@@ -1110,7 +1124,6 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> {
-                    baseActivity.hideLoading()
                     if (resource.data!!.error != null && resource.data.error.code == "401") {
                         baseActivity.openActivityOnTokenExpire()
                     } else {
@@ -1147,7 +1160,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         })
-        homeViewModel.vipTokenResponse().observe(this, Observer { resource ->
+
+        homeViewModel.vipTokenResponse().observe(viewLifecycleOwner, Observer { resource ->
             if (resource == null) {
                 return@Observer
             }
@@ -1176,7 +1190,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         })
-        homeViewModel.addPremiumResponse().observe(this, Observer { resource ->
+
+        homeViewModel.addPremiumResponse().observe(viewLifecycleOwner, Observer { resource ->
             if (resource == null) {
                 return@Observer
             }
@@ -1196,7 +1211,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         })
-        homeViewModel.changePremiumResponse().observe(this, Observer { resource ->
+
+        homeViewModel.changePremiumResponse().observe(viewLifecycleOwner, Observer { resource ->
             if (resource == null) {
                 return@Observer
             }
@@ -1307,7 +1323,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         })*/
-        homeViewModel.useApplyVipTokenResponse().observe(this, Observer { resource ->
+
+        homeViewModel.useApplyVipTokenResponse().observe(viewLifecycleOwner, Observer { resource ->
             if (resource == null) {
                 return@Observer
             }
@@ -1404,7 +1421,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         Log.e("onAdOpened", "onAdOpened")
 
                         linear.visibility = VISIBLE
-                        love.visibility = INVISIBLE
+                        love.visibility = GONE
                         superlike2?.visibility = VISIBLE
                         mAdView.visibility = VISIBLE
                         card_stack_view.visibility = INVISIBLE
@@ -1425,7 +1442,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         Log.e("onAdLoaded", "onAdLoaded")
 
                         linear.visibility = VISIBLE
-                        love.visibility = INVISIBLE
+                        love.visibility = GONE
                         superlike2?.visibility = VISIBLE
                         mAdView.visibility = VISIBLE
                         card_stack_view.visibility = INVISIBLE
@@ -1726,6 +1743,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 obj.latitude = lat
                 obj.longitude = lng
                 Log.e("latiCheck", "$lat $lng")
+                baseActivity.showLoading()
                 baseActivity.sp.saveUserData(obj, baseActivity.sp.profileCompleted)
                 homeViewModel.sendLatLong(LocationModel(lat, lng))
                 if (obj.visible == "True") {
@@ -1794,7 +1812,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
             if (direction == Direction.Right) {
                 isMySwiped = true
                 var percent = 75.0
-                if (baseActivity.sp.profileCompleted != null && !baseActivity.sp.profileCompleted.equals(""))
+                if (baseActivity.sp.profileCompleted != null && baseActivity.sp.profileCompleted != "")
                     percent = baseActivity.sp.profileCompleted.toDouble()
                 else
                     baseActivity.openActivityOnTokenExpire()
@@ -1805,7 +1823,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         Log.e("manager pos", "1441  " + manager.topPosition)
                         Log.e("manager pos", "1441  " + list[manager.topPosition - 1].id)
                         cardId = list[manager.topPosition - 1].id
-                        baseActivity.showLoading()
+                       // baseActivity.showLoading()
                         homeViewModel.getUserReactRequest1(ReactRequestModel("like", list[manager.topPosition - 1].id))
                         if (rewind != null) {
                             handleDirection = Direction.Right
@@ -1837,7 +1855,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         } else {
                             if (list.isNotEmpty() && list.size >= manager.topPosition) {
                                 cardId = list[manager.topPosition - 1].id
-                                baseActivity.showLoading()
+                              //  baseActivity.showLoading()
                                 homeViewModel.getUserReactRequest1(ReactRequestModel("dislike", list[manager.topPosition - 1].id))
                                 handleDirection = Direction.Left
                                 rewind.isEnabled = true
@@ -1990,13 +2008,14 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         cardSwipeCount = list.size
         val i = ScreenUtils.getScreenHeight(context) - (2 * ScreenUtils.getActionBarHeight(context)) - 30
         myHt = i
-        cardStackView?.adapter = CardDetailAdapter(context, list, i, this)
+        cardStackView?.adapter = CardDetailAdapter(context, list, i, this,baseActivity)
         cardStackView?.adapter!!.notifyDataSetChanged()
         cardStackView?.itemAnimator.apply {
             if (this is DefaultItemAnimator) {
                 supportsChangeAnimations = false
             }
         }
+
     }
 
 
@@ -2350,7 +2369,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         })
 
         for (i in lls.indices) {
-            lls[i]?.setOnClickListener({ v: View? ->
+            lls[i]?.setOnClickListener {
                 pos = i
                 if (i == 5) {
                     dialog.dismiss()
@@ -2379,7 +2398,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                     dialog.dismiss()
                     homeViewModel.reportRequest(ReportRequestModel(id, reason))
                 }
-            })
+            }
         }
     }
 

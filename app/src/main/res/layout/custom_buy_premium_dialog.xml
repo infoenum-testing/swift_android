@@ -365,13 +365,19 @@
         android:id="@+id/tv_restore"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/spaceBottom"
+        android:layout_marginBottom="0dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
-        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:text="@string/restore_premium_txt"
         android:textColor="@color/grey_new"
         android:textSize="12sp" />
+
+    <Space
+        android:id="@+id/spaceBottom"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

@@ -11,12 +11,14 @@ import android.graphics.MaskFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -34,6 +36,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.SkuDetails;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.swiftdating.app.ui.settingScreen.SliderAdapter;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
@@ -56,6 +60,8 @@ import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.swiftdating.app.ui.homeScreen.fragment.LikesFrament;
 import com.swiftdating.app.ui.homeScreen.fragment.SearchFragment;
 
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
 
 public class CommonDialogs {
 
@@ -65,7 +71,7 @@ public class CommonDialogs {
     public static final String[] PremiumArr = new String[]{"swift_premium_1", "swift_premium_3", "swift_premium_6", "swift_premium_12"};
 
     public static final String[] DeluxeArr = new String[]{"deluxe_1", "deluxe_3", "deluxe_6", "deluxe_12"};
-   // public static final Double[] DeluxePriceArr = new Double[]{19.99, 49.99, 79.99, 119.99};
+    // public static final Double[] DeluxePriceArr = new Double[]{19.99, 49.99, 79.99, 119.99};
     public static final Double[] PremiumPriceArr = new Double[]{19.99, 39.99, 59.99, 89.99};
     private static final long TIME_PERIOD = 3000;
     public static List<InAppPriceValue> timeTokenPriceList = new ArrayList<>();
@@ -360,7 +366,15 @@ public class CommonDialogs {
         if (dialog == null || !dialog.isShowing()) {
             currentPage = 0;
             indexOfSelectedLayout = 0;
-            dialog = new Dialog(ctx, R.style.PauseDialog);
+
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ctx, R.style.BottomSheetDialog);
+            bottomSheetDialog.setContentView(R.layout.custom_buy_crush_dialog);
+            bottomSheetDialog.show();
+            bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
+            bottomSheetDialog.getBehavior().setDraggable(false);
+            dialog = bottomSheetDialog;
+
+            /*dialog = new Dialog(ctx, R.style.PauseDialog);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.custom_buy_crush_dialog);
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -371,6 +385,7 @@ public class CommonDialogs {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
             dialog.setCancelable(false);
             dialog.setCanceledOnTouchOutside(false);
+*/
 
             ImageView ivclose = dialog.findViewById(R.id.image_back);
 
@@ -418,7 +433,13 @@ public class CommonDialogs {
         if (dialog == null || !dialog.isShowing()) {
             indexOfSelectedLayout = 0;
             currentPage = 0;
-            dialog = new Dialog(ctx, R.style.PauseDialog);
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ctx, R.style.BottomSheetDialog);
+            bottomSheetDialog.setContentView(R.layout.custom_time_token_dialog);
+            bottomSheetDialog.show();
+            bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
+            bottomSheetDialog.getBehavior().setDraggable(false);
+            dialog = bottomSheetDialog;
+          /*  dialog = new Dialog(ctx, R.style.PauseDialog);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.custom_time_token_dialog);
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -429,6 +450,8 @@ public class CommonDialogs {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
             dialog.setCancelable(false);
             dialog.setCanceledOnTouchOutside(false);
+            */
+
 
             TextView[] tvToken1Price = new TextView[4];
             tvToken1Price[0] = dialog.findViewById(R.id.tvToken1Price);
@@ -489,7 +512,14 @@ public class CommonDialogs {
         if (dialog == null || !dialog.isShowing()) {
             currentPage = 0;
             indexOfSelectedLayout = 0;
-            dialog = new Dialog(ctx, R.style.PauseDialog);
+
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ctx, R.style.BottomSheetDialog);
+            bottomSheetDialog.setContentView(R.layout.custom_buy_vip_dialog);
+            bottomSheetDialog.show();
+            bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
+            bottomSheetDialog.getBehavior().setDraggable(false);
+            dialog = bottomSheetDialog;
+           /* dialog = new Dialog(ctx, R.style.PauseDialog);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.custom_buy_vip_dialog);
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -498,8 +528,13 @@ public class CommonDialogs {
             lp.height = WindowManager.LayoutParams.MATCH_PARENT;
             dialog.getWindow().setAttributes(lp);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-            dialog.setCancelable(false);
-            dialog.setCanceledOnTouchOutside(false);
+                        dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);*/
+
+
+
+
+
             TextView[] tvToken1Price = new TextView[4];
             tvToken1Price[0] = dialog.findViewById(R.id.tvToken1Price);
             tvToken1Price[1] = dialog.findViewById(R.id.tvToken5Price);
@@ -576,6 +611,14 @@ public class CommonDialogs {
         if (dialog == null || !dialog.isShowing()) {
             currentPage = 0;
             indexOfSelectedLayout = 0;
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ctx, R.style.BottomSheetDialog);
+            bottomSheetDialog.setContentView(R.layout.custom_buy_premium_dialog);
+            bottomSheetDialog.show();
+            bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
+            bottomSheetDialog.getBehavior().setDraggable(false);
+            dialog = bottomSheetDialog;
+/*
+
             dialog = new Dialog(ctx, R.style.PauseDialog);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.custom_buy_premium_dialog);
@@ -587,6 +630,8 @@ public class CommonDialogs {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
             dialog.setCancelable(false);
             dialog.setCanceledOnTouchOutside(false);
+
+*/
 
             LinearLayout[] layouts = new LinearLayout[4];
             layouts[0] = dialog.findViewById(R.id.rb5Likes);
@@ -725,10 +770,7 @@ public class CommonDialogs {
 
             ivclose.setOnClickListener(v -> dialog.dismiss());
 
-
             dialog.show();
-
-
         }
         return dialog;
     }

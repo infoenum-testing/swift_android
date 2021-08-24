@@ -672,5 +672,6 @@
     <string name="no">No</string>
 
     <string name="dialog_txt">People need to know more about you so they can get to know you more swiftly. You must complete 75% of your profile before sending likes.</string>
+    <string name="loading_txt">Loading...</string>
 
 </resources>

@@ -573,7 +573,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         } else if (view == tv_cancel) {
             onBackPressed();
         } else if (view == btn_reset_skiped_profile) {
-            if (sp.getDeluxe()) {
+            if (sp.getPremium()) {
                 CommonDialogs.alertDialogConfirm(mActivity, v -> {
                     if (v.getId() == R.id.tv_yes) {
                         CommonDialogs.dismiss();

@@ -32,12 +32,14 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.swiftdating.app.R
+import com.swiftdating.app.ui.base.BaseActivity
 
 class CardDetailAdapter(
         var context: Context?,
         private var spots: List<User> = emptyList(),
         var height: Int,
-        var listener: FindMatchFragment
+        var listener: FindMatchFragment,
+        val baseActivity: BaseActivity
 ) : RecyclerView.Adapter<CardDetailAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -320,6 +322,8 @@ class CardDetailAdapter(
             listener.OnReportClick(spots[position].id)
 
         }
+
+        baseActivity.hideLoading()
     }
 
     override fun getItemCount(): Int {

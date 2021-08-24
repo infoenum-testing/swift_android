@@ -155,8 +155,7 @@
                 android:layout_marginTop="@dimen/_30sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
                 android:layout_marginBottom="@dimen/_10sdp"
-                android:background="@drawable/facebookbtn"
-                android:backgroundTint="@color/white"
+                android:background="@drawable/btn_bg_shadow"
                 android:elevation="30dp"
                 android:enabled="true"
                 android:fontFamily="@font/medium"
@@ -304,7 +303,6 @@
         android:layout_height="wrap_content"
         android:elevation="10dp"
         android:gravity="center"
-        android:paddingBottom="@dimen/_15sdp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -315,7 +313,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:background="@drawable/btn_bg_shadow"
             android:contentDescription="@null"
+            android:elevation="10dp"
             android:src="@drawable/ic_icdislike" />
 
         <ImageView
@@ -323,16 +324,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:background="@drawable/btn_bg_shadow"
             android:contentDescription="@null"
+            android:elevation="10dp"
             android:src="@drawable/ic_love_btn_home" />
 
         <ImageView
             android:id="@+id/superlike2"
-            android:layout_width="@dimen/_60sdp"
-            android:layout_height="@dimen/_60sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
             android:contentDescription="@null"
-            android:elevation="@dimen/_20sdp"
+            android:elevation="10dp"
             android:src="@drawable/ic_love_btn_home"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
@@ -344,8 +349,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:background="@drawable/btn_bg_shadow"
             android:contentDescription="@null"
-            android:elevation="@dimen/_10sdp"
+            android:elevation="10dp"
             android:src="@drawable/ic_chat_blue" />
 
 
@@ -353,8 +360,10 @@
             android:id="@+id/superlike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:background="@drawable/btn_bg_shadow"
             android:contentDescription="@null"
-            android:elevation="@dimen/_10sdp"
+            android:elevation="10dp"
             android:src="@drawable/ic_star_crush"
             android:visibility="visible" />
 

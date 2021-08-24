@@ -294,9 +294,16 @@
     <Button
         android:id="@+id/btn_continue"
         style="@style/token_btn_style"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/spaceBottom"
+        android:layout_marginBottom="0dp"
         android:background="@drawable/vip_token_btn_bg" />
 
+
+    <Space
+        android:id="@+id/spaceBottom"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_alignParentBottom="true" />
 
     <!--  <Button
         android:id="@+id/btn_continue"

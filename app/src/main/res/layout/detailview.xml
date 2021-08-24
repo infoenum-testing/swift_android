@@ -655,7 +655,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:elevation="@dimen/_10sdp"
-            android:src="@drawable/reject_ic" />
+            android:src="@drawable/ic_icdislike" />
 
     </FrameLayout>
 
@@ -670,7 +670,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:elevation="@dimen/_10sdp"
-            android:src="@drawable/like_ic" />
+            android:src="@drawable/ic_love_btn_home" />
 
     </FrameLayout>
 
