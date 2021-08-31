@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -19,6 +20,7 @@ import com.swiftdating.app.callbacks.OnItemClickListenerType;
 import com.swiftdating.app.common.CommonUtils;
 import com.swiftdating.app.data.network.CallServer;
 import com.swiftdating.app.model.responsemodel.MatchListResponseModel;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.swiftdating.app.common.AppConstants.NEW_MATCHES;
@@ -60,11 +62,11 @@ public class NewMatchesAdapter extends RecyclerView.Adapter<NewMatchesAdapter.My
             holder.pb_time_left.setProgress((int) ((expire - server) * 100 / (expire - created)));
             if (server >= expire) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    holder.sdv_picture.setForeground(mContext.getDrawable(R.drawable.transblack));
+                    holder.sdv_picture.setForeground(ContextCompat.getDrawable(mContext, R.drawable.transblack));
                 }
-            }else {
+            } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    holder.sdv_picture.setForeground(mContext.getDrawable(R.drawable.transparent_circle));
+                    holder.sdv_picture.setForeground(ContextCompat.getDrawable(mContext, R.drawable.transparent_circle));
                 }
             }
             holder.sdv_picture.setTag(position);

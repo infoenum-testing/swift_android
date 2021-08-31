@@ -84,7 +84,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentText(messageBody)
                 .setContentIntent(intent)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
-                .setSmallIcon(R.drawable.ic_fcm)
+                .setSmallIcon(R.drawable.ic_round_icon_logo)
                 .setLargeIcon(bitmap)
                 .setAutoCancel(true)
                 .setTicker(messageBody)

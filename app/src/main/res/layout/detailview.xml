@@ -100,10 +100,10 @@
             <ImageView
                 android:id="@+id/ivVerifyLogo"
                 android:layout_width="20dp"
-                android:visibility="gone"
                 android:layout_height="20dp"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:src="@drawable/ic_verify_right"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/name"
                 app:layout_constraintStart_toEndOf="@id/tvage"
                 app:layout_constraintTop_toTopOf="@+id/name" />
@@ -651,9 +651,9 @@
         android:background="@drawable/background_transparent">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/btn_bg_shadow"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/image_bg_shado"
             android:layout_gravity="center"
             android:elevation="@dimen/_10sdp"
             android:src="@drawable/ic_icdislike" />
@@ -667,11 +667,12 @@
         android:background="@drawable/background_transparent">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/image_bg_shado"
+
             android:elevation="@dimen/_10sdp"
-            android:background="@drawable/btn_bg_shadow"
             android:src="@drawable/ic_love_btn_home" />
 
     </FrameLayout>
@@ -683,10 +684,10 @@
 
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/image_bg_shado"
             android:layout_gravity="center"
-            android:background="@drawable/btn_bg_shadow"
             android:elevation="@dimen/_10sdp"
             android:src="@drawable/superlikebtn" />
 

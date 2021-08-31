@@ -22,6 +22,7 @@
     <color name="grey">#f5f5F5</color>
     <color name="border_color">#A2ABB8</color>
     <color name="grey_new">#989898</color>
+    <color name="light_grey">#ABABAB</color>
     <color name="title_color">#2F2F2F</color>
     <color name="divider_color">#D2D2D2</color>
     <color name="pink_light_toggle">#FBDCDE</color>
@@ -35,7 +36,9 @@
     <color name="card_border_color">#E1E1E1</color>
     <color name="profile_txt_color">#585858</color>
     <color name="filter_btn_color">#E3E3E3</color>
-
-
+    <color name="light">#BBBBBB</color>
+    <color name="name_color">#333D41</color>
+    <color name="pink2">#E9205E</color>
+    <color name="msg_color">#545C60</color>
 
 </resources>

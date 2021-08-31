@@ -44,6 +44,7 @@ public class WebSocketService {
     private SharedPreference sharedPref;
     private WebSocketClient mWebSocketClient;
     private Intent notificationIntent;
+    private static final String TAG = "WebSocketService";
 
     private boolean is_opened = false;
 
@@ -112,7 +113,7 @@ public class WebSocketService {
 
                     @Override
                     public void onOpen(ServerHandshake serverHandshake) {
-                        Log.e("Web socket", "Opened");
+                        Log.e(TAG, "Opened");
                         // session started
                         is_opened = true;
                         on_socket_opened(true);
@@ -173,13 +174,14 @@ public class WebSocketService {
                             }
 
                         } catch (Exception e) {
+                            Log.e(TAG, "onMessage: "+e.toString() );
                             e.printStackTrace();
                         }
                     }
 
                     @Override
                     public void onClose(int i, String s, boolean b) {
-                        Log.e("Web socket", "Closed " + s);
+                        Log.e(TAG, "Closed " + s);
                         is_opened = false;
                         on_socket_opened(false);
                         if (sharedPref.getUserId() != null)
@@ -188,7 +190,7 @@ public class WebSocketService {
 
                     @Override
                     public void onError(Exception e) {
-                        Log.e("Web socket", "Error " + e.getMessage());
+                        Log.e(TAG, "Error " + e.getMessage());
                         is_opened = false;
                         on_socket_opened(false);
                     }
@@ -229,6 +231,7 @@ public class WebSocketService {
             }
 
         } catch (JSONException e) {
+            Log.e(TAG, "setWebSocketHitConnect: "+e.toString() );
             e.printStackTrace();
         }
     }

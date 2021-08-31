@@ -10,8 +10,8 @@
         <!-- this line fixes the issue for lollipop api 21 -->
         <gradient
             android:angle="0"
-            android:endColor= "@color/primaryTextColor"
-            android:startColor= "@color/primaryTextColor"
+            android:endColor= "@color/pink"
+            android:startColor= "@color/pink"
             android:type= "sweep"
             android:useLevel= "false" />
     </shape>

@@ -1,7 +1,6 @@
 
 
 
-
 package com.swiftdating.app.ui.homeScreen.fragment;
 
 import android.app.Activity;
@@ -120,7 +119,7 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
 
     private void setAdapter(List<User> list) {
         if (mActivity != null)
-            recycle.setAdapter(new LikesImagesAdapter(mActivity, list, onBtnClick, this, this,getBaseActivity().sp));
+            recycle.setAdapter(new LikesImagesAdapter(mActivity, list,onBtnClick, this, this, getBaseActivity().sp));
     }
 
     @Override
@@ -241,11 +240,10 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
                     oldFirstPos = currFirstPos;
                     Log.e("totalItemsViewed", "onScrolled  " + totalItemsViewed + " %6 = " + totalItemsViewed % 6);
                     scrollDown = dy <= 0;
-                    if (manager.getItemCount() > 6 && !scrollDown && !CommonDialogs.isDialogOpen && totalItemsViewed != 0 && totalItemsViewed % 6 == 0) {
+                    if (manager.getItemCount() > 6 && !scrollDown &&  totalItemsViewed != 0 && totalItemsViewed % 6 == 0) {
                         totalItemsViewed = 0;
-                        CommonDialogs.isDialogOpen = true;
-                        CommonDialogs.PremuimPurChaseDialog(getContext(), LikesFrament.this,getBaseActivity().sp);
-                        recyclerView.stopScroll();
+                        CommonDialogs.PremuimPurChaseDialog(getContext(), LikesFrament.this, getBaseActivity().sp);
+                        recyclerView.scrollToPosition(0);
                     }
                 }
             }
@@ -348,8 +346,12 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
                     btn_see_people.setVisibility(View.VISIBLE);
                 }*/
                 if (tab.getPosition() == 1) {
-                    if (isListEmpty(disLikelist) && (disliked == -1 || disliked > 0) || getBaseActivity().sp.getDislikeApi()) {
+                    if (isListEmpty(disLikelist)
+                            && (disliked == -1 || disliked > 0) ||
+                            getBaseActivity().sp.getDislikeApi()) {
                         recycle.setVisibility(View.GONE);
+                        rlNoResult.setVisibility(View.VISIBLE);
+                        ivNoResult.setImageResource(R.drawable.second_chance_img);
                         tv_no_result.setText("");
                         callDislikedApi();
                     } else {
@@ -360,6 +362,7 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
                             ivNoResult.setImageResource(R.drawable.second_chance_img);
                             tv_no_result.setText("You don't have any unseen skipped profiles right now.");
                         } else {
+                            rlNoResult.setVisibility(View.GONE);
                             recycle.setVisibility(View.VISIBLE);
                             setAdapter(disLikelist);
                         }
@@ -385,6 +388,7 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
                             recycle.setVisibility(View.GONE);
                             tv_no_result.setText("New likes will appear here. You don't have any likes right now.");
                         } else {
+                            rlNoResult.setVisibility(View.GONE);
                             recycle.setVisibility(View.VISIBLE);
                             setAdapter(list);
                         }
@@ -494,6 +498,7 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onPurcha
                 ivNoResult.setImageResource(R.drawable.no_like_img);
                 tv_no_result.setText("New likes will appear here. You don't have any likes right now.");
             } else {
+                rlNoResult.setVisibility(View.GONE);
                 recycle.setVisibility(View.VISIBLE);
                 list = response.getUsers();
                 if (isFromOnCreate) {

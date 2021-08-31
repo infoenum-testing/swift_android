@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/new_module_layout" />
 
     <com.swiftdating.app.common.VerticalScrollview
         android:id="@+id/verticalScrollview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone"
         android:fillViewport="true"
         android:overScrollMode="never"
         android:scrollbars="none"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,21 +24,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:id="@+id/rv_actionbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="Messages"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="20sp" />
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/tvTitle"
+                style="@style/title_style_top"
+                android:layout_centerHorizontal="true"
+                android:text="Messages"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <RelativeLayout
                 android:id="@+id/rv_tab"
@@ -48,21 +39,20 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rv_actionbar">
+                app:layout_constraintTop_toBottomOf="@+id/tvTitle">
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab_msg"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:layout_margin="10dp"
-                    android:background="@drawable/continue_to_btn_bg"
                     android:elevation="10dp"
                     app:tabGravity="fill"
-                    app:tabIndicatorColor="@color/colorPrimary"
+                    app:tabIndicatorColor="@color/pink"
                     app:tabIndicatorFullWidth="false"
-                    app:tabSelectedTextColor="@color/primaryTextColor"
+                    app:tabSelectedTextColor="@color/title_color"
                     app:tabTextAppearance="@style/MyCustomTextAppearance"
-                    app:tabTextColor="@color/quantum_grey" />
+                    app:tabTextColor="@color/light" />
 
             </RelativeLayout>
 
@@ -73,7 +63,7 @@
                 android:layout_marginTop="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rv_actionbar">
+                app:layout_constraintTop_toBottomOf="@+id/tvTitle">
 
                 <Button
                     android:id="@+id/match_unread_count_btn"
@@ -97,7 +87,7 @@
                     android:layout_centerInParent="true"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:background="@color/quantum_grey" />
+                    android:background="@color/light" />
 
                 <Button
                     android:id="@+id/direct_unread_count_btn"
@@ -123,7 +113,7 @@
                 android:elevation="@dimen/_10sdp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rv_actionbar">
+                app:layout_constraintTop_toBottomOf="@+id/tvTitle">
 
                 <TextView
                     android:id="@+id/tvUnMatch"
@@ -140,6 +130,7 @@
                     android:textColor="@color/primaryTextColor"
                     android:textSize="@dimen/_12sdp" />
             </RelativeLayout>
+
             <LinearLayout
                 android:id="@+id/ll_main"
                 android:layout_width="match_parent"
@@ -157,15 +148,15 @@
                         android:id="@+id/tv_direct_msg"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_marginStart="@dimen/_15sdp"
                         android:layout_marginTop="@dimen/_10sdp"
-                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_15sdp"
                         android:layout_marginBottom="@dimen/_20sdp"
                         android:fontFamily="@font/medium"
                         android:gravity="center"
-                        android:text="Direct messages are messages from users that you have not matched with yet. If you reply, a match will be created and the conversation will be moved to the Matched Messages tab. Direct messages that you send will also be shown here until they reply."
+                        android:text="Direct messages are messages from Premium users that you have not matched with. A match is created if you reply and the conversation shall be moved to the Matched Messages tab."
                         android:textAllCaps="false"
-                        android:textColor="@color/black"
+                        android:textColor="@color/light"
                         android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -175,11 +166,10 @@
                         android:id="@+id/btn_direct_msg"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:background="@drawable/facebookbtn"
-                        android:backgroundTint="@color/light_red"
+                        android:layout_marginEnd="30dp"
+                        android:background="@drawable/pink_btn_bg"
                         android:elevation="10dp"
                         android:text="See Direct Messages"
                         android:textAllCaps="true"
@@ -193,8 +183,8 @@
                     android:id="@+id/cl_new_matches"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
                     android:minHeight="@dimen/_100sdp"
+                    android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/rv_tab">
@@ -203,16 +193,15 @@
                         android:id="@+id/tv_new_matches"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_5sdp"
+                        android:layout_marginStart="@dimen/_15sdp"
                         android:layout_marginTop="@dimen/_5sdp"
-                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:layout_marginEnd="@dimen/_15sdp"
                         android:layout_marginBottom="@dimen/_20sdp"
                         android:fontFamily="@font/medium"
                         android:text="@string/new_matches_text"
                         android:textAllCaps="false"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/_14ssp"
-                        android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -225,32 +214,34 @@
                         android:visibility="gone"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_new_matches">
+
                         <ProgressBar
                             android:id="@+id/pb_time_left"
+                            style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="@dimen/_80sdp"
                             android:layout_height="@dimen/_80sdp"
-                            style= "?android:attr/progressBarStyleHorizontal"
-                            android:layout_centerInParent= "true"
-                            android:background= "@drawable/circular_shape"
-                            android:indeterminate= "false"
+                            android:layout_centerInParent="true"
+                            android:background="@drawable/circular_shape"
+                            android:indeterminate="false"
                             android:max="100"
-                            android:scaleX="-1"
                             android:progress="100"
                             android:progressDrawable="@drawable/circular_progress_bar_red"
-                            app:layout_constraintStart_toStartOf="parent"
+                            android:scaleX="-1"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/sdv_picture"
                             android:layout_width="@dimen/_60sdp"
                             android:layout_height="@dimen/_60sdp"
-                            app:roundAsCircle="true"
+                            app:layout_constraintBottom_toBottomOf="@id/pb_time_left"
 
-                            app:layout_constraintStart_toStartOf="@id/pb_time_left"
                             app:layout_constraintEnd_toEndOf="@id/pb_time_left"
+                            app:layout_constraintStart_toStartOf="@id/pb_time_left"
                             app:layout_constraintTop_toTopOf="@id/pb_time_left"
-                            app:layout_constraintBottom_toBottomOf="@id/pb_time_left"/>
+                            app:roundAsCircle="true" />
+
                         <ImageView
                             android:id="@+id/img_heart"
                             android:layout_width="@dimen/_15sdp"
@@ -265,39 +256,41 @@
                             android:id="@+id/tv_twentyLiks"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/_11sdp"
                             android:layout_margin="@dimen/_5sdp"
-                            android:maxLines="1"
-                            android:text="0 Likes"
-                            android:maxLength="30"
                             android:ellipsize="end"
-                            android:singleLine="true"
                             android:fontFamily="@font/medium"
+                            android:maxLength="30"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="0 Likes"
                             android:textColor="@color/red"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
+                            android:textSize="@dimen/_11sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/pb_time_left"/>
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/pb_time_left" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_new_matches"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/_100sdp"
-                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:layout_marginStart="@dimen/_15sdp"
+                        android:layout_marginEnd="@dimen/_15sdp"
                         android:overScrollMode="never"
                         android:scrollbars="none"
-                        android:layout_marginStart="@dimen/_5sdp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/cons_dummy"
                         app:layout_constraintTop_toBottomOf="@id/tv_new_matches" />
+
                     <TextView
                         android:id="@+id/tv_NoNewMatched"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/_10sdp"
-                        android:text="No new matches yet."
                         android:gravity="center"
+                        android:text="No new matches yet."
+                        android:textColor="@color/light"
+                        android:textSize="@dimen/_10sdp"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/cons_dummy" />
@@ -305,30 +298,30 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 
-        <!--    <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/direct_cl"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ll_main">
+            <!--    <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/direct_cl"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ll_main">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:background="@color/white"
-                    android:fontFamily="@font/medium"
-                    android:gravity="center"
-                    android:padding="@dimen/_30sdp"
-                    android:scaleX="1.25"
-                    android:scaleY="1.25"
-                    android:text="No Direct Messages yet."
-                    android:textColor="@color/primaryTextColor"
-                    android:textSize="@dimen/_12sdp" />
-            </androidx.constraintlayout.widget.ConstraintLayout>-->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:background="@color/white"
+                        android:fontFamily="@font/medium"
+                        android:gravity="center"
+                        android:padding="@dimen/_30sdp"
+                        android:scaleX="1.25"
+                        android:scaleY="1.25"
+                        android:text="No Direct Messages yet."
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="@dimen/_12sdp" />
+                </androidx.constraintlayout.widget.ConstraintLayout>-->
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_schedule_matches"
@@ -344,35 +337,46 @@
                     android:id="@+id/tv_schedule_matches"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_5sdp"
-                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:layout_marginStart="@dimen/_15sdp"
+                    android:layout_marginEnd="@dimen/_15sdp"
                     android:fontFamily="@font/medium"
                     android:text="Messages"
                     android:textAllCaps="false"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/_14ssp"
-                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/ivNoNewMatchMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_no_match_msg_img"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_NoMessage"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_matches" />
 
                 <TextView
                     android:id="@+id/tv_NoMessage"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="No new messages yet."
                     android:gravity="center"
-                    android:visibility="gone"
+                    android:text="No new messages yet."
+                    android:textColor="@color/light"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_matches" />
+
                 <com.swiftdating.app.common.swipemenulistview.SwipeMenuListView
                     android:id="@+id/rv_schedule_matches"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginStart="@dimen/_5sdp"
-                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:layout_marginStart="@dimen/_15sdp"
+                    android:layout_marginEnd="@dimen/_15sdp"
                     android:overScrollMode="never"
                     android:scrollbars="none"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -387,50 +391,51 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-           <!-- <RelativeLayout
-                android:id="@+id/rlUnMatch"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:background="@color/white"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rv_tab">
+            <!-- <RelativeLayout
+                 android:id="@+id/rlUnMatch"
+                 android:layout_width="match_parent"
+                 android:layout_height="0dp"
+                 android:background="@color/white"
+                 android:visibility="visible"
+                 app:layout_constraintBottom_toBottomOf="parent"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintTop_toBottomOf="@+id/rv_tab">
 
-                <TextView
-                    android:id="@+id/tvUnMatch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:drawableTop="@drawable/purple_heart"
-                    android:fontFamily="@font/medium"
-                    android:gravity="center"
-                    android:padding="@dimen/_30sdp"
-                    android:scaleX="1.25"
-                    android:scaleY="1.25"
-                    android:text="@string/noMatchAvailable"
-                    android:textColor="@color/primaryTextColor"
-                    android:textSize="@dimen/_12sdp" />
+                 <TextView
+                     android:id="@+id/tvUnMatch"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_centerInParent="true"
+                     android:drawableTop="@drawable/purple_heart"
+                     android:fontFamily="@font/medium"
+                     android:gravity="center"
+                     android:padding="@dimen/_30sdp"
+                     android:scaleX="1.25"
+                     android:scaleY="1.25"
+                     android:text="@string/noMatchAvailable"
+                     android:textColor="@color/primaryTextColor"
+                     android:textSize="@dimen/_12sdp" />
 
-                &lt;!&ndash;  <TextView
-                      android:id="@+id/tvDirect"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_centerInParent="true"
-                      android:fontFamily="@font/medium"
-                      android:gravity="center"
-                      android:padding="@dimen/_30sdp"
-                      android:scaleX="1.25"
-                      android:scaleY="1.25"
-                      android:text="No Direct Messages yet."
-                      android:textColor="@color/primaryTextColor"
-                      android:textSize="@dimen/_12sdp"
-                      android:visibility="gone" />&ndash;&gt;
+                 &lt;!&ndash;  <TextView
+                       android:id="@+id/tvDirect"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:layout_centerInParent="true"
+                       android:fontFamily="@font/medium"
+                       android:gravity="center"
+                       android:padding="@dimen/_30sdp"
+                       android:scaleX="1.25"
+                       android:scaleY="1.25"
+                       android:text="No Direct Messages yet."
+                       android:textColor="@color/primaryTextColor"
+                       android:textSize="@dimen/_12sdp"
+                       android:visibility="gone" />&ndash;&gt;
 
-            </RelativeLayout>-->
+             </RelativeLayout>-->
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.swiftdating.app.common.VerticalScrollview>
@@ -442,43 +447,44 @@
         android:layout_gravity="center"
         android:visibility="gone">-->
 
-<RelativeLayout
-    android:id="@+id/rv_reject"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:layout_marginTop="?attr/actionBarSize"
-    android:elevation="@dimen/_10sdp"
-    android:visibility="gone"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
-    <TextView
-        android:id="@+id/tvProfileReject"
+    <RelativeLayout
+        android:id="@+id/rv_reject"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center"
-        android:drawableTop="@drawable/bg_big_ic"
-        android:drawableTint="@color/primaryTextColor"
-        android:fontFamily="@font/medium"
-        android:gravity="center"
-        android:paddingTop="@dimen/_10sdp"
-        android:text="@string/profileIdRejected"
-        android:textAllCaps="false"
-        android:textColor="@color/primaryTextColor"
-        android:textSize="@dimen/_16ssp"
-        android:visibility="visible" />
-</RelativeLayout>
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@color/white"
+        android:elevation="@dimen/_10sdp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-
-       <!-- <View
+        <TextView
+            android:id="@+id/tvProfileReject"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_20sdp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvProfileReject" />
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:drawableTop="@drawable/bg_big_ic"
+            android:drawableTint="@color/primaryTextColor"
+            android:fontFamily="@font/medium"
+            android:gravity="center"
+            android:paddingTop="@dimen/_10sdp"
+            android:text="@string/profileIdRejected"
+            android:textAllCaps="false"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/_16ssp"
+            android:visibility="visible" />
+    </RelativeLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+    <!-- <View
+         android:layout_width="match_parent"
+         android:layout_height="@dimen/_20sdp"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toBottomOf="@id/tvProfileReject" />
+
+ </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <include
         layout="@layout/layout_verify"

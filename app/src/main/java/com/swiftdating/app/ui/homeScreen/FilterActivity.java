@@ -975,6 +975,8 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
                     details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
                     details.purchaseInfo.purchaseData.purchaseState.toString()));
             Log.e("purchase success DeluxePurChase ", details.purchaseInfo.responseData);
+
+
         }
     }
 

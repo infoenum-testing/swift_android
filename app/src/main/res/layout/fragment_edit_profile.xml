@@ -18,8 +18,7 @@
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/scrollview"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_editProfile"
@@ -509,7 +508,7 @@
                     style="@style/edit_profile_data_txt_style"
                     android:textColor="@color/title_color"
                     android:background="@drawable/card_stroke_bg"
-                    app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_basic_info" />
 
@@ -533,8 +532,7 @@
                     style="@style/edit_profile_data_txt_style"
                     android:background="@drawable/card_stroke_bg"
                     android:hint="I Live in"
-                    android:textColor="@color/title_color"
-                    app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_dob" />
 

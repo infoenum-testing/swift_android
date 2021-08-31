@@ -26,7 +26,11 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 
@@ -162,7 +166,9 @@ public class CommonUtils {
         progressDialog.show();
         if (progressDialog.getWindow() != null) {
             progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            progressDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         }
+
         progressDialog.setContentView(R.layout.progress_dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);

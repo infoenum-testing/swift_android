@@ -121,7 +121,6 @@ public class EditProfileActivity extends BaseActivity implements View.OnLongClic
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_edit_profile);
-        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.grey));
         getMyProfile(null);
         initialize();
         subscribeModel();

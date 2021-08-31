@@ -26,22 +26,23 @@ import com.swiftdating.app.common.swipemenulistview.BaseSwipeListAdapter;
 import com.swiftdating.app.data.network.CallServer;
 import com.swiftdating.app.data.preference.SharedPreference;
 import com.swiftdating.app.model.responsemodel.ChatListModel;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.swiftdating.app.common.AppConstants.SCHEDULE_MATCHES;
 
-public class ScheduleSwipeAdapter extends BaseSwipeListAdapter{
+public class ScheduleSwipeAdapter extends BaseSwipeListAdapter {
 
-//    public boolean isBlurr;
+    //    public boolean isBlurr;
     private Context mContext;
     private ArrayList<ChatListModel.ChatList> matchList;
     private OnItemClickListenerType onItemClickListener;
     private CommonDialogs.onProductConsume onProductConsume;
 
-    public ScheduleSwipeAdapter(Context mContext, ArrayList<ChatListModel.ChatList> matchList,CommonDialogs.onProductConsume onProductConsume) {
+    public ScheduleSwipeAdapter(Context mContext, ArrayList<ChatListModel.ChatList> matchList, CommonDialogs.onProductConsume onProductConsume) {
         this.mContext = mContext;
         this.matchList = matchList;
-        this.onProductConsume=onProductConsume;
+        this.onProductConsume = onProductConsume;
     }
 
     public void setOnItemClickListener(OnItemClickListenerType onItemClickListener) {
@@ -80,9 +81,9 @@ public class ScheduleSwipeAdapter extends BaseSwipeListAdapter{
         ViewHolder holder = (ViewHolder) convertView.getTag();
 
         ChatListModel.ChatList data = getItem(position);
-        if (data != null&&data.getImageForUser()!=null&&data.getImageForUser().size()>0)
+        if (data != null && data.getImageForUser() != null && data.getImageForUser().size() > 0)
             CommonUtils.setImageUsingFresco(holder.sdv_picture, CallServer.BaseImage + data.getImageForUser().get(0).getImageUrl(), 3);
-        if (data != null&&data.getProfileOfUser()!=null)
+        if (data != null && data.getProfileOfUser() != null)
             holder.tv_name.setText(data.getProfileOfUser().getName());
         Date convertedDate2 = new Date(), convertedDate = new Date();
         if (data != null && data.getChatByUser() != null) {
@@ -90,10 +91,12 @@ public class ScheduleSwipeAdapter extends BaseSwipeListAdapter{
             if (data.getChatByUser().getToId().toString().equals(new SharedPreference(mContext).getUserId()) &&
                     data.getChatByUser().getStatus().equalsIgnoreCase("unread")) {
                 holder.ivUnread.setVisibility(View.VISIBLE);
+                holder.tvYourTurn.setVisibility(View.VISIBLE);
                 Typeface typeface = ResourcesCompat.getFont(mContext, R.font.bold);
                 holder.tv_date.setTypeface(typeface);
             } else {
                 holder.ivUnread.setVisibility(View.GONE);
+                holder.tvYourTurn.setVisibility(View.GONE);
                 Typeface typeface = ResourcesCompat.getFont(mContext, R.font.medium);
                 holder.tv_date.setTypeface(typeface);
             }
@@ -115,9 +118,11 @@ public class ScheduleSwipeAdapter extends BaseSwipeListAdapter{
         holder.img_blurr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Not Deluxe", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Not Premium", Toast.LENGTH_SHORT).show();
             }
         });
+
+
 //        setBlurOnTextView(holder.tv_name, isBlurr);
 //        setBlurOnTextView(holder.tv_date, isBlurr);
 //        Log.e("TAG", "getView: "+isBlurr);
@@ -128,21 +133,26 @@ public class ScheduleSwipeAdapter extends BaseSwipeListAdapter{
 
 
 
-            /*holder.img_blurr.post(() -> Blurry.with(mContext).color(Color.argb(127, 255, 255, 255)).radius(10).sampling(5).capture(holder.clParent).into(holder.img_blurr));*/
-           // Blurry.with(mContext).sampling(5).radius(10).from(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.dummy1)).into(holder.sdv_picture_1);
+        /*holder.img_blurr.post(() -> Blurry.with(mContext).color(Color.argb(127, 255, 255, 255)).radius(10).sampling(5).capture(holder.clParent).into(holder.img_blurr));*/
+        // Blurry.with(mContext).sampling(5).radius(10).from(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.dummy1)).into(holder.sdv_picture_1);
 
             /* float radius = holder.tv_name.getTextSize() / 3;
             BlurMaskFilter filter = new BlurMaskFilter(radius, BlurMaskFilter.Blur.NORMAL);
             holder. tv_name.getPaint().setMaskFilter(filter);*/
 
 
-       /* } else {*/
+        /* } else {*/
 
 
            /* holder.img_blurr.setOnClickListener(v -> {
             });
             holder.sdv_picture_1.setImageDrawable(mContext.getResources().getDrawable(R.drawable.dummy1));*/
-            holder.img_blurr.setVisibility(View.GONE);
+        holder.img_blurr.setVisibility(View.GONE);
+
+
+        ///////////////////////////  setting verified tick star image and your turn
+       // if (data.getProfileOfUser())
+       // holder.ivVerifyProfile.setVisibility();
 
 
 //        }
@@ -168,10 +178,11 @@ public class ScheduleSwipeAdapter extends BaseSwipeListAdapter{
     private static class ViewHolder {
 
         ConstraintLayout clView, clParent;
-        ImageView ivUnread, img_blurr;
+        ImageView ivUnread, img_blurr, ivStar, ivVerifyProfile;
+
         private SimpleDraweeView sdv_picture;
         private CircleImageView sdv_picture_1;
-        private TextView tv_name, tv_date;
+        private TextView tv_name, tv_date, tvYourTurn;
 
         public ViewHolder(View view) {
             sdv_picture_1 = view.findViewById(R.id.sdv_picture_1);
@@ -182,6 +193,7 @@ public class ScheduleSwipeAdapter extends BaseSwipeListAdapter{
             clParent = view.findViewById(R.id.clParent);
             ivUnread = view.findViewById(R.id.ivUnread);
             img_blurr = view.findViewById(R.id.img_blurr);
+            tvYourTurn = view.findViewById(R.id.tvYourTurn);
             view.setTag(this);
         }
 

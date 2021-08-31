@@ -11,7 +11,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clParent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <ProgressBar
@@ -55,9 +57,9 @@
             android:id="@+id/ivUnread"
             android:layout_width="@dimen/_15ssp"
             android:layout_height="@dimen/_15ssp"
+            android:layout_marginBottom="@dimen/_5sdp"
             android:fontFamily="@font/medium"
             android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/_5sdp"
             android:src="@drawable/reddotmatching"
             android:textColor="@color/secondaryTextColor"
             android:textSize="@dimen/_11ssp"
@@ -71,10 +73,10 @@
             android:id="@+id/clView"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="40dp"
             android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/iv_call_audio"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/pb_time_left"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -87,15 +89,35 @@
                 android:layout_marginBottom="@dimen/_5sdp"
                 android:ellipsize="end"
                 android:fontFamily="@font/medium"
-                android:maxLength="30"
+                 android:maxLength="30"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="  --  "
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/name_color"
                 android:textSize="@dimen/_13ssp"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvYourTurn"
                 app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/tvYourTurn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_bg_pink"
+                android:fontFamily="@font/medium"
+                android:paddingStart="10dp"
+                android:paddingTop="3dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="3dp"
+                android:text="Your turn"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                />
 
             <TextView
                 android:id="@+id/tv_date"
@@ -109,7 +131,7 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:text="Last Message will be shown here to check"
-                android:textColor="@color/secondaryTextColor"
+                android:textColor="@color/msg_color"
                 android:textSize="@dimen/_11ssp"
                 app:layout_constraintEnd_toEndOf="@id/tv_name"
                 app:layout_constraintStart_toStartOf="@id/tv_name"
@@ -150,27 +172,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <ImageView
-            android:id="@+id/iv_call_video"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_10sdp"
-            android:padding="@dimen/_5sdp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/tv_date"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_name" />
-
-        <ImageView
-            android:id="@+id/iv_call_audio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_5sdp"
-            android:padding="@dimen/_5sdp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/iv_call_video"
-            app:layout_constraintEnd_toStartOf="@id/iv_call_video"
-            app:layout_constraintTop_toTopOf="@id/iv_call_video" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView

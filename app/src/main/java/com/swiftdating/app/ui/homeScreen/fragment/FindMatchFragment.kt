@@ -30,6 +30,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -126,7 +127,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
     private var productId: String = ""
     private var purchaseType: Int = 0
 
-    // lateinit var imageView: ImageView
+    lateinit var imageView: ConstraintLayout
     lateinit var clView: LinearLayout
     private var pos = -1
     var isExpired = false
@@ -238,7 +239,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
 
 
 
-        // imageView = view.findViewById(R.id.imageView)
+         imageView = view.findViewById(R.id.imageView)
         // Glide.with(this).load(R.raw.bg).into(imageView)
     }
 
@@ -395,7 +396,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
             map["minAgePrefer"] = ageArrayList[seekAgeRange.selectedMinValue].toInt()
             map["maxAgePrefer"] = ageArrayList[seekAgeRange.selectedMaxValue].toInt()
             map["interested"] = interseted
-            baseActivity.showLoading()
+           // baseActivity.showLoading()
+            imageView.visibility= VISIBLE
             ApiCall.setFilters(baseActivity.sp.token, map, this)
             bottomSheetDialog.cancel()
         }))
@@ -643,7 +645,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                             SharedPreference(context).saveSelfieVerificationStatus("No")
                         }*/
                         else if (resource.data.error != null && resource.data.error.code == "404") {
-                            baseActivity.hideLoading()
+                           // baseActivity.hideLoading()
                             Log.d("TAG_My", "subscribeModel: visisble setting" + 404)
                             img_vip_star?.isEnabled = false
                             chat?.isEnabled = false
@@ -651,7 +653,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                             tvNoMatch.visibility = VISIBLE
                             btn_settings.visibility = VISIBLE
                             clView.visibility = GONE
-                            // imageView.visibility = GONE
+                            imageView.visibility = GONE
                         } else {
                             list = resource.data.users
                             Log.e(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>subscribeModel: >>>>>>>>>>>>${list.size}")
@@ -666,7 +668,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                             //SharedPreference(context).saveSelfieVerificationStatus("Yes")
                         }
                     } else {
-                        baseActivity.hideLoading()
+                     //   baseActivity.hideLoading()
                         baseActivity.sp.saveisSettingsChanged(false)
                         img_vip_star?.isEnabled = false
                         chat?.isEnabled = false
@@ -674,7 +676,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         tvNoMatch.visibility = VISIBLE
                         btn_settings.visibility = VISIBLE
                         clView.visibility = GONE
-                        // imageView.visibility = GONE
+                        imageView.visibility = GONE
                         cardStackView!!.visibility = GONE
                     }
                 }
@@ -994,7 +996,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                             if (baseActivity.sp.status == Global.statusActive) {
                                 img_vip_star!!.isEnabled = true
                                 chat!!.isEnabled = true
-                                // imageView.visibility = VISIBLE
+                                imageView.visibility = VISIBLE
                                 homeViewModel.getUserListRequest(baseActivity.sp.token)
                             } else {
                                 baseActivity.hideLoading()
@@ -1472,9 +1474,6 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
      * check permission for location
      */
     private fun checkLocationPermission() {
-        /* if (imageView != null) {
-             imageView.visibility = VISIBLE
-         }*/
         if (checkPermissionLOC()) {
             checkLocation()
         } else
@@ -1614,10 +1613,11 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 val user = baseActivity.sp.user
                 val obj = gson.fromJson(user, ProfileOfUser::class.java)
                 if (obj.visible.equals("True", ignoreCase = true)) {
-                    baseActivity.showLoading()
+                  //  baseActivity.showLoading()
+                    imageView.visibility = VISIBLE
                     homeViewModel.getUserListRequest(baseActivity.sp.token)
                 } else {
-                    // imageView.visibility = GONE
+                    imageView.visibility = GONE
                     btn_unhide.visibility = VISIBLE
                     tvHideProfile.visibility = VISIBLE
                     cl_hide.visibility = VISIBLE
@@ -1734,7 +1734,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 obj.latitude = lat
                 obj.longitude = lng
                 Log.e("latiCheck", "$lat $lng")
-                baseActivity.showLoading()
+            //    baseActivity.showLoading()
                 baseActivity.sp.saveUserData(obj, baseActivity.sp.profileCompleted)
                 homeViewModel.sendLatLong(LocationModel(lat, lng))
                 if (obj.visible == "True") {
@@ -1750,7 +1750,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                              tvProfileReject.visibility = VISIBLE
                              constraint_verify.visibility = GONE
                          }*/
-                        // imageView.visibility = GONE
+                        imageView.visibility = GONE
                         clView.visibility = GONE
                         img_vip_star?.isEnabled = false
                         rewind?.isEnabled = false
@@ -1758,7 +1758,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         rlFilter?.isEnabled = true
                     }
                 } else {
-                    // imageView.visibility = GONE
+                    imageView.visibility = GONE
                     btn_unhide.visibility = VISIBLE
                     tvHideProfile.visibility = VISIBLE
                     cl_hide.visibility = VISIBLE
@@ -1891,7 +1891,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
     override fun onCardAppeared(view: View, position: Int) {
         try {
             clView.visibility = VISIBLE
-            // imageView.visibility = GONE
+            imageView.visibility = GONE
             cancel.isEnabled = true
             superlike.isEnabled = true
             love.isEnabled = true
@@ -1926,8 +1926,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                     love.isEnabled = false
                     btn_settings.isEnabled = true
                     if (obj.visible == "True") {
-                        baseActivity.showLoading()
-                        // imageView.visibility = VISIBLE
+                     //  baseActivity.showLoading()
+                        imageView.visibility = VISIBLE
                         homeViewModel.getUserListRequest((activity as HomeActivity).sp.token)
                     }
                 }
@@ -1946,8 +1946,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         love.isEnabled = false
         btn_settings.isEnabled = true
         if (obj.visible == "True") {
-            baseActivity.showLoading()
-            // imageView.visibility = VISIBLE
+           // baseActivity.showLoading()
+            imageView.visibility = VISIBLE
             homeViewModel.getUserListRequest((activity as HomeActivity).sp.token)
         }
     }
@@ -1965,7 +1965,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
             tvNoMatch.visibility = VISIBLE
             btn_settings.visibility = VISIBLE
             clView.visibility = GONE
-            // imageView.visibility = GONE
+            imageView.visibility = GONE
         } else {
             clView.visibility = View.VISIBLE
             img_vip_star?.isEnabled = true
@@ -2465,8 +2465,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
             filterRequest?.maxAgePrefer = resObj?.maxAgePrefer
             baseActivity.sp.saveFilterModel(filterRequest)
             if (baseActivity.sp.status == Global.statusActive) {
-                baseActivity.showLoading()
-                // imageView.visibility = VISIBLE
+               // baseActivity.showLoading()
+                imageView.visibility = VISIBLE
                 homeViewModel.getUserListRequest(baseActivity.sp.token)
             }
 

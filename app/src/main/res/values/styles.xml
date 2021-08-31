@@ -262,7 +262,7 @@
         <item name="android:elevation">0dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:padding">@dimen/_10sdp</item>
-        <item name="android:textColor">@color/grey_new</item>
+        <item name="android:textColor">@color/light_grey</item>
         <item name="android:textColorHint">@color/pink</item>
         <item name="android:textSize">@dimen/_12ssp</item>
         <item name="android:layout_margin">@dimen/_10sdp</item>
@@ -279,7 +279,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="fontFamily">@font/medium</item>
         <item name="android:layout_marginStart">15dp</item>
-        <item name="android:textColor">@color/grey_new</item>
+        <item name="android:textColor">@color/title_color</item>
         <item name="android:textSize">@dimen/_13ssp</item>
         <item name="drawableTint">@color/pink</item>
     </style>

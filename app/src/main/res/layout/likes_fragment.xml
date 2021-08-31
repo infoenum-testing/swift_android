@@ -104,13 +104,14 @@
             android:textColor="@color/grey_new"
             android:textSize="@dimen/_10ssp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:background="@color/white"
-            android:visibility="visible" />
     </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:visibility="visible" />
 
 </LinearLayout>

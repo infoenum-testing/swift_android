@@ -1136,12 +1136,14 @@ public class CommonDialogs {
         Window window = dialog.getWindow();
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         LinearLayout[] lls = new LinearLayout[6];
+
         lls[0] = dialog.findViewById(R.id.ll_photo);
         lls[1] = dialog.findViewById(R.id.ll_content);
-        lls[2] = dialog.findViewById(R.id.ll_age);
+        lls[2] = dialog.findViewById(R.id.ll_behave);
         lls[3] = dialog.findViewById(R.id.ll_stolen);
-        lls[4] = dialog.findViewById(R.id.ll_behave);
+        lls[4] = dialog.findViewById(R.id.ll_age);
         lls[5] = dialog.findViewById(R.id.ll_other);
+
         dialog.findViewById(R.id.btn_submit).setOnClickListener(view -> dialog.dismiss());
 
         for (int i = 0; i < lls.length; i++) {

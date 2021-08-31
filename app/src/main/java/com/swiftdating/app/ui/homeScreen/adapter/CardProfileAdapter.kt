@@ -72,32 +72,46 @@ class CardProfileAdapter(
         holder.imageUser = spot.imageForUser.sortedWith(compareBy { it.orderId })
         Glide.with(holder.image).load(CallServer.BaseImage + holder.imageUser[0].imageUrl).centerCrop()
                 .into(holder.image)
-        Glide.with(holder.image2).load(CallServer.BaseImage + holder.imageUser[1].imageUrl).centerCrop()
-                .into(holder.image2)
-        Glide.with(holder.image3).load(CallServer.BaseImage + holder.imageUser[2].imageUrl).centerCrop()
-                .into(holder.image3)
-        if (spot.imageForUser.size > 3) {
-            Glide.with(holder.image4).load(CallServer.BaseImage + holder.imageUser[3].imageUrl).centerCrop()
-                    .into(holder.image4)
-            if (spot.imageForUser.size > 4) {
-                Glide.with(holder.image5).load(CallServer.BaseImage + holder.imageUser[4].imageUrl).centerCrop()
-                        .into(holder.image5)
-                if (spot.imageForUser.size > 5) {
-                    Glide.with(holder.image6).load(CallServer.BaseImage + holder.imageUser[5].imageUrl).centerCrop()
-                            .into(holder.image6)
+
+        if (spot.imageForUser.size > 1) {
+            Glide.with(holder.image2).load(CallServer.BaseImage + holder.imageUser[1].imageUrl).centerCrop()
+                    .into(holder.image2)
+            if (spot.imageForUser.size > 2) {
+                Glide.with(holder.image3).load(CallServer.BaseImage + holder.imageUser[2].imageUrl).centerCrop()
+                        .into(holder.image3)
+                if (spot.imageForUser.size > 3) {
+                    Glide.with(holder.image4).load(CallServer.BaseImage + holder.imageUser[3].imageUrl).centerCrop()
+                            .into(holder.image4)
+                    if (spot.imageForUser.size > 4) {
+                        Glide.with(holder.image5).load(CallServer.BaseImage + holder.imageUser[4].imageUrl).centerCrop()
+                                .into(holder.image5)
+                        if (spot.imageForUser.size > 5) {
+                            Glide.with(holder.image6).load(CallServer.BaseImage + holder.imageUser[5].imageUrl).centerCrop()
+                                    .into(holder.image6)
+                        } else {
+                            holder.image6.visibility = GONE
+                        }
+                    } else {
+                        holder.image5.visibility = GONE
+                        holder.image6.visibility = GONE
+                    }
                 } else {
+                    holder.image4.visibility = GONE
+                    holder.image5.visibility = GONE
                     holder.image6.visibility = GONE
                 }
             } else {
+                holder.image3.visibility = GONE
+                holder.image4.visibility = GONE
                 holder.image5.visibility = GONE
                 holder.image6.visibility = GONE
-
             }
         } else {
+            holder.image2.visibility = GONE
+            holder.image3.visibility = GONE
             holder.image4.visibility = GONE
             holder.image5.visibility = GONE
             holder.image6.visibility = GONE
-
         }
 
 //        if (spot.insta != null && spot.insta.isNotEmpty()) {

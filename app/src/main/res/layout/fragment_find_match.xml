@@ -283,6 +283,15 @@
             android:clipToPadding="false"
             android:nestedScrollingEnabled="false" />
 
+        <include
+            android:id="@+id/imageView"
+            layout="@layout/progress_dialog"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
         <LinearLayout
             android:id="@+id/linear"
             android:layout_width="match_parent"
@@ -421,6 +430,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

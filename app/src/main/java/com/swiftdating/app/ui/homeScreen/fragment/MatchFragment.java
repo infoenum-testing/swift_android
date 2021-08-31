@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -49,7 +50,7 @@ import com.swiftdating.app.callbacks.OnItemClickListenerType;
 import com.swiftdating.app.common.CommonDialogs;
 import com.swiftdating.app.common.Global;
 import com.swiftdating.app.data.network.CallServer;
-import com.swiftdating.app.model.requestmodel.DeluxeTokenCountModel;
+import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.swiftdating.app.ui.base.BaseActivity;
 import com.swiftdating.app.ui.chatScreen.ChatWindow;
 import com.swiftdating.app.common.CommonUtils;
@@ -72,16 +73,17 @@ import com.swiftdating.app.ui.homeScreen.adapter.NewMatchesAdapter;
 import com.swiftdating.app.ui.homeScreen.adapter.ScheduleSwipeAdapter;
 import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
 import com.swiftdating.app.ui.homeScreen.viewmodel.MatchListViewModel;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.wasabeef.blurry.Blurry;
 
 import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
 
-public class MatchFragment extends BaseFragment implements OnItemClickListenerType, View.OnClickListener, CommonDialogs.onClick, CommonDialogs.onPurchaseDeluxe, CommonDialogs.onProductConsume, BillingProcessor.IBillingHandler, BaseActivity.MyProfileResponse {
+public class MatchFragment extends BaseFragment implements OnItemClickListenerType, View.OnClickListener, CommonDialogs.onClick, CommonDialogs.onProductConsume, BillingProcessor.IBillingHandler, BaseActivity.MyProfileResponse {
 
     private static final String TAG = "MatchFragment";
     public static boolean isShowDirect = false;
-    boolean isDeluxeBtn = false;
+    boolean isPremiumBtn = false;
     double price;
     String productId, tokenSType;
     int selectedPosition;
@@ -92,6 +94,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     private MatchListViewModel matchListViewModel;
     private HomeViewModel homeViewModel;
     private TextView tvProfileReject, tv_direct_msg, tv_new_matches, tv_twentyLiks, tv_NoNewMatched, tv_NoMessage, tv_schedule_matches;
+    private ImageView ivNoNewMatchMsg;
     private NewMatchesAdapter newMatchesAdapter;
     private ScheduleSwipeAdapter scheduleMatchesAdapter;
     private ArrayList<MatchListResponseModel.Match> matchesList = new ArrayList<>();
@@ -135,7 +138,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                 scheduleMatchList.add(0, scheduleMatchDirectList.get(pos));
                 scheduleMatchDirectList.remove(pos);
                 scheduleMatchesAdapter.notifyDataSetChanged();
-            }else {
+            } else {
                 int pos = 0;
                 if (matchesList.size() > 0) {
                     for (int i = 0; i < matchesList.size(); i++)
@@ -164,7 +167,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {/*
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         super.onViewCreated(view, savedInstanceState);
         mActivity = (BaseActivity) getActivity();
@@ -177,7 +180,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             initBillingProcess();
         } else {
             getBaseActivity().showSnackbar(view, "Please connect to internet");
-        }*/
+        }
     }
 
     private void initBillingProcess() {
@@ -192,7 +195,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     private void subscribeModel() {
         matchListViewModel = ViewModelProviders.of(this).get(MatchListViewModel.class);
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-        matchListViewModel.matchListResponse().observe(this, new Observer<Resource<MatchListResponseModel>>() {
+        matchListViewModel.matchListResponse().observe(getViewLifecycleOwner(), new Observer<Resource<MatchListResponseModel>>() {
             @Override
             public void onChanged(@Nullable Resource<MatchListResponseModel> resource) {
                 if (resource == null) {
@@ -218,17 +221,21 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                                     if (scheduleMatchDirectList == null || scheduleMatchDirectList.size() == 0) {
                                         sml_schedule_matches.setVisibility(View.GONE);
                                         tv_NoMessage.setVisibility(View.VISIBLE);
+                                        ivNoNewMatchMsg.setVisibility(View.VISIBLE);
                                     } else {
                                         sml_schedule_matches.setVisibility(View.VISIBLE);
                                         tv_NoMessage.setVisibility(View.GONE);
+                                        ivNoNewMatchMsg.setVisibility(View.GONE);
                                     }
                                 } else {
                                     if (scheduleMatchList == null || scheduleMatchList.size() == 0) {
                                         sml_schedule_matches.setVisibility(View.GONE);
                                         tv_NoMessage.setVisibility(View.VISIBLE);
+                                        ivNoNewMatchMsg.setVisibility(View.VISIBLE);
                                     } else {
                                         sml_schedule_matches.setVisibility(View.VISIBLE);
                                         tv_NoMessage.setVisibility(View.GONE);
+                                        ivNoNewMatchMsg.setVisibility(View.GONE);
                                     }
                                 }
                             }
@@ -243,7 +250,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             }
         });
 
-        matchListViewModel.chatListResponse().observe(this, new Observer<Resource<ChatListModel>>() {
+        matchListViewModel.chatListResponse().observe(getViewLifecycleOwner(), new Observer<Resource<ChatListModel>>() {
             @Override
             public void onChanged(@Nullable Resource<ChatListModel> resource) {
                 if (resource == null) {
@@ -302,7 +309,8 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                             //scheduleMatchList.addAll(resource.data.getChatList());
                             for (int i = 0; i < scheduleMatchList.size(); i++) {
                                 idList.add(scheduleMatchList.get(i).getId());
-                            } for (int i = 0; i < scheduleMatchDirectList.size(); i++) {
+                            }
+                            for (int i = 0; i < scheduleMatchDirectList.size(); i++) {
                                 idListDirect.add(scheduleMatchDirectList.get(i).getId());
                             }
                             if (resource.data.getChatList().size() > 0) {
@@ -325,7 +333,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             }
         });
 
-        homeViewModel.unMatchResponse().observe(this, new Observer<Resource<BaseModel>>() {
+        homeViewModel.unMatchResponse().observe(getViewLifecycleOwner(), new Observer<Resource<BaseModel>>() {
             @Override
             public void onChanged(@Nullable Resource<BaseModel> resource) {
                 if (resource == null) {
@@ -345,6 +353,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                                     if (scheduleMatchList.size() == 0) {
                                         sml_schedule_matches.setVisibility(View.GONE);
                                         tv_NoMessage.setVisibility(View.VISIBLE);
+                                        ivNoNewMatchMsg.setVisibility(View.VISIBLE);
                                         if (matchesList.size() == 0) {
                                             tv_NoNewMatched.setVisibility(cons_dummy.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
                                             // direct_cl.setVisibility(View.GONE);
@@ -354,6 +363,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                                     scheduleMatchDirectList.remove(pos);
                                     if (scheduleMatchDirectList.size() == 0) {
                                         sml_schedule_matches.setVisibility(View.GONE);
+                                        ivNoNewMatchMsg.setVisibility(View.VISIBLE);
                                         tv_NoMessage.setVisibility(View.VISIBLE);
                                         //direct_cl.setVisibility(View.VISIBLE);
                                     }
@@ -372,7 +382,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             }
         });
 
-        homeViewModel.reportResponse().observe(this, new Observer<Resource<BaseModel>>() {
+        homeViewModel.reportResponse().observe(getViewLifecycleOwner(), new Observer<Resource<BaseModel>>() {
 
             @Override
             public void onChanged(@Nullable Resource<BaseModel> resource) {
@@ -407,32 +417,26 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             }
         });
 
-        homeViewModel.addDeluxeResponse().observe(this, new Observer<Resource<BaseModel>>() {
-            @Override
-            public void onChanged(Resource<BaseModel> resource) {
-                if (resource == null)
-                    return;
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        getBaseActivity().hideLoading();
-                        if (resource.data.getSuccess()) {
-                            getBaseActivity().sp.saveDeluxe(true);
-                            setDeluxeData();
-                           /* tvPremium.setVisibility(View.INVISIBLE);
-                            tvUnlimitedView.setVisibility(View.INVISIBLE);*/
-                        } else if (resource.code == 401) {
-                            getBaseActivity().openActivityOnTokenExpire();
-                        } else {
-                            getBaseActivity().showSnackbar(rv_new_matches, "Something went wrong");
-                        }
-                        break;
-                    case ERROR:
-                        getBaseActivity().hideLoading();
-                        getBaseActivity().showSnackbar(rv_new_matches, resource.message);
-                        break;
-                }
+        homeViewModel.addPremiumResponse().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) return;
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    getBaseActivity().hideLoading();
+                    if (resource.data != null && resource.data.getSuccess() != null) {
+                        setDeluxeData();
+                        getBaseActivity().sp.savePremium(true);
+                    } else if (resource.code == 401) {
+                        getBaseActivity().openActivityOnTokenExpire();
+                    } else {
+                        getBaseActivity().showSnackbar(rv_new_matches, "Something went wrong");
+                    }
+                    break;
+                case ERROR:
+                    getBaseActivity().hideLoading();
+                    getBaseActivity().showSnackbar(rv_new_matches, resource.message);
+                    break;
             }
         });
 
@@ -440,7 +444,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
 
     @Override
     public void onResume() {
-      /*  mActivity = (BaseActivity) getActivity();
+        mActivity = (BaseActivity) getActivity();
         ((HomeActivity) Objects.requireNonNull(getActivity())).mToolbar.setVisibility(View.GONE);
         if (getBaseActivity().isNetworkConnected()) {
             try {
@@ -456,7 +460,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             // cl_new_matches.setVisibility(View.GONE);
             tv_NoNewMatched.setVisibility(cons_dummy.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
             // ((HomeActivity) getActivity()).setToolbarWithTitle("Messages");
-            if (new SharedPreference(getContext()).getVerified().equalsIgnoreCase("Yes")) {
+            if (true) {
                 constraint_verify.setVisibility(View.GONE);
                 rv_reject.setVisibility(View.GONE);
                 getBaseActivity().showLoading();
@@ -470,7 +474,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                     rv_reject.setVisibility(View.GONE);
                 }
             }
-        }*/
+        }
         super.onResume();
     }
 
@@ -495,17 +499,21 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             if (scheduleMatchDirectList == null || scheduleMatchDirectList.size() == 0) {
                 sml_schedule_matches.setVisibility(View.GONE);
                 tv_NoMessage.setVisibility(View.VISIBLE);
+                ivNoNewMatchMsg.setVisibility(View.VISIBLE);
             } else {
                 sml_schedule_matches.setVisibility(View.VISIBLE);
                 tv_NoMessage.setVisibility(View.GONE);
+                ivNoNewMatchMsg.setVisibility(View.GONE);
             }
         } else {
             if (scheduleMatchList == null || scheduleMatchList.size() == 0) {
                 sml_schedule_matches.setVisibility(View.GONE);
                 tv_NoMessage.setVisibility(View.VISIBLE);
+                ivNoNewMatchMsg.setVisibility(View.VISIBLE);
             } else {
                 sml_schedule_matches.setVisibility(View.VISIBLE);
                 tv_NoMessage.setVisibility(View.GONE);
+                ivNoNewMatchMsg.setVisibility(View.GONE);
             }
             if (matchesList == null || matchesList.size() == 0) {
                 tv_NoNewMatched.setVisibility(cons_dummy.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
@@ -517,7 +525,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     }
 
     private void setLikesCount(boolean isLoadImage) {
-        if (getBaseActivity() != null && getBaseActivity().sp != null && getBaseActivity().sp.getNoOfLikes() != null && getBaseActivity().sp.getNoOfLikes().getUsers() > 0 && !getBaseActivity().sp.getDeluxe()) {
+        if (getBaseActivity() != null && getBaseActivity().sp != null && getBaseActivity().sp.getNoOfLikes() != null && getBaseActivity().sp.getNoOfLikes().getUsers() > 0 && !getBaseActivity().sp.getPremium()) {
             if (isLoadImage && getBaseActivity().sp.getNoOfLikes().getUsersImage() != null && getBaseActivity().sp.getNoOfLikes().getUsersImage().size() > 0) {
                 Glide.with(mContext).asBitmap().load(CallServer.BaseImage + getBaseActivity().sp.getNoOfLikes().getUsersImage().get(0).getImageUrl()).into(new CustomTarget<Bitmap>((int) mContext.getResources().getDimension(R.dimen._60sdp), (int) mContext.getResources().getDimension(R.dimen._60sdp)) {
                     @Override
@@ -544,6 +552,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
      */
     private void initialize(View view) {
         tv_schedule_matches = view.findViewById(R.id.tv_schedule_matches);
+        ivNoNewMatchMsg = view.findViewById(R.id.ivNoNewMatchMsg);
         tv_NoNewMatched = view.findViewById(R.id.tv_NoNewMatched);
         rv_reject = view.findViewById(R.id.rv_reject);
         tv_NoMessage = view.findViewById(R.id.tv_NoMessage);
@@ -598,8 +607,8 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             isShowDirect = false;
             tabCount = 0;
         }
-        isDeluxeBtn = getBaseActivity().sp.getDeluxe();
-        if (getBaseActivity().sp.getDeluxe()) {
+        isPremiumBtn = getBaseActivity().sp.getPremium();
+        if (getBaseActivity().sp.getPremium()) {
             setDeluxeData();
         }
         setLikesCount(true);
@@ -614,7 +623,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             public void onTabSelected(TabLayout.Tab tab) {
                 isDirect = tab.getPosition() == 1;
                 scheduleMatchesAdapter = tab.getPosition() == 0 ? new ScheduleSwipeAdapter(mActivity, scheduleMatchList, MatchFragment.this) : new ScheduleSwipeAdapter(mActivity, scheduleMatchDirectList, MatchFragment.this);
-                if (!isDeluxeBtn) {
+                if (!isPremiumBtn) {
                     if (tab.getPosition() == 0) {
                         setLikesCount(false);
                     } else {
@@ -628,26 +637,35 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
 //                    scheduleMatchesAdapter.isBlurr = false;
                 }
                 tv_NoMessage.setText(tab.getPosition() == 0 ? "No new messages yet." : "No new direct messages yet.");
+                if (tab.getPosition() == 0)
+                    ivNoNewMatchMsg.setImageResource(R.drawable.ic_no_match_msg_img);
+                else {
+                    ivNoNewMatchMsg.setImageResource(R.drawable.ic_no_direct_msg_img);
+                }
                 cl_new_matches.setVisibility(tab.getPosition() == 1 ? View.GONE : View.VISIBLE);
                 tv_direct_msg.setVisibility(tab.getPosition() == 0 ? View.GONE : View.VISIBLE);
                 rv_new_matches.setVisibility(tab.getPosition() == 1 ? View.GONE : View.VISIBLE);
                 tv_schedule_matches.setVisibility(tab.getPosition() == 1 ? View.GONE : View.VISIBLE);
                 tv_new_matches.setVisibility(tab.getPosition() == 1 ? View.GONE : View.VISIBLE);
-                if (isDirect){
-                    if (scheduleMatchDirectList==null||scheduleMatchDirectList.size()==0){
+                if (isDirect) {
+                    if (scheduleMatchDirectList == null || scheduleMatchDirectList.size() == 0) {
                         sml_schedule_matches.setVisibility(View.GONE);
                         tv_NoMessage.setVisibility(View.VISIBLE);
-                    }else {
+                        ivNoNewMatchMsg.setVisibility(View.VISIBLE);
+                    } else {
                         sml_schedule_matches.setVisibility(View.VISIBLE);
                         tv_NoMessage.setVisibility(View.GONE);
+                        ivNoNewMatchMsg.setVisibility(View.GONE);
                     }
-                }else {
-                    if (scheduleMatchList==null||scheduleMatchList.size()==0){
+                } else {
+                    if (scheduleMatchList == null || scheduleMatchList.size() == 0) {
                         sml_schedule_matches.setVisibility(View.GONE);
                         tv_NoMessage.setVisibility(View.VISIBLE);
-                    }else {
+                        ivNoNewMatchMsg.setVisibility(View.VISIBLE);
+                    } else {
                         sml_schedule_matches.setVisibility(View.VISIBLE);
                         tv_NoMessage.setVisibility(View.GONE);
+                        ivNoNewMatchMsg.setVisibility(View.GONE);
                     }
                 }
                 sml_schedule_matches.setAdapter(scheduleMatchesAdapter);
@@ -655,7 +673,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                 scheduleMatchesAdapter.notifyDataSetChanged();
                 //getBaseActivity().showLoading();
                 createSwipeMenu();
-                //matchListViewModel.getChatListRequest(getBaseActivity().sp.getToken());
+                matchListViewModel.getChatListRequest(getBaseActivity().sp.getToken());
             }
 
             @Override
@@ -773,23 +791,23 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
 //            scheduleMatchesAdapter.isBlurr = false;
             sml_schedule_matches.setAdapter(scheduleMatchesAdapter);
             scheduleMatchesAdapter.notifyDataSetInvalidated();
-            //isDeluxeBtn = true;
+            //isPremiumBtn = true;
             //// newMatchesAdapter.isUnBlurr = true;
             newMatchesAdapter.notifyDataSetChanged();
         } else if (type == 2) {
             if (isDirect) {
-//                if (isDeluxeBtn){
-                    if (scheduleMatchDirectList.size() > 0) {
-                        isShowDirect = true;
-                        startActivityForResult(new Intent(mContext, ChatWindow.class).putExtra("id", scheduleMatchDirectList.get(position).getId())
-                                .putExtra("scheduleist", scheduleMatchDirectList.get(position).toString())
-                                .putExtra("name", scheduleMatchDirectList.get(position).getProfileOfUser().getName())
-                                .putExtra("tabPos", 3)
-                                .putExtra("isExpired", false)
-                                .putExtra("isfromDirect", true)
-                                .putExtra("image", scheduleMatchDirectList.get(position).getImageForUser().get(0).getImageUrl()), 10000);
-                        getBaseActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    }
+//                if (isPremiumBtn){
+                if (scheduleMatchDirectList.size() > 0) {
+                    isShowDirect = true;
+                    startActivityForResult(new Intent(mContext, ChatWindow.class).putExtra("id", scheduleMatchDirectList.get(position).getId())
+                            .putExtra("scheduleist", scheduleMatchDirectList.get(position).toString())
+                            .putExtra("name", scheduleMatchDirectList.get(position).getProfileOfUser().getName())
+                            .putExtra("tabPos", 3)
+                            .putExtra("isExpired", false)
+                            .putExtra("isfromDirect", true)
+                            .putExtra("image", scheduleMatchDirectList.get(position).getImageForUser().get(0).getImageUrl()), 10000);
+                    getBaseActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                }
                 /*}else {
                     CommonDialogs.DeluxePurChaseDialog(getContext(), this);
                 }*/
@@ -843,14 +861,11 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_direct_msg:
-                getBaseActivity().sp.setDialogOpen(true);
-                CommonDialogs.DeluxePurChaseDialog(getContext(), this);
-                /*CommonDialogs dialogs = CommonDialogs.DeluxePurChaseDialog(getContext(),this);
+        if (view.getId() == R.id.btn_direct_msg) {
+            getBaseActivity().sp.setDialogOpen(true);
+            CommonDialogs.PremuimPurChaseDialog(getContext(), this, getBaseActivity().sp);
+                /*CommonDialogs dialogs = CommonDialogs.PremuimPurChaseDialog(getContext(),this);
                 dialogs.setOnDeluxeContinuebtn(this);*/
-                break;
-
         }
     }
 
@@ -859,7 +874,6 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (!bp.handleActivityResult(requestCode, resultCode, data))
             super.onActivityResult(requestCode, resultCode, data);
-
     }
 
     void setDeluxeData() {
@@ -870,7 +884,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
         sml_schedule_matches.setAdapter(scheduleMatchesAdapter);
         //scheduleMatchesAdapter=new ScheduleSwipeAdapter(mActivity, scheduleMatchDirectList,MatchFragment.this);
         scheduleMatchesAdapter.notifyDataSetInvalidated();
-        //isDeluxeBtn = true;
+        //isPremiumBtn = true;
         //// newMatchesAdapter.isUnBlurr = true;
         newMatchesAdapter.notifyDataSetChanged();
     }
@@ -891,46 +905,36 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
         EditText etReason = dialog.findViewById(R.id.et_reason);
         Button tv_ok = dialog.findViewById(R.id.btn_ok);
         tv_message.setText(this.getResources().getString(R.string.reasontoReport));
-        ivcross.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideKeyboard();
+        ivcross.setOnClickListener(view -> {
+            hideKeyboard();
+            dialog.dismiss();
+        });
+
+
+        tv_ok.setOnClickListener(view -> {
+            if (!TextUtils.isEmpty(etReason.getText().toString())) {
+                getBaseActivity().showLoading();
+                getBaseActivity().hideKeyboard();
+                // pos = position;
+                if (!isDirect)
+                    homeViewModel.reportRequest(new ReportRequestModel(scheduleMatchList.get(pos).getId(), etReason.getText().toString()));
+                else
+                    homeViewModel.reportRequest(new ReportRequestModel(scheduleMatchDirectList.get(pos).getId(), etReason.getText().toString()));
                 dialog.dismiss();
-            }
-        });
-
-
-        tv_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!TextUtils.isEmpty(etReason.getText().toString())) {
-                    getBaseActivity().showLoading();
-                    getBaseActivity().hideKeyboard();
-                    // pos = position;
-                    if (!isDirect)
-                        homeViewModel.reportRequest(new ReportRequestModel(scheduleMatchList.get(pos).getId(), etReason.getText().toString()));
-                    else
-                        homeViewModel.reportRequest(new ReportRequestModel(scheduleMatchDirectList.get(pos).getId(), etReason.getText().toString()));
-                    dialog.dismiss();
-                } else {
-                    Toast.makeText(getContext(), "Please enter the reason for report", Toast.LENGTH_LONG).show();
-                }
+            } else {
+                Toast.makeText(getContext(), "Please enter the reason for report", Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    @Override
-    public void OnClickContinue() {
-        setDeluxeData();
-    }
 
     @Override
     public void onClickToken(String tokenType, int tokensNum, int selectedPos) {
         tokenSType = tokenType;
         selectedPosition = tokensNum;
-        if (tokenType.equalsIgnoreCase("DeluxePurChase")) {
-            price = CommonDialogs.DeluxePriceList.get(selectedPos).getPriceValue();
-            productId = CommonDialogs.DeluxeArr[selectedPos];
+        if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
+            price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
+            productId = CommonDialogs.PremiumArr[selectedPos];
             bp.subscribe(mActivity, productId);
         }
     }
@@ -938,15 +942,16 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     @Override
     public void onProductPurchased(String productId, TransactionDetails details) {
         Log.e(TAG, "onProductPurchased: " + details + "\n" + productId);
-        if (tokenSType.equalsIgnoreCase("DeluxePurChase")) {
+        if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
             Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_LONG).show();
             bp.consumePurchase(productId);
             mActivity.showLoading();
-            homeViewModel.addDeluxeRequest(new DeluxeTokenCountModel("2", productId,
+            homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1", productId,
                     price,
                     selectedPosition,
                     details.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
+                    details.purchaseInfo.purchaseData.purchaseToken,
+                    CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
                     details.purchaseInfo.purchaseData.purchaseState.toString()));
         }
     }
