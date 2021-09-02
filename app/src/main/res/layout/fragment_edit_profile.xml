@@ -506,9 +506,9 @@
                 <TextView
                     android:id="@+id/tv_gender"
                     style="@style/edit_profile_data_txt_style"
+                    android:background="@drawable/card_bg_solid_stroke"
                     android:textColor="@color/title_color"
-                    android:background="@drawable/card_stroke_bg"
-                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_basic_info" />
 
@@ -517,7 +517,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_10sdp"
-                    android:background="@drawable/card_stroke_bg"
+                    android:background="@drawable/card_bg_solid_stroke"
                     android:fontFamily="@font/medium"
                     android:padding="@dimen/_10sdp"
                     android:text="Birthday"
@@ -530,9 +530,9 @@
                 <TextView
                     android:id="@+id/tv_loc"
                     style="@style/edit_profile_data_txt_style"
-                    android:background="@drawable/card_stroke_bg"
+                    android:background="@drawable/card_bg_solid_stroke"
                     android:hint="I Live in"
-                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_dob" />
 
@@ -547,7 +547,7 @@
                 <TextView
                     android:id="@+id/tv_about_me"
                     style="@style/edit_profile_data_txt_style"
-                    android:background="@drawable/card_stroke_bg"
+                    android:background="@drawable/card_bg_solid_stroke"
                     android:hint="Add"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -563,7 +563,7 @@
                 <TextView
                     android:id="@+id/tv_ambitions"
                     style="@style/edit_profile_data_txt_style"
-                    android:background="@drawable/card_stroke_bg"
+                    android:background="@drawable/card_bg_solid_stroke"
                     android:hint="Add"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -770,37 +770,35 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_loc" />
 
-                <TextView
-                    android:id="@+id/tv_occupation"
-                    style="@style/edit_profile_data_txt_style"
-                    android:background="@drawable/card_stroke_bg"
-                    android:hint="Add Occupation"
-                    app:layout_constraintEnd_toEndOf="parent"
-
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_school" />
 
                 <TextView
                     android:id="@+id/tv_education"
-                    style="@style/edit_profile_data_txt_style"
-                    android:background="@drawable/card_stroke_bg"
-                    android:hint="Add Education"
+                     style="@style/edit_profile_data_txt_style"
+                    android:background="@drawable/card_bg_solid_stroke"                    android:hint="Add Education"
                     android:visibility="visible"
-
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_work" />
 
+
                 <TextView
                     android:id="@+id/tv_school"
                     style="@style/edit_profile_data_txt_style"
-                    android:background="@drawable/card_stroke_bg"
-
+                    android:background="@drawable/card_bg_solid_stroke"
                     android:hint="Add School"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_education" />
+
+                <TextView
+                    android:id="@+id/tv_occupation"
+                    style="@style/edit_profile_data_txt_style"
+                    android:background="@drawable/card_bg_solid_stroke"
+                    android:hint="Add Occupation"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_school" />
 
                 <TextView
                     android:id="@+id/tv_chem_ques"

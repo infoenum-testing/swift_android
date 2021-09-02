@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/cardView"
@@ -151,8 +152,8 @@
                             android:layout_marginTop="@dimen/_2sdp"
                             android:layout_marginBottom="@dimen/_5sdp"
                             android:fontFamily="@font/semi_bold"
-                            android:textColor="@color/primaryTextColor"
-                            android:textSize="@dimen/_18ssp" />
+                            android:textColor="@color/profile_txt_color"
+                            android:textSize="@dimen/_15ssp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -230,7 +231,7 @@
                             android:layout_marginStart="@dimen/_10sdp"
                             android:layout_marginTop="@dimen/_5sdp"
                             android:fontFamily="@font/medium"
-                            android:text="School Name"
+                            android:text="School"
                             android:textColor="@color/profile_txt_color"
                             android:textSize="@dimen/_12ssp" />
 
@@ -252,7 +253,6 @@
                     android:id="@+id/ivUserImage2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/_10sdp"
                     android:background="@drawable/offwhitebg"
                     android:scaleType="fitXY"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -304,7 +304,6 @@
                     android:id="@+id/ivUserImage3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/_10sdp"
                     android:background="@drawable/offwhitebg"
                     android:scaleType="fitXY"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -338,6 +337,11 @@
                             android:textColor="@color/primaryTextColor"
                             android:textSize="@dimen/_12ssp" />
 
+                        <FrameLayout
+                            android:id="@+id/bottom_overlay"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
                         <TextView
                             android:id="@+id/tvAnswer1"
                             android:layout_width="match_parent"
@@ -355,7 +359,6 @@
                     android:id="@+id/ivUserImage4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/_10sdp"
                     android:background="@drawable/offwhitebg"
                     android:scaleType="fitXY"
                     app:layout_constraintEnd_toEndOf="@id/ivUserImage3"
@@ -405,7 +408,6 @@
                     android:id="@+id/ivUserImage5"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/_10sdp"
                     android:background="@drawable/offwhitebg"
                     android:scaleType="fitXY"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -455,7 +457,6 @@
                     android:id="@+id/ivUserImage6"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/_10sdp"
                     android:background="@drawable/offwhitebg"
                     android:scaleType="fitXY"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -635,7 +636,7 @@
                 <View
                     android:id="@+id/view1"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_70sdp"
+                    android:layout_height="@dimen/_80sdp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_report" />
@@ -692,11 +693,6 @@
             android:src="@drawable/superlikebtn" />
 
     </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/bottom_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 
 </RelativeLayout>

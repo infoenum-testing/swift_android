@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,12 +23,6 @@ import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import com.swiftdating.app.R;
 import com.swiftdating.app.common.CommonDialogs;
 import com.swiftdating.app.common.CommonUtils;
@@ -37,15 +32,22 @@ import com.swiftdating.app.data.network.ApiCall;
 import com.swiftdating.app.data.network.ApiCallback;
 import com.swiftdating.app.data.network.Resource;
 import com.swiftdating.app.model.BaseModel;
-import com.swiftdating.app.model.requestmodel.DeluxeTokenCountModel;
 import com.swiftdating.app.model.requestmodel.FilterRequest;
+import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.swiftdating.app.model.responsemodel.User;
 import com.swiftdating.app.model.responsemodel.UserListResponseModel;
 import com.swiftdating.app.model.responsemodel.WhoLikedYouReponce;
+import com.swiftdating.app.ui.base.BaseActivity;
 import com.swiftdating.app.ui.base.BaseFragment;
 import com.swiftdating.app.ui.homeScreen.FilterActivity;
+import com.swiftdating.app.ui.homeScreen.HomeActivity;
 import com.swiftdating.app.ui.homeScreen.adapter.SearchUserAdapter;
 import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
 
@@ -65,7 +67,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
     public static final String RecycleLastPos = "recycleLastPos";
     private Gson gson;
     private Button btn_search;
-    private ImageView img_filter;
+    private RelativeLayout rlFilter;
     private TextView tv_txt_deluxe;
     private LinearLayout llRootView;
     private BillingProcessor bp;
@@ -92,46 +94,46 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
 
     @Override
     public void onPause() {
-      /*  if (getBaseActivity() != null && getBaseActivity().sp.getDeluxe()) {
+        if (getBaseActivity() != null && getBaseActivity().sp.getPremium()) {
             getBaseActivity().sp.saveString(MyPageIndex, "" + pageCount);
             getBaseActivity().sp.saveString(RecycleLastPos, "" + posAdapter);
-        }*/
+        }
         super.onPause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-/*        mActivity = (BaseActivity) getActivity();
-        ((HomeActivity) getActivity()).mToolbar.setVisibility(View.GONE);*/
+        mActivity = (BaseActivity) getActivity();
+        ((HomeActivity) getActivity()).mToolbar.setVisibility(View.GONE);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-    /*    mActivity = (BaseActivity) getActivity();
-        Log.e(TAG, "onViewCreated: SearchFragment" );
+        mActivity = (BaseActivity) getActivity();
+        Log.e(TAG, "onViewCreated: SearchFragment");
         if (getBaseActivity().isNetworkConnected()) {
             initViews(view);
         } else {
             getBaseActivity().showSnackbar(view, "Please connect to internet");
-        }*/
-    }
-
-    public void showLoading() {
-        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
-            mProgressDialog = new MyProgressDialog(mActivity);
         }
     }
 
-    public void hideLoading() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-    }
+    /* public void showLoading() {
+         if (mProgressDialog == null || !mProgressDialog.isShowing()) {
+             mProgressDialog = new MyProgressDialog(mActivity);
+         }
+     }
 
+     public void hideLoading() {
+         if (mProgressDialog != null && mProgressDialog.isShowing()) {
+             mProgressDialog.dismiss();
+         }
+     }
+ */
     private void CallSearchFilterApi() {
-        showLoading();
+        getBaseActivity().showLoading();
         HashMap<String, Object> map = new HashMap<>();
         map.put(filterRequest.getPageNumberKey(), pageCount);
         map.put(filterRequest.getLimitKey(), filterRequest.getLimit());
@@ -168,8 +170,8 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
     private void setResponseData() {
         if (list.size() > 0) {
             recycle.setVisibility(View.VISIBLE);
-            recycle.setAdapter(new SearchUserAdapter(mActivity, list, isDeluxe, SearchFragment.this));
-            if (posAdapter != -1 && getBaseActivity().sp.getDeluxe() && posAdapter < list.size()) {
+            recycle.setAdapter(new SearchUserAdapter(mActivity, list, isDeluxe, SearchFragment.this, getBaseActivity().sp));
+            if (posAdapter != -1 && getBaseActivity().sp.getPremium() && posAdapter < list.size()) {
                 manager.scrollToPosition(posAdapter);
             }
         } /*else {
@@ -181,10 +183,10 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
     private void initViews(View view) {
         gson = new Gson();
         //  setLoadMore(true);
-        if (!TextUtils.isEmpty(getBaseActivity().sp.getMyString(MyPageIndex)) && getBaseActivity().sp.getDeluxe())
+        if (!TextUtils.isEmpty(getBaseActivity().sp.getMyString(MyPageIndex)) && getBaseActivity().sp.getPremium())
             pageCount = Integer.parseInt(getBaseActivity().sp.getMyString(MyPageIndex));
         else pageCount = 1;
-        if (!TextUtils.isEmpty(getBaseActivity().sp.getMyString(RecycleLastPos)) && getBaseActivity().sp.getDeluxe())
+        if (!TextUtils.isEmpty(getBaseActivity().sp.getMyString(RecycleLastPos)) && getBaseActivity().sp.getPremium())
             posAdapter = Integer.parseInt(getBaseActivity().sp.getMyString(RecycleLastPos));
         else posAdapter = -1;
        /* try {
@@ -198,12 +200,12 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
         llRootView = view.findViewById(R.id.llRootView);
         btn_search = view.findViewById(R.id.btn_search);
         recycle = view.findViewById(R.id.recycle);
-        img_filter = view.findViewById(R.id.img_filter);
-        img_filter.setOnClickListener(this::onClick);
+        rlFilter = view.findViewById(R.id.rlFilter);
+        rlFilter.setOnClickListener(this::onClick);
         manager = new GridLayoutManager(getContext(), 3);
         recycle.setLayoutManager(manager);
         btn_search.setOnClickListener(this::onClick);
-        if (getBaseActivity().sp.getDeluxe()) setDeluxeData();
+        if (getBaseActivity().sp.getPremium()) setDeluxeData();
         else {
             if (getBaseActivity().sp.getFilterModel() != null) {
                 getBaseActivity().sp.removeFilter();
@@ -211,6 +213,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
             }
         }
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        //if (getBaseActivity().sp.getVerified().equalsIgnoreCase("Yes")) {
         if (getBaseActivity().sp.getStatus().equalsIgnoreCase(Global.statusActive)) {
             recycle.setVisibility(View.GONE);
             if (getBaseActivity().sp.getFilterModel() == null) {
@@ -237,69 +240,64 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
             recycle.setVisibility(View.GONE);
             tv_no_data.setText(getBaseActivity().sp.isRejected() ? getString(R.string.profileIdRejected) : getString(R.string.waitingList));
         }
-        homeViewModel.addDeluxeResponse().observe(this, new Observer<Resource<BaseModel>>() {
-            @Override
-            public void onChanged(Resource<BaseModel> resource) {
-                if (resource == null)
-                    return;
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case SUCCESS:
-                        hideLoading();
-                        if (resource.data.getSuccess()) {
-                            getBaseActivity().sp.saveDeluxe(true);
-                            setDeluxeData();
-                            setLoadMore(true);
-                            ((SearchUserAdapter) recycle.getAdapter()).setUnlock(isDeluxe);
-                            recycle.getAdapter().notifyDataSetChanged();
-                        } else if (resource.code == 401) {
-                            getBaseActivity().openActivityOnTokenExpire();
-                        } else {
-                            getBaseActivity().showSnackbar(llRootView, "Something went wrong");
-                        }
-                        break;
-                    case ERROR:
-                        hideLoading();
-                        getBaseActivity().showSnackbar(llRootView, resource.message);
-                        break;
-                }
 
+        homeViewModel.addPremiumResponse().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) return;
+            switch (resource.status) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    getBaseActivity().hideLoading();
+                    if (resource.data.getSuccess()) {
+                        getBaseActivity().sp.savePremium(true);
+                        setDeluxeData();
+                        setLoadMore(true);
+                        ((SearchUserAdapter) recycle.getAdapter()).setUnlock(isDeluxe);
+                        recycle.getAdapter().notifyDataSetChanged();
+                    } else if (resource.code == 401) {
+                        getBaseActivity().openActivityOnTokenExpire();
+                    } else {
+                        getBaseActivity().showSnackbar(llRootView, "Something went wrong");
+                    }
+                    break;
+                case ERROR:
+                    getBaseActivity().hideLoading();
+                    getBaseActivity().showSnackbar(llRootView, resource.message);
+                    break;
             }
         });
-        homeViewModel.userListAllResponse().observe(this, new Observer<Resource<UserListResponseModel>>() {
-            @Override
-            public void onChanged(Resource<UserListResponseModel> resource) {
-                if (resource == null) {
-                    return;
-                }
-                switch (resource.status) {
-                    case SUCCESS:
-                        hideLoading();
-                        list = resource.data.getUsers();
-                        if (list != null && list.size() > 0) {
-                            recycle.setVisibility(View.VISIBLE);
-                            recycle.setAdapter(new SearchUserAdapter(mActivity, list, isDeluxe, SearchFragment.this));
-                        } else {
-                            // tv_no_data.setText("No User Found");
-                            tv_no_data.setText("No profiles were found based on your criteria. Please edit your filters and try again.");
-                            recycle.setVisibility(View.GONE);
-                        }
-                        break;
-                    case LOADING:
-                        break;
-                    case ERROR:
-                        Log.e(TAG, "onChanged: Error" + resource.data.getError());
-                        hideLoading();
-                        getBaseActivity().showSnackbar(llRootView, resource.message);
-                        break;
-                }
+
+        homeViewModel.userListAllResponse().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) {
+                return;
+            }
+            switch (resource.status) {
+                case SUCCESS:
+                    getBaseActivity().hideLoading();
+
+                    list = resource.data.getUsers();
+                    if (list != null && list.size() > 0) {
+                        recycle.setVisibility(View.VISIBLE);
+                        recycle.setAdapter(new SearchUserAdapter(mActivity, list, isDeluxe, SearchFragment.this, getBaseActivity().sp));
+                    } else {
+                        // tv_no_data.setText("No User Found");
+                        tv_no_data.setText("No profiles were found based on your criteria. Please edit your filters and try again.");
+                        recycle.setVisibility(View.GONE);
+                    }
+                    break;
+                case LOADING:
+                    break;
+                case ERROR:
+                    Log.e(TAG, "onChanged: Error" + resource.data.getError());
+                    getBaseActivity().hideLoading();
+                    getBaseActivity().showSnackbar(llRootView, resource.message);
+                    break;
             }
         });
         recycle.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && getBaseActivity().sp.getDeluxe()) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && getBaseActivity().sp.getPremium()) {
                     if (IsLoadMore && recycle.getAdapter().getItemCount() > loadMoreRange) {
                         if (manager != null && manager.findLastCompletelyVisibleItemPosition() == list.size() - 1) {
                             pageCount++;
@@ -320,7 +318,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
                 int currFirstPos = manager.findFirstCompletelyVisibleItemPosition();
                 int currLastPos = manager.findLastCompletelyVisibleItemPosition();
                 posAdapter = currFirstPos;
-                if (!getBaseActivity().sp.getDeluxe()) {
+                if (!getBaseActivity().sp.getPremium()) {
                     Log.e(TAG, "onScrolled: LastVisibleItemPos" + posAdapter);
                     if (oldFirstPos == -1) {
                         totalItemsViewed += currLastPos - currFirstPos + 1;
@@ -339,7 +337,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
                     if (manager.getItemCount() > 6 && !scrollDown && totalItemsViewed != 0 /*&& totalItemsViewed % 6 == 0*/) {
                         totalItemsViewed = 0;
                         //CommonDialogs.isDialogOpen = true;
-                        CommonDialogs.DeluxePurChaseDialog(getContext(), SearchFragment.this);
+                        CommonDialogs.PremuimPurChaseDialog(getContext(), SearchFragment.this, getBaseActivity().sp);
                         recyclerView.stopScroll();
                     }
                 }
@@ -357,7 +355,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
 
     private void CallAllUserApi(int count) {
         filterRequest = new FilterRequest();
-        showLoading();
+        getBaseActivity().showLoading();
         HashMap<String, Object> map = new HashMap<>();
         map.put(filterRequest.getPageNumberKey(), count);
         map.put(filterRequest.getLimitKey(), filterRequest.getLimit());
@@ -393,17 +391,17 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
         switch (view.getId()) {
             case R.id.btn_search:
                 getBaseActivity().sp.setDialogOpen(true);
-                if (getBaseActivity().sp.getDeluxe()) {
+                if (getBaseActivity().sp.getPremium()) {
                     CommonDialogs.showAlreadyPremiumUser(getContext(), getContext().getResources().getString(R.string.you_have_active_deluxe_subscription));
                 } else {
                     //CommonDialogs.purchaseDialog(getContext(), "BlackGentry Premium", "", this);
                     // CommonDialogs.isDialogOpen = true;
-                    CommonDialogs.DeluxePurChaseDialog(getContext(), this);
+                    CommonDialogs.PremuimPurChaseDialog(getContext(), this, getBaseActivity().sp);
                 }
                 /*CommonDialogs dialogs = CommonDialogs.DeluxePurChaseDialog(getContext(), this);
                 dialogs.setOnDeluxeContinuebtn(this);*/
                 break;
-            case R.id.img_filter:
+            case R.id.rlFilter:
                 startActivityForResult(new Intent(getActivity(), FilterActivity.class), 2323);
                 getActivity().overridePendingTransition(R.anim.slide_in_top, R.anim.nothing);
                 break;
@@ -414,9 +412,9 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
     public void onClickToken(String tokenType, int tokensNum, int selectedPos) {
         tokenSType = tokenType;
         selectedPosition = tokensNum;
-        if (tokenType.equalsIgnoreCase("DeluxePurChase")) {
-            price = CommonDialogs.DeluxePriceList.get(selectedPos).getPriceValue();
-            productId = CommonDialogs.DeluxeArr[selectedPos];
+        if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
+            price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
+            productId = CommonDialogs.PremiumArr[selectedPos];
             bp.subscribe(mActivity, productId);
         }
     }
@@ -424,15 +422,16 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
     @Override
     public void onProductPurchased(String productId, TransactionDetails details) {
         Log.e(TAG, "onProductPurchased: " + details + "\n" + productId);
-        if (tokenSType.equalsIgnoreCase("DeluxePurChase")) {
+        if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
             Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_LONG).show();
             bp.consumePurchase(productId);
-            showLoading();
-            homeViewModel.addDeluxeRequest(new DeluxeTokenCountModel("2", productId,
+            getBaseActivity().showLoading();
+            homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1", productId,
                     price,
                     selectedPosition,
                     details.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
+                    details.purchaseInfo.purchaseData.purchaseToken,
+                    CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
                     details.purchaseInfo.purchaseData.purchaseState.toString()));
         }
     }
@@ -457,7 +456,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
         if (requestCode == 2323 && resultCode == 2323) {
             if (getBaseActivity().sp.getFilterModel() != null) {
                 isFilterApply = true;
-                isDeluxe = getBaseActivity().sp.getDeluxe();
+                isDeluxe = getBaseActivity().sp.getPremium();
                 filterRequest = getBaseActivity().sp.getFilterModel();
                 pageCount = 1;
                 getBaseActivity().sp.clearByKey(MyPageIndex);
@@ -471,10 +470,10 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
                 getBaseActivity().sp.clearByKey(MyPageIndex);
                 getBaseActivity().sp.clearByKey(RecycleLastPos);
                 isFilterApply = false;
-                isDeluxe = getBaseActivity().sp.getDeluxe();
+                isDeluxe = getBaseActivity().sp.getPremium();
                 pageCount = 1;
                 if (list != null && list.size() > 0)
-                list.clear();
+                    list.clear();
                 CallAllUserApi(pageCount);
                 /*getListFromSp();
                 if (list == null) {
@@ -485,25 +484,29 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
                     recycle.getAdapter().notifyDataSetChanged();
                 }*/
             }
+
+            if (getBaseActivity().sp.getPremium()) {
+                setDeluxeData();
+            }
         } else if (!bp.handleActivityResult(requestCode, resultCode, data))
             super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onSuccessSearchFilterList(WhoLikedYouReponce response) {
-        hideLoading();
+        getBaseActivity().hideLoading();
         if (list == null)
             list = new ArrayList<>();
 
         if (list.size() == 0) {
-            if (response.getUsers()==null||response.getUsers().size() == 0) {
+            if (response.getUsers() == null || response.getUsers().size() == 0) {
                 recycle.setVisibility(View.GONE);
                 tv_no_data.setText("No profiles were found based on your criteria. Please edit your filters and try again.");
             } else {
                 setLoadMore(true);
                 recycle.setVisibility(View.VISIBLE);
                 list = (ArrayList<User>) response.getUsers();
-                recycle.setAdapter(new SearchUserAdapter(mActivity, list, isDeluxe, SearchFragment.this));
+                recycle.setAdapter(new SearchUserAdapter(mActivity, list, isDeluxe, SearchFragment.this, getBaseActivity().sp));
                 recycle.getAdapter().notifyDataSetChanged();
             }
         } else {
@@ -533,7 +536,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
 
     @Override
     public void NoUsermatched(String messge) {
-        hideLoading();
+        getBaseActivity().hideLoading();
         //getBaseActivity().showSnackBar(llRootView, messge);
         //  tv_no_data.setText(messge);
         if (list == null || list.size() == 0) {
@@ -550,7 +553,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
 
     @Override
     public void onError(String error) {
-        hideLoading();
+        getBaseActivity().hideLoading();
         //getBaseActivity().showSnackBar(llRootView, error);
         if (list == null || list.size() == 0) {
             tv_no_data.setText(error);

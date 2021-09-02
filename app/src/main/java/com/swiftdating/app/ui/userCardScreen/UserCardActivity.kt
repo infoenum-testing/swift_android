@@ -203,7 +203,7 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
                 showSnackbar(chat, resources.getString(R.string.less_than_75))
             }
         }
-        superlike?.setOnClickListener {
+        superlike.setOnClickListener {
             val user = sp.user
             val myobj: ProfileOfUser = Gson().fromJson(user, ProfileOfUser::class.java)
             val superlike = view?.findViewById<View>(R.id.superlike)

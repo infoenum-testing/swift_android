@@ -70,7 +70,7 @@
 
     <string name="notification_channel_id">BlackGentry_01</string>
     <string name="notification_channel_name">BlackGentry_app</string>
-    <string name="send_text">SEND</string>
+    <string name="send_text">Send</string>
     <string name="my_email_is">My email is</string>
     <string name="youhaveamatch">You have a match!</string>
     <string name="youhave48">You have 24 hours to connect with %1$s. You can chat with %2$s before the match expires.</string>
@@ -287,20 +287,20 @@
         <item>Phd/Post Doctoral degree</item>
     </string-array>
     <string-array name="educationArray2">
-        <item>High school</item>
-        <item>Associates degree</item>
-        <item>Some college</item>
-        <item>Bachelors degree</item>
-        <item>Graduate degree</item>
-        <item>Phd/Post Doctoral degree</item>
+        <item>High School</item>
+        <item>Associates Degree</item>
+        <item>Some College</item>
+        <item>Bachelors Degree</item>
+        <item>Graduate Degree</item>
+        <item>Phd/Post Doctoral Degree</item>
         <item>No Preference</item>
     </string-array>
     <string-array name="relationArray">
         <item>Relationship</item>
         <item>Marriage</item>
-        <item>No Preference </item>
         <item>Something Casual</item>
         <item>Not Sure</item>
+        <item>No Preference </item>
     </string-array>
 
     <string-array name="smokingArray">
@@ -568,7 +568,7 @@
     <string name="noMatchAvailable">No matches yet. Match with some people and they will appear here.</string>
     <string name="and"> &amp;</string>
     <string name="you_have_active_subscription">You have an active BlackGentry Premium subscription.</string>
-    <string name="you_have_active_deluxe_subscription">You have an active BlackGentry Deluxe subscription.</string>
+    <string name="you_have_active_deluxe_subscription">You have an active Premium subscription.</string>
     <string name="likes_subscribe_deluxe_txt">Upgrade to Premium to see people who have already liked you.</string><!--Upgrade to Deluxe to search for users-->
     <string name="likes_subscribe_profile_deluxe_txt">Want a second chance? Upgrade to Premium and see the last 100 profiles you skipped.</string>
     <string name="like_btn_skip_txt">See People You Skipped</string>
@@ -673,5 +673,10 @@
 
     <string name="dialog_txt">People need to know more about you so they can get to know you more swiftly. You must complete 75% of your profile before sending likes.</string>
     <string name="loading_txt">Loading…</string>
+    <string name="no_preference">No Preference</string>
+    <string name="education">Education</string>
+    <string name="children">Children</string>
+    <string name="political">Political</string>
+
 
 </resources>

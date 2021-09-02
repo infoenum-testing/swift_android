@@ -388,7 +388,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         }
 
 
-        /////////////////////////////////        setting data to view from shared pref model ////////////////////////
+        /////////////////////////////////   ^^^^^^^^^^^ setting data to view from shared pref model ////////////////////////
         btnApply.setOnClickListener(OnClickListener(fun(v: View?) {
             baseActivity.sp.saveFilterModel(filterRequest)
             val map = HashMap<String, Any>()
@@ -1485,21 +1485,13 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
      */
     @TargetApi(Build.VERSION_CODES.M)
     fun requestPermissionLOC() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale
-                (baseActivity,
-                        Manifest.permission.ACCESS_FINE_LOCATION)
-                &&
-                ActivityCompat.shouldShowRequestPermissionRationale
-                (baseActivity,
-                        Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            requestPermissions(
-                    arrayOf
-                    (Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                    ),
-                    PERMISSION_REQUEST_CODE_LOC)
-        } else {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSION_REQUEST_CODE_LOC)
+        try {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(baseActivity,Manifest.permission.ACCESS_FINE_LOCATION)&&ActivityCompat.shouldShowRequestPermissionRationale(baseActivity,Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION),PERMISSION_REQUEST_CODE_LOC)
+            } else {
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSION_REQUEST_CODE_LOC)
+            }
+        } catch (e: Exception) {
         }
     }
 

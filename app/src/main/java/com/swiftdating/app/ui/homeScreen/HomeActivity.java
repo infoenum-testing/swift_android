@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.swiftdating.app.R;
+import com.swiftdating.app.common.Global;
 import com.swiftdating.app.data.network.Resource;
 import com.swiftdating.app.data.preference.SharedPreference;
 import com.swiftdating.app.model.BaseModel;
@@ -74,8 +75,8 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
             isShowSecondChance = LikesFrament.showSencondChance;
             tabPos = getIntent().getExtras().getInt("replace");
         }
-         setToolbar();
-          onNewIntent(getIntent());
+        setToolbar();
+        onNewIntent(getIntent());
         sp = new SharedPreference(this);
         // sp.setDislikeApi(true);
         init(tabPos);
@@ -220,7 +221,7 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
     @Override
     protected void onStop() {
         super.onStop();
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
     @Override
@@ -230,7 +231,9 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
             type = getIntent().getExtras().getInt("type");
         }
         subscribeModel();
-        if (sp.getVerified().equals("Yes")) {
+        ///"isVerified" ke check ko replace kr do "status" se
+        //if (sp.getVerified().equals("Yes")) {
+        if (sp.getStatus().equalsIgnoreCase(Global.statusActive)) {
             homeViewModel.unreadRequest(sp.getToken());
         }
         super.onResume();
@@ -239,7 +242,7 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
 
     @Override
     protected void onPause() {
-         isHomeScreen = false;
+        isHomeScreen = false;
         super.onPause();
 
     }
@@ -262,10 +265,10 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
         super.onNewIntent(intent);
         if (extra != null) {
             if (extra.containsKey("approved")) {
-              //sp.saveVerified("Yes");
+                //sp.saveVerified("Yes");
                 sp.saveIsRejected(false);
             } else if (extra.containsKey("rejected")) {
-             //   sp.saveVerified("No");
+                //   sp.saveVerified("No");
                 sp.saveIsRejected(true);
             } else if (extra.containsKey("deactivated")) {
                 openActivityOnTokenExpire();

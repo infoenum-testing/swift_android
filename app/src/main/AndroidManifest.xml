@@ -63,7 +63,9 @@
             android:name="com.swiftdating.app.ui.emailScreen.PhoneActivity"
             android:theme="@style/AppThemeNew" />
         <activity android:name="com.swiftdating.app.ui.loginScreen.ChooseLoginFrom" />
-        <activity android:name="com.swiftdating.app.ui.homeScreen.FilterActivity" />
+        <activity
+            android:name="com.swiftdating.app.ui.homeScreen.FilterActivity"
+            android:theme="@style/AppThemeNew" />
         <activity
             android:name="com.swiftdating.app.ui.welcomeScreen.WelcomeActivity"
             android:screenOrientation="portrait"

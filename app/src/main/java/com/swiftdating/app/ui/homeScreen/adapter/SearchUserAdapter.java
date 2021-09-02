@@ -28,11 +28,13 @@ import com.swiftdating.app.R;
 import com.swiftdating.app.common.CommonDialogs;
 import com.swiftdating.app.common.CommonUtils;
 import com.swiftdating.app.data.network.CallServer;
+import com.swiftdating.app.data.preference.SharedPreference;
 import com.swiftdating.app.model.responsemodel.ImageForUser;
 import com.swiftdating.app.model.responsemodel.ProfileOfUser;
 import com.swiftdating.app.model.responsemodel.User;
 import com.swiftdating.app.ui.homeScreen.HomeActivity;
 import com.swiftdating.app.ui.userCardScreen.UserCardActivity;
+
 import jp.wasabeef.blurry.Blurry;
 
 public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.MyViewHolder> {
@@ -43,11 +45,14 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.My
     private boolean isUnlock;
     private CommonDialogs.onProductConsume clickListener;
 
-    public SearchUserAdapter(Context context, List<User> list, boolean isUnlock, CommonDialogs.onProductConsume clickListener) {
+    private SharedPreference sp;
+
+    public SearchUserAdapter(Context context, List<User> list, boolean isUnlock, CommonDialogs.onProductConsume clickListener, SharedPreference sp) {
         this.context = context;
         this.list = list;
         this.isUnlock = isUnlock;
         this.clickListener = clickListener;
+        this.sp = sp;
     }
 
     public void setUnlock(boolean unlock) {
@@ -120,18 +125,15 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.My
             if (user != null)
                 tv_name.setText(user.getName() + ", " + CommonUtils.getAge(user.getDob()));
             if (!isUnlock) {
-                card_likes.setOnClickListener(v -> CommonDialogs.DeluxePurChaseDialog(context, clickListener));
+                card_likes.setOnClickListener(v -> CommonDialogs.PremuimPurChaseDialog(context, clickListener, sp));
                 float radius = tv_name.getTextSize() / 3;
                 BlurMaskFilter filter = new BlurMaskFilter(radius, BlurMaskFilter.Blur.NORMAL);
                 tv_name.getPaint().setMaskFilter(filter);
                 //  Blurry.with(context).sampling(5).radius(10).from(BitmapFactory.decodeResource(context.getResources(), position % 2 == 0 ? R.drawable.dummy1 : R.drawable.dummy)).into(img);
             } else {
-                card_likes.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        context.startActivity(new Intent(context, UserCardActivity.class).putExtra("userid", list.get(position).getId()).putExtra("tabPos", 2).putExtra("isFromSearch", true));
-                        ((HomeActivity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    }
+                card_likes.setOnClickListener(v -> {
+                    context.startActivity(new Intent(context, UserCardActivity.class).putExtra("userid", list.get(position).getId()).putExtra("tabPos", 2).putExtra("isFromSearch", true));
+                    ((HomeActivity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 });
                 tv_name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 MaskFilter mm = tv_name.getPaint().setMaskFilter(null);

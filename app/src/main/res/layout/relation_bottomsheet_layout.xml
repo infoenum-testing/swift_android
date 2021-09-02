@@ -3,26 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/clgender"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
+    android:layout_height="wrap_content"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/tvskip">
 
-    <RelativeLayout
-        android:id="@+id/rl_close"
+
+    <ImageView
+        android:id="@+id/ivCloseBottomSheet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:padding="10dp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:padding="@dimen/_10sdp"
+        android:src="@drawable/ic_cancel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_close_bottomsheet" />
-    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_relation"
@@ -32,9 +28,9 @@
         android:layout_marginTop="@dimen/_20sdp"
         android:fontFamily="@font/semi_bold"
         android:text="Select Relationship Preferences"
-        android:textColor="@color/primaryTextColor"
-        android:textSize="@dimen/_20ssp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/title_color"
+        android:textSize="@dimen/_15ssp"
+        app:layout_constraintEnd_toStartOf="@+id/ivCloseBottomSheet"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,28 +40,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_15sdp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_relation" />
 
     <Button
         android:id="@+id/btn_continue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:background="@drawable/disabledbtn"
-        android:enabled="false"
-        android:fontFamily="@font/medium"
-        android:minWidth="@dimen/_200sdp"
-        android:paddingTop="@dimen/_10sdp"
-        android:paddingBottom="@dimen/_10sdp"
-        android:text="@string/continue_txt"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_14ssp"
+        style="@style/filter_continue_btn_style"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_relation" />
@@ -73,5 +54,5 @@
     <Space
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/btn_continue"/>
+        app:layout_constraintTop_toBottomOf="@+id/btn_continue" />
 </androidx.constraintlayout.widget.ConstraintLayout>

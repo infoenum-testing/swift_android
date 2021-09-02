@@ -27,6 +27,7 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.OnSeekChangeListener;
 import com.warkiz.widget.SeekParams;
@@ -43,7 +44,6 @@ import com.swiftdating.app.common.RangeSeekBar;
 import com.swiftdating.app.common.wheelpicker.LoopListener;
 import com.swiftdating.app.data.preference.SharedPreference;
 import com.swiftdating.app.model.FlexModel;
-import com.swiftdating.app.model.requestmodel.DeluxeTokenCountModel;
 import com.swiftdating.app.model.requestmodel.FilterRequest;
 import com.swiftdating.app.ui.base.BaseActivity;
 import com.swiftdating.app.ui.createAccountScreen.adapter.FlexAdapter;
@@ -54,14 +54,13 @@ import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
 public class FilterActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener, OnSeekChangeListener, OnItemClickListener, View.OnScrollChangeListener, LoopListener, CommonDialogs.onProductConsume, BillingProcessor.IBillingHandler {
     private static final String TAG = "FilterActivity";
     int noPr;
-    private ImageView img_close;
+    private ImageView img_close, ivCloseBottomSheet;
     private BottomSheetDialog bottomSheetDialog;
-    private RelativeLayout rl_distance, rl_gender, rl_age, rl_relation, rl_height, rl_education, rl_child, rl_politic, rl_religion, rl_smoke;
+    private RelativeLayout rl_relation, rl_education, rl_child, rl_politic, rl_religion;
     private Context context;
     private View view;
-    private RelativeLayout rl_close;
     private Button btnContinue, btn_reset, btn_apply;
-    private TextView tvDistance, tv_dis, tv_gender, tv_smoke, tv_religion, tv_politics, tv_child, tv_education, tv_height, tv_relation, tv_age;
+    private TextView tvDistance, tv_smoke, tv_religion, tv_politics, tv_child, tv_education, tv_height, tv_relation, tvAgeRange;
     private ArrayList<String> ageArray, heightlist;
     private ArrayList<String> heightDigitlist;
     private ArrayList<FlexModel> relationlist = new ArrayList<>(), educationlist = new ArrayList<>(), childernlist = new ArrayList<>(), politicalList = new ArrayList<>(), religionList = new ArrayList<>(), smokeList = new ArrayList<>();
@@ -77,7 +76,13 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
     private boolean isReset;
     private BillingProcessor bp;
     private String productId, tokenSType;
-    private String[] arraydigit= { "3.9","4.0","4.1","4.2","4.3","4.4", "4.5","4.6","4.7","4.8","4.9","4.10", "4.11","5.0","5.1","5.2","5.3","5.4", "5.5","5.6","5.7","5.8","5.9","5.10", "5.11","6.0","6.1","6.2","6.3","6.4", "6.5","6.6","6.7","6.8","6.9","6.10", "6.11","7.0","7.1"};
+    private String[] arraydigit = {"3.9", "4.0", "4.1", "4.2", "4.3", "4.4", "4.5", "4.6", "4.7", "4.8", "4.9", "4.10", "4.11", "5.0", "5.1", "5.2", "5.3", "5.4", "5.5", "5.6", "5.7", "5.8", "5.9", "5.10", "5.11", "6.0", "6.1", "6.2", "6.3", "6.4", "6.5", "6.6", "6.7", "6.8", "6.9", "6.10", "6.11", "7.0", "7.1"};
+    private RadioGroup tgGender;
+    private RadioButton tbMale, femaleTb, otherTb;
+    private RangeSeekBar<Integer> seekHeightRange;
+    private IndicatorSeekBar seekDistance;
+    private RangeSeekBar<Integer> seekAgeRange;
+
     /* public FilterRequest(Integer pageNumber, Integer limit, Integer distance, String gender, Integer maxAgePrefer, Integer minAgePrefer, String lookingFor, String maxHeight, String minHeight, String education, String kids, String political, String religion, String smoke) {
           this.pageNumber = pageNumber;
           this.limit = limit;
@@ -124,11 +129,10 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
         isReset = false;
         sp = new SharedPreference(this);
         context = this;
-        btn_apply = findViewById(R.id.btn_apply);
-        tv_dis = findViewById(R.id.tv_dis);
-        tv_age = findViewById(R.id.tv_age);
-        tv_gender = findViewById(R.id.tv_gender);
+        btn_apply = findViewById(R.id.btnApply);
+        tvAgeRange = findViewById(R.id.tvAgeRange);
         tv_relation = findViewById(R.id.tv_relation);
+        tvDistance = findViewById(R.id.tvDistance);
         tv_height = findViewById(R.id.tv_height);
         tv_height.setText("No Preference");//< 4'0" to > 7'0"
         tv_education = findViewById(R.id.tv_education);
@@ -136,40 +140,44 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
         tv_politics = findViewById(R.id.tv_politics);
         tv_religion = findViewById(R.id.tv_religion);
         tv_smoke = findViewById(R.id.tv_smoke);
-        img_close = findViewById(R.id.img_close);
+        img_close = findViewById(R.id.image_back);
         img_close.setOnClickListener(this::onClick);
-        rl_distance = findViewById(R.id.rl_distance);
-        rl_gender = findViewById(R.id.rl_gender);
-        rl_age = findViewById(R.id.rl_age);
         rl_relation = findViewById(R.id.rl_relation);
-        rl_height = findViewById(R.id.rl_height);
         rl_education = findViewById(R.id.rl_education);
         rl_politic = findViewById(R.id.rl_politic);
         rl_religion = findViewById(R.id.rl_religion);
-        rl_smoke = findViewById(R.id.rl_smoke);
         rl_child = findViewById(R.id.rl_child);
-        btn_reset = findViewById(R.id.btn_reset);
+        btn_reset = findViewById(R.id.btnReset);
+
+        seekAgeRange = findViewById(R.id.seek_age_range);
+        seekHeightRange = findViewById(R.id.seek_height_range);
+        tgGender = findViewById(R.id.tgGender);
+        tgGender.setOnCheckedChangeListener(this);
+        otherTb = findViewById(R.id.otherTb);
+        tbMale = findViewById(R.id.tbMale);
+        femaleTb = findViewById(R.id.femaleTb);
+        seekDistance = findViewById(R.id.seek_distance);
+
         if (sp.getFilterModel() != null) {
-            if (!sp.getDeluxe()) {
+            if (!sp.getPremium()) {
                 sp.removeFilter();
             } else {
                 filterRequest = sp.getFilterModel();
                 setDataFromPreference();
             }
         }
-        rl_distance.setOnClickListener(this::onClick);
+
+        Log.e(TAG, "initViews: " + filterRequest);
         btn_apply.setOnClickListener(this::onClick);
-        rl_gender.setOnClickListener(this::onClick);
-        rl_age.setOnClickListener(this::onClick);
-        rl_smoke.setOnClickListener(this::onClick);
         rl_religion.setOnClickListener(this::onClick);
         rl_politic.setOnClickListener(this::onClick);
         rl_education.setOnClickListener(this::onClick);
-        rl_height.setOnClickListener(this::onClick);
         rl_child.setOnClickListener(this::onClick);
         rl_relation.setOnClickListener(this::onClick);
         btn_reset.setOnClickListener(this::onClick);
-        bottomSheetDialog = new BottomSheetDialog(context);
+
+
+        bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogStyle);
         ageArray = new ArrayList<>();
         heightlist = new ArrayList<>();
         heightDigitlist = new ArrayList<>();
@@ -206,33 +214,39 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
         list = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.smokingArray)));
         for (int i = 0; i < list.size(); i++) smokeList.add(new FlexModel(list.get(i)));
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-        homeViewModel.addDeluxeResponse().observe(this, resource -> {
-            if (resource == null)
-                return;
+
+        homeViewModel.addPremiumResponse().observe(this, resource -> {
+            if (resource == null) return;
             switch (resource.status) {
                 case LOADING:
                     break;
                 case SUCCESS:
                     hideLoading();
                     if (resource.data.getSuccess()) {
-                        sp.saveDeluxe(true);
+                        sp.savePremium(true);
                     } else if (resource.code == 401) {
                         openActivityOnTokenExpire();
                     } else {
                         showSnackbar(btn_apply, "Something went wrong");
                     }
+
                     break;
                 case ERROR:
                     hideLoading();
                     showSnackbar(btn_apply, resource.message);
                     break;
             }
-
         });
+
+
+        showDistanceData();
+        showHeightData(heightlist);
+        showAgeBottomsheet(ageArray);
+        showGenderData();
     }
 
     private void setDataFromPreference() {
-        FilterActivity.this.tv_dis.setText("" + filterRequest.getDistance() + " miles");
+        FilterActivity.this.tvDistance.setText("" + filterRequest.getDistance() + " miles");
         if (filterRequest.getSmoke() != null) {
             FilterActivity.this.tv_smoke.setText("" + getSmallName(filterRequest.getSmoke()));
         }
@@ -251,19 +265,14 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
         if (filterRequest.getLookingFor() != null) {
             FilterActivity.this.tv_relation.setText("" + getSmallName(filterRequest.getLookingFor()));
         }
-        //if (filterRequest.getGender() != null) {
-        if (filterRequest.getGender().equalsIgnoreCase("Both")) {
-            FilterActivity.this.tv_gender.setText("Everyone");
-        } else
-            FilterActivity.this.tv_gender.setText("" + filterRequest.getGender());
-        //}
+
         if (filterRequest.getMaxHeight() != null && filterRequest.getMinHeight() != null) {
             String maxH = filterRequest.getMaxHeight().equalsIgnoreCase("7.1") ? "> 7'0\"" : ("" + filterRequest.getMaxHeight()).replace(".", "'") + "\"";
             String minH = filterRequest.getMinHeight().equalsIgnoreCase("3.9") ? "< 4'0\"" : ("" + filterRequest.getMinHeight()).replace(".", "'") + "\"";
             //FilterActivity.this.tv_height.setText(("" + filterRequest.getMinHeight()).replace(".", "'") + "\"" + " to " + ("" + filterRequest.getMaxHeight()).replace(".", "'") + "\"");
             FilterActivity.this.tv_height.setText(minH + " to " + maxH);
         }
-        FilterActivity.this.tv_age.setText("" + filterRequest.getMinAgePrefer() + " to " + filterRequest.getMaxAgePrefer());
+        FilterActivity.this.tvAgeRange.setText("" + filterRequest.getMinAgePrefer() + " to " + filterRequest.getMaxAgePrefer());
     }
 
     private String getSmallName(String name) {
@@ -271,18 +280,8 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
         return n1.length == 2 ? n1[0] + "..." : n1[0];
     }
 
-    private void showGenderBottomsheet() {
-        view = LayoutInflater.from(context).inflate(R.layout.fragment_gender, null);
-        bottomSheetDialog.setContentView(view);
-        RadioGroup tgGender = view.findViewById(R.id.tgGender);
-        tgGender.setOnCheckedChangeListener(this);
-        TextView tv_gender = view.findViewById(R.id.tv_gender);
-        RadioButton otherTb = view.findViewById(R.id.otherTb);
-        RadioButton tbMale = view.findViewById(R.id.tbMale);
-        RadioButton femaleTb = view.findViewById(R.id.femaleTb);
-        otherTb.setText("Everyone");
-        tbMale.setText("Men");
-        femaleTb.setText("Women");
+    private void showGenderData() {
+
         if (filterRequest != null && filterRequest.getGender() != null) {
             switch (filterRequest.getGender()) {
                 case "Men":
@@ -296,151 +295,136 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
                     break;
             }
         }
-        setupCrossandContinuebtn(view);
-        btnContinue.setOnClickListener(v -> {
-            if (filterRequest == null) {
-                filterRequest = new FilterRequest();
-            }
-            switch (tgGender.getCheckedRadioButtonId()) {
-                case R.id.tbMale:
-                    FilterActivity.this.tv_gender.setText("Men");
-                    filterRequest.setGender(FilterActivity.this.tv_gender.getText().toString());
-                    break;
-                case R.id.femaleTb:
-                    FilterActivity.this.tv_gender.setText("Women");
-                    filterRequest.setGender(FilterActivity.this.tv_gender.getText().toString());
-                    break;
-                case R.id.otherTb:
-                    FilterActivity.this.tv_gender.setText("Everyone");
-                    filterRequest.setGender("Both");
-                    break;
-            }
-//            filterRequest.setGender(FilterActivity.this.tv_gender.getText().toString());
-            sp.saveFilterModel(filterRequest);
-            bottomSheetDialog.cancel();
-        });
-        rl_close.setVisibility(View.VISIBLE);
-        tv_gender.setText("Select Gender");
-        bottomSheetDialog.show();
-    }
 
-    private void showDistanceBottomsheet() {
-        view = LayoutInflater.from(context).inflate(R.layout.distance_bottomsheet_layout, null);
-        bottomSheetDialog.setContentView(view);
-        tvDistance = view.findViewById(R.id.tvDistance);
+        if (filterRequest == null) {
+            filterRequest = new FilterRequest();
+        }
+
+        tgGender.setOnCheckedChangeListener((radioGroup, i) -> {
+            if (i == R.id.tbMale) {
+                filterRequest.setGender("Men");
+            } else if (i == R.id.femaleTb) {
+                filterRequest.setGender("Women");
+            } else if (i == R.id.otherTb) {
+                filterRequest.setGender("Both");
+            }
+            sp.saveFilterModel(filterRequest);
+        });
+
+
+        int checkedRadioButtonId = tgGender.getCheckedRadioButtonId();
+        if (checkedRadioButtonId == R.id.tbMale) {
+            filterRequest.setGender("Men");
+        } else if (checkedRadioButtonId == R.id.femaleTb) {
+            filterRequest.setGender("Women");
+        } else if (checkedRadioButtonId == R.id.otherTb) {
+            filterRequest.setGender("Both");
+        }
+        sp.saveFilterModel(filterRequest);
+     }
+
+    private void showDistanceData() {
         tvDistance.setText("500 miles");
-        IndicatorSeekBar seekDistance = view.findViewById(R.id.seek_distance);
+
         seekDistance.setOnSeekChangeListener(this);
-        setupCrossandContinuebtn(view);
         if (filterRequest != null) {
             seekDistance.setProgress(filterRequest.getDistance());
             tvDistance.setText("" + filterRequest.getDistance() + " miles");
         } else {
             seekDistance.setProgress(500);
         }
-        btnContinue.setOnClickListener(v -> {
-            FilterActivity.this.tv_dis.setText("" + seekDistance.getProgress() + " miles");
-            if (filterRequest == null) {
-                filterRequest = new FilterRequest();
+
+        seekDistance.setOnSeekChangeListener(new OnSeekChangeListener() {
+            @Override
+            public void onSeeking(SeekParams seekParams) {
+                FilterActivity.this.tvDistance.setText("" + seekDistance.getProgress() + " miles");
+                if (filterRequest == null) {
+                    filterRequest = new FilterRequest();
+                }
+                filterRequest.setDistance(seekDistance.getProgress());
+                sp.saveFilterModel(filterRequest);
             }
-            filterRequest.setDistance(seekDistance.getProgress());
-            sp.saveFilterModel(filterRequest);
-            bottomSheetDialog.cancel();
+
+            @Override
+            public void onStartTrackingTouch(IndicatorSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
+
+            }
         });
-        bottomSheetDialog.show();
     }
 
-    private void showAgeBottomsheet(ArrayList<String> list, String title) {
-        view = LayoutInflater.from(context).inflate(R.layout.age_bottomsheet_layout, null);
-        bottomSheetDialog.setContentView(view);
-        // LoopView picker_age = view.findViewById(R.id.picker_age);
-        // LoopView picker_age_to = view.findViewById(R.id.picker_age_to);
-        RangeSeekBar<Integer> seekAgeRange = view.findViewById(R.id.sb_age);
-        TextView tvRange = view.findViewById(R.id.tvRange);
-        setupCrossandContinuebtn(view);
+    private void showAgeBottomsheet(ArrayList<String> list) {
+
         seekAgeRange.setRangeValues(0, list.size() - 1);
         seekAgeRange.setSelectedMinValue(0);
         seekAgeRange.setSelectedMaxValue(list.size() - 1);
-        seekAgeRange.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener() {
-            @Override
-            public void onRangeSeekBarValuesChanged(RangeSeekBar bar, Object minValue, Object maxValue) {
-                try {
-                    tvRange.setText(list.get((int) minValue) + " to " + list.get((int) maxValue));
-                } catch (Exception e) {
-                    Log.e(TAG, "showAgeBottomsheet: " + e.toString());
-                }
+
+        seekAgeRange.setOnRangeSeekBarChangeListener((bar, minValue, maxValue) -> {
+            try {
+                tvAgeRange.setText(list.get(minValue) + " to " + list.get(maxValue));
+                if (filterRequest == null) filterRequest = new FilterRequest();
+
+                filterRequest.setMaxAgePrefer(Integer.parseInt(FilterActivity.this.ageArray.get(seekAgeRange.getSelectedMaxValue())));
+                filterRequest.setMinAgePrefer(Integer.parseInt(FilterActivity.this.ageArray.get(seekAgeRange.getSelectedMinValue())));
+                sp.saveFilterModel(filterRequest);
+
+            } catch (Exception e) {
+                Log.e(TAG, "showAgeBottomsheet: " + e.toString());
             }
         });
-        // picker_age.setNotLoop();
-        TextView tv_age = view.findViewById(R.id.tv_age);
-        tv_age.setText(title);
-      /*  picker_age_to.setNotLoop();
-        picker_age.setArrayList(list);
-        picker_age.setListener(this);
-        picker_age_to.setListener(this);
-        picker_age.setInitPosition(0);
-        picker_age_to.setArrayList(list);
-        picker_age_to.setInitPosition(list.size() - 1);*/
+
         if (filterRequest != null) {
-            if (!title.equalsIgnoreCase("Select Height")) {
-                for (int i = 0; i < ageArray.size(); i++) {
-                    if (ageArray.get(i).equalsIgnoreCase("" + filterRequest.getMinAgePrefer())) {
-                        seekAgeRange.setSelectedMinValue(i);
-                        //  picker_age.setInitPosition(i);
-                        break;
-                    }
+            for (int i = 0; i < ageArray.size(); i++) {
+                if (ageArray.get(i).equalsIgnoreCase("" + filterRequest.getMinAgePrefer())) {
+                    seekAgeRange.setSelectedMinValue(i);
+                    break;
                 }
-                for (int i = 0; i < ageArray.size(); i++) {
-                    if (ageArray.get(i).equalsIgnoreCase("" + filterRequest.getMaxAgePrefer())) {
-                        seekAgeRange.setSelectedMaxValue(i);
-                        //   picker_age_to.setInitPosition(i);
-                        break;
-                    }
+            }
+            for (int i = 0; i < ageArray.size(); i++) {
+                if (ageArray.get(i).equalsIgnoreCase("" + filterRequest.getMaxAgePrefer())) {
+                    seekAgeRange.setSelectedMaxValue(i);
+                    break;
                 }
-                tvRange.setText(list.get((int) seekAgeRange.getSelectedMinValue()) + " to " + list.get((int) seekAgeRange.getSelectedMaxValue()));
-            } else {
-                for (int i = 0; i < heightlist.size(); i++) {
-                    if (heightlist.get(i).equalsIgnoreCase(("" + filterRequest.getMinHeight()).replace(".", "'") + "\"")) {
-                        seekAgeRange.setSelectedMinValue(i);
-                        //  picker_age.setInitPosition(i);
-                        break;
-                    }
+                tvAgeRange.setText(list.get(seekAgeRange.getSelectedMinValue()) + " to " + list.get(seekAgeRange.getSelectedMaxValue()));
+            }
+        }
+    }
+
+    private void showHeightData(ArrayList<String> list) {
+        seekHeightRange.setRangeValues(0, list.size() - 1);
+        seekHeightRange.setSelectedMinValue(0);
+        seekHeightRange.setSelectedMaxValue(list.size() - 1);
+        seekHeightRange.setOnRangeSeekBarChangeListener((bar, minValue, maxValue) -> {
+            try {
+                tv_height.setText(list.get(minValue) + " to " + list.get(maxValue));
+                if (filterRequest == null) filterRequest = new FilterRequest();
+                filterRequest.setMaxHeight("" + heightDigitlist.get(seekHeightRange.getSelectedMaxValue()));
+                filterRequest.setMinHeight("" + heightDigitlist.get(seekHeightRange.getSelectedMinValue()));
+                sp.saveFilterModel(filterRequest);
+            } catch (Exception e) {
+                Log.e(TAG, "showAgeBottomsheet: " + e.toString());
+            }
+        });
+
+        if (filterRequest != null) {
+            for (int i = 0; i < heightlist.size(); i++) {
+                if (heightlist.get(i).equalsIgnoreCase(("" + filterRequest.getMinHeight()).replace(".", "'") + "\"")) {
+                    seekHeightRange.setSelectedMinValue(i);
+                    break;
                 }
-                for (int i = 0; i < heightlist.size(); i++) {
-                    if (heightlist.get(i).equalsIgnoreCase(("" + filterRequest.getMaxHeight()).replace(".", "'") + "\"")) {
-                        seekAgeRange.setSelectedMaxValue(i);
-                        //   picker_age_to.setInitPosition(i);
-                        break;
-                    }
+            }
+            for (int i = 0; i < heightlist.size(); i++) {
+                if (heightlist.get(i).equalsIgnoreCase(("" + filterRequest.getMaxHeight()).replace(".", "'") + "\"")) {
+                    seekHeightRange.setSelectedMaxValue(i);
+                    break;
                 }
             }
         }
 
-        btnContinue.setOnClickListener(v -> {
-            if (filterRequest == null) filterRequest = new FilterRequest();
-            if (title.equalsIgnoreCase("Select Height")) {
-                FilterActivity.this.tv_height.setText("" + list.get((int) seekAgeRange.getSelectedMinValue()) + " to " + list.get((int) seekAgeRange.getSelectedMaxValue()));
-                /*if (picker_age.getSelectedItem() > picker_age_to.getSelectedItem()) {
-                    filterRequest.setMaxHeight("" + heightDigitlist.get(picker_age.getSelectedItem()));
-                    filterRequest.setMinHeight("" + heightDigitlist.get(picker_age_to.getSelectedItem()));
-                } else {*/
-                filterRequest.setMaxHeight("" + heightDigitlist.get((int) seekAgeRange.getSelectedMaxValue()));
-                filterRequest.setMinHeight("" + heightDigitlist.get((int) seekAgeRange.getSelectedMinValue()));
-                //}
-            } else {
-                FilterActivity.this.tv_age.setText("" + FilterActivity.this.ageArray.get((int) seekAgeRange.getSelectedMinValue()) + " to " + FilterActivity.this.ageArray.get((int) seekAgeRange.getSelectedMaxValue()));
-               /* if (picker_age.getSelectedItem() > picker_age_to.getSelectedItem()) {
-                    filterRequest.setMaxAgePrefer(Integer.parseInt(FilterActivity.this.ageArray.get(picker_age.getSelectedItem())));
-                    filterRequest.setMinAgePrefer(Integer.parseInt(FilterActivity.this.ageArray.get(picker_age_to.getSelectedItem())));
-                } else {*/
-                filterRequest.setMaxAgePrefer(Integer.parseInt(FilterActivity.this.ageArray.get((int) seekAgeRange.getSelectedMaxValue())));
-                filterRequest.setMinAgePrefer(Integer.parseInt(FilterActivity.this.ageArray.get((int) seekAgeRange.getSelectedMinValue())));
-                //}
-            }
-            sp.saveFilterModel(filterRequest);
-            bottomSheetDialog.cancel();
-        });
-        bottomSheetDialog.show();
     }
 
     private void showRelationBottomsheet() {
@@ -496,7 +480,6 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
             FilterActivity.this.tv_relation.setText(txt);
             bottomSheetDialog.cancel();
         });
-        changeBtnBackground();
         bottomSheetDialog.show();
     }
 
@@ -668,12 +651,6 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
         bottomSheetDialog.show();
     }
 
-    /* for (int i = 0; i < selectbool.length; i++) {
-                       if (selectbool[i]) {
-                           FilterActivity.this.tv_religion.setText(religionList.get(i).getName());
-                           break;
-                       }
-                   }*/
     private void showPoliticalBottomsheet() {
         type = Type.POLITICAL;
         lastPosition = 0;
@@ -730,84 +707,19 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
         bottomSheetDialog.show();
     }
 
-    private void showSmokeBottomsheet() {
-        type = Type.SMOKE;
-        lastPosition = 0;
-        selectBool = new boolean[smokeList.size()];
-        Arrays.fill(selectBool, false);
-        if (filterRequest != null && filterRequest.getSmoke() != null) {
-            for (String value : filterRequest.getSmoke().split(",")) {
-                for (int j = 0; j < smokeList.size(); j++) {
-                    if (smokeList.get(j).getName().equalsIgnoreCase(value)) {
-                        selectBool[j] = true;
-                        break;
-                    }
-                }
-            }
-        }
-        //selectBool[0] = true;
-        for (int i = 0; i < selectBool.length; i++) smokeList.get(i).setChecked(selectBool[i]);
-        view = LayoutInflater.from(context).inflate(R.layout.smoking_bottomsheet_layout, null);
-        bottomSheetDialog.setContentView(view);
-        RecyclerView rv_education = view.findViewById(R.id.rv_smoke);
-        layoutManager = new FlexboxLayoutManager(view.getContext());
-        layoutManager.setFlexDirection(FlexDirection.ROW);
-        layoutManager.setFlexWrap(FlexWrap.WRAP);
-        layoutManager.setAlignItems(AlignItems.CENTER);
-        rv_education.setLayoutManager(layoutManager);
-        adapter = new FlexAdapter(context, smokeList);
-        adapter.setOnItemClickListener(this);
-        rv_education.setAdapter(adapter);
-        setupCrossandContinuebtn(view);
-        btnContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                txt = "";
-                txt2 = "";
-                for (int i = 0; i < selectBool.length; i++) {
-                    if (selectBool[i]) {
-                        if (TextUtils.isEmpty(txt)) {
-                            txt = smokeList.get(i).getName();
-                            txt2 = smokeList.get(i).getName();
-                        } else {
-                            if (!txt.contains("..."))
-                                txt += "...";
-                            txt2 += "," + smokeList.get(i).getName();
-                        }
-                    }
-                }
-                if (filterRequest == null) filterRequest = new FilterRequest();
-                filterRequest.setSmoke(!txt2.equalsIgnoreCase("No Preference") ? txt2 : null);
-                sp.saveFilterModel(filterRequest);
-                FilterActivity.this.tv_smoke.setText(txt);
-                bottomSheetDialog.cancel();
-            }
-        });
-        bottomSheetDialog.show();
-    }
 
     private void setupCrossandContinuebtn(View v) {
         btnContinue = v.findViewById(R.id.btn_continue);
         //btn_reset.setPaintFlags(btn_reset.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        rl_close = v.findViewById(R.id.rl_close);
-        rl_close.setOnClickListener(this::onClick);
+        ivCloseBottomSheet = v.findViewById(R.id.ivCloseBottomSheet);
+        ivCloseBottomSheet.setOnClickListener(this::onClick);
 
     }
 
     @SuppressLint({"NonConstantResourceId", "SetTextI18n"})
     private void onClick(View view) {
         switch (view.getId()) {
-            case R.id.rl_distance:
-                showDistanceBottomsheet();
-                break;
-            case R.id.rl_age:
-                showAgeBottomsheet(ageArray, "Select Age");
-                break;
-            case R.id.rl_gender:
-                showGenderBottomsheet();
-                break;
             case R.id.rl_relation:
-                //CommonDialogs.PremuimPurChaseDialog(this,this);
                 showRelationBottomsheet();
                 break;
             case R.id.rl_education:
@@ -822,47 +734,44 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
             case R.id.rl_religion:
                 showReligionBottomsheet();
                 break;
-            case R.id.rl_smoke:
-                showSmokeBottomsheet();
-                break;
-            case R.id.rl_height:
-                showAgeBottomsheet(heightlist, "Select Height");
-                break;
-            case R.id.img_close:
+            case R.id.image_back:
                 if (isReset) {
                     setResult(2323);
                 }
                 finish();
                 overridePendingTransition(R.anim.filter_fast_nothing, R.anim.slide_out_down_fast);
                 break;
-            case R.id.rl_close:
+            case R.id.ivCloseBottomSheet:
                 bottomSheetDialog.cancel();
                 break;
-            case R.id.btn_reset:
-                if (sp.getDeluxe()&&sp.getFilterModel()!=null) {
+            case R.id.btnReset:
+                if (sp.getPremium() && sp.getFilterModel() != null) {
                     isReset = true;
                 }
                 sp.removeFilter();
-                tv_height.setText("No Preference");//< 4'0" to > 7'0"
+                tv_height.setText("< 4'0\" to > 7'0\"");//< 4'0" to > 7'0"
                 tv_relation.setText("No Preference");
                 tv_education.setText("No Preference");
                 tv_child.setText("No Preference");
                 tv_politics.setText("No Preference");
                 tv_religion.setText("No Preference");
-                tv_dis.setText("500 miles");
-                tv_gender.setText("Everyone");
-                tv_age.setText("18 to 80");
-                tv_smoke.setText("No Preference");
+                tvDistance.setText("500 miles");
+                tvAgeRange.setText("18 to 80");
+                seekHeightRange.setSelectedMaxValue(heightlist.size() - 1);
+                seekAgeRange.setSelectedMaxValue(ageArray.size() - 1);
+                otherTb.setChecked(true);
+                seekDistance.setProgress(500);
                 filterRequest = new FilterRequest();
                 break;
-            case R.id.btn_apply:
-                if (sp.getDeluxe()) {
+            case R.id.btnApply:
+                if (sp.getPremium()) {
+                    Log.e(TAG, "onClick: " + filterRequest);
                     if (filterRequest != null)
                         setResult(2323);
                     finish();
                     overridePendingTransition(R.anim.filter_fast_nothing, R.anim.slide_out_down_fast);
                 } else {
-                    CommonDialogs.DeluxePurChaseDialog(this, this);
+                    CommonDialogs.PremuimPurChaseDialog(this, this, sp);
                 }
                 break;
         }
@@ -876,7 +785,7 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
     private void changeBtnBackground() {
         if (btnContinue != null) {
             btnContinue.setEnabled(true);
-            btnContinue.setBackground(context.getResources().getDrawable(R.drawable.gradientbtn));
+            //  btnContinue.setBackground(context.getResources().getDrawable(R.drawable.gradientbtn));
         }
     }
 
@@ -941,10 +850,11 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
                 list.get(i).setChecked(select[i]);
         }
         count = 0;
-        for (Boolean aBoolean : select) if (!aBoolean) count++;
+        for (Boolean aBoolean : select)
+            if (!aBoolean) count++;
+
         if (count == select.length) {
             btnContinue.setEnabled(false);
-            btnContinue.setBackground(context.getResources().getDrawable(R.drawable.disabledbtn));
         }
     }
 
@@ -965,19 +875,18 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
 
     @Override
     public void onProductPurchased(String productId, TransactionDetails details) {
-        if (tokenSType.equalsIgnoreCase("DeluxePurChase")) {
-            Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
-            showLoading();
-            homeViewModel.addDeluxeRequest(new DeluxeTokenCountModel("2", productId,
-                    price,
-                    selectedPosition,
-                    details.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken, CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
-                    details.purchaseInfo.purchaseData.purchaseState.toString()));
-            Log.e("purchase success DeluxePurChase ", details.purchaseInfo.responseData);
-
-
-        }
+        Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
+        showLoading();
+        homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1",
+                productId,
+                price,
+                Integer.parseInt(productId.split("_")[2]),
+                details.purchaseInfo.purchaseData.orderId,
+                details.purchaseInfo.purchaseData.purchaseToken,
+                CommonUtils.getDateForPurchase(details),
+                details.purchaseInfo.signature,
+                details.purchaseInfo.purchaseData.purchaseState.toString()));
+        Log.e(TAG, details.purchaseInfo.responseData);
     }
 
     @Override
@@ -999,11 +908,9 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
     public void onClickToken(String tokenType, int tokensNum, int selectedPos) {
         tokenSType = tokenType;
         selectedPosition = tokensNum;
-        if (tokenType.equalsIgnoreCase("DeluxePurChase")) {
-            price = CommonDialogs.DeluxePriceList.get(selectedPos).getPriceValue();
-            productId = CommonDialogs.DeluxeArr[selectedPos];
-            bp.subscribe(this, productId);
-        }
+        price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
+        productId = CommonDialogs.PremiumArr[selectedPos];
+        bp.subscribe(this, productId);
     }
 
     private enum Type {

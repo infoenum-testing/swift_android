@@ -27,16 +27,125 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/_10sdp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="@dimen/_5sdp"
         app:cardElevation="@dimen/_10sdp"
-        app:layout_constraintBottom_toTopOf="@id/tabHome"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_back">
 
-        <include layout="@layout/detailview" />
+        <include
+            layout="@layout/detailview"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+            <com.yuyakaido.android.cardstackview.CardStackView
+                android:id="@+id/card_stack_viewMy"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="false"
+                android:visibility="visible" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:clickable="true"
+                android:elevation="@dimen/_10sdp"
+                android:paddingBottom="@dimen/_20sdp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    >
+
+                    <ImageView
+                        android:id="@+id/cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_18sdp"
+                        android:background="@drawable/btn_bg_shadow"
+                        android:contentDescription="@null"
+                        android:elevation="10dp"
+                        android:src="@drawable/ic_icdislike" />
+
+                    <ImageView
+                        android:id="@+id/love"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_18sdp"
+                        android:background="@drawable/btn_bg_shadow"
+                        android:contentDescription="@null"
+                        android:elevation="10dp"
+                        android:src="@drawable/ic_love_btn_home" />
+
+                    <ImageView
+                        android:id="@+id/superlike2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_18sdp"
+                        android:background="@drawable/btn_bg_shadow"
+                        android:contentDescription="@null"
+                        android:elevation="10dp"
+                        android:src="@drawable/ic_love_btn_home"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/chat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_18sdp"
+                        android:background="@drawable/btn_bg_shadow"
+                        android:contentDescription="@null"
+                        android:elevation="10dp"
+                        android:src="@drawable/ic_chat_blue" />
+
+
+                    <ImageView
+                        android:id="@+id/superlike"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_18sdp"
+                        android:background="@drawable/btn_bg_shadow"
+                        android:contentDescription="@null"
+                        android:elevation="10dp"
+                        android:src="@drawable/ic_star_crush"
+                        android:visibility="visible" />
+
+
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 
@@ -44,7 +153,7 @@
         android:id="@+id/cl_second_chat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_55sdp"
         android:elevation="@dimen/_10sdp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -53,9 +162,11 @@
 
         <ImageView
             android:id="@+id/chat2"
-            android:layout_width="@dimen/_60sdp"
-            android:layout_height="@dimen/_60sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_bg_shadow"
             android:contentDescription="@null"
+            android:elevation="10dp"
             android:src="@drawable/ic_chat_blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -63,133 +174,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_back">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clView"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_70sdp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/_25sdp"
-            android:clickable="true"
-            android:elevation="@dimen/_10sdp"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <ImageView
-                    android:id="@+id/cancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginBottom="@dimen/_15sdp"
-                    android:background="@drawable/btn_bg_shadow"
-                    android:contentDescription="@null"
-                    android:elevation="10dp"
-                    android:src="@drawable/ic_icdislike" />
-
-                <ImageView
-                    android:id="@+id/love"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginBottom="@dimen/_15sdp"
-                    android:background="@drawable/btn_bg_shadow"
-                    android:contentDescription="@null"
-                    android:elevation="10dp"
-                    android:src="@drawable/ic_love_btn_home" />
-
-                <ImageView
-                    android:id="@+id/superlike2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginBottom="@dimen/_15sdp"
-                    android:background="@drawable/btn_bg_shadow"
-                    android:contentDescription="@null"
-                    android:elevation="10dp"
-                    android:src="@drawable/ic_love_btn_home"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/chat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginBottom="@dimen/_15sdp"
-                    android:background="@drawable/btn_bg_shadow"
-                    android:contentDescription="@null"
-                    android:elevation="10dp"
-                    android:src="@drawable/ic_chat_blue" />
-
-
-                <ImageView
-                    android:id="@+id/superlike"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:layout_marginBottom="@dimen/_15sdp"
-                    android:background="@drawable/btn_bg_shadow"
-                    android:contentDescription="@null"
-                    android:elevation="10dp"
-                    android:src="@drawable/ic_star_crush"
-                    android:visibility="visible" />
-
-
-            </LinearLayout>
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <com.yuyakaido.android.cardstackview.CardStackView
-            android:id="@+id/card_stack_viewMy"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/_10sdp"
-            android:clipToPadding="false"
-            android:nestedScrollingEnabled="false"
-
-            />
-
-
-    </RelativeLayout>
 
     <!--
                 app:layout_constraintBottom_toBottomOf="@id/love"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/superlike" -->
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabHome"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
-        android:background="@color/white"
-        android:minHeight="@dimen/_40sdp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:tabIndicator="@color/transparent"
-        app:tabIndicatorHeight="@dimen/_30sdp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
