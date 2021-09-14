@@ -7,13 +7,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.swiftdating.app.model.BaseModel;
+import com.swiftdating.app.model.MatchOfUser;
 
 public class ChatListModel extends BaseModel {
 
 
+    @SerializedName("chatList")
+    @Expose
+    private List<ChatList> chatList = null;
+
+    public List<ChatList> getChatList() {
+        return chatList;
+    }
+
+    public void setChatList(List<ChatList> chatList) {
+        this.chatList = chatList;
+    }
 
     public static class ChatList {
-
         @SerializedName("id")
         @Expose
         private Integer id;
@@ -71,6 +82,48 @@ public class ChatListModel extends BaseModel {
         @SerializedName("UnreadMessages")
         @Expose
         private int UnreadMessages;
+        @SerializedName("MatchOfUser")
+        private MatchOfUser matchOfUser;
+
+        public ChatList(ProfileOfUser profileOfUser, ArrayList<ImageForUser> imageForUsers, ChatByUser chat) {
+            this.profileOfUser = profileOfUser;
+            this.imageForUser = imageForUsers;
+            this.chatByUser = chat;
+        }
+
+        @Override
+        public String toString() {
+            return "ChatList{" +
+                    "id=" + id +
+                    ", email='" + email + '\'' +
+                    ", isDirectChat='" + isDirectChat + '\'' +
+                    ", roleId=" + roleId +
+                    ", isLinkedinUser='" + isLinkedinUser + '\'' +
+                    ", status='" + status + '\'' +
+                    ", statusByadmin='" + statusByadmin + '\'' +
+                    ", isRejected=" + isRejected +
+                    ", isReported='" + isReported + '\'' +
+                    ", isVerified='" + isVerified + '\'' +
+                    ", isPremium='" + isPremium + '\'' +
+                    ", approvesIn='" + approvesIn + '\'' +
+                    ", deletedAt='" + deletedAt + '\'' +
+                    ", createdAt='" + createdAt + '\'' +
+                    ", updatedAt='" + updatedAt + '\'' +
+                    ", profileOfUser=" + profileOfUser +
+                    ", imageForUser=" + imageForUser +
+                    ", chatByUser=" + chatByUser +
+                    ", UnreadMessages=" + UnreadMessages +
+                    ", matchOfUser=" + matchOfUser +
+                    '}';
+        }
+
+        public MatchOfUser getMatchOfUser() {
+            return matchOfUser;
+        }
+
+        public void setMatchOfUser(MatchOfUser matchOfUser) {
+            this.matchOfUser = matchOfUser;
+        }
 
         public int getUnreadMessages() {
             return UnreadMessages;
@@ -78,12 +131,6 @@ public class ChatListModel extends BaseModel {
 
         public void setUnreadMessages(int unreadMessages) {
             UnreadMessages = unreadMessages;
-        }
-
-        public ChatList(ProfileOfUser profileOfUser, ArrayList<ImageForUser> imageForUsers, ChatByUser chat) {
-            this.profileOfUser = profileOfUser;
-            this.imageForUser = imageForUsers;
-            this.chatByUser = chat;
         }
 
         public String getIsDirectChat() {
@@ -182,7 +229,7 @@ public class ChatListModel extends BaseModel {
             this.approvesIn = approvesIn;
         }
 
-        public String  getDeletedAt() {
+        public String getDeletedAt() {
             return deletedAt;
         }
 
@@ -231,17 +278,6 @@ public class ChatListModel extends BaseModel {
         }
 
     }
-
-        @SerializedName("chatList")
-        @Expose
-        private List<ChatList> chatList = null;
-
-        public List<ChatList> getChatList() {
-            return chatList;
-        }
-        public void setChatList(List<ChatList> chatList) {
-            this.chatList = chatList;
-        }
 
 
 }

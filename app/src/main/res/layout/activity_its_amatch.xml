@@ -4,15 +4,122 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:layout_margin="@dimen/_20sdp"
+    android:background="@drawable/bg_red"
     app:cardCornerRadius="@dimen/_10sdp">
 
-    <androidx.cardview.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bold"
+            android:gravity="center"
+            android:padding="@dimen/_10sdp"
+            android:text="@string/youhaveamatch"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_15sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout4"
+            android:layout_width="@dimen/_180sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvHeading">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/ivmypic"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_weight="3"
+                app:backgroundImage="@color/quantum_grey200"
+                app:roundAsCircle="true"
+                app:roundingBorderWidth="4dp"
+                app:roundingBorderColor="@color/white" />
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/ivuserpic"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_alignParentStart="true"
+                android:layout_weight="3"
+                app:backgroundImage="@color/quantum_grey200"
+                app:roundAsCircle="true"
+                app:roundingBorderWidth="4dp"
+                app:roundingBorderColor="@color/white"/>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/medium"
+            android:gravity="center"
+            android:paddingStart="@dimen/_20sdp"
+            android:paddingEnd="@dimen/_20sdp"
+            android:text="@string/youhave48"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12sdp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout4" />
+
+        <Button
+            android:id="@+id/btn_answer_now"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:background="@drawable/continue_to_btn_bg"
+            android:minWidth="@dimen/_200sdp"
+            android:text="Send a Message"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
+
+        <Button
+            android:id="@+id/ivcross"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:background="@drawable/btn_white_border"
+            android:fontFamily="@font/medium"
+            android:minWidth="@dimen/_200sdp"
+            android:text="@string/continue_browsing_txt"
+            android:textAllCaps="false"
+            android:textColor="@color/pink"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_answer_now" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout><!--<androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:elevation="@dimen/_10sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -32,28 +139,15 @@
                 android:layout_height="@dimen/_20sdp"
                 android:src="@drawable/close_black_ic"
                 android:tint="@color/primaryTextColor"
-                android:visibility="invisible"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/tvHeading"
                 app:layout_constraintEnd_toStartOf="@+id/tvHeading"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tvHeading" />
 
-            <TextView
-                android:id="@+id/tvHeading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/medium"
-                android:gravity="center"
-                android:padding="@dimen/_10sdp"
-                android:text="@string/youhaveamatch"
-                android:textColor="@color/primaryTextColor"
-                android:textSize="@dimen/_14sdp"
-                app:layout_constraintEnd_toStartOf="@id/ivcross"
-                app:layout_constraintStart_toEndOf="@+id/ivcross1"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/ivcross"
+
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:src="@drawable/close_black_ic"
@@ -63,20 +157,6 @@
                 app:layout_constraintStart_toEndOf="@+id/tvHeading"
                 app:layout_constraintTop_toTopOf="@id/tvHeading" />
 
-            <TextView
-                android:id="@+id/tvDescription"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/medium"
-                android:gravity="center"
-                android:padding="@dimen/_10sdp"
-                android:text="@string/youhave48"
-                android:visibility="visible"
-                android:textColor="@color/primaryTextColor"
-                android:textSize="@dimen/_12sdp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvHeading" />
 
             <LinearLayout
                 android:id="@+id/llPic"
@@ -87,60 +167,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDescription">
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/ivmypic"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_100sdp"
-                    android:layout_weight="3"
-                    android:padding="@dimen/_10sdp"
-                    app:backgroundImage="@color/quantum_grey200"
-                    app:roundAsCircle="true" />
 
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/ivuserpic"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_100sdp"
-                    android:layout_weight="3"
-                    android:padding="@dimen/_10sdp"
-                    app:backgroundImage="@color/quantum_grey200"
-                    app:roundAsCircle="true" />
                 <View
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_answer_now"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:layout_marginBottom="@dimen/_10sdp"
-                android:background="@drawable/gradientbtn"
-                android:enabled="true"
-                android:visibility="visible"
-                android:fontFamily="@font/medium"
-                android:minWidth="@dimen/_200sdp"
-                android:paddingTop="@dimen/_10sdp"
-                android:paddingBottom="@dimen/_10sdp"
-                android:text="@string/answer_now"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_14ssp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/llPic" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>-->

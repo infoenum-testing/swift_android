@@ -582,7 +582,7 @@ public class ProfileOfUser {
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
-
+/*
     @Override
     public String toString() {
         return "ProfileOfUser{" +
@@ -627,14 +627,25 @@ public class ProfileOfUser {
                 ", visible='" + visible + '\'' +
                 ", expiredMatches='" + expiredMatches + '\'' +
                 ", chatNotify='" + chatNotify + '\'' +
+                ", emailNotify='" + emailNotify + '\'' +
+                ", reactionNotify='" + reactionNotify + '\'' +
                 ", matchNotify='" + matchNotify + '\'' +
                 ", completed=" + completed +
                 ", superLikesCount=" + superLikesCount +
                 ", timeTokenCount=" + timeTokenCount +
+                ", directMessageCount=" + directMessageCount +
                 ", deletedAt='" + deletedAt + '\'' +
                 ", createdAt='" + createdAt + '\'' +
                 ", updatedAt='" + updatedAt + '\'' +
+                ", useremail='" + useremail + '\'' +
                 ", vipToken=" + vipToken +
+                '}';
+    }*/
+
+    @Override
+    public String toString() {
+        return "ProfileOfUser{" +
+                "name='" + name + '\'' +
                 '}';
     }
 }

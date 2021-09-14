@@ -90,7 +90,20 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_editProfile" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
+    <TextView
+        android:id="@+id/tvTimeLeft"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:fontFamily="@font/medium"
+        android:gravity="center"
+        android:text="Time Expired"
+        android:textColor="@color/pink"
+        android:textSize="@dimen/_10ssp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_chat"
         android:layout_width="0dp"
@@ -105,9 +118,9 @@
         app:layout_constraintBottom_toTopOf="@+id/clEtMessage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTimeLeft" />
 
-    <com.facebook.drawee.view.SimpleDraweeView
+   <!-- <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/iv_userImage"
         android:layout_width="@dimen/_80sdp"
         android:layout_height="@dimen/_80sdp"
@@ -119,9 +132,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/rv_chat"
         app:roundAsCircle="true"
-        app:roundedCornerRadius="@dimen/_25ssp" />
+        app:roundedCornerRadius="@dimen/_25ssp" />-->
 
-    <TextView
+   <!-- <TextView
         android:id="@+id/tvTime"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -133,7 +146,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_userImage" />
+        app:layout_constraintTop_toBottomOf="@id/iv_userImage" />-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clEtMessage"

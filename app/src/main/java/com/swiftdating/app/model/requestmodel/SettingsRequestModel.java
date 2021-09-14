@@ -18,9 +18,9 @@ public class SettingsRequestModel {
     private String expiredMatches;
     private String chatNotify;
     private int maxAgePrefer,minAgePrefer;
-    private Integer distance;
+    private double distance;
 
-    public SettingsRequestModel(String visible, String matchNotify,String emailNotify,String reactionNotify,String expiredMatches,String chatNotify, int maxAgePrefer, int minAgePrefer, Integer distance) {
+    public SettingsRequestModel(String visible, String matchNotify,String emailNotify,String reactionNotify,String expiredMatches,String chatNotify, int maxAgePrefer, int minAgePrefer, double distance) {
         this.visible = visible;
         this.matchNotify = matchNotify;
         this.emailNotify = emailNotify;
@@ -31,7 +31,7 @@ public class SettingsRequestModel {
         this.minAgePrefer = minAgePrefer;
         this.distance = distance;
     }
-
+/*
     public SettingsRequestModel(String visible, String matchNotify,String emailNotify,String reactionNotify,String expiredMatches,String chatNotify) {
         this.visible = visible;
         this.matchNotify = matchNotify;
@@ -39,7 +39,7 @@ public class SettingsRequestModel {
         this.reactionNotify = reactionNotify;
         this.expiredMatches = expiredMatches;
         this.chatNotify = chatNotify;
-    }
+    }*/
 
     public String getVisible() {
         return visible;
@@ -57,7 +57,7 @@ public class SettingsRequestModel {
         return minAgePrefer;
     }
 
-    public Integer getDistance() {
+    public double getDistance() {
         return distance;
     }
 

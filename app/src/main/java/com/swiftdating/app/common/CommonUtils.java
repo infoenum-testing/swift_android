@@ -70,8 +70,8 @@ import com.swiftdating.app.data.network.CallServer;
 
 public class CommonUtils {
 
+    public static final String isCompleteRegistration = "isCompleteRegistration";
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    public static final String isCompleteRegistration="isCompleteRegistration";
 
     /* public static HashMap<String,Object> jsonToMap(String t) throws JSONException {
             HashMap<String, Object> map = new HashMap<String, Object>();
@@ -91,14 +91,34 @@ public class CommonUtils {
         long startDate = 0L;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
             Date date = sdf.parse(aDate);
+           /* SimpleDateFormat sdf2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
+            sdf2.setTimeZone(Calendar.getInstance().getTimeZone());
+            startDate = sdf2.parse(sdf2.format(date)).getTime();*/
             startDate = date.getTime();
-
         } catch (ParseException e) {
             e.printStackTrace();
         }
         long min = startDate / 60000;
         return min;
+    }
+
+    public static long stringToSheduleDate(String aDate) {
+        long startDate = 0L;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = sdf.parse(aDate);
+           /* SimpleDateFormat sdf2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
+            sdf2.setTimeZone(Calendar.getInstance().getTimeZone());
+            startDate = sdf2.parse(sdf2.format(date)).getTime();*/
+            startDate = date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+//        long min = startDate / 60000;
+        return startDate;
     }
 
     public static int getCountOfDays(String createdDateString, String expireDateString) {

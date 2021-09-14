@@ -141,7 +141,8 @@ dependencies {
 
     /*dot pageindicator*/
     implementation 'com.github.chahine:pageindicator:0.2.8'
-
+    /*Swipe item to delete*/
+    implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
 
 
     implementation  'com.fxn769:pix:1.5.6'

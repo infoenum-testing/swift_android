@@ -1,15 +1,5 @@
 package com.swiftdating.app.ui.chatScreen;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,6 +8,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -31,52 +22,57 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import com.swiftdating.app.R;
 import com.swiftdating.app.callbacks.OnInAppInterface;
 import com.swiftdating.app.callbacks.OnItemClickListener;
 import com.swiftdating.app.callbacks.OnItemClickListenerType;
-import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
-import com.swiftdating.app.ui.chatScreen.adapter.ChatAdapter;
-import com.swiftdating.app.ui.chatScreen.viewModel.ChatViewModel;
-import com.swiftdating.app.model.requestmodel.ApplyTimeTokenRequest;
-import com.swiftdating.app.model.requestmodel.MessageListRequestModel;
-import com.swiftdating.app.common.CommonUtils;
 import com.swiftdating.app.common.CommonDialogs;
+import com.swiftdating.app.common.CommonUtils;
 import com.swiftdating.app.data.network.CallServer;
-import com.swiftdating.app.data.network.Resource;
-import com.swiftdating.app.model.BaseModel;
 import com.swiftdating.app.model.ChatModel;
 import com.swiftdating.app.model.ImageModel;
+import com.swiftdating.app.model.requestmodel.ApplyTimeTokenRequest;
+import com.swiftdating.app.model.requestmodel.MessageListRequestModel;
+import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.swiftdating.app.model.requestmodel.ReportRequestModel;
 import com.swiftdating.app.model.requestmodel.TimeTokenRequestModel;
-import com.swiftdating.app.model.responsemodel.MessageListModel;
 import com.swiftdating.app.model.responsemodel.ProfileOfUser;
-import com.swiftdating.app.model.responsemodel.SuperLikeResponseModel;
 import com.swiftdating.app.ui.base.BaseActivity;
+import com.swiftdating.app.ui.chatScreen.adapter.ChatAdapter;
+import com.swiftdating.app.ui.chatScreen.viewModel.ChatViewModel;
 import com.swiftdating.app.ui.homeScreen.HomeActivity;
 import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
 import com.swiftdating.app.ui.userCardScreen.UserCardActivity;
 import com.swiftdating.app.websocket.WebSocketService;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
 import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
 
-public class ChatWindow extends BaseActivity implements View.OnClickListener, OnItemClickListenerType,
-        BillingProcessor.IBillingHandler, OnItemClickListener, OnInAppInterface, CommonDialogs.onClick, CommonDialogs.onProductConsume {
+public class ChatWindow extends BaseActivity implements View.OnClickListener, OnItemClickListenerType, BillingProcessor.IBillingHandler, OnItemClickListener, OnInAppInterface, CommonDialogs.onClick, CommonDialogs.onProductConsume {
 
     private final ArrayList<ChatModel> chatList = new ArrayList<>();
+    private final Handler handler = new Handler();
     boolean isExpired;
     Long timeLeft = 0L;
     BroadcastReceiver chatReceiver;
@@ -88,10 +84,11 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
     int selectedPosition;
     boolean fromOutSide;
     private Double price;
-    private TextView tvCancel, tvUnMatch, tvReport, tvExpired, fab_send;
+    private TextView tvCancel, tvUnMatch, tvReport, /*tvExpired,*/
+            fab_send, tvTimeLeft;
     private TextView tvEditProfile;
     private EditText etMessage;
-    private SimpleDraweeView ivUserImage, iv_userImage;
+    private SimpleDraweeView ivUserImage/*, iv_userImage*/;
     private RecyclerView rv_chat;
     private ConstraintLayout parent;
     private LinearLayoutManager linearLayoutManager;
@@ -113,14 +110,41 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
     private boolean isfromDirect = false;
     private boolean isFromSearch = false;
     private Context context;
+    private long sec;
+    private long hours;
+    private long min;
+    private String timeExpireStr;
+    private final Runnable runnable = new Runnable() {
+        public void run() {
+            if (sec > 0) {
+                if (min == 0) {
+                    hours--;
+                    min = 59;
+                }
+                sec--;
+            } else if (min > 0) {
+                min--;
+                sec = 59;
+            } else if (hours > 0) {
+                hours--;
+                min = 59;
+            } else {
+                timeExpireStr = "Time Expired";
+                tvTimeLeft.setText(timeExpireStr);
+                return;
+            }
+            setTimeRemain();
+            tvTimeLeft.setText(timeExpireStr);
+            if (isChatScreen)
+                handler.postDelayed(this, 1000);
+        }
+    };
 
     /*
      * cardo rpfoie --> gone report user , time label , expire iamge
      * match se
      *
      * */
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -380,10 +404,8 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
                                     CallServer.BaseImage + imageUrl, ChatWindow.this);
                             rv_chat.setAdapter(chatAdapter);
                             rv_chat.scrollToPosition(chatList.size() - 1);
-                            if (chatList.size() > 0) {
-                                tvExpired.setVisibility(View.GONE);
-                                iv_userImage.setVisibility(View.GONE);
-                            }
+                            /*if (!TextUtils.isEmpty(tvTimeLeft.getText()))
+                                tvTimeLeft.setVisibility(View.VISIBLE);*/
                         }
                     } else {
                         showSnackbar(ivUserImage, "User Already Reported");
@@ -464,7 +486,7 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
                     break;
                 case SUCCESS:
                     hideLoading();
-                    if (resource.data!=null&&resource.data.getSuccess()!=null) {
+                    if (resource.data != null && resource.data.getSuccess() != null) {
                         sp.savePremium(true);
                     } else if (resource.code == 401) {
                         openActivityOnTokenExpire();
@@ -506,8 +528,9 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
     private void initialize() {
         tvEditProfile = findViewById(R.id.tv_editProfile);
         ivUserImage = findViewById(R.id.ivUserImage);
-        iv_userImage = findViewById(R.id.iv_userImage);
-        tvExpired = findViewById(R.id.tvTime);
+//        iv_userImage = findViewById(R.id.iv_userImage);
+//        tvExpired = findViewById(R.id.tvTime);
+        tvTimeLeft = findViewById(R.id.tvTimeLeft);
         tvReport = findViewById(R.id.tvReport);
         tvUnMatch = findViewById(R.id.tvUnMatch);
         if (isfromDirect) {
@@ -528,7 +551,7 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
 
         tvEditProfile.setText(chatUserName);
         CommonUtils.setImageUsingFresco(ivUserImage, CallServer.BaseImage + imageUrl, 10);
-        CommonUtils.setImageUsingFresco(iv_userImage, CallServer.BaseImage + imageUrl, 4);
+//        CommonUtils.setImageUsingFresco(iv_userImage, CallServer.BaseImage + imageUrl, 4);
 
 
         linearLayoutManager = new LinearLayoutManager(mContext);
@@ -538,28 +561,40 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
 
         if (isExpired) {
             ivTime.setVisibility(View.VISIBLE);
-            iv_userImage.setVisibility(View.GONE);
+//            iv_userImage.setVisibility(View.GONE);
         } else {
             ivTime.setVisibility(View.INVISIBLE);
             if (timeLeft > 0) {
-                int hours = (int) (timeLeft / 60);
-                int min = (int) (timeLeft % 60);
-                tvExpired.setVisibility(View.VISIBLE);
-                iv_userImage.setVisibility(View.VISIBLE);
-                String timeExpireStr;
-                if (hours > 1) {
-                    timeExpireStr = "Time Remaining : " + hours + " hours";
-                } else if (hours == 1) {
-                    timeExpireStr = "Time Remaining : " + hours + " hour";
-                } else {
-                    timeExpireStr = "Time Remaining : " + min + " minutes";
-                }
-                tvExpired.setText(timeExpireStr);
-            } else {
-                iv_userImage.setVisibility(View.GONE);
-            }
+                Log.e("TAG", "initialize: timeLeft " + timeLeft);
+
+                long days;
+
+                sec = ((timeLeft / 1000) % 60);
+                hours = ((timeLeft / (1000 * 60 * 60)) % 24);
+                min = ((timeLeft / (1000 * 60)) % 60);
+                days = (TimeUnit.MILLISECONDS.toDays(timeLeft) % 365);
+                hours = (hours + (days * 24));
+                /*int hours = (int) (timeLeft / 60);
+                int min = (int) (timeLeft % 60);*/
+//                tvExpired.setVisibility(View.VISIBLE);
+//                iv_userImage.setVisibility(View.VISIBLE);
+                handler.post(runnable);
+//                if (hours > 1) {
+//                }
+//                tvExpired.setText(timeExpireStr);
+                tvTimeLeft.setText(timeExpireStr);
+            }  //                iv_userImage.setVisibility(View.GONE);
         }
 
+        if (isfromDirect) {
+            tvTimeLeft.setVisibility(View.GONE);
+        } else {
+            tvTimeLeft.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setTimeRemain() {
+        timeExpireStr = String.format(Locale.getDefault(), "Time Remaining : %01d:%01d:%01d", hours, min, sec);
     }
 
     /**
@@ -655,8 +690,10 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
                             });
                         }
                     }
-                    tvExpired.setVisibility(View.GONE);
-                    iv_userImage.setVisibility(View.GONE);
+                   /* if (!TextUtils.isEmpty(tvTimeLeft.getText()))
+                        tvTimeLeft.setVisibility(View.VISIBLE);*/
+//                    tvExpired.setVisibility(View.GONE);
+//                    iv_userImage.setVisibility(View.GONE);
                 }
             }
         } else
@@ -712,8 +749,10 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
                             ChatWindow.this.setResult(9898);
                         }
                         chatList.add(chatModel);
-                        tvExpired.setVisibility(View.GONE);
-                        iv_userImage.setVisibility(View.GONE);
+                        /*if (!TextUtils.isEmpty(tvTimeLeft.getText()))
+                            tvTimeLeft.setVisibility(View.VISIBLE);*/
+//                        tvExpired.setVisibility(View.GONE);
+//                        iv_userImage.setVisibility(View.GONE);
                         rv_chat.scrollToPosition(chatList.size() - 1);
                         chatAdapter.updateReceiptsList(chatList);
                     }
@@ -1056,12 +1095,11 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
             productId = CommonDialogs.timeTokenArr[selectedPos];
             //homeViewModel.addTimeToken(new TimeTokenRequestModel(tokensNum, price));
             bp.purchase(this, productId);
-        } else if (tokenType.equalsIgnoreCase("DeluxePurChase")) {
+        } else if (tokenType.equalsIgnoreCase("PremiumPurchase")) {//DeluxePurChase
             price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
             productId = CommonDialogs.PremiumArr[selectedPos];
             bp.subscribe(mActivity, productId);
         }
-
     }
 
     @Override

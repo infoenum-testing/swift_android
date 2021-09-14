@@ -55,19 +55,13 @@ public class NewMatchesAdapter extends RecyclerView.Adapter<NewMatchesAdapter.My
             holder.tv_name.setText(data.getProfileOfUserName());
             long expire = CommonUtils.stringToDate(data.getMatchForUserCalltimerExpiry().replace("T", " ").split("\\.")[0]);
             long server = CommonUtils.stringToDate(data.getMatchForUserServerTime().replace("T", " ").split("\\.")[0]);
-            long created = CommonUtils.stringToDate(data.getMatchForUserCreatedAt().replace("T", " ").split("\\.")[0]);
+            /*long created = CommonUtils.stringToDate(data.getMatchForUserCreatedAt().replace("T", " ").split("\\.")[0]);
             if (data.getTimetokenAppliedOn() != null) {
                 created = CommonUtils.stringToDate(data.getTimetokenAppliedOn().replace("T", " ").split("\\.")[0]);
-            }
-            holder.pb_time_left.setProgress((int) ((expire - server) * 100 / (expire - created)));
-            if (server >= expire) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    holder.sdv_picture.setForeground(ContextCompat.getDrawable(mContext, R.drawable.transblack));
-                }
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    holder.sdv_picture.setForeground(ContextCompat.getDrawable(mContext, R.drawable.transparent_circle));
-                }
+            }*/
+            holder.pb_time_left.setProgress((int) ((expire - server) * 100 / (72 * 60)));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                holder.sdv_picture.setForeground(server >= expire ? ContextCompat.getDrawable(mContext, R.drawable.transblack) : ContextCompat.getDrawable(mContext, R.drawable.transparent_circle));
             }
             holder.sdv_picture.setTag(position);
             holder.sdv_picture.setOnClickListener(view -> {

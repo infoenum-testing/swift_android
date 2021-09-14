@@ -68,12 +68,13 @@
     <string name="facebook_app_id">2841062159443728</string>
     <string name="fb_login_protocol_scheme">fb2749591848461723</string>
 
-    <string name="notification_channel_id">BlackGentry_01</string>
-    <string name="notification_channel_name">BlackGentry_app</string>
+    <string name="notification_channel_id">Swift_01</string>
+    <string name="notification_channel_name">Swift_app</string>
     <string name="send_text">Send</string>
     <string name="my_email_is">My email is</string>
     <string name="youhaveamatch">You have a match!</string>
-    <string name="youhave48">You have 24 hours to connect with %1$s. You can chat with %2$s before the match expires.</string>
+<!--    <string name="youhave48">It’s a match! Now  %1$s has 72 hours to message you.</string>-->
+    <string name="youhave48">It’s a match! You and %1$s have 72 hours to get to know each other.</string>
     <string name="answer_now">Chat Now</string>
     <string name="my_card">Profile Preview</string>
     <string name="question_headings">Skip the small talk! Enter three questions of your choice that your matches will answer.Your questions are a way to learn more about your match.Be creative fun and keep it interesting</string>
@@ -677,6 +678,7 @@
     <string name="education">Education</string>
     <string name="children">Children</string>
     <string name="political">Political</string>
+    <string name="continue_browsing_txt">Continue Browsing</string>
 
 
 </resources>

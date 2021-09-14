@@ -26,8 +26,7 @@ import com.swiftdating.app.ui.chatScreen.ChatWindow;
 public class ItsAMatchActivity extends AppCompatActivity implements View.OnClickListener {
 
     SimpleDraweeView ivMyPic, ivUserPic;
-    ImageView ivCross;
-    Button btnAnswerNow;
+    Button btnAnswerNow,ivCross;
     NotificationModel mNotificationModel;
     TextView tvDescription;
     SharedPreference sp;
@@ -73,7 +72,7 @@ public class ItsAMatchActivity extends AppCompatActivity implements View.OnClick
         List<ImageModel> imagelist = gson.fromJson(jsonImage, type);
         ivMyPic.setImageURI(CallServer.BaseImage + imagelist.get(0).getImageUrl());
         ivUserPic.setImageURI(CallServer.BaseImage + mNotificationModel.getImage().getImageUrl());
-        tvDescription.setText(String.format(this.getResources().getString(R.string.youhave48), mNotificationModel.getMatch().getName(), mNotificationModel.getMatch().getName()));
+        tvDescription.setText(String.format(this.getResources().getString(R.string.youhave48), mNotificationModel.getMatch().getName()));
     }
 
     @Override

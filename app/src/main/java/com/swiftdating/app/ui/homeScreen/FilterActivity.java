@@ -1,12 +1,15 @@
 package com.swiftdating.app.ui.homeScreen;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,7 +30,9 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.gson.Gson;
 import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
+import com.swiftdating.app.model.responsemodel.ProfileOfUser;
 import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.OnSeekChangeListener;
 import com.warkiz.widget.SeekParams;
@@ -51,16 +56,17 @@ import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
 
 import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
 
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class FilterActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener, OnSeekChangeListener, OnItemClickListener, View.OnScrollChangeListener, LoopListener, CommonDialogs.onProductConsume, BillingProcessor.IBillingHandler {
     private static final String TAG = "FilterActivity";
-    int noPr;
+    private int max, mini,noPr;
     private ImageView img_close, ivCloseBottomSheet;
     private BottomSheetDialog bottomSheetDialog;
     private RelativeLayout rl_relation, rl_education, rl_child, rl_politic, rl_religion;
     private Context context;
     private View view;
-    private Button btnContinue, btn_reset, btn_apply;
-    private TextView tvDistance, tv_smoke, tv_religion, tv_politics, tv_child, tv_education, tv_height, tv_relation, tvAgeRange;
+    private Button btnContinue/*, btn_reset*/;
+    private TextView tvDistance, btn_apply, tv_smoke, tv_religion, tv_politics, tv_child, tv_education, tv_height, tv_relation, tvAgeRange;
     private ArrayList<String> ageArray, heightlist;
     private ArrayList<String> heightDigitlist;
     private ArrayList<FlexModel> relationlist = new ArrayList<>(), educationlist = new ArrayList<>(), childernlist = new ArrayList<>(), politicalList = new ArrayList<>(), religionList = new ArrayList<>(), smokeList = new ArrayList<>();
@@ -82,7 +88,7 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
     private RangeSeekBar<Integer> seekHeightRange;
     private IndicatorSeekBar seekDistance;
     private RangeSeekBar<Integer> seekAgeRange;
-
+    private SwipeRefreshLayout swipe_reset;
     /* public FilterRequest(Integer pageNumber, Integer limit, Integer distance, String gender, Integer maxAgePrefer, Integer minAgePrefer, String lookingFor, String maxHeight, String minHeight, String education, String kids, String political, String religion, String smoke) {
           this.pageNumber = pageNumber;
           this.limit = limit;
@@ -124,10 +130,13 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
         bp = new BillingProcessor(this, LICENSE_KEY, this);
         bp.initialize();
     }
+    ProfileOfUser signinUser;
 
     private void initViews() {
         isReset = false;
         sp = new SharedPreference(this);
+        signinUser = new Gson().fromJson(sp.getUser(), ProfileOfUser.class);
+
         context = this;
         btn_apply = findViewById(R.id.btnApply);
         tvAgeRange = findViewById(R.id.tvAgeRange);
@@ -147,7 +156,8 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
         rl_politic = findViewById(R.id.rl_politic);
         rl_religion = findViewById(R.id.rl_religion);
         rl_child = findViewById(R.id.rl_child);
-        btn_reset = findViewById(R.id.btnReset);
+        swipe_reset = findViewById(R.id.swipe_reset);
+//        btn_reset = findViewById(R.id.btnReset);
 
         seekAgeRange = findViewById(R.id.seek_age_range);
         seekHeightRange = findViewById(R.id.seek_height_range);
@@ -174,7 +184,32 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
         rl_education.setOnClickListener(this::onClick);
         rl_child.setOnClickListener(this::onClick);
         rl_relation.setOnClickListener(this::onClick);
-        btn_reset.setOnClickListener(this::onClick);
+        swipe_reset.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (sp.getPremium() && sp.getFilterModel() != null) {
+                    isReset = true;
+                }
+                sp.removeFilter();
+                tv_height.setText("< 4'0\" to > 7'0\"");//< 4'0" to > 7'0"
+                tv_relation.setText("No Preference");
+                tv_education.setText("No Preference");
+                tv_child.setText("No Preference");
+                tv_politics.setText("No Preference");
+                tv_religion.setText("No Preference");
+                tvDistance.setText("500 miles");
+                tvAgeRange.setText("18 to 80");
+                seekHeightRange.setSelectedMaxValue(heightlist.size() - 1);
+                seekAgeRange.setSelectedMaxValue(22);
+                seekAgeRange.setSelectedMinValue(3);
+                seekHeightRange.setSelectedMinValue(0);
+                otherTb.setChecked(true);
+                seekDistance.setProgress(500);
+                filterRequest = new FilterRequest();
+                swipe_reset.setRefreshing(false);
+            }
+        });
+//        btn_reset.setOnClickListener(this::onClick);
 
 
         bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetDialogStyle);
@@ -283,21 +318,14 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
     private void showGenderData() {
 
         if (filterRequest != null && filterRequest.getGender() != null) {
-            switch (filterRequest.getGender()) {
-                case "Men":
-                    tbMale.setChecked(true);
-                    break;
-                case "Women":
-                    femaleTb.setChecked(true);
-                    break;
-                case "Both":
-                    otherTb.setChecked(true);
-                    break;
-            }
+            setGender(filterRequest.getGender());
+        }else {
+            setGender(signinUser.getInterested());
         }
 
         if (filterRequest == null) {
             filterRequest = new FilterRequest();
+            filterRequest.setGender(signinUser.getInterested());
         }
 
         tgGender.setOnCheckedChangeListener((radioGroup, i) -> {
@@ -321,7 +349,24 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
             filterRequest.setGender("Both");
         }
         sp.saveFilterModel(filterRequest);
-     }
+    }
+
+    private void setGender(String gender) {
+        switch (gender) {
+            case "Men":
+            case "Male":
+                tbMale.setChecked(true);
+                break;
+            case "Women":
+            case "Female":
+                femaleTb.setChecked(true);
+                break;
+            case "Both":
+            case "Other":
+                otherTb.setChecked(true);
+                break;
+        }
+    }
 
     private void showDistanceData() {
         tvDistance.setText("500 miles");
@@ -360,20 +405,31 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
     private void showAgeBottomsheet(ArrayList<String> list) {
 
         seekAgeRange.setRangeValues(0, list.size() - 1);
-        seekAgeRange.setSelectedMinValue(0);
-        seekAgeRange.setSelectedMaxValue(list.size() - 1);
+        seekAgeRange.setSelectedMinValue(3);
+        seekAgeRange.setSelectedMaxValue(22);
+        seekAgeRange.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>() {
+            @Override
+            public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
+                try {
+                    if ((maxValue - minValue) < 6) {
+                        if ((max - minValue) < 6) {
+                            seekAgeRange.setSelectedMinValue(mini);
+                        } else
+                            seekAgeRange.setSelectedMaxValue(max);
+                        return;
+                    }
+                    max = maxValue;
+                    mini = minValue;
+                    tvAgeRange.setText(list.get(minValue) + " to " + list.get(maxValue));
+                    if (filterRequest == null) filterRequest = new FilterRequest();
 
-        seekAgeRange.setOnRangeSeekBarChangeListener((bar, minValue, maxValue) -> {
-            try {
-                tvAgeRange.setText(list.get(minValue) + " to " + list.get(maxValue));
-                if (filterRequest == null) filterRequest = new FilterRequest();
+                    filterRequest.setMaxAgePrefer(Integer.parseInt(FilterActivity.this.ageArray.get(seekAgeRange.getSelectedMaxValue())));
+                    filterRequest.setMinAgePrefer(Integer.parseInt(FilterActivity.this.ageArray.get(seekAgeRange.getSelectedMinValue())));
+                    sp.saveFilterModel(filterRequest);
 
-                filterRequest.setMaxAgePrefer(Integer.parseInt(FilterActivity.this.ageArray.get(seekAgeRange.getSelectedMaxValue())));
-                filterRequest.setMinAgePrefer(Integer.parseInt(FilterActivity.this.ageArray.get(seekAgeRange.getSelectedMinValue())));
-                sp.saveFilterModel(filterRequest);
-
-            } catch (Exception e) {
-                Log.e(TAG, "showAgeBottomsheet: " + e.toString());
+                } catch (Exception e) {
+                    Log.e(TAG, "showAgeBottomsheet: " + e.toString());
+                }
             }
         });
 
@@ -743,26 +799,10 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
                 break;
             case R.id.ivCloseBottomSheet:
                 bottomSheetDialog.cancel();
-                break;
+                break;/*
             case R.id.btnReset:
-                if (sp.getPremium() && sp.getFilterModel() != null) {
-                    isReset = true;
-                }
-                sp.removeFilter();
-                tv_height.setText("< 4'0\" to > 7'0\"");//< 4'0" to > 7'0"
-                tv_relation.setText("No Preference");
-                tv_education.setText("No Preference");
-                tv_child.setText("No Preference");
-                tv_politics.setText("No Preference");
-                tv_religion.setText("No Preference");
-                tvDistance.setText("500 miles");
-                tvAgeRange.setText("18 to 80");
-                seekHeightRange.setSelectedMaxValue(heightlist.size() - 1);
-                seekAgeRange.setSelectedMaxValue(ageArray.size() - 1);
-                otherTb.setChecked(true);
-                seekDistance.setProgress(500);
-                filterRequest = new FilterRequest();
-                break;
+
+                break;*/
             case R.id.btnApply:
                 if (sp.getPremium()) {
                     Log.e(TAG, "onClick: " + filterRequest);
@@ -809,7 +849,7 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
     public void OnItemClick(int position) {
         switch (type) {
             case RELATION:
-                noPr = 2;
+                noPr = relationlist.size() - 1;
                 changeFilter(relationlist, position, selectBool);
                 break;
             case EDUCATION:

@@ -122,6 +122,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         super.onViewCreated(view, savedInstanceState);
 
         mActivity = (BaseActivity) getActivity();
+        mActivity.hideLoading();
         gpsTracker = GpsTracker.getInstance(getContext());
         gpsTracker.dilaog();
         Log.e(TAG, "onViewCreated: ");
@@ -736,6 +737,12 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             price = CommonDialogs.vipTokenPriceList.get(selectedPos).getPriceValue();
             productId = CommonDialogs.vipTokenArr[selectedPos];
         } else if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
+            price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
+            productId = CommonDialogs.PremiumArr[selectedPos];
+            bp.subscribe(mActivity, productId);
+            CommonDialogs.dismiss();
+            return;
+            /*
             Dialog dialog = new Dialog(mActivity);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -756,7 +763,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                 CommonDialogs.dismiss();
                 dialog.dismiss();
                 // here in this case tokenNum is month or year
-                /*getBaseActivity().showLoading();
+                *//*getBaseActivity().showLoading();
                 String premium = "premium_";
                 homeViewModel.addPremiumRequest(new PremiumTokenCountModel(premium.concat(String.valueOf(tokensNum)),
                         price,
@@ -766,13 +773,13 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                         "2020-04-17 12:30:55",
                         "",
                         ""
-                ));*/
+                ));*//*
             });
-            tv_no.setOnClickListener(view -> dialog.dismiss());
+            tv_no.setOnClickListener(view -> dialog.dismiss());*/
         }
-        if (!tokenType.equalsIgnoreCase("PremiumPurchase")) {
+//        if (!tokenType.equalsIgnoreCase("PremiumPurchase")) {
             bp.purchase(getActivity(), productId);
-        }
+//        }
     }
 
 

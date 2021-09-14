@@ -23,8 +23,19 @@ public class ChatByUser {
     @SerializedName("createdAt")
     @Expose
     private String createdAt;
+    @SerializedName("serverTime")
+    @Expose
+    private String serverTime;
 
-    public ChatByUser(String messageSent, String date,int toId) {
+    public String getServerTime() {
+        return serverTime;
+    }
+
+    public void setServerTime(String serverTime) {
+        this.serverTime = serverTime;
+    }
+
+    public ChatByUser(String messageSent, String date, int toId) {
         this.message = messageSent;
         this.createdAt = date;
         this.toId = toId;
@@ -79,5 +90,16 @@ public class ChatByUser {
         this.createdAt = createdAt;
     }
 
-
+    @Override
+    public String toString() {
+        return "ChatByUser{" +
+                "id=" + id +
+                ", fromId=" + fromId +
+                ", toId=" + toId +
+                ", message='" + message + '\'' +
+                ", status='" + status + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", serverTime='" + serverTime + '\'' +
+                '}';
+    }
 }

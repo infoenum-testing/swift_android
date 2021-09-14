@@ -442,6 +442,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         });
 
     }
+private         ProfileOfUser obj;
 
     /**
      * Method to Set Data
@@ -450,7 +451,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         Gson gson = new Gson();
         String json = sp.getUser();
         Log.e(TAG, "setData: " + json);
-        ProfileOfUser obj = gson.fromJson(json, ProfileOfUser.class);
+        obj = gson.fromJson(json, ProfileOfUser.class);
         try {
             if (obj != null) {
                 if (sp != null && !TextUtils.isEmpty(sp.getMyString(SharedPreference.userEmail))) {
@@ -531,7 +532,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         emailNotifySwitch.isChecked() ? "On" : "Off",
                         pushNotifySwitch.isChecked() ? "On" : "Off",
                         expireSwitch.isChecked() ? "On" : "Off",
-                        matchSwitch.isChecked() ? "On" : "Off"
+                        matchSwitch.isChecked() ? "On" : "Off",obj.getMaxAgePrefer()>0?obj.getMaxAgePrefer():80,obj.getMinAgePrefer()>0?obj.getMinAgePrefer():18,obj.getDistance()
                 ));
             } else {
                 onBackPressed();

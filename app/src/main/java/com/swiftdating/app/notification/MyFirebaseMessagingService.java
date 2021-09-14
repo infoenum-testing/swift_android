@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import com.swiftdating.app.BuildConfig;
 import com.swiftdating.app.R;
 import com.swiftdating.app.ui.chatScreen.ChatWindow;
 import com.swiftdating.app.data.preference.SharedPreference;
@@ -221,6 +222,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         } catch (JSONException ae) {
             ae.printStackTrace();
+            Log.e("FCM", "setNotification: "+ae.getMessage() );
         }
 
     }
@@ -235,9 +237,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (appProcesses == null) {
             return false;
         }
-        final String packageName = "app.blackgentry";
+//        final String packageName = "app.blackgentry";
         for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
-            if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND && appProcess.processName.equals(packageName)) {
+            if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND && appProcess.processName.equals(BuildConfig.APPLICATION_ID)) {
                 return true;
             }
         }

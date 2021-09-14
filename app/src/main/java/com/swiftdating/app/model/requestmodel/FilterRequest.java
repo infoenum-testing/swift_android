@@ -9,7 +9,7 @@ public class FilterRequest {
     private Integer pageNumber = 1;
     @SerializedName("limit")
     @Expose
-    private Integer limit = 20;
+    private Integer limit = 15;
     @SerializedName("distance")
     @Expose
     private Integer distance=500;

@@ -191,6 +191,7 @@
         android:layout_marginBottom="@dimen/_10sdp"
         app:activeColor="@color/pink"
         app:barHeight="4dp"
+        app:absoluteMinValue="6"
         app:defaultColor="@color/grey_new"
         app:layout_constraintBottom_toTopOf="@+id/btnReset"
         app:thumbNormal="@drawable/thumb"

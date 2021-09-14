@@ -155,7 +155,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (snackbar != null) {
                 snackbar.setActionTextColor(Color.WHITE);
                 View snackBarView = snackbar.getView();
-                snackBarView.setBackgroundColor(Color.parseColor("#3C3454"));
+                snackBarView.setBackgroundColor(Color.parseColor("#EB4F5A"));
                 TextView textView = (TextView) snackBarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
                 textView.setTextColor(Color.WHITE);
                 snackbar.show();
@@ -226,11 +226,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                                 }
                                 sp.saveNoOfLikes(resource.data.getNoOfLikes());
                             }
-                            Gson gson = new Gson();
-                            String user = sp.getUser();
-                            ProfileOfUser obj = gson.fromJson(user, ProfileOfUser.class);
-                            obj.setSuperLikesCount(resource.data.getUser().getProfileOfUser().getSuperLikesCount());
-                            obj.setDirectMessageCount(resource.data.getUser().getProfileOfUser().getDirectMessageCount());
+//                            Gson gson = new Gson();
+//                            String user = sp.getUser();
+                            ProfileOfUser obj = resource.data.getUser().getProfileOfUser();// gson.fromJson(user, ProfileOfUser.class);
+//                            obj.setSuperLikesCount(resource.data.getUser().getProfileOfUser().getSuperLikesCount());
+//                            obj.setDirectMessageCount(resource.data.getUser().getProfileOfUser().getDirectMessageCount());
                             sp.saveUserData(obj, null);
                             sp.saveString(SharedPreference.userEmail, resource.data.getUser().getEmail());
                             sp.saveString(SharedPreference.userPhone, resource.data.getUser().getMobile());

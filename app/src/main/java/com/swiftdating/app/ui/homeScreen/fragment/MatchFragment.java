@@ -31,6 +31,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +43,8 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -79,7 +82,7 @@ import jp.wasabeef.blurry.Blurry;
 
 import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
 
-public class MatchFragment extends BaseFragment implements OnItemClickListenerType, View.OnClickListener, CommonDialogs.onClick, CommonDialogs.onProductConsume, BillingProcessor.IBillingHandler, BaseActivity.MyProfileResponse {
+public class MatchFragment extends BaseFragment implements OnItemClickListenerType, View.OnClickListener, CommonDialogs.onClick, CommonDialogs.onProductConsume, BillingProcessor.IBillingHandler, BaseActivity.MyProfileResponse, ScheduleSwipeAdapter.ListenerSwipe {
 
     private static final String TAG = "MatchFragment";
     public static boolean isShowDirect = false;
@@ -90,7 +93,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     private CircleImageView sdv_picture;
     private ConstraintLayout cl_new_matches, cl_schedule_matches, cons_dummy/*, direct_cl*/;
     private RecyclerView rv_new_matches;
-    private SwipeMenuListView sml_schedule_matches;
+    private RecyclerView sml_schedule_matches;
     private MatchListViewModel matchListViewModel;
     private HomeViewModel homeViewModel;
     private TextView tvProfileReject, tv_direct_msg, tv_new_matches, tv_twentyLiks, tv_NoNewMatched, tv_NoMessage, tv_schedule_matches;
@@ -124,20 +127,61 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             String date = (String) DateFormat.format("yyyy-MM-dd HH:mm:ss", new Date());
             if (idList.contains(id)) {
                 int pos = idList.indexOf(id);
-                scheduleMatchList.get(idList.indexOf(id)).setChatByUser(new ChatByUser(messageSent, date, Integer.parseInt(new SharedPreference(context).getUserId())));
+                ChatListModel.ChatList chat = scheduleMatchList.get(pos);
+                chat.setUnreadMessages((chat.getUnreadMessages() + 1));
+                ChatByUser chatByUser = chat.getChatByUser();
+                chatByUser.setMessage(messageSent);
+                chatByUser.setCreatedAt(date);
+                chatByUser.setToId(Integer.parseInt(new SharedPreference(context).getUserId()));
+                chatByUser.setStatus("unread");
+                chat.setChatByUser(chatByUser);
+//                scheduleMatchList.get(idList.indexOf(id)).setChatByUser(new ChatByUser(messageSent, date, Integer.parseInt(new SharedPreference(context).getUserId())));
                 idList.remove(pos);
                 idList.add(0, id);
-                scheduleMatchList.add(0, scheduleMatchList.get(pos));
+                scheduleMatchList.add(0, chat);
                 scheduleMatchList.remove(pos + 1);
+                sml_schedule_matches.setAdapter(scheduleMatchesAdapter);
                 scheduleMatchesAdapter.notifyDataSetChanged();
+                int count = 0;
+                if (scheduleMatchList.size() > 0) {
+                    for (int i = 0; i < scheduleMatchList.size(); i++) {
+                        if (scheduleMatchList.get(i).getUnreadMessages() > 0) {
+                            count += scheduleMatchList.get(i).getUnreadMessages();
+                        }
+                    }
+                }
+                if (count > 0) {
+                    match_unread_count_btn.setVisibility(View.VISIBLE);
+                    match_unread_count_btn.setText("" + count);
+                }
             } else if (idListDirect.contains(id)) {
                 int pos = idListDirect.indexOf(id);
-                scheduleMatchDirectList.get(idListDirect.indexOf(id)).setChatByUser(new ChatByUser(messageSent, date, Integer.parseInt(new SharedPreference(context).getUserId())));
+                ChatListModel.ChatList chat = scheduleMatchDirectList.get(idList.indexOf(id));
+                ChatByUser chatByUser = chat.getChatByUser();
+                chat.setUnreadMessages((chat.getUnreadMessages() + 1));
+                chatByUser.setMessage(messageSent);
+                chatByUser.setCreatedAt(date);
+                chatByUser.setToId(Integer.parseInt(new SharedPreference(context).getUserId()));
+                chatByUser.setStatus("unread");
+                chat.setChatByUser(chatByUser);
+//                scheduleMatchDirectList.get(idListDirect.indexOf(id)).setChatByUser(new ChatByUser(messageSent, date, Integer.parseInt(new SharedPreference(context).getUserId())));
                 idListDirect.remove(pos);
                 //idListDirect.add(0, id);
-                scheduleMatchList.add(0, scheduleMatchDirectList.get(pos));
+                scheduleMatchList.add(0, chat);
                 scheduleMatchDirectList.remove(pos);
                 scheduleMatchesAdapter.notifyDataSetChanged();
+                int count = 0;
+                if (scheduleMatchList.size() > 0) {
+                    for (int i = 0; i < scheduleMatchList.size(); i++) {
+                        if (scheduleMatchList.get(i).getUnreadMessages() > 0) {
+                            count += scheduleMatchList.get(i).getUnreadMessages();
+                        }
+                    }
+                }
+                if (count > 0) {
+                    match_unread_count_btn.setVisibility(View.VISIBLE);
+                    match_unread_count_btn.setText("" + count);
+                }
             } else {
                 int pos = 0;
                 if (matchesList.size() > 0) {
@@ -175,8 +219,8 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             getBaseActivity().getMyProfile(this);
             subscribeModel();
             initialize(view);
-            createSwipeMenu();
-            implementListeners();
+//            createSwipeMenu();
+//            implementListeners();
             initBillingProcess();
         } else {
             getBaseActivity().showSnackbar(view, "Please connect to internet");
@@ -212,10 +256,14 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                         if (resource.data.getSuccess()) {
                             setData(resource.data);
                         } else if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
-                            getBaseActivity().openActivityOnTokenExpire();
-                            getBaseActivity().hideLoading();
+                            if (getBaseActivity() != null) {
+                                getBaseActivity().openActivityOnTokenExpire();
+                                getBaseActivity().hideLoading();
+                            }
+
                         } else {
-                            getBaseActivity().hideLoading();
+                            if (getBaseActivity() != null)
+                                getBaseActivity().hideLoading();
                             if (pageNumber == 1) {
                                 if (isDirect) {
                                     if (scheduleMatchDirectList == null || scheduleMatchDirectList.size() == 0) {
@@ -242,8 +290,9 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                         }
                         break;
                     case ERROR:
-                        getBaseActivity().hideLoading();
-                        if (getBaseActivity().sp.getStatus().equalsIgnoreCase(Global.statusActive))
+                        if (getBaseActivity() != null)
+                            getBaseActivity().hideLoading();
+                        if (getBaseActivity() != null && getBaseActivity().sp.getStatus().equalsIgnoreCase(Global.statusActive))
                             getBaseActivity().showSnackbar(rv_new_matches, resource.message);
                         break;
                 }
@@ -271,7 +320,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                             }
                             for (int i = 0; i < chatList.size(); i++) {
                                 ChatListModel.ChatList list = chatList.get(i);
-                                if (list.getIsDirectChat() != null && list.getIsDirectChat().equalsIgnoreCase("YES")) {
+                                if (!TextUtils.isEmpty(list.getIsDirectChat()) && list.getIsDirectChat().equalsIgnoreCase("YES")) {
                                     scheduleMatchDirectList.add(list);
                                 } else {
                                     scheduleMatchList.add(list);
@@ -319,14 +368,16 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                             }
 
                         } else if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
-                            getBaseActivity().openActivityOnTokenExpire();
+                            if (getBaseActivity() != null)
+                                getBaseActivity().openActivityOnTokenExpire();
                         } else {
                             //  cl_schedule_matches.setVisibility(View.GONE);
                         }
                         matchListViewModel.getMatchListRequest(pageNumber + "");
                         break;
                     case ERROR:
-                        getBaseActivity().showSnackbar(rv_new_matches, resource.message);
+                        if (getBaseActivity() != null)
+                            getBaseActivity().showSnackbar(rv_new_matches, resource.message);
                         matchListViewModel.getMatchListRequest(pageNumber + "");
                         break;
                 }
@@ -343,10 +394,12 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                     case LOADING:
                         break;
                     case SUCCESS:
-                        getBaseActivity().hideLoading();
+                        if (getBaseActivity() != null)
+                            getBaseActivity().hideLoading();
                         if (resource.data.getSuccess()) {
                             if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
-                                getBaseActivity().openActivityOnTokenExpire();
+                                if (getBaseActivity() != null)
+                                    getBaseActivity().openActivityOnTokenExpire();
                             } else {
                                 if (!isDirect) {
                                     scheduleMatchList.remove(pos);
@@ -371,12 +424,15 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                                 scheduleMatchesAdapter.notifyDataSetChanged();
                             }
                         } else {
-                            getBaseActivity().showSnackbar(rv_new_matches, resource.message);
+                            if (getBaseActivity() != null)
+                                getBaseActivity().showSnackbar(rv_new_matches, resource.message);
                         }
                         break;
                     case ERROR:
-                        getBaseActivity().hideLoading();
-                        getBaseActivity().showSnackbar(rv_new_matches, resource.message);
+                        if (getBaseActivity() != null) {
+                            getBaseActivity().hideLoading();
+                            getBaseActivity().showSnackbar(rv_new_matches, resource.message);
+                        }
                         break;
                 }
             }
@@ -393,14 +449,16 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                     case LOADING:
                         break;
                     case SUCCESS:
-                        getBaseActivity().hideLoading();
+                        if (getBaseActivity() != null)
+                            getBaseActivity().hideLoading();
                         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         if (imm != null) {
                             imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
                         }
                         if (resource.data.getSuccess()) {
                             if (resource.data.getError() != null && resource.data.getError().getCode().contains("401")) {
-                                getBaseActivity().openActivityOnTokenExpire();
+                                if (getBaseActivity() != null)
+                                    getBaseActivity().openActivityOnTokenExpire();
                             } else {
                                 showSnackBar(rv_new_matches, "User successfully reported");
                             }
@@ -410,8 +468,10 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                         }
                         break;
                     case ERROR:
-                        getBaseActivity().hideLoading();
-                        getBaseActivity().showSnackbar(rv_new_matches, resource.message);
+                        if (getBaseActivity() != null) {
+                            getBaseActivity().hideLoading();
+                            getBaseActivity().showSnackbar(rv_new_matches, resource.message);
+                        }
                         break;
                 }
             }
@@ -422,20 +482,24 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             switch (resource.status) {
                 case LOADING:
                     break;
-                case SUCCESS:
+                case SUCCESS:  if (getBaseActivity()!=null)
                     getBaseActivity().hideLoading();
                     if (resource.data != null && resource.data.getSuccess() != null) {
                         setDeluxeData();
+                        if (getBaseActivity()!=null)
                         getBaseActivity().sp.savePremium(true);
                     } else if (resource.code == 401) {
+                        if (getBaseActivity()!=null)
                         getBaseActivity().openActivityOnTokenExpire();
                     } else {
+                        if (getBaseActivity()!=null)
                         getBaseActivity().showSnackbar(rv_new_matches, "Something went wrong");
                     }
                     break;
                 case ERROR:
+                    if (getBaseActivity()!=null){
                     getBaseActivity().hideLoading();
-                    getBaseActivity().showSnackbar(rv_new_matches, resource.message);
+                    getBaseActivity().showSnackbar(rv_new_matches, resource.message);}
                     break;
             }
         });
@@ -463,15 +527,18 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             if (true) {
                 constraint_verify.setVisibility(View.GONE);
                 rv_reject.setVisibility(View.GONE);
+                if (getBaseActivity()!=null)
                 getBaseActivity().showLoading();
                 matchListViewModel.getChatListRequest(getBaseActivity().sp.getToken());
             } else {
-                if (getBaseActivity().sp.isRejected()) {
-                    rv_reject.setVisibility(View.VISIBLE);
-                    constraint_verify.setVisibility(View.GONE);
-                } else {
-                    constraint_verify.setVisibility(View.VISIBLE);
-                    rv_reject.setVisibility(View.GONE);
+                if (getBaseActivity()!=null){
+                    if (getBaseActivity().sp.isRejected()) {
+                        rv_reject.setVisibility(View.VISIBLE);
+                        constraint_verify.setVisibility(View.GONE);
+                    } else {
+                        constraint_verify.setVisibility(View.VISIBLE);
+                        rv_reject.setVisibility(View.GONE);
+                    }
                 }
             }
         }
@@ -480,8 +547,9 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
 
     @Override
     public void onPause() {
-     /*   LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMessageReceiver2);
-        getBaseActivity().isMatchScreen = false;*/
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMessageReceiver2);
+        if (getBaseActivity()!=null)
+        getBaseActivity().isMatchScreen = false;
         super.onPause();
     }
 
@@ -521,6 +589,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
         }
         newMatchesAdapter.notifyDataSetChanged();
         scheduleMatchesAdapter.notifyDataSetChanged();
+        if (getBaseActivity()!=null)
         getBaseActivity().hideLoading();
     }
 
@@ -588,6 +657,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
         rv_new_matches.setAdapter(newMatchesAdapter);
         scheduleMatchesAdapter = new ScheduleSwipeAdapter(mActivity, scheduleMatchList, MatchFragment.this);
         scheduleMatchesAdapter.setOnItemClickListener(this);
+        scheduleMatchesAdapter.setListenerSwipe(this);
         sml_schedule_matches.setAdapter(scheduleMatchesAdapter);
         rv_new_matches.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -622,7 +692,11 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 isDirect = tab.getPosition() == 1;
-                scheduleMatchesAdapter = tab.getPosition() == 0 ? new ScheduleSwipeAdapter(mActivity, scheduleMatchList, MatchFragment.this) : new ScheduleSwipeAdapter(mActivity, scheduleMatchDirectList, MatchFragment.this);
+                if (tab.getPosition() == 0)
+                    scheduleMatchesAdapter = new ScheduleSwipeAdapter(mActivity, scheduleMatchList, MatchFragment.this);
+                else
+                    scheduleMatchesAdapter = new ScheduleSwipeAdapter(mActivity, scheduleMatchDirectList, MatchFragment.this);
+                scheduleMatchesAdapter.setListenerSwipe(MatchFragment.this);
                 if (!isPremiumBtn) {
                     if (tab.getPosition() == 0) {
                         setLikesCount(false);
@@ -672,7 +746,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                 scheduleMatchesAdapter.setOnItemClickListener(MatchFragment.this);
                 scheduleMatchesAdapter.notifyDataSetChanged();
                 //getBaseActivity().showLoading();
-                createSwipeMenu();
+                //createSwipeMenu();
                 matchListViewModel.getChatListRequest(getBaseActivity().sp.getToken());
             }
 
@@ -691,60 +765,17 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     /**
      * implement all listeners
      */
-    private void implementListeners() {
+   /* private void implementListeners() {
         sml_schedule_matches.setOnMenuItemClickListener((position, menu, index) -> {
-            switch (index) {
-                case 0:
-                    CommonDialogs.reportDialogNew(mActivity, MatchFragment.this);
-                    pos = position;
-                    break;
-                case 1:
-                    pos = position;
-                    Dialog dialog1 = new Dialog(getBaseActivity());
-                    dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    Objects.requireNonNull(dialog1.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog1.setContentView(R.layout.dialog_two_button);
-                    dialog1.setCancelable(false);
-                    dialog1.setCanceledOnTouchOutside(false);
-                    dialog1.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    dialog1.show();
-                    TextView tv_message1 = dialog1.findViewById(R.id.tv_message);
-                    TextView tv_yes = dialog1.findViewById(R.id.tv_yes);
-                    TextView tv_no = dialog1.findViewById(R.id.tv_no);
-                    if (isDirect)
-                        tv_message1.setText("Are you sure you want to block this user? They will not be able to send you any more messages.");
-                    else
-                        tv_message1.setText("Are you sure you want to unmatch this user? Unmatching them will also block them from contacting you.");
 
-                    tv_yes.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog1.dismiss();
-                            getBaseActivity().showLoading();
-                            if (isDirect) {
-                                homeViewModel.unMatchRequest(String.valueOf(scheduleMatchDirectList.get(position).getId()));
-                            } else {
-                                homeViewModel.unMatchRequest(String.valueOf(scheduleMatchList.get(position).getId()));
-                            }
-
-                        }
-                    });
-                    tv_no.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog1.dismiss();
-                        }
-                    });
-                    break;
-            }
             return false;
         });
-    }
+    }*/
 
     /**
      * create a MenuCreator
      */
-    private void createSwipeMenu() {
+    /*private void createSwipeMenu() {
 
         SwipeMenuCreator creator = menu -> {
 
@@ -772,8 +803,9 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
         };
 
         // set creator
-        sml_schedule_matches.setMenuCreator(creator);
+//        sml_schedule_matches.setMenuCreator(creator);
     }
+*/
 
     /**
      * convert DP to Pixel
@@ -790,7 +822,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             btn_direct_msg.setVisibility(View.GONE);
 //            scheduleMatchesAdapter.isBlurr = false;
             sml_schedule_matches.setAdapter(scheduleMatchesAdapter);
-            scheduleMatchesAdapter.notifyDataSetInvalidated();
+            scheduleMatchesAdapter.notifyDataSetChanged();
             //isPremiumBtn = true;
             //// newMatchesAdapter.isUnBlurr = true;
             newMatchesAdapter.notifyDataSetChanged();
@@ -813,14 +845,35 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                 }*/
             } else {
                 if (scheduleMatchList.size() > 0) {
-                    isShowDirect = false;
-                    startActivityForResult(new Intent(mContext, ChatWindow.class).putExtra("id", scheduleMatchList.get(position).getId())
-                            .putExtra("scheduleist", scheduleMatchList.get(position).toString())
-                            .putExtra("name", scheduleMatchList.get(position).getProfileOfUser().getName())
-                            .putExtra("tabPos", 3)
-                            .putExtra("isExpired", false)
-                            .putExtra("isfromDirect", false)
-                            .putExtra("image", scheduleMatchList.get(position).getImageForUser().get(0).getImageUrl()), 10000);
+                    if (scheduleMatchList.get(position) != null && scheduleMatchList.get(position).getMatchOfUser() != null && !TextUtils.isEmpty(scheduleMatchList.get(position).getMatchOfUser().getCalltimerExpiry())) {
+                        long expire = CommonUtils.stringToSheduleDate(scheduleMatchList.get(position).getMatchOfUser().getCalltimerExpiry().replace("T", " ").split("\\.")[0]);
+                        long server = CommonUtils.stringToSheduleDate(scheduleMatchList.get(position).getChatByUser().getServerTime().replace("T", " ").split("\\.")[0]);
+                        long timeLeft = 0;
+                        boolean isExpired = false;
+                        if (server >= expire) {
+                            isExpired = true;
+                        } else {
+                            timeLeft = expire - server;
+                        }
+                        isShowDirect = false;
+                        startActivityForResult(new Intent(mContext, ChatWindow.class).putExtra("id", scheduleMatchList.get(position).getId())
+                                .putExtra("scheduleist", scheduleMatchList.get(position).toString())
+                                .putExtra("name", scheduleMatchList.get(position).getProfileOfUser().getName())
+                                .putExtra("tabPos", 3)
+                                .putExtra("isExpired", isExpired)
+                                .putExtra("isfromDirect", false)
+                                .putExtra("timeLeft", timeLeft)
+                                .putExtra("image", scheduleMatchList.get(position).getImageForUser().get(0).getImageUrl()), 10000);
+                    } else {
+                        isShowDirect = false;
+                        startActivityForResult(new Intent(mContext, ChatWindow.class).putExtra("id", scheduleMatchList.get(position).getId())
+                                .putExtra("scheduleist", scheduleMatchList.get(position).toString())
+                                .putExtra("name", scheduleMatchList.get(position).getProfileOfUser().getName())
+                                .putExtra("tabPos", 3)
+                                .putExtra("isExpired", true)
+                                .putExtra("isfromDirect", false)
+                                .putExtra("image", scheduleMatchList.get(position).getImageForUser().get(0).getImageUrl()), 10000);
+                    }
                     getBaseActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
             }
@@ -883,7 +936,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
 //        scheduleMatchesAdapter.isBlurr = false;
         sml_schedule_matches.setAdapter(scheduleMatchesAdapter);
         //scheduleMatchesAdapter=new ScheduleSwipeAdapter(mActivity, scheduleMatchDirectList,MatchFragment.this);
-        scheduleMatchesAdapter.notifyDataSetInvalidated();
+        scheduleMatchesAdapter.notifyDataSetChanged();
         //isPremiumBtn = true;
         //// newMatchesAdapter.isUnBlurr = true;
         newMatchesAdapter.notifyDataSetChanged();
@@ -977,6 +1030,52 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
        /* if (getBaseActivity() != null && newMatchesAdapter != null) {
             newMatchesAdapter.notifyDataSetChanged();
         }*/
+    }
+
+    @Override
+    public void OnClickSwipeView(int position, boolean isReport) {
+        Log.e(TAG, "OnClickSwipeView: " + position);
+        if (isReport) {
+            CommonDialogs.reportDialogNew(mActivity, MatchFragment.this);
+            pos = position;
+        } else {
+            pos = position;
+            Dialog dialog1 = new Dialog(getBaseActivity());
+            dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            Objects.requireNonNull(dialog1.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog1.setContentView(R.layout.dialog_two_button);
+            dialog1.setCancelable(false);
+            dialog1.setCanceledOnTouchOutside(false);
+            dialog1.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog1.show();
+            TextView tv_message1 = dialog1.findViewById(R.id.tv_message);
+            TextView tv_yes = dialog1.findViewById(R.id.tv_yes);
+            TextView tv_no = dialog1.findViewById(R.id.tv_no);
+            if (isDirect)
+                tv_message1.setText("Are you sure you want to block this user? They will not be able to send you any more messages.");
+            else
+                tv_message1.setText("Are you sure you want to unmatch this user? Unmatching them will also block them from contacting you.");
+
+            tv_yes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog1.dismiss();
+                    getBaseActivity().showLoading();
+                    if (isDirect) {
+                        homeViewModel.unMatchRequest(String.valueOf(scheduleMatchDirectList.get(position).getId()));
+                    } else {
+                        homeViewModel.unMatchRequest(String.valueOf(scheduleMatchList.get(position).getId()));
+                    }
+
+                }
+            });
+            tv_no.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog1.dismiss();
+                }
+            });
+        }
     }
 }
 

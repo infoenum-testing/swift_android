@@ -33,7 +33,6 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -81,7 +80,6 @@ import retrofit2.Retrofit
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.math.log
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 class FindMatchFragment : BaseFragment(), CardStackListener,
@@ -239,7 +237,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
 
 
 
-         imageView = view.findViewById(R.id.imageView)
+        imageView = view.findViewById(R.id.imageView)
         // Glide.with(this).load(R.raw.bg).into(imageView)
     }
 
@@ -265,11 +263,15 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         tv_no.setOnClickListener { view: View? -> dialog.dismiss() }
     }
 
+    private var max: Int = 0
+    private var mini: Int = 0
     private fun showDistanceBottomsheet() {
         val ageArrayList: ArrayList<String> = arrayListOf()
         var interseted = "Both"
         if (filterRequest == null) {
             filterRequest = FilterRequest()
+            filterRequest!!.minAgePrefer = 21
+            filterRequest!!.maxAgePrefer = 40
         }
         val bottomSheetDialog: BottomSheetDialog?
         bottomSheetDialog = BottomSheetDialog(contextMy, R.style.BottomSheetDialogStyle)
@@ -317,6 +319,14 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         seekAgeRange.selectedMaxValue = size
 
         seekAgeRange.setOnRangeSeekBarChangeListener(fun(bar: RangeSeekBar<out Number>, minValue: Number, maxValue: Number) {
+            if (maxValue.toInt() - minValue.toInt() < 6) {
+                if (max - minValue.toInt() < 6) {
+                    seekAgeRange.setSelectedMinValue(mini)
+                } else seekAgeRange.setSelectedMaxValue(max)
+                return
+            }
+            max = maxValue.toInt()
+            mini = minValue.toInt()
             tvAgeRange.text = ageArrayList[minValue as Int] + " to " + ageArrayList[maxValue as Int]
             filterRequest!!.maxAgePrefer = ageArrayList[maxValue.toInt()].toInt()
             filterRequest!!.minAgePrefer = ageArrayList[minValue.toInt()].toInt()
@@ -361,33 +371,27 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
             }
         }
-
-
-
-        if (filterRequest != null) {
-            for (i in ageArrayList.indices) {
-                if (ageArrayList[i].equals("" + filterRequest!!.minAgePrefer, ignoreCase = true)) {
-                    seekAgeRange.selectedMinValue = i
-                    break
-                }
+//        if (filterRequest != null) {
+        for (i in ageArrayList.indices) {
+            if (ageArrayList[i].equals("" + filterRequest!!.minAgePrefer, ignoreCase = true)) {
+                seekAgeRange.selectedMinValue = i
+                break
             }
-            for (i in ageArrayList.indices) {
-                if (ageArrayList[i].equals("" + filterRequest!!.maxAgePrefer, ignoreCase = true)) {
-                    seekAgeRange.selectedMaxValue = i
-                    break
-                }
-            }
-            tvAgeRange.text = ageArrayList[seekAgeRange.selectedMinValue as Int] + " to " + ageArrayList[seekAgeRange.selectedMaxValue as Int]
         }
-
+        for (i in ageArrayList.indices) {
+            if (ageArrayList[i].equals("" + filterRequest!!.maxAgePrefer, ignoreCase = true)) {
+                seekAgeRange.selectedMaxValue = i
+                break
+            }
+        }
+        tvAgeRange.text = ageArrayList[seekAgeRange.selectedMinValue as Int] + " to " + ageArrayList[seekAgeRange.selectedMaxValue as Int]
+//        }
         if (filterRequest != null) {
             seekDistance.setProgress(filterRequest!!.distance.toFloat())
             tvDistance.text = "" + filterRequest!!.distance + " miles"
         } else {
             seekDistance.setProgress(500f)
         }
-
-
         /////////////////////////////////   ^^^^^^^^^^^ setting data to view from shared pref model ////////////////////////
         btnApply.setOnClickListener(OnClickListener(fun(v: View?) {
             baseActivity.sp.saveFilterModel(filterRequest)
@@ -396,21 +400,21 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
             map["minAgePrefer"] = ageArrayList[seekAgeRange.selectedMinValue].toInt()
             map["maxAgePrefer"] = ageArrayList[seekAgeRange.selectedMaxValue].toInt()
             map["interested"] = interseted
-           // baseActivity.showLoading()
-            imageView.visibility= VISIBLE
+            // baseActivity.showLoading()
+            imageView.visibility = VISIBLE
             ApiCall.setFilters(baseActivity.sp.token, map, this)
             bottomSheetDialog.cancel()
         }))
 
         btnReset.setOnClickListener(OnClickListener {
             filterRequest?.distance = 500
-            filterRequest?.maxAgePrefer = 80
-            filterRequest?.minAgePrefer = 18
+            filterRequest?.maxAgePrefer = 40
+            filterRequest?.minAgePrefer = 21
             filterRequest?.gender = "Both"
             baseActivity.sp.saveFilterModel(filterRequest)
-            seekAgeRange.selectedMinValue = 0
-            seekAgeRange.selectedMaxValue = size
-            tvAgeRange.text = "18 to 80"
+            seekAgeRange.selectedMinValue = 3
+            seekAgeRange.selectedMaxValue = 22
+//            tvAgeRange.text = "21 to 40"
             seekDistance.setProgress(500f)
             tvDistance.text = "500 miles"
             otherTb.isChecked = true
@@ -645,7 +649,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                             SharedPreference(context).saveSelfieVerificationStatus("No")
                         }*/
                         else if (resource.data.error != null && resource.data.error.code == "404") {
-                           // baseActivity.hideLoading()
+                            // baseActivity.hideLoading()
                             Log.d("TAG_My", "subscribeModel: visisble setting" + 404)
                             img_vip_star?.isEnabled = false
                             chat?.isEnabled = false
@@ -664,11 +668,11 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                             rlFilter?.isEnabled = true
                             rewind?.isEnabled = true
                             cardStackView!!.visibility = VISIBLE
-                           // baseActivity.hideLoading()
+                            // baseActivity.hideLoading()
                             //SharedPreference(context).saveSelfieVerificationStatus("Yes")
                         }
                     } else {
-                     //   baseActivity.hideLoading()
+                        //   baseActivity.hideLoading()
                         baseActivity.sp.saveisSettingsChanged(false)
                         img_vip_star?.isEnabled = false
                         chat?.isEnabled = false
@@ -696,7 +700,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> {
-                    Log.e(TAG, "userReactResponse: " )
+                    Log.e(TAG, "userReactResponse: ")
                     baseActivity.hideLoading()
                     if (resource.data!!.success!!) {
                         if (resource.data.react.reaction.contains("dislike")) {
@@ -818,7 +822,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> {
-                    Log.e(TAG, "userReactResponse1: " )
+                    Log.e(TAG, "userReactResponse1: ")
                     baseActivity.hideLoading()
                     isCardDisCalled = true
                     if (resource.data!!.success!!) {
@@ -966,7 +970,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         rewind.isEnabled = false
                     } else if (resource.data.error != null && resource.data.error.code.contains("401")) {
                         baseActivity.openActivityOnTokenExpire()
-                    }else{
+                    } else {
                         baseActivity.showSnackbar(card_stack_view, resource.data.message)
                     }
                 }
@@ -1060,7 +1064,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
 
                         } else {
                             showSnackBar(card_stack_view, "User successfully reported.")
-                           // view?.findViewById<View>(R.id.cancel)!!.performClick()
+                            // view?.findViewById<View>(R.id.cancel)!!.performClick()
                             rewind.isEnabled = false
                         }
                     } else {
@@ -1486,8 +1490,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
     @TargetApi(Build.VERSION_CODES.M)
     fun requestPermissionLOC() {
         try {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(baseActivity,Manifest.permission.ACCESS_FINE_LOCATION)&&ActivityCompat.shouldShowRequestPermissionRationale(baseActivity,Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION),PERMISSION_REQUEST_CODE_LOC)
+            if (ActivityCompat.shouldShowRequestPermissionRationale(baseActivity, Manifest.permission.ACCESS_FINE_LOCATION) && ActivityCompat.shouldShowRequestPermissionRationale(baseActivity, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSION_REQUEST_CODE_LOC)
             } else {
                 requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSION_REQUEST_CODE_LOC)
             }
@@ -1605,7 +1609,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 val user = baseActivity.sp.user
                 val obj = gson.fromJson(user, ProfileOfUser::class.java)
                 if (obj.visible.equals("True", ignoreCase = true)) {
-                  //  baseActivity.showLoading()
+                    //  baseActivity.showLoading()
                     imageView.visibility = VISIBLE
                     homeViewModel.getUserListRequest(baseActivity.sp.token)
                 } else {
@@ -1721,12 +1725,13 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
             rlFilter?.isEnabled = true
             val gson = Gson()
             val user = baseActivity.sp.user
+            Log.e(TAG, "hitLocApi: $user")
             val obj = gson.fromJson(user, ProfileOfUser::class.java)
             if (obj != null) {
                 obj.latitude = lat
                 obj.longitude = lng
                 Log.e("latiCheck", "$lat $lng")
-            //    baseActivity.showLoading()
+                //    baseActivity.showLoading()
                 baseActivity.sp.saveUserData(obj, baseActivity.sp.profileCompleted)
                 homeViewModel.sendLatLong(LocationModel(lat, lng))
                 if (obj.visible == "True") {
@@ -1757,8 +1762,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                     btn_unhide.setOnClickListener {
                         baseActivity.showLoading()
                         homeViewModel.settingsRequest(SettingsRequestModel("True",
-                                if (obj.matchNotify == "on") "On" else "Off", if (obj.emailNotify == "on") "On" else "Off", if (obj.reactionNotify == "on") "On" else "Off", if (obj.expiredMatches == "on") "On" else "Off",
-                                if (obj.chatNotify == "on") "On" else "Off", obj.maxAgePrefer, obj.minAgePrefer, obj.distance.toInt()))
+                                if (obj.matchNotify.equals("on", true)) "On" else "Off", if (obj.emailNotify.equals("on", true)) "On" else "Off", if (obj.reactionNotify.equals("on", true)) "On" else "Off", if (obj.expiredMatches.equals("on", true)) "On" else "Off",
+                                if (obj.chatNotify.equals("on", true)) "On" else "Off", if (obj.maxAgePrefer > 0) obj.maxAgePrefer else 80, if (obj.minAgePrefer > 0) obj.minAgePrefer else 18, obj.distance))
                     }
                 }
 
@@ -1806,7 +1811,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         Log.e("manager pos", "1441  " + manager.topPosition)
                         Log.e("manager pos", "1441  " + list[manager.topPosition - 1].id)
                         cardId = list[manager.topPosition - 1].id
-                       // baseActivity.showLoading()
+                        // baseActivity.showLoading()
                         homeViewModel.getUserReactRequest1(ReactRequestModel("like", list[manager.topPosition - 1].id))
                         if (rewind != null) {
                             handleDirection = Direction.Right
@@ -1815,7 +1820,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                     }
                 } else {
                     CommonDialogs.showAlreadyPremiumUser(contextMy, getString(R.string.dialog_txt))
-                 }
+                }
             } else {
                 if (direction == Direction.Left) {
                     isMySwiped = true
@@ -1838,7 +1843,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                         } else {
                             if (list.isNotEmpty() && list.size >= manager.topPosition) {
                                 cardId = list[manager.topPosition - 1].id
-                              //  baseActivity.showLoading()
+                                //  baseActivity.showLoading()
                                 homeViewModel.getUserReactRequest1(ReactRequestModel("dislike", list[manager.topPosition - 1].id))
                                 handleDirection = Direction.Left
                                 rewind.isEnabled = true
@@ -1853,7 +1858,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                             mAdView.visibility = INVISIBLE
                         } else {
                             CommonDialogs.showAlreadyPremiumUser(contextMy, getString(R.string.dialog_txt))
-                         }
+                        }
                     }
                 } else {
                     if (rewind != null)
@@ -1918,7 +1923,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                     love.isEnabled = false
                     btn_settings.isEnabled = true
                     if (obj.visible == "True") {
-                     //  baseActivity.showLoading()
+                        //  baseActivity.showLoading()
                         imageView.visibility = VISIBLE
                         homeViewModel.getUserListRequest((activity as HomeActivity).sp.token)
                     }
@@ -1938,7 +1943,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         love.isEnabled = false
         btn_settings.isEnabled = true
         if (obj.visible == "True") {
-           // baseActivity.showLoading()
+            // baseActivity.showLoading()
             imageView.visibility = VISIBLE
             homeViewModel.getUserListRequest((activity as HomeActivity).sp.token)
         }
@@ -1991,7 +1996,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         cardSwipeCount = list.size
         val i = ScreenUtils.getScreenHeight(context) - (2 * ScreenUtils.getActionBarHeight(context)) - 30
         myHt = i
-        cardStackView?.adapter = CardDetailAdapter(context, list, i, this,baseActivity)
+        cardStackView?.adapter = CardDetailAdapter(context, list, i, this, baseActivity)
         cardStackView?.adapter!!.notifyDataSetChanged()
         cardStackView?.itemAnimator.apply {
             if (this is DefaultItemAnimator) {
@@ -2074,35 +2079,34 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         }
 
         chat?.setOnClickListener {
-              if (percent >= 75) {
-                 if (linear.visibility == VISIBLE) {
-                     card_stack_view.visibility = VISIBLE
-                     superlike2?.visibility = GONE
-                     love.visibility = VISIBLE
-                     linear.visibility = INVISIBLE
-                     mAdView.visibility = INVISIBLE
-                     handleDirection = Direction.Top
-                 } else if (list.isNotEmpty() && list.size > manager.topPosition) {
-                     startActivityForResult(Intent(mContext, ChatWindow::class.java).
-                     putExtra("id", list[manager.topPosition].id)
-                             .putExtra("name", list[manager.topPosition].profileOfUser.name)
-                             .putExtra("tabPos", 0)
-                             .putExtra("isExpired", false)
-                             .putExtra("isFromCard", true)
-                             .putExtra("image", list[manager.topPosition].imageForUser[0].imageUrl), 10000)
-                     baseActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                 }
-             } else {
-                 if (linear.visibility == VISIBLE) {
-                     card_stack_view.visibility = VISIBLE
-                     superlike2?.visibility = GONE
-                     love.visibility = VISIBLE
-                     linear.visibility = INVISIBLE
-                     mAdView.visibility = INVISIBLE
-                     handleDirection = Direction.Top
-                 } else
-                 CommonDialogs.showAlreadyPremiumUser(contextMy, getString(R.string.dialog_txt))
-             }
+            if (percent >= 75) {
+                if (linear.visibility == VISIBLE) {
+                    card_stack_view.visibility = VISIBLE
+                    superlike2?.visibility = GONE
+                    love.visibility = VISIBLE
+                    linear.visibility = INVISIBLE
+                    mAdView.visibility = INVISIBLE
+                    handleDirection = Direction.Top
+                } else if (list.isNotEmpty() && list.size > manager.topPosition) {
+                    startActivityForResult(Intent(mContext, ChatWindow::class.java).putExtra("id", list[manager.topPosition].id)
+                            .putExtra("name", list[manager.topPosition].profileOfUser.name)
+                            .putExtra("tabPos", 0)
+                            .putExtra("isExpired", false)
+                            .putExtra("isFromCard", true)
+                            .putExtra("image", list[manager.topPosition].imageForUser[0].imageUrl), 10000)
+                    baseActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                }
+            } else {
+                if (linear.visibility == VISIBLE) {
+                    card_stack_view.visibility = VISIBLE
+                    superlike2?.visibility = GONE
+                    love.visibility = VISIBLE
+                    linear.visibility = INVISIBLE
+                    mAdView.visibility = INVISIBLE
+                    handleDirection = Direction.Top
+                } else
+                    CommonDialogs.showAlreadyPremiumUser(contextMy, getString(R.string.dialog_txt))
+            }
         }
 
         like?.setOnClickListener {
@@ -2401,6 +2405,11 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 //homeViewModel.addVipToken(new VipTokenRequestModel(tokensNum, price));
             }
             tokenType.equals("PremiumPurchase", ignoreCase = true) -> {
+                price = CommonDialogs.PremiumPriceList[selectedPos].priceValue
+                productId = CommonDialogs.PremiumArr[selectedPos]
+                bp!!.subscribe(mActivity, productId)
+                CommonDialogs.dismiss()
+                return/*
                 val dialog = Dialog(mActivity)
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
                 Objects.requireNonNull(dialog.window)?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -2421,12 +2430,12 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                     CommonDialogs.dismiss()
                     dialog.dismiss()
                 }
-                tv_no.setOnClickListener { view: View? -> dialog.dismiss() }
+                tv_no.setOnClickListener { view: View? -> dialog.dismiss() }*/
             }
         }
-        if (!tokenType.equals("PremiumPurchase", ignoreCase = true)) {
-            bp?.purchase(activity, productId);
-        }
+//        if (!tokenType.equals("PremiumPurchase", ignoreCase = true)) {
+        bp?.purchase(activity, productId);
+//        }
 
     }
 
@@ -2447,8 +2456,9 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
     }
 
     override fun onSuccessFilter(filterRequestResponse: FilterResponse?) {
-        baseActivity.hideLoading()
-        if (filterRequestResponse != null && filterRequestResponse.success) {
+        if (baseActivity != null)
+            baseActivity.hideLoading()
+        if (filterRequestResponse != null && filterRequestResponse.success && baseActivity != null) {
             val resObj = filterRequestResponse.settings
             Log.e(TAG, "onSuccessFilter: $filterRequestResponse")
             filterRequest?.interested = resObj?.interested
@@ -2457,19 +2467,22 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
             filterRequest?.maxAgePrefer = resObj?.maxAgePrefer
             baseActivity.sp.saveFilterModel(filterRequest)
             if (baseActivity.sp.status == Global.statusActive) {
-               // baseActivity.showLoading()
+                // baseActivity.showLoading()
                 imageView.visibility = VISIBLE
                 homeViewModel.getUserListRequest(baseActivity.sp.token)
             }
 
         } else {
-            baseActivity.showSnackbar(like, filterRequestResponse?.message)
+            if (baseActivity != null)
+                baseActivity.showSnackbar(like, filterRequestResponse?.message)
         }
     }
 
     override fun onError(error: String?) {
-        baseActivity.hideLoading()
-        baseActivity.showSnackbar(like, error)
+        if (baseActivity != null) {
+            baseActivity.hideLoading()
+            baseActivity.showSnackbar(like, error)
+        }
         Log.e(TAG, "onError: ")
     }
 }

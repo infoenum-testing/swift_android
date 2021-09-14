@@ -34,6 +34,7 @@ import com.swiftdating.app.data.network.Resource;
 import com.swiftdating.app.model.BaseModel;
 import com.swiftdating.app.model.requestmodel.FilterRequest;
 import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
+import com.swiftdating.app.model.responsemodel.ProfileOfUser;
 import com.swiftdating.app.model.responsemodel.User;
 import com.swiftdating.app.model.responsemodel.UserListResponseModel;
 import com.swiftdating.app.model.responsemodel.WhoLikedYouReponce;
@@ -55,7 +56,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
     private static final String TAG = "SearchFragment";
     private static RecyclerView recycle;
     private static int totalItemsViewed = 0;
-    private final int loadMoreRange = 19;
+    private final int loadMoreRange = 14;
     private HomeViewModel homeViewModel;
     private double price;
     private String productId, tokenSType;
@@ -81,6 +82,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
     private int posAdapter;
     private int oldFirstPos = -1;
     private int oldLastPos = -1;
+    private ProfileOfUser signinUser;
 
     public static void setRecycleToTop() {
         recycle.scrollToPosition(0);
@@ -112,7 +114,8 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mActivity = (BaseActivity) getActivity();
-        Log.e(TAG, "onViewCreated: SearchFragment");
+        getBaseActivity().hideLoading();
+        signinUser=new Gson().fromJson(getBaseActivity().sp.getUser(),ProfileOfUser.class);
         if (getBaseActivity().isNetworkConnected()) {
             initViews(view);
         } else {
@@ -145,10 +148,6 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
         map.put(filterRequest.getMinHeightKey(), filterRequest.getMinHeight());
         if (filterRequest.getLookingFor() != null)
             map.put(filterRequest.getLookingForKey(), filterRequest.getLookingFor());
-        //if (filterRequest.getMaxHeight() != null)
-
-        // if (filterRequest.getMinHeight() != null)
-
         if (filterRequest.getKids() != null)
             map.put(filterRequest.getKidsKey(), filterRequest.getKids());
         if (filterRequest.getPolitical() != null)
@@ -355,16 +354,17 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
 
     private void CallAllUserApi(int count) {
         filterRequest = new FilterRequest();
+        filterRequest.setGender(signinUser.getInterested());
         getBaseActivity().showLoading();
         HashMap<String, Object> map = new HashMap<>();
         map.put(filterRequest.getPageNumberKey(), count);
         map.put(filterRequest.getLimitKey(), filterRequest.getLimit());
         map.put(filterRequest.getDistanceKey(), filterRequest.getDistance());
-        map.put(filterRequest.getGenderKey(), filterRequest.getGender());
-        map.put(filterRequest.getMaxAgePreferKey(), filterRequest.getMaxAgePrefer());
-        map.put(filterRequest.getMinAgePreferKey(), filterRequest.getMinAgePrefer());
-        map.put(filterRequest.getMaxHeightKey(), filterRequest.getMaxHeight());
-        map.put(filterRequest.getMinHeightKey(), filterRequest.getMinHeight());
+//        map.put(filterRequest.getGenderKey(), filterRequest.getGender());
+        map.put(filterRequest.getMaxAgePreferKey(), 40);
+        map.put(filterRequest.getMinAgePreferKey(),21);
+//        map.put(filterRequest.getMaxHeightKey(), filterRequest.getMaxHeight());
+//        map.put(filterRequest.getMinHeightKey(), filterRequest.getMinHeight());
         ApiCall.getSearchFilterList(getBaseActivity().sp.getToken(), map, this);
         //homeViewModel.getUserListAllRequest(getBaseActivity().sp.getToken());
     }
@@ -494,6 +494,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
 
     @Override
     public void onSuccessSearchFilterList(WhoLikedYouReponce response) {
+        if (getBaseActivity()!=null)
         getBaseActivity().hideLoading();
         if (list == null)
             list = new ArrayList<>();
@@ -506,6 +507,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
                 setLoadMore(true);
                 recycle.setVisibility(View.VISIBLE);
                 list = (ArrayList<User>) response.getUsers();
+                if (getBaseActivity()!=null)
                 recycle.setAdapter(new SearchUserAdapter(mActivity, list, isDeluxe, SearchFragment.this, getBaseActivity().sp));
                 recycle.getAdapter().notifyDataSetChanged();
             }
@@ -516,7 +518,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
             recycle.getAdapter().notifyItemRangeInserted(size, list.size());
         }
         Log.e(TAG, "onSuccessSearchFilterList: " + list.size());
-        if (list != null && list.size() > 0) {
+        if (list != null && list.size() > 0&&getBaseActivity()!=null) {
             if (isFilterApply) {
                 getBaseActivity().sp.saveString(FilterResponse, gson.toJson(list));
             } else {
