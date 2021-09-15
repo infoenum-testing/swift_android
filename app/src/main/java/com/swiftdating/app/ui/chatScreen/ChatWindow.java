@@ -128,6 +128,7 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
             } else if (hours > 0) {
                 hours--;
                 min = 59;
+                sec=59;
             } else {
                 timeExpireStr = "Time Expired";
                 tvTimeLeft.setText(timeExpireStr);
@@ -594,7 +595,7 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
     }
 
     private void setTimeRemain() {
-        timeExpireStr = String.format(Locale.getDefault(), "Time Remaining : %01d:%01d:%01d", hours, min, sec);
+        timeExpireStr = String.format(Locale.getDefault(), "Time Remaining : %02d:%02d:%02d", hours, min, sec);
     }
 
     /**

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.Calendar;
 import java.util.List;
 
 import com.swiftdating.app.R;
@@ -53,7 +55,7 @@ public class ItsAMatchActivity extends AppCompatActivity implements View.OnClick
         tvDescription = findViewById(R.id.tvDescription);
         btnAnswerNow = findViewById(R.id.btn_answer_now);
         if (getIntent().hasExtra("match")) {
-            mNotificationModel = (NotificationModel) getIntent().getSerializableExtra("match");
+            mNotificationModel = (NotificationModel) getIntent().getSerializableExtra("match");//new Gson().fromJson("{\"image\":{\"orderId\":1,\"imageUrl\":\"images\\/1628254684590.png\",\"id\":578},\"match\":{\"name\":\"v\",\"Question3\":\"Something my parent don\\u2019t know about me is\",\"Question2\":\"Something my parent don\\u2019t know about me is\",\"Question1\":\"One thing you should know about me is\",\"userId\":484},\"action\":1,\"message\":\"You have a new match.\",\"userId\":484,\"key\":\"You are second\"}",NotificationModel.class);
             setData();
             btnAnswerNow.setOnClickListener(this);
             ivCross.setOnClickListener(this);
@@ -81,13 +83,18 @@ public class ItsAMatchActivity extends AppCompatActivity implements View.OnClick
             finish();
             overridePendingTransition(R.anim.nothing, R.anim.slide_out_down);
         }else if(view == btnAnswerNow){
-//TODO send to Chat Window
+            Calendar cal=Calendar.getInstance();
+            cal.add(Calendar.DATE,3);
+            long expire=cal.getTime().getTime();
+            cal=Calendar.getInstance();
+            long server=cal.getTime().getTime();
+            Log.e("TAG", "onClick: "+cal.toString() );
             startActivityForResult(new Intent(this, ChatWindow.class).putExtra("id", mNotificationModel.getUserId())
                     .putExtra("name", mNotificationModel.getMatch().getName())
                     .putExtra("tabPos", 2)
                     .putExtra("isExpired", false)
                     .putExtra("hitApi",true)
-                    .putExtra("timeLeft", 24*60*60*1000)
+                    .putExtra("timeLeft", (expire-server))
                     .putExtra("image", mNotificationModel.getImage().getImageUrl()), 10000);
             finish();
             overridePendingTransition(R.anim.nothing, R.anim.slide_out_down);

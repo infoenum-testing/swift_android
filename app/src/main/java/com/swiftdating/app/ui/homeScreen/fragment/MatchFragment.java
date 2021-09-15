@@ -524,7 +524,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
             // cl_new_matches.setVisibility(View.GONE);
             tv_NoNewMatched.setVisibility(cons_dummy.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
             // ((HomeActivity) getActivity()).setToolbarWithTitle("Messages");
-            if (true) {
+            if (true/*new SharedPreference(getContext()).getVerified().equalsIgnoreCase("Yes")*/) {
                 constraint_verify.setVisibility(View.GONE);
                 rv_reject.setVisibility(View.GONE);
                 if (getBaseActivity()!=null)
@@ -884,8 +884,8 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
 
         } else {
             if (position < matchesList.size() && matchesList.size() > 0) {
-                long expire = CommonUtils.stringToDate(matchesList.get(position).getMatchForUserCalltimerExpiry().replace("T", " ").split("\\.")[0]);
-                long server = CommonUtils.stringToDate(matchesList.get(position).getMatchForUserServerTime().replace("T", " ").split("\\.")[0]);
+                long expire = CommonUtils.stringToSheduleDate(matchesList.get(position).getMatchForUserCalltimerExpiry().replace("T", " ").split("\\.")[0]);
+                long server = CommonUtils.stringToSheduleDate(matchesList.get(position).getMatchForUserServerTime().replace("T", " ").split("\\.")[0]);
                 boolean isExpired = false;
                 long timeLeft = 0;
                 if (server >= expire) {

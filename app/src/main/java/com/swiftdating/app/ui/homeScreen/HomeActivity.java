@@ -226,6 +226,7 @@ public class HomeActivity extends BaseActivity implements TabLayout.BaseOnTabSel
 
     @Override
     protected void onResume() {
+        mActivity=this;
         isHomeScreen = true;
         if (getIntent().hasExtra("type")) {
             type = getIntent().getExtras().getInt("type");

@@ -171,10 +171,10 @@ public class ScheduleSwipeAdapter extends RecyclerView.Adapter<ScheduleSwipeAdap
             if (data != null && data.getMatchOfUser() != null && !TextUtils.isEmpty(data.getMatchOfUser().getCalltimerExpiry())) {
                 long expire = CommonUtils.stringToDate(data.getMatchOfUser().getCalltimerExpiry().replace("T", " ").split("\\.")[0]);
                 long server = CommonUtils.stringToDate(data.getChatByUser().getServerTime().replace("T", " ").split("\\.")[0]);
-                long created = CommonUtils.stringToDate(data.getMatchOfUser().getCreatedAt().replace("T", " ").split("\\.")[0]);
+                /*long created = CommonUtils.stringToDate(data.getMatchOfUser().getCreatedAt().replace("T", " ").split("\\.")[0]);
                 if (data.getMatchOfUser().getTimetokenAppliedOn() != null) {
                     created = CommonUtils.stringToDate(data.getMatchOfUser().getTimetokenAppliedOn().replace("T", " ").split("\\.")[0]);
-                }
+                }*/
                 pb_time_left.setProgress((int) ((expire - server) * 100 / (72 * 60)));
             }
 //            img_blurr.setVisibility(View.GONE);

@@ -275,7 +275,6 @@
                         android:id="@+id/rv_new_matches"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/_100sdp"
-                        android:layout_marginStart="@dimen/_5sdp"
                         android:layout_marginEnd="@dimen/_15sdp"
                         android:overScrollMode="never"
                         android:scrollbars="none"
