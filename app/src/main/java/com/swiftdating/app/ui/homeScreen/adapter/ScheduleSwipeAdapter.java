@@ -47,11 +47,7 @@ public class ScheduleSwipeAdapter extends RecyclerView.Adapter<ScheduleSwipeAdap
     private OnItemClickListenerType onItemClickListener;
     private ListenerSwipe listenerSwipe;
     private CommonDialogs.onProductConsume onProductConsume;
-    private  ViewBinderHelper viewBinderHelper;
-
-    public void setListenerSwipe(ListenerSwipe listenerSwipe) {
-        this.listenerSwipe = listenerSwipe;
-    }
+    private ViewBinderHelper viewBinderHelper;
 
     public ScheduleSwipeAdapter(Context mContext, ArrayList<ChatListModel.ChatList> matchList, CommonDialogs.onProductConsume onProductConsume) {
         this.mContext = mContext;
@@ -59,6 +55,10 @@ public class ScheduleSwipeAdapter extends RecyclerView.Adapter<ScheduleSwipeAdap
         this.onProductConsume = onProductConsume;
         viewBinderHelper = new ViewBinderHelper();
         viewBinderHelper.setOpenOnlyOne(true);
+    }
+
+    public void setListenerSwipe(ListenerSwipe listenerSwipe) {
+        this.listenerSwipe = listenerSwipe;
     }
 
     public void setOnItemClickListener(OnItemClickListenerType onItemClickListener) {
@@ -81,7 +81,7 @@ public class ScheduleSwipeAdapter extends RecyclerView.Adapter<ScheduleSwipeAdap
         return matchList.size();
     }
 
-   public interface ListenerSwipe {
+    public interface ListenerSwipe {
         void OnClickSwipeView(int pos, boolean isReport);
     }
 
@@ -116,38 +116,40 @@ public class ScheduleSwipeAdapter extends RecyclerView.Adapter<ScheduleSwipeAdap
         }
 
         public void bind(ChatListModel.ChatList data) {
-            viewBinderHelper.bind(swipe_reveal,""+getAbsoluteAdapterPosition());
-            tv_delete.setText(!TextUtils.isEmpty(data.getIsDirectChat())&&data.getIsDirectChat().equalsIgnoreCase("YES") ? "Block" : "Unmatch");
+            viewBinderHelper.bind(swipe_reveal, "" + getAbsoluteAdapterPosition());
+            tv_delete.setText(!TextUtils.isEmpty(data.getIsDirectChat()) && data.getIsDirectChat().equalsIgnoreCase("YES") ? "Block" : "Unmatch");
             tv_delete.setOnClickListener(view -> {
-                if (listenerSwipe!=null){
-                    listenerSwipe.OnClickSwipeView(getAbsoluteAdapterPosition(),false);
+                if (listenerSwipe != null) {
+                    listenerSwipe.OnClickSwipeView(getAbsoluteAdapterPosition(), false);
                 }
             });
             tv_report.setOnClickListener(view -> {
-                if (listenerSwipe!=null){
-                    listenerSwipe.OnClickSwipeView(getAbsoluteAdapterPosition(),true);
+                if (listenerSwipe != null) {
+                    listenerSwipe.OnClickSwipeView(getAbsoluteAdapterPosition(), true);
                 }
             });
-            if (data != null && data.getImageForUser() != null && data.getImageForUser().size() > 0)
+            if (data.getImageForUser() != null && data.getImageForUser().size() > 0)
                 CommonUtils.setImageUsingFresco(sdv_picture, CallServer.BaseImage + data.getImageForUser().get(0).getImageUrl(), 3);
-            if (data != null && data.getProfileOfUser() != null)
+            if (data.getProfileOfUser() != null)
                 tv_name.setText(data.getProfileOfUser().getName());
-            Date convertedDate2 = new Date(), convertedDate = new Date();
-            if (data != null && data.getChatByUser() != null) {
+//            Date convertedDate2 = new Date(), convertedDate = new Date();
+            if (data.getChatByUser() != null) {
                 tv_date.setText(data.getChatByUser().getMessage());
-                if (data.getChatByUser().getToId().toString().equals(new SharedPreference(mContext).getUserId()) &&
-                        data.getChatByUser().getStatus().equalsIgnoreCase("unread")) {
+                if (data.getChatByUser().getToId().toString().equals(new SharedPreference(mContext).getUserId()) && data.getChatByUser().getStatus().equalsIgnoreCase("unread")) {
                     ivUnread.setVisibility(View.VISIBLE);
-                    tvYourTurn.setVisibility(View.VISIBLE);
                     Typeface typeface = ResourcesCompat.getFont(mContext, R.font.bold);
                     tv_date.setTypeface(typeface);
                 } else {
                     ivUnread.setVisibility(View.GONE);
-                    tvYourTurn.setVisibility(View.GONE);
                     Typeface typeface = ResourcesCompat.getFont(mContext, R.font.medium);
                     tv_date.setTypeface(typeface);
                 }
-
+                if (data.getChatByUser().getToId().toString().equals(new SharedPreference(mContext).getUserId())){
+                    if (data.getUnreadMessages() == 0 && data.getIsChatStarted() == 1)
+                        tvYourTurn.setVisibility(View.GONE);
+                    else
+                        tvYourTurn.setVisibility(View.VISIBLE);
+                }
             }
             sdv_picture.setTag(getAbsoluteAdapterPosition());
             sdv_picture.setOnClickListener(view -> {
@@ -168,7 +170,7 @@ public class ScheduleSwipeAdapter extends RecyclerView.Adapter<ScheduleSwipeAdap
                     Toast.makeText(mContext, "Not Premium", Toast.LENGTH_SHORT).show();
                 }
             });*/
-            if (data != null && data.getMatchOfUser() != null && !TextUtils.isEmpty(data.getMatchOfUser().getCalltimerExpiry())) {
+            if (data.getMatchOfUser() != null && !TextUtils.isEmpty(data.getMatchOfUser().getCalltimerExpiry())) {
                 long expire = CommonUtils.stringToDate(data.getMatchOfUser().getCalltimerExpiry().replace("T", " ").split("\\.")[0]);
                 long server = CommonUtils.stringToDate(data.getChatByUser().getServerTime().replace("T", " ").split("\\.")[0]);
                 /*long created = CommonUtils.stringToDate(data.getMatchOfUser().getCreatedAt().replace("T", " ").split("\\.")[0]);

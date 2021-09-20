@@ -9,6 +9,8 @@ import java.util.List;
 import com.swiftdating.app.model.BaseModel;
 import com.swiftdating.app.model.MatchOfUser;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ChatListModel extends BaseModel {
 
 
@@ -82,6 +84,9 @@ public class ChatListModel extends BaseModel {
         @SerializedName("UnreadMessages")
         @Expose
         private int UnreadMessages;
+        @SerializedName("isChatStarted")
+        @Expose
+        private int isChatStarted;
         @SerializedName("MatchOfUser")
         private MatchOfUser matchOfUser;
 
@@ -91,6 +96,7 @@ public class ChatListModel extends BaseModel {
             this.chatByUser = chat;
         }
 
+        @NotNull
         @Override
         public String toString() {
             return "ChatList{" +
@@ -115,6 +121,14 @@ public class ChatListModel extends BaseModel {
                     ", UnreadMessages=" + UnreadMessages +
                     ", matchOfUser=" + matchOfUser +
                     '}';
+        }
+
+        public int getIsChatStarted() {
+            return isChatStarted;
+        }
+
+        public void setIsChatStarted(int isChatStarted) {
+            this.isChatStarted = isChatStarted;
         }
 
         public MatchOfUser getMatchOfUser() {
