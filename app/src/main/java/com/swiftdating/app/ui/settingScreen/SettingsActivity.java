@@ -1,7 +1,6 @@
 package com.swiftdating.app.ui.settingScreen;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -34,10 +33,28 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
-import com.anjlab.android.iab.v3.BillingProcessor;
-import com.anjlab.android.iab.v3.TransactionDetails;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.SkuDetails;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
+import com.swiftdating.app.BuildConfig;
+import com.swiftdating.app.R;
+import com.swiftdating.app.common.CommonDialogs;
+import com.swiftdating.app.common.CommonUtils;
+import com.swiftdating.app.common.SubscriptionResponse;
+import com.swiftdating.app.data.network.ApiCall;
+import com.swiftdating.app.data.network.ApiCallback;
+import com.swiftdating.app.data.network.Resource;
+import com.swiftdating.app.data.preference.SharedPreference;
+import com.swiftdating.app.model.BaseModel;
+import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
+import com.swiftdating.app.model.requestmodel.SettingsRequestModel;
+import com.swiftdating.app.model.responsemodel.ProfileOfUser;
+import com.swiftdating.app.model.responsemodel.SettingsResponseModel;
+import com.swiftdating.app.ui.base.BaseActivity;
+import com.swiftdating.app.ui.base.CommonWebViewActivity;
+import com.swiftdating.app.ui.homeScreen.fragment.SearchFragment;
+import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
 import com.swiftdating.app.ui.slider_fragment;
 
 import java.util.ArrayList;
@@ -47,33 +64,12 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.swiftdating.app.BuildConfig;
-import com.swiftdating.app.R;
-import com.swiftdating.app.callbacks.OnInAppInterface;
-import com.swiftdating.app.common.CommonDialogs;
-import com.swiftdating.app.common.CommonUtils;
-import com.swiftdating.app.data.network.ApiCall;
-import com.swiftdating.app.data.network.ApiCallback;
-import com.swiftdating.app.data.network.Resource;
-import com.swiftdating.app.data.preference.SharedPreference;
-import com.swiftdating.app.model.BaseModel;
-import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
-import com.swiftdating.app.model.requestmodel.SettingsRequestModel;
-import com.swiftdating.app.model.responsemodel.ProfileOfUser;
-import com.swiftdating.app.ui.base.BaseActivity;
-import com.swiftdating.app.ui.base.CommonWebViewActivity;
-import com.swiftdating.app.ui.homeScreen.fragment.SearchFragment;
-import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
-import com.swiftdating.app.model.responsemodel.SettingsResponseModel;
-import com.swiftdating.app.ui.where_do_you_live.WhereYouLiveActivity;
-
 import okhttp3.ResponseBody;
 
-import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
-
-public class SettingsActivity extends BaseActivity implements View.OnClickListener, OnInAppInterface, BillingProcessor.IBillingHandler, DialogInterface.OnClickListener, CommonDialogs.onProductConsume, ApiCallback.ResetSkippedProfileCallback, CompoundButton.OnCheckedChangeListener, slider_fragment.onReceiveClickCallback, SliderAdapter.OnItemClicked {
+public class SettingsActivity extends BaseActivity implements View.OnClickListener, DialogInterface.OnClickListener, CommonDialogs.onProductConsume, ApiCallback.ResetSkippedProfileCallback, CompoundButton.OnCheckedChangeListener, slider_fragment.onReceiveClickCallback, SliderAdapter.OnItemClicked, BaseActivity.OnPurchaseListener {
 
     private static final String TAG = "SettingsActivity";
+    private static final long TIME_PERIOD = 3000;
     public static boolean isSettingChanged = false;
     ConstraintLayout rootLay;
     TextView tvRestoreSubscription, tvVersion;
@@ -83,19 +79,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     String productId, tokenSType;
     int selectedPosition;
     boolean isRangeChange = false;
-    private Button btnLogout,  btn_reset_skiped_profile;
-    private TextView tv_done, tv_delete, tvPhone, tvEmail;
     ImageView tv_cancel;
+    int currentPage;
+    Runnable Update;
+    private Button btnLogout, btn_reset_skiped_profile;
+    private TextView tv_done, tv_delete, tvPhone, tvEmail;
     private Switch showMeSwitch, newMatchSwitch, callSwitch, expireSwitch, matchSwitch, emailNotifySwitch, pushNotifySwitch;
     private HomeViewModel homeViewModel;
-    private BillingProcessor bp;
     private ViewPager viewPager;
     private TabLayout text_pager_indicator;
     private SliderAdapter sliderAdapter;
-    int currentPage;
-    private static final long TIME_PERIOD = 3000;
-    Runnable Update;
     private TextView tv_subscribe;
+    private ProfileOfUser obj;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,7 +105,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         initBillingProcess();
         setSlider();
     }
-
 
     private void setSlider() {
         currentPage = 0;
@@ -175,34 +169,24 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
      * Method to Initialize Billing Process
      */
     private void initBillingProcess() {
-        bp = new BillingProcessor(SettingsActivity.this, LICENSE_KEY, this);
-        bp.initialize();
+        /*bp = new BillingProcessor(SettingsActivity.this, LICENSE_KEY, this);
+        bp.initialize();*/
         isRestoreAllowed();
     }
 
     private void isRestoreAllowed() {
         Log.e("isPremium", sp.getPremium() + "");
+        tvRestoreSubscription.setVisibility(View.GONE);
         if (sp.getPremium()) {
-            if (bp.getSubscriptionTransactionDetails("premium_1") != null ||
-                    bp.getSubscriptionTransactionDetails("premium_6") != null ||
-                    bp.getSubscriptionTransactionDetails("premium_12") != null) {
-                String productId = "premium_12";
-                if (bp.getSubscriptionTransactionDetails("premium_1") != null) {
-                    productId = "premium_1";
-                } else if (bp.getSubscriptionTransactionDetails("premium_6") != null) {
-                    productId = "premium_6";
+            queryPurchasesAsync((isSuccess, list) -> {
+                if (isSuccess&&!list.isEmpty()) {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).isAutoRenewing()){
+                            tvRestoreSubscription.setVisibility(View.VISIBLE);
+                        }
+                    }
                 }
-                Log.e("state", bp.getSubscriptionTransactionDetails(productId).purchaseInfo.purchaseData.purchaseState.name().toString());
-                if (!bp.getSubscriptionTransactionDetails(productId).purchaseInfo.purchaseData.autoRenewing) {
-                    tvRestoreSubscription.setVisibility(View.VISIBLE);
-                } else {
-                    tvRestoreSubscription.setVisibility(View.GONE);
-                }
-
-            } else
-                tvRestoreSubscription.setVisibility(View.GONE);
-        } else {
-            tvRestoreSubscription.setVisibility(View.GONE);
+            });
         }
     }
 
@@ -442,7 +426,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         });
 
     }
-private         ProfileOfUser obj;
 
     /**
      * Method to Set Data
@@ -532,7 +515,7 @@ private         ProfileOfUser obj;
                         emailNotifySwitch.isChecked() ? "On" : "Off",
                         pushNotifySwitch.isChecked() ? "On" : "Off",
                         expireSwitch.isChecked() ? "On" : "Off",
-                        matchSwitch.isChecked() ? "On" : "Off",obj.getMaxAgePrefer()>0?obj.getMaxAgePrefer():80,obj.getMinAgePrefer()>0?obj.getMinAgePrefer():18,obj.getDistance()
+                        matchSwitch.isChecked() ? "On" : "Off", obj.getMaxAgePrefer() > 0 ? obj.getMaxAgePrefer() : 80, obj.getMinAgePrefer() > 0 ? obj.getMinAgePrefer() : 18, obj.getDistance()
                 ));
             } else {
                 onBackPressed();
@@ -559,7 +542,7 @@ private         ProfileOfUser obj;
             }
             //onBackPressed();
         } else if (view.getId() == R.id.tv_yes) {
-            bp.subscribe(SettingsActivity.this, "premium_6");
+//            bp.subscribe(SettingsActivity.this, "premium_6");
 
         } else if (view == tv_delete) {
             final Dialog dialog = new Dialog(Objects.requireNonNull(this));
@@ -639,7 +622,7 @@ private         ProfileOfUser obj;
     }
 
     // IBillingHandler implementation
-
+/*
     @Override
     public void OnItemClick(int position, int type, String id) {
         bp.subscribe(SettingsActivity.this, id);
@@ -647,9 +630,9 @@ private         ProfileOfUser obj;
 
     @Override
     public void onBillingInitialized() {
-        /*
+        *//*
          * Called when BillingProcessor was initialized and it's ready to purchase
-         */
+         *//*
 
         Log.e("in-app purchase", "initialize");
 
@@ -657,9 +640,9 @@ private         ProfileOfUser obj;
 
     @Override
     public void onProductPurchased(String productId, TransactionDetails details) {
-        /*
+        *//*
          * Called when requested PRODUCT ID was successfully purchased
-         */
+         *//*
 
         showLoading();
         Toast.makeText(mActivity, "Item Purchased", Toast.LENGTH_LONG).show();
@@ -680,22 +663,22 @@ private         ProfileOfUser obj;
 
     @Override
     public void onBillingError(int errorCode, Throwable error) {
-        /*
+        *//*
          * Called when some error occurred. See Constants class for more details
          *
          * Note - this includes handling the case where the user canceled the buy dialog:
          * errorCode = Constants.BILLING_RESPONSE_RESULT_USER_CANCELED
-         */
+         *//*
 
         Log.e("purchase failure", "Error" + " errorCode=" + errorCode);
     }
 
     @Override
     public void onPurchaseHistoryRestored() {
-        /*
+        *//*
          * Called when purchase history was restored and the list of all owned PRODUCT ID's
          * was loaded from Google Play
-         */
+         *//*
 
     }
 
@@ -704,7 +687,7 @@ private         ProfileOfUser obj;
         if (!bp.handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
-    }
+    }*/
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
@@ -730,11 +713,19 @@ private         ProfileOfUser obj;
     void handleCallBack(String tokenType, int tokensNum, int selectedPos) {
         tokenSType = tokenType;
         selectedPosition = selectedPos;
-        if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
+        price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
+        SkuDetails sku=CommonDialogs.PremiumSkuList.get(selectedPos);
+        productId=sku.getSku();
+//        String productId = CommonDialogs.PremiumArr[selectedPos];
+        if (client!=null&&client.isReady()){
+            setOnPurchaseListener(this);
+            client.launchBillingFlow(this,getBillingFlowParam(sku));
+        }
+        /*if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
             price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
             String productId = CommonDialogs.PremiumArr[selectedPos];
             bp.subscribe(mActivity, productId);
-        }
+        }*/
     }
 
 
@@ -769,6 +760,29 @@ private         ProfileOfUser obj;
     @Override
     public void onPagerItemClick() {
         openPurchaseDialog();
+    }
+
+    @Override
+    public void OnSuccessPurchase(Purchase purchase) {
+        Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
+        if (client!=null&&client.isReady()){
+            showLoading();
+            client.acknowledgePurchase(getAcknowledgeParams(purchase.getPurchaseToken()), (billingResult) ->
+                    homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1",
+                    productId,
+                    price,
+                    Integer.parseInt(productId.split("_")[2]),
+                    purchase.getOrderId(),
+                    purchase.getPurchaseToken(),
+                    CommonUtils.getDateForPurchase(purchase.getPurchaseTime()),
+                   purchase.getSignature(),
+                 BaseActivity.purchaseState)));
+        }
+    }
+
+    @Override
+    public void OnGetPurchaseDetail(SubscriptionResponse body) {
+
     }
 
     /*bp.purchase(YOUR_ACTIVITY, "YOUR PRODUCT ID FROM GOOGLE PLAY CONSOLE HERE");

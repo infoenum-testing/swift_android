@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.ConsumeParams;
+import com.android.billingclient.api.SkuDetails;
 import com.google.android.material.snackbar.Snackbar;
 
 import com.swiftdating.app.R;
@@ -28,6 +34,7 @@ public abstract class BaseFragment extends Fragment {
 
     public BaseActivity mActivity;
     public Context mContext;
+    protected BillingClient fragClient;
 
 
     /**
@@ -47,19 +54,53 @@ public abstract class BaseFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof BaseActivity) {
-
-            BaseActivity activity = (BaseActivity) context;
-            this.mActivity = activity;
+            this.mActivity = (BaseActivity) getActivity();
             this.mContext = context;
             mActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
+            if (BaseActivity.client!=null)
+            fragClient = BaseActivity.client;
+            else {
+                mActivity.initializeBillingClient();
+            }
         }
     }
 
+    protected void setOnPurchaseListener(BaseActivity.OnPurchaseListener onPurchaseListener) {
+        BaseActivity.setOnPurchaseListener(onPurchaseListener);
+
+        /*if (mContext instanceof BaseActivity) {
+            Log.e(TAG, "setOnPurchaseListener: its instanceof BaseActivity" );
+            BaseActivity.setOnPurchaseListener(onPurchaseListener);
+        }*/
+    }
+
+    private static final String TAG = "BaseFragment";
+    protected void  callPurchaseDetail(String subscriptionId, String purchaseToken){
+        Log.e(TAG, "callPurchaseDetail: "+subscriptionId+"   "+purchaseToken );
+        if (mContext instanceof BaseActivity){
+            getBaseActivity().callPurchaseDetail(subscriptionId,purchaseToken);
+        }
+    }
+    protected void queryPurchasesAsync(BaseActivity.OnQueryPurchasesListener queryPurchasesListener){
+        if (mContext instanceof BaseActivity){
+            getBaseActivity().queryPurchasesAsync(queryPurchasesListener);
+        }
+    }
+
+    protected BillingFlowParams getBillingFlowParam(SkuDetails sku){
+        return BillingFlowParams.newBuilder().setSkuDetails(sku).build();
+    }
+    protected ConsumeParams getConsumeParam(String purchaseToken) {
+        return ConsumeParams.newBuilder().setPurchaseToken(purchaseToken).build();
+    }
+    protected AcknowledgePurchaseParams getAcknowledgeParams(String purchaseToken) {
+        return AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchaseToken).build();
+    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
+
     }
 
     @Override
@@ -125,7 +166,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
 
-
     /*
      *** requesting permission
      */
@@ -135,7 +175,7 @@ public abstract class BaseFragment extends Fragment {
                 && ActivityCompat.shouldShowRequestPermissionRationale(getBaseActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 && ActivityCompat.shouldShowRequestPermissionRationale(getBaseActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
             requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE},getBaseActivity().PERMISSION_REQUEST_CODE_CG);
+                    Manifest.permission.READ_EXTERNAL_STORAGE}, getBaseActivity().PERMISSION_REQUEST_CODE_CG);
         } else {
             requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE}, getBaseActivity().PERMISSION_REQUEST_CODE_CG);

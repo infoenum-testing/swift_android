@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,13 +13,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.anjlab.android.iab.v3.BillingProcessor;
-import com.anjlab.android.iab.v3.TransactionDetails;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.swiftdating.app.R;
@@ -28,15 +27,13 @@ import com.swiftdating.app.common.CommonDialogs;
 import com.swiftdating.app.common.CommonUtils;
 import com.swiftdating.app.common.Global;
 import com.swiftdating.app.common.MyProgressDialog;
+import com.swiftdating.app.common.SubscriptionResponse;
 import com.swiftdating.app.data.network.ApiCall;
 import com.swiftdating.app.data.network.ApiCallback;
-import com.swiftdating.app.data.network.Resource;
-import com.swiftdating.app.model.BaseModel;
 import com.swiftdating.app.model.requestmodel.FilterRequest;
 import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.swiftdating.app.model.responsemodel.ProfileOfUser;
 import com.swiftdating.app.model.responsemodel.User;
-import com.swiftdating.app.model.responsemodel.UserListResponseModel;
 import com.swiftdating.app.model.responsemodel.WhoLikedYouReponce;
 import com.swiftdating.app.ui.base.BaseActivity;
 import com.swiftdating.app.ui.base.BaseFragment;
@@ -50,9 +47,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
-
-public class SearchFragment extends BaseFragment implements CommonDialogs.onProductConsume, BillingProcessor.IBillingHandler, ApiCallback.GetSearchFilterCallback {
+public class SearchFragment extends BaseFragment implements CommonDialogs.onProductConsume, ApiCallback.GetSearchFilterCallback, BaseActivity.OnPurchaseListener {
     private static final String TAG = "SearchFragment";
     private static RecyclerView recycle;
     private static int totalItemsViewed = 0;
@@ -71,7 +66,6 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
     private RelativeLayout rlFilter;
     private TextView tv_txt_deluxe;
     private LinearLayout llRootView;
-    private BillingProcessor bp;
     private ArrayList<User> list;
     private boolean isDeluxe = false, scrollDown = false;
     private FilterRequest filterRequest;
@@ -370,8 +364,8 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
     }
 
     private void initBillingProcess() {
-        bp = new BillingProcessor(getActivity(), LICENSE_KEY, this);
-        bp.initialize();
+       /* bp = new BillingProcessor(getActivity(), LICENSE_KEY, this);
+        bp.initialize()*/;
     }
 /*
     @Override
@@ -415,25 +409,17 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
         if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
             price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
             productId = CommonDialogs.PremiumArr[selectedPos];
-            bp.subscribe(mActivity, productId);
+            if (fragClient!=null&&fragClient.isReady()){
+                setOnPurchaseListener(this);
+                fragClient.launchBillingFlow(mActivity,getBillingFlowParam(CommonDialogs.PremiumSkuList.get(selectedPos)));
+            }
+//            bp.subscribe(mActivity, productId);
         }
     }
-
+/*
     @Override
     public void onProductPurchased(String productId, TransactionDetails details) {
-        Log.e(TAG, "onProductPurchased: " + details + "\n" + productId);
-        if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
-            Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_LONG).show();
-            bp.consumePurchase(productId);
-            getBaseActivity().showLoading();
-            homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1", productId,
-                    price,
-                    selectedPosition,
-                    details.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken,
-                    CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
-                    details.purchaseInfo.purchaseData.purchaseState.toString()));
-        }
+
     }
 
     @Override
@@ -449,7 +435,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
     @Override
     public void onBillingInitialized() {
 
-    }
+    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -488,8 +474,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
             if (getBaseActivity().sp.getPremium()) {
                 setDeluxeData();
             }
-        } else if (!bp.handleActivityResult(requestCode, resultCode, data))
-            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -563,5 +548,34 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
         }/* else {
             showSnackBar(recycle, error);
         }*/
+    }
+
+    @Override
+    public void OnSuccessPurchase(Purchase purchase) {
+        Log.e(TAG, "onProductPurchased: " + purchase + "\n" + productId);
+        if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
+            Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_LONG).show();
+            if (fragClient!=null&&fragClient.isReady()){
+                getBaseActivity().showLoading();
+                fragClient.acknowledgePurchase(getAcknowledgeParams(purchase.getPurchaseToken()), new AcknowledgePurchaseResponseListener() {
+                    @Override
+                    public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+                        homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1", productId,
+                                price,
+                                selectedPosition,
+                                purchase.getOrderId(),
+                                purchase.getPurchaseToken(),
+                                CommonUtils.getDateForPurchase(purchase.getPurchaseTime()),
+                                purchase.getSignature(),
+                                BaseActivity.purchaseState));
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    public void OnGetPurchaseDetail(SubscriptionResponse body) {
+
     }
 }

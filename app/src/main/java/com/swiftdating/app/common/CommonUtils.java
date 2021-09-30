@@ -26,17 +26,12 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-
 import androidx.core.app.ActivityCompat;
 
-import com.anjlab.android.iab.v3.TransactionDetails;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomViewTarget;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -49,6 +44,9 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.swiftdating.app.BuildConfig;
+import com.swiftdating.app.R;
+import com.swiftdating.app.data.network.CallServer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,9 +62,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import com.swiftdating.app.R;
-import com.swiftdating.app.data.network.CallServer;
 
 public class CommonUtils {
 
@@ -620,10 +615,44 @@ public class CommonUtils {
     }
 
 
-    public static String getDateForPurchase(TransactionDetails details) {
-        Date c = details.purchaseInfo.purchaseData.purchaseTime;
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss");
+    /*  public static String getDateForPurchase(TransactionDetails details) {
+          Date c = details.purchaseInfo.purchaseData.purchaseTime;
+          SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss");
+          return df.format(c);
+      }*/
+    public static String getDateForPurchase(Long date) {
+        Date c = new Date(date);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss", Locale.getDefault());
+        df.setTimeZone(Calendar.getInstance().getTimeZone());
         return df.format(c);
+    }
+
+    public static boolean checkIsDateExpire(int period,long date) {
+        Calendar cal = Calendar.getInstance();
+        Date now=cal.getTime(),expire;
+        cal.setTime(new Date(date));
+        if (BuildConfig.DEBUG) {
+            int min=0;
+            switch (period) {
+                case 1:
+                    min = 5;
+                    break;
+                case 3:
+                    min = 10;
+                    break;
+                case 6:
+                    min = 15;
+                    break;
+                case 12:
+                    min = 30;
+                    break;
+            }
+            cal.add(Calendar.MINUTE, min);
+        } else {
+            cal.add(Calendar.MONTH, period);
+        }
+        expire=cal.getTime();
+        return now.after(expire);
     }
 
     public static boolean checkLocationEnabled(Context context) {

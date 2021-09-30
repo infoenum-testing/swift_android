@@ -7,7 +7,6 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.TextUtils
@@ -24,6 +23,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.Purchase
+import com.bumptech.glide.Glide
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.material.tabs.TabLayout
+import com.google.gson.Gson
 import com.swiftdating.app.R
 import com.swiftdating.app.callbacks.ReportInterface
 import com.swiftdating.app.common.*
@@ -39,25 +47,14 @@ import com.swiftdating.app.ui.homeScreen.adapter.CardProfileAdapter
 import com.swiftdating.app.ui.homeScreen.adapter.DetailTagAdapter
 import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel
 import com.swiftdating.app.ui.viewpagerScreen.ViewPagerActivity
-import com.anjlab.android.iab.v3.BillingProcessor
-import com.anjlab.android.iab.v3.TransactionDetails
-import com.bumptech.glide.Glide
-import com.google.android.flexbox.AlignItems
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexWrap
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.material.tabs.TabLayout
-import com.google.gson.Gson
 import com.yuyakaido.android.cardstackview.*
 import kotlinx.android.synthetic.main.activity_my_card.*
-import kotlinx.android.synthetic.main.activity_my_card.cancel
-import kotlinx.android.synthetic.main.activity_my_card.clView
 import kotlinx.android.synthetic.main.detailview.*
 import okhttp3.ResponseBody
 import java.util.*
 import kotlin.collections.ArrayList
 
-class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProductConsume, BillingProcessor.IBillingHandler, CardStackListener, ApiCallback.ReportUserCallBack {
+class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProductConsume, CardStackListener, ApiCallback.ReportUserCallBack, BaseActivity.OnPurchaseListener {
     lateinit var homeViewModel: HomeViewModel
     var customPagerAdapter: CustomPagerAdapter? = null
     var instaImageList: MutableList<InstagramImageModel.Datum> = ArrayList()
@@ -84,7 +81,6 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
         superlike = findViewById(R.id.superlike)
         init()
         subscribeModel()
-        initBillingProcess()
         showLoading()
         homeViewModel.userDataRequest(intent.extras!!.getInt("userid").toString())
         //|| intent != null && intent.getBooleanExtra("isFromSearch", false)
@@ -111,10 +107,6 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
         }*/
     }
 
-    private fun initBillingProcess() {
-        bp = BillingProcessor(mActivity, AppConstants.LICENSE_KEY, this)
-        bp!!.initialize()
-    }
 
     private val TAG = "UserCardActivity"
 
@@ -734,7 +726,8 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
     private var purchaseType: Int = 0
     var price = 0.0
     private var selectedPosition = -1
-    private var bp: BillingProcessor? = null
+
+    //    private var bp: BillingProcessor? = null
     override fun onClickToken(tokenType: String, tokensNum: Int, selectedPos: Int) {
         tokenSType = tokenType
         selectedPosition = tokensNum
@@ -742,37 +735,13 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
             price = CommonDialogs.crushTokenPriceList.get(selectedPos).getPriceValue();
             productId = CommonDialogs.crushTokenArr[selectedPos];
         }
-        bp?.purchase(mActivity, productId);
-    }
-
-    override fun onBillingInitialized() {
-        if (CommonDialogs.vipTokenPriceList.size == 0 || CommonDialogs.timeTokenPriceList.size == 0 || CommonDialogs.crushTokenPriceList.size == 0 || CommonDialogs.PremiumPriceList.size == 0 || CommonDialogs.DeluxePriceList.size == 0) {
-            CommonDialogs.onBillingInitialized(bp)
+        if (client != null && client.isReady) {
+            setOnPurchaseListener(this)
+            client.launchBillingFlow(mActivity, getBillingFlowParam(CommonDialogs.crushTokenSkuList[selectedPos]))
         }
-        CommonDialogs.setBilling(bp)
+
     }
 
-    override fun onPurchaseHistoryRestored() {
-    }
-
-    override fun onProductPurchased(productId: String?, details: TransactionDetails?) {
-        showLoading()
-        if (tokenSType.equals("crushToken", ignoreCase = true)) {
-            bp!!.consumePurchase(productId)
-            homeViewModel.addSuperLikeRequest(SuperLikeCountModel(selectedPosition, price))
-        }
-    }
-
-    override fun onBillingError(errorCode: Int, error: Throwable?) {
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (!bp!!.handleActivityResult(requestCode, resultCode, data)) {
-            super.onActivityResult(requestCode, resultCode, data)
-        } else if (requestCode == 2021) {
-            Log.d(TAG, "onActivityResult: ")
-        }
-    }
 
     var cardSwipeCount = 0
 
@@ -1028,6 +997,23 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
         hideMyLoading()
         hideKeyboard()
         showSnackbar(iv_back, "User successfully reported")
+    }
+
+    override fun OnSuccessPurchase(purchase: Purchase) {
+        Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show()
+        if (client != null && client.isReady) {
+            showLoading()
+            client.consumeAsync(getConsumeParam(purchase.purchaseToken)) { billingResult: BillingResult, s: String ->
+                if (tokenSType.equals("crushToken", ignoreCase = true)) {
+                    homeViewModel.addSuperLikeRequest(SuperLikeCountModel(selectedPosition, price))
+                }
+            }
+        }
+
+    }
+
+    override fun OnGetPurchaseDetail(body: SubscriptionResponse?) {
+        TODO("Not yet implemented")
     }
 
 }

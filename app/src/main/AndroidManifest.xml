@@ -24,7 +24,7 @@
         android:required="false" />
 
     <application
-        android:name="com.swiftdating.app.BlackGentry"
+        android:name="com.swiftdating.app.SwiftApp"
         android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -38,7 +38,6 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
-        <activity android:name="com.swiftdating.app.ui.Premium_purchase_screen"></activity>
         <activity
             android:name="com.swiftdating.app.DummyActivity"
             android:theme="@style/AppThemeNew" />

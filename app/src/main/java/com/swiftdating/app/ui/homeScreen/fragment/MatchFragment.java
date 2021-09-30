@@ -28,61 +28,55 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.anjlab.android.iab.v3.BillingProcessor;
-import com.anjlab.android.iab.v3.TransactionDetails;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeResponseListener;
+import com.android.billingclient.api.Purchase;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.tabs.TabLayout;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
+import com.swiftdating.app.R;
 import com.swiftdating.app.callbacks.OnItemClickListenerType;
 import com.swiftdating.app.common.CommonDialogs;
-import com.swiftdating.app.common.Global;
-import com.swiftdating.app.data.network.CallServer;
-import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
-import com.swiftdating.app.ui.base.BaseActivity;
-import com.swiftdating.app.ui.chatScreen.ChatWindow;
 import com.swiftdating.app.common.CommonUtils;
+import com.swiftdating.app.common.Global;
+import com.swiftdating.app.common.SubscriptionResponse;
+import com.swiftdating.app.data.network.CallServer;
+import com.swiftdating.app.data.network.Resource;
 import com.swiftdating.app.data.preference.SharedPreference;
+import com.swiftdating.app.model.BaseModel;
+import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
+import com.swiftdating.app.model.requestmodel.ReportRequestModel;
 import com.swiftdating.app.model.responsemodel.ChatByUser;
 import com.swiftdating.app.model.responsemodel.ChatListModel;
 import com.swiftdating.app.model.responsemodel.ImageForUser;
-import com.swiftdating.app.model.responsemodel.ProfileOfUser;
-import com.swiftdating.app.ui.base.BaseFragment;
-import com.swiftdating.app.R;
-import com.swiftdating.app.common.swipemenulistview.SwipeMenuCreator;
-import com.swiftdating.app.common.swipemenulistview.SwipeMenuItem;
-import com.swiftdating.app.common.swipemenulistview.SwipeMenuListView;
-import com.swiftdating.app.data.network.Resource;
-import com.swiftdating.app.model.BaseModel;
-import com.swiftdating.app.model.requestmodel.ReportRequestModel;
 import com.swiftdating.app.model.responsemodel.MatchListResponseModel;
+import com.swiftdating.app.model.responsemodel.ProfileOfUser;
+import com.swiftdating.app.ui.base.BaseActivity;
+import com.swiftdating.app.ui.base.BaseFragment;
+import com.swiftdating.app.ui.chatScreen.ChatWindow;
 import com.swiftdating.app.ui.homeScreen.HomeActivity;
 import com.swiftdating.app.ui.homeScreen.adapter.NewMatchesAdapter;
 import com.swiftdating.app.ui.homeScreen.adapter.ScheduleSwipeAdapter;
 import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
 import com.swiftdating.app.ui.homeScreen.viewmodel.MatchListViewModel;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.wasabeef.blurry.Blurry;
 
-import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
-
-public class MatchFragment extends BaseFragment implements OnItemClickListenerType, View.OnClickListener, CommonDialogs.onClick, CommonDialogs.onProductConsume, BillingProcessor.IBillingHandler, BaseActivity.MyProfileResponse, ScheduleSwipeAdapter.ListenerSwipe {
+public class MatchFragment extends BaseFragment implements OnItemClickListenerType, View.OnClickListener, CommonDialogs.onClick, CommonDialogs.onProductConsume, BaseActivity.MyProfileResponse, ScheduleSwipeAdapter.ListenerSwipe, BaseActivity.OnPurchaseListener {
 
     private static final String TAG = "MatchFragment";
     public static boolean isShowDirect = false;
@@ -107,7 +101,6 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     private ArrayList<Integer> idListDirect = new ArrayList<>();
     private int pos = 0;
     private ConstraintLayout constraint_verify;
-    private BillingProcessor bp;
     private int pageNumber = 1, offset;
     private boolean showLoadMore;
     private TabLayout tab_msg;
@@ -228,8 +221,8 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     }
 
     private void initBillingProcess() {
-        bp = new BillingProcessor(getActivity(), LICENSE_KEY, this);
-        bp.initialize();
+        /*bp = new BillingProcessor(getActivity(), LICENSE_KEY, this);
+        bp.initialize();*/
     }
 
     /***
@@ -923,11 +916,6 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     }
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (!bp.handleActivityResult(requestCode, resultCode, data))
-            super.onActivityResult(requestCode, resultCode, data);
-    }
 
     void setDeluxeData() {
         cons_dummy.setVisibility(View.GONE);
@@ -985,43 +973,12 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     public void onClickToken(String tokenType, int tokensNum, int selectedPos) {
         tokenSType = tokenType;
         selectedPosition = tokensNum;
-        if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
+        if (tokenType.equalsIgnoreCase("PremiumPurchase")&&fragClient!=null&&fragClient.isReady()) {
             price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
             productId = CommonDialogs.PremiumArr[selectedPos];
-            bp.subscribe(mActivity, productId);
+            setOnPurchaseListener(this);
+            fragClient.launchBillingFlow(mActivity,getBillingFlowParam(CommonDialogs.PremiumSkuList.get(selectedPos)));
         }
-    }
-
-    @Override
-    public void onProductPurchased(String productId, TransactionDetails details) {
-        Log.e(TAG, "onProductPurchased: " + details + "\n" + productId);
-        if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
-            Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_LONG).show();
-            bp.consumePurchase(productId);
-            mActivity.showLoading();
-            homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1", productId,
-                    price,
-                    selectedPosition,
-                    details.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken,
-                    CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
-                    details.purchaseInfo.purchaseData.purchaseState.toString()));
-        }
-    }
-
-    @Override
-    public void onPurchaseHistoryRestored() {
-
-    }
-
-    @Override
-    public void onBillingError(int errorCode, Throwable error) {
-        Log.e(TAG, "onBillingError: " + errorCode);
-    }
-
-    @Override
-    public void onBillingInitialized() {
-
     }
 
     @Override
@@ -1076,6 +1033,31 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
                 }
             });
         }
+    }
+
+    @Override
+    public void OnSuccessPurchase(Purchase purchase) {
+        Log.e(TAG, "onProductPurchased: " + purchase + "\n" + productId);
+        if (tokenSType.equalsIgnoreCase("PremiumPurchase")&&fragClient!=null&&fragClient.isReady()) {
+            Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_LONG).show();
+            mActivity.showLoading();
+            fragClient.acknowledgePurchase(getAcknowledgeParams(purchase.getPurchaseToken()), billingResult -> {
+                homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1", productId,
+                        price,
+                        selectedPosition,
+                        purchase.getOrderId(),
+                        purchase.getPurchaseToken(),
+                        CommonUtils.getDateForPurchase(purchase.getPurchaseTime()),
+                        purchase.getSignature(),
+                        BaseActivity.purchaseState));
+            });
+
+        }
+    }
+
+    @Override
+    public void OnGetPurchaseDetail(SubscriptionResponse body) {
+
     }
 }
 

@@ -5,8 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,33 +12,51 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
-import com.anjlab.android.iab.v3.BillingProcessor;
-import com.anjlab.android.iab.v3.TransactionDetails;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeResponseListener;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.SkuDetails;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.swiftdating.app.R;
+import com.swiftdating.app.common.CommonDialogs;
+import com.swiftdating.app.common.CommonUtils;
+import com.swiftdating.app.common.GpsTracker;
+import com.swiftdating.app.common.SubscriptionResponse;
+import com.swiftdating.app.data.network.CallServer;
+import com.swiftdating.app.data.preference.SharedPreference;
+import com.swiftdating.app.model.ImageModel;
+import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
+import com.swiftdating.app.model.requestmodel.SuperLikeCountModel;
+import com.swiftdating.app.model.requestmodel.TimeTokenRequestModel;
+import com.swiftdating.app.model.requestmodel.VipTokenRequestModel;
+import com.swiftdating.app.model.responsemodel.ProfileOfUser;
+import com.swiftdating.app.model.responsemodel.VerificationResponseModel;
+import com.swiftdating.app.ui.base.BaseActivity;
+import com.swiftdating.app.ui.base.BaseFragment;
+import com.swiftdating.app.ui.editProfileScreen.EditProfileActivity;
+import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
+import com.swiftdating.app.ui.myCardScreen.MyCardActivity;
+import com.swiftdating.app.ui.settingScreen.SettingsActivity;
+import com.swiftdating.app.ui.settingScreen.SliderAdapter;
+import com.swiftdating.app.ui.slider_fragment;
+import com.swiftdating.app.ui.where_do_you_live.WhereYouLiveActivity;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
@@ -55,46 +71,16 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.swiftdating.app.R;
-import com.swiftdating.app.callbacks.OnInAppInterface;
-import com.swiftdating.app.callbacks.PremiumCallback;
-import com.swiftdating.app.common.CommonUtils;
-import com.swiftdating.app.common.CommonDialogs;
-import com.swiftdating.app.common.GpsTracker;
-import com.swiftdating.app.data.network.CallServer;
-import com.swiftdating.app.data.network.Resource;
-import com.swiftdating.app.data.preference.SharedPreference;
-import com.swiftdating.app.model.BaseModel;
-import com.swiftdating.app.model.ImageModel;
-import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
-import com.swiftdating.app.model.requestmodel.SuperLikeCountModel;
-import com.swiftdating.app.model.requestmodel.TimeTokenRequestModel;
-import com.swiftdating.app.model.requestmodel.VipTokenRequestModel;
-import com.swiftdating.app.model.responsemodel.ProfileOfUser;
-import com.swiftdating.app.model.responsemodel.SubscriptionDetailResponseModel;
-import com.swiftdating.app.model.responsemodel.SuperLikeResponseModel;
-import com.swiftdating.app.model.responsemodel.User;
-import com.swiftdating.app.model.responsemodel.VerificationResponseModel;
-import com.swiftdating.app.ui.base.BaseActivity;
-import com.swiftdating.app.ui.settingScreen.SliderAdapter;
-import com.swiftdating.app.ui.slider_fragment;
-import com.swiftdating.app.ui.where_do_you_live.WhereYouLiveActivity;
-import com.swiftdating.app.ui.base.BaseFragment;
-import com.swiftdating.app.ui.editProfileScreen.EditProfileActivity;
-import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
-import com.swiftdating.app.ui.myCardScreen.MyCardActivity;
-import com.swiftdating.app.ui.settingScreen.SettingsActivity;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
-
-public class MyProfileFragment extends BaseFragment implements View.OnClickListener, OnInAppInterface,
-        BillingProcessor.IBillingHandler, CommonDialogs.onProductConsume, BaseActivity.MyProfileResponse, slider_fragment.onReceiveClickCallback, SliderAdapter.OnItemClicked {
-    public static BillingProcessor bp;
+public class MyProfileFragment extends BaseFragment implements View.OnClickListener, CommonDialogs.onProductConsume, BaseActivity.MyProfileResponse, slider_fragment.onReceiveClickCallback, SliderAdapter.OnItemClicked, BaseActivity.OnPurchaseListener {
+    private static final long TIME_PERIOD = 3000;
+    private static final String TAG = "MyProfileFragment";
     List<ImageModel> imagelist = new ArrayList<>();
     double price;
     String productId, tokenSType, lat, lon;
+    int currentPage;
+    Runnable Update;
     private LinearLayout llEdit, llSettings;
     private TextView tv_complete, tvName, tvAddress, tvPremium, tvUnlimitedView, tv_active, tvCrushToken, tv_vipNum, tvVipToken, tvTimeTokenTxt;
     private CircleImageView ivProfileImage;
@@ -102,13 +88,9 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     private Button /*btnLikeGetMore, btnExtend, btn_vip,*/ btn_change;
     private int purchaseType, selectedPosition;
     private CardView card_vip, card_time, card_crush;
-    private Dialog preDialog;
     private ViewPager viewPager;
     private TabLayout text_pager_indicator;
     private SliderAdapter sliderAdapter;
-    int currentPage;
-    private static final long TIME_PERIOD = 3000;
-    Runnable Update;
     private TextView tv_subscribe;
     private GpsTracker gpsTracker;
 
@@ -254,8 +236,8 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
      * **  Method to Initialize Billing Process
      */
     private void initBillingProcess() {
-        bp = new BillingProcessor(getActivity(), LICENSE_KEY, this);
-        bp.initialize();
+      /*  bp = new BillingProcessor(getActivity(), LICENSE_KEY, this);
+        bp.initialize();*/
     }
 
     /**
@@ -393,8 +375,8 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                     if (resource.data.getSuccess()) {
                         getBaseActivity().sp.savePremium(true);
                         tv_subscribe.setVisibility(getBaseActivity().sp.getPremium() ? View.VISIBLE : View.GONE);
-                        if (preDialog != null)
-                            preDialog.dismiss();
+                      /*  if (preDialog != null)
+                            preDialog.dismiss();*/
                         //getBaseActivity().showSnackBar(ivProfileImage, resource.data.getMessage());
                        /* tvPremium.setVisibility(View.INVISIBLE);
                         tvUnlimitedView.setVisibility(View.INVISIBLE);*/
@@ -540,8 +522,6 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         return 0;
     }
 
-    private static final String TAG = "MyProfileFragment";
-
     @Override
     public void onClick(View view) {
         if (view == llSettings) {
@@ -584,9 +564,9 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         }
     }
 
-    @Override
+   /* @Override
     public void OnItemClick(int position, int type, String id) {
-        /*selectedPosition = position;
+        *//*selectedPosition = position;
         purchaseType = type;
         if (type == 0) {
             bp.purchase(getActivity(), id);
@@ -594,16 +574,19 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             bp.purchase(getActivity(), id);
         } else {
             bp.subscribe(getActivity(), id, getBaseActivity().sp.getUserId());
-        }*/
+        }*//*
         mActivity.showLoading();
         homeViewModel.addTimeToken(new TimeTokenRequestModel(1, 0.99));
-    }
+    }*/
+/*
 
     @Override
     public void onBillingInitialized() {
-        /*
-         * Called when BillingProcessor was initialized and it's ready to purchase
-         */
+        */
+    /*
+     * Called when BillingProcessor was initialized and it's ready to purchase
+     *//*
+
         if (CommonDialogs.vipTokenPriceList.size() == 0 || CommonDialogs.timeTokenPriceList.size() == 0 || CommonDialogs.crushTokenPriceList.size() == 0 || CommonDialogs.PremiumPriceList.size() == 0) {
             CommonDialogs.onBillingInitialized(bp);
         }
@@ -611,7 +594,8 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
 
     }
 
-    /*private void setSubcripData(String[] arr, List<InAppPriceValue> PriceList) {
+    */
+/*private void setSubcripData(String[] arr, List<InAppPriceValue> PriceList) {
         PriceList.clear();
         SkuDetails skuDetails;
         for (String s : arr) {
@@ -627,15 +611,18 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             purchaseListingDetails = bp.getPurchaseListingDetails(s);
             TokenPriceList.add(new InAppPriceValue(purchaseListingDetails.priceText, purchaseListingDetails.priceValue));
         }
-    }*/
+    }*//*
+
 
     @Override
     public void onProductPurchased(String productId, TransactionDetails details) {
         Log.e("TAG", "onProductPurchased: " + productId);
 
-        /*
-         * Called when requested PRODUCT ID was successfully purchased
-         */
+        */
+    /*
+     * Called when requested PRODUCT ID was successfully purchased
+     *//*
+
 
         Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_LONG).show();
         getBaseActivity().showLoading();
@@ -666,11 +653,13 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     public void onBillingError(int errorCode, Throwable error) {
-        /*
-         * Called when some error occurred. See Constants class for more details
-         *
-         * Note - this includes handling the case where the user canceled the buy dialog:
-         */
+        */
+    /*
+     * Called when some error occurred. See Constants class for more details
+     *
+     * Note - this includes handling the case where the user canceled the buy dialog:
+     *//*
+
 //          errorCode = Constants.BILLING_RESPONSE_RESULT_USER_CANCELED;
 
         Log.e("c", " errorCode=" + errorCode);
@@ -679,17 +668,20 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     public void onPurchaseHistoryRestored() {
-        /*
-         * Called when purchase history was restored and the list of all owned PRODUCT ID's
-         * was loaded from Google Play
-         */
+        */
+    /*
+     * Called when purchase history was restored and the list of all owned PRODUCT ID's
+     * was loaded from Google Play
+     *//*
+
     }
+*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!bp.handleActivityResult(requestCode, resultCode, data)) {
+       /* if (!bp.handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
-        }
+        }*/
 
         if (requestCode == 1001) {
             Gson gson = new Gson();
@@ -720,28 +712,37 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
     }
 
     void handleCallBack(String tokenType, int tokensNum, int selectedPos) {
+
+
         tokenSType = tokenType;
         selectedPosition = tokensNum;
+
+        SkuDetails sku = null;
         if (tokenType.equalsIgnoreCase("crushToken")) {
             price = CommonDialogs.crushTokenPriceList.get(selectedPos).getPriceValue();
             productId = CommonDialogs.crushTokenArr[selectedPos];
+            sku = CommonDialogs.crushTokenSkuList.get(selectedPos);
         } else if (tokenType.equalsIgnoreCase("timeToken")) {
             if (selectedPos < CommonDialogs.timeTokenPriceList.size()) {
                 price = CommonDialogs.timeTokenPriceList.get(selectedPos).getPriceValue();
                 productId = CommonDialogs.timeTokenArr[selectedPos];
+                sku = CommonDialogs.timeTokenSkuList.get(selectedPos);
             } else {
                 price = CommonDialogs.timeTokenPriceList.get(selectedPos - 1).getPriceValue();
                 productId = CommonDialogs.timeTokenArr[selectedPos - 1];
+                sku = CommonDialogs.timeTokenSkuList.get(selectedPos - 1);
             }
         } else if (tokenType.equalsIgnoreCase("vipToken")) {
             price = CommonDialogs.vipTokenPriceList.get(selectedPos).getPriceValue();
             productId = CommonDialogs.vipTokenArr[selectedPos];
+            sku = CommonDialogs.vipTokenSkuList.get(selectedPos);
         } else if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
             price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
             productId = CommonDialogs.PremiumArr[selectedPos];
-            bp.subscribe(mActivity, productId);
+            sku = CommonDialogs.PremiumSkuList.get(selectedPos);
+
+//            bp.subscribe(mActivity, productId);
             CommonDialogs.dismiss();
-            return;
             /*
             Dialog dialog = new Dialog(mActivity);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -777,9 +778,61 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
             });
             tv_no.setOnClickListener(view -> dialog.dismiss());*/
         }
+        if (fragClient != null && fragClient.isReady() && sku != null) {
+            setOnPurchaseListener(this);
+            fragClient.launchBillingFlow(mActivity, getBillingFlowParam(sku));
+        }
 //        if (!tokenType.equalsIgnoreCase("PremiumPurchase")) {
-            bp.purchase(getActivity(), productId);
+//            bp.purchase(getActivity(), productId);
 //        }
+    }
+
+    @Override
+    public void OnSuccessPurchase(Purchase purchase) {
+        Log.e("TAG", "onProductPurchased: " + productId);
+
+        /*
+         * Called when requested PRODUCT ID was successfully purchased
+         */
+
+        Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_LONG).show();
+        getBaseActivity().showLoading();
+        if (fragClient != null && fragClient.isReady()) {
+            if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
+                fragClient.acknowledgePurchase(getAcknowledgeParams(purchase.getPurchaseToken()),
+                        billingResult -> {
+                            Log.e(TAG, "OnSuccessPurchase: " + billingResult.getResponseCode());
+                            homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1",
+                                    productId,
+                                    price,
+                                    Integer.parseInt(productId.split("_")[2]),
+                                    purchase.getOrderId(),
+                                    purchase.getPurchaseToken(),
+                                    CommonUtils.getDateForPurchase(purchase.getPurchaseTime()),
+                                    purchase.getSignature(),
+                                    BaseActivity.purchaseState));
+                        });
+            }else {
+                fragClient.consumeAsync(getConsumeParam(purchase.getPurchaseToken()), new ConsumeResponseListener() {
+                    @Override
+                    public void onConsumeResponse(@NonNull BillingResult billingResult, @NonNull String s) {
+                        if (tokenSType.equalsIgnoreCase("crushToken")) {
+                            homeViewModel.addSuperLikeRequest(new SuperLikeCountModel(selectedPosition, price));
+                        } else if (tokenSType.equalsIgnoreCase("timeToken")) {
+                            homeViewModel.addTimeToken(new TimeTokenRequestModel(selectedPosition, price));
+                        } else if (tokenSType.equalsIgnoreCase("vipToken")) {
+                            homeViewModel.addVipToken(new VipTokenRequestModel(selectedPosition, price));
+                        }
+                    }
+                });
+            }
+        }
+        Log.e("purchase success", "" + purchase);
+    }
+
+    @Override
+    public void OnGetPurchaseDetail(SubscriptionResponse body) {
+
     }
 
 

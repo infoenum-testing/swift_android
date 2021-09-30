@@ -1,13 +1,5 @@
 package com.swiftdating.app.ui.where_do_you_live;
 
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -23,8 +15,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.anjlab.android.iab.v3.BillingProcessor;
-import com.anjlab.android.iab.v3.TransactionDetails;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeParams;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,48 +46,45 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
-
-import java.util.Arrays;
-import java.util.List;
-
 import com.swiftdating.app.R;
 import com.swiftdating.app.common.CommonDialogs;
 import com.swiftdating.app.common.CommonUtils;
-import com.swiftdating.app.data.network.Resource;
 import com.swiftdating.app.data.preference.SharedPreference;
 import com.swiftdating.app.model.BaseModel;
-import com.swiftdating.app.model.requestmodel.DeluxeTokenCountModel;
 import com.swiftdating.app.model.requestmodel.LocationModel;
 import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.swiftdating.app.model.responsemodel.ProfileOfUser;
+import com.swiftdating.app.ui.base.BaseActivity;
 import com.swiftdating.app.ui.homeScreen.fragment.SearchFragment;
 import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
 import com.swiftdating.app.ui.loginScreen.LoginActivity;
 
+import java.util.Arrays;
+import java.util.List;
+
 import im.delight.android.location.SimpleLocation;
 
-import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
-
-public class WhereYouLiveActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnCameraChangeListener, CommonDialogs.onProductConsume, BillingProcessor.IBillingHandler {
+public class WhereYouLiveActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnCameraChangeListener, CommonDialogs.onProductConsume, PurchasesUpdatedListener, BillingClientStateListener {
 
     private static final String TAG = "WhereYouLiveActivity";
+    private final int AUTOCOMPLETE_REQUEST_CODE = 1001;
     String lat, lon;
     boolean isFromPlace = false;
+    Bitmap smallMarkerBitmap;
     private GoogleMap mMap;
     private SimpleLocation simpleLocation;
     private LatLng latLng;
     private TextView tv_addres;
-    private final int AUTOCOMPLETE_REQUEST_CODE = 1001;
     private HomeViewModel homeViewModel;
     private ProgressDialog mProgressDialog;
     private SharedPreference sp;
-    private BillingProcessor bp;
+    private BillingClient billingClient;
     private ConstraintLayout constraint_main;
     private double price;
     private int selectedPosition;
     private boolean isLocationNull = false;
     private boolean isFromCrtLoc = false;
-    Bitmap smallMarkerBitmap;
+    private String productId;
 
 
     @Override
@@ -99,17 +100,20 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), "AIzaSyDUuwEiAxFjmCcFkCm-DVIaKhSJRba_mtI");//getResources().getString(R.string.google_maps_key)
         }
+
     }
 
     /**
      * **  Method to Initialize Billing Process
      */
     private void initBillingProcess() {
-        bp = new BillingProcessor(WhereYouLiveActivity.this, LICENSE_KEY, WhereYouLiveActivity.this);
-        bp.initialize();
+        /*bp = new BillingProcessor(WhereYouLiveActivity.this, LICENSE_KEY, WhereYouLiveActivity.this);
+        bp.initialize();*/
     }
 
     private void initViews() {
+        billingClient = BillingClient.newBuilder(this).enablePendingPurchases().setListener(this).build();
+        billingClient.startConnection(this);
         sp = new SharedPreference(this);
         constraint_main = findViewById(R.id.constraint_main);
         tv_addres = findViewById(R.id.tv_addres);
@@ -142,17 +146,17 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
                         openActivityOnTokenExpire();
                     } else {
                         BaseModel model = resource.data;
-                         showSnackBar(constraint_main, model.getMessage());
+                        showSnackBar(constraint_main, model.getMessage());
                         ProfileOfUser obj = new Gson().fromJson(sp.getUser(), ProfileOfUser.class);
-                        Log.e(TAG, "initViews:1--- "+obj.getLatitude() );
-                        Log.e(TAG, "initViews:2--- "+obj.getLongitude() );
+                        Log.e(TAG, "initViews:1--- " + obj.getLatitude());
+                        Log.e(TAG, "initViews:2--- " + obj.getLongitude());
 
 
                         obj.setLatitude("" + model.getLatitude());
                         obj.setLongitude("" + model.getLongitude());
 
-                        Log.e(TAG, "initViews:3 "+obj.getLatitude() );
-                        Log.e(TAG, "initViews:4 "+obj.getLongitude() );
+                        Log.e(TAG, "initViews:3 " + obj.getLatitude());
+                        Log.e(TAG, "initViews:4 " + obj.getLongitude());
 
                         sp.saveUserData(obj, sp.getProfileCompleted());
                         sp.saveLocation(true);
@@ -240,7 +244,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
                             new AlertDialog.Builder(this).setMessage("You cannot choose this location.").setPositiveButton("OK", null).show();
                         }
                     } else {
-                        CommonDialogs.PremuimPurChaseDialog(WhereYouLiveActivity.this, WhereYouLiveActivity.this,sp);
+                        CommonDialogs.PremuimPurChaseDialog(WhereYouLiveActivity.this, WhereYouLiveActivity.this, sp);
                     }
                 }
                 break;
@@ -309,8 +313,7 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!bp.handleActivityResult(requestCode, resultCode, data))
-            super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
@@ -375,46 +378,47 @@ public class WhereYouLiveActivity extends FragmentActivity implements OnMapReady
     @Override
     public void onClickToken(String tokenType, int tokensNum, int selectedPos) {
         selectedPosition = tokensNum;
-        if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
-            price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
-            String productId = CommonDialogs.PremiumArr[selectedPos];
-            bp.subscribe(WhereYouLiveActivity.this, productId);
+        if (billingClient != null && billingClient.isReady()) {
+            if (tokenType.equalsIgnoreCase("PremiumPurchase")) {
+                price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
+                productId = CommonDialogs.PremiumArr[selectedPos];
+                BillingFlowParams params = BillingFlowParams.newBuilder().setSkuDetails(CommonDialogs.PremiumSkuList.get(selectedPos)).build();
+                billingClient.launchBillingFlow(this, params);
+            }
         }
     }
 
     @Override
-    public void onProductPurchased(String productId, TransactionDetails details) {
-        bp.consumePurchase(productId);
-        homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1",
-                productId,
-                price,
-                selectedPosition,
-                details.purchaseInfo.purchaseData.orderId,
-                details.purchaseInfo.purchaseData.purchaseToken,
-                CommonUtils.getDateForPurchase(details),
-                details.purchaseInfo.signature,
-                details.purchaseInfo.purchaseData.purchaseState.toString()));
+    public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> list) {
+        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null && !list.isEmpty() && billingClient != null && billingClient.isReady()) {
+            Purchase purchase = list.get(0);
+            ConsumeParams params = ConsumeParams.newBuilder().setPurchaseToken(purchase.getPurchaseToken()).build();
+            billingClient.consumeAsync(params, (billingResult1, s) -> {
+                showLoading();
+                homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1",
+                        productId,
+                        price,
+                        selectedPosition,
+                        purchase.getOrderId(),
+                        purchase.getPurchaseToken(),
+                        CommonUtils.getDateForPurchase(purchase.getPurchaseTime()),
+                        purchase.getSignature(),
+                        BaseActivity.purchaseState));
+            });
+
+        }
     }
 
     @Override
-    public void onPurchaseHistoryRestored() {
-        Log.d(TAG, "onPurchaseHistoryRestored: ");
+    public void onBillingServiceDisconnected() {
+
     }
 
     @Override
-    public void onBillingError(int errorCode, Throwable error) {
-        Log.d(TAG, "onBillingError: ");
-    }
-
-    @Override
-    public void onBillingInitialized() {
-        /*
-         * Called when BillingProcessor was initialized and it's ready to purchase
-         */
+    public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+        Log.e(TAG, "onBillingSetupFinished: ");
         if (CommonDialogs.vipTokenPriceList.size() == 0 || CommonDialogs.timeTokenPriceList.size() == 0 || CommonDialogs.crushTokenPriceList.size() == 0 || CommonDialogs.PremiumPriceList.size() == 0 || CommonDialogs.DeluxePriceList.size() == 0) {
-            CommonDialogs.onBillingInitialized(bp);
+            CommonDialogs.onBillingInitialized(billingClient);
         }
-        CommonDialogs.setBilling(bp);
     }
-
 }

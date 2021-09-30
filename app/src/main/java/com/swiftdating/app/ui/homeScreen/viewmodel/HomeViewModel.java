@@ -324,7 +324,7 @@ public class HomeViewModel extends AndroidViewModel {
     }
 
     public void addSuperLikeRequest(SuperLikeCountModel s) {
-        addSuperLikeRequest.setValue(s);
+        addSuperLikeRequest.postValue(s);
     }
 
     public LiveData<Resource<SuperLikeResponseModel>> addSuperLikeResponse() {
@@ -332,11 +332,11 @@ public class HomeViewModel extends AndroidViewModel {
     }
 
     public void addTimeToken(TimeTokenRequestModel s) {
-        addTimeTokenRequest.setValue(s);
+        addTimeTokenRequest.postValue(s);
     }
 
     public void addVipToken(VipTokenRequestModel s) {
-        addVipTokenRequest.setValue(s);
+        addVipTokenRequest.postValue(s);
     }
 
     public void applyVipToken(ApplyVipTokenRequest s) {
@@ -352,7 +352,7 @@ public class HomeViewModel extends AndroidViewModel {
     }
 
     public void addPremiumRequest(PremiumTokenCountModel s) {
-        addPremiumRequest.setValue(s);
+        addPremiumRequest.postValue(s);//setValue(s);
     }
 
     public LiveData<Resource<BaseModel>> addPremiumResponse() {
@@ -377,7 +377,7 @@ public class HomeViewModel extends AndroidViewModel {
 
 
     public void changePremiumRequest(PremiumStatusChange s) {
-        changePremiumRequest.setValue(s);
+        changePremiumRequest.postValue(s);
     }
 
     public LiveData<Resource<BaseModel>> changePremiumResponse() {
@@ -385,7 +385,7 @@ public class HomeViewModel extends AndroidViewModel {
     }
 
     public void getSubscriptionRequest(String s) {
-        subscriptionRequest.setValue(s);
+        subscriptionRequest.postValue(s);
     }
 
     public LiveData<Resource<SubscriptionDetailResponseModel>> subscriptionResponse() {

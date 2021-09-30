@@ -1,14 +1,7 @@
 package com.swiftdating.app.ui.homeScreen;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -23,16 +16,37 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.anjlab.android.iab.v3.BillingProcessor;
-import com.anjlab.android.iab.v3.TransactionDetails;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeResponseListener;
+import com.android.billingclient.api.Purchase;
 import com.google.android.flexbox.AlignItems;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
+import com.swiftdating.app.R;
+import com.swiftdating.app.callbacks.OnItemClickListener;
+import com.swiftdating.app.common.CommonDialogs;
+import com.swiftdating.app.common.CommonUtils;
+import com.swiftdating.app.common.RangeSeekBar;
+import com.swiftdating.app.common.SubscriptionResponse;
+import com.swiftdating.app.common.wheelpicker.LoopListener;
+import com.swiftdating.app.data.preference.SharedPreference;
+import com.swiftdating.app.model.FlexModel;
+import com.swiftdating.app.model.requestmodel.FilterRequest;
 import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.swiftdating.app.model.responsemodel.ProfileOfUser;
+import com.swiftdating.app.ui.base.BaseActivity;
+import com.swiftdating.app.ui.createAccountScreen.adapter.FlexAdapter;
+import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
 import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.OnSeekChangeListener;
 import com.warkiz.widget.SeekParams;
@@ -41,25 +55,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import com.swiftdating.app.R;
-import com.swiftdating.app.callbacks.OnItemClickListener;
-import com.swiftdating.app.common.CommonDialogs;
-import com.swiftdating.app.common.CommonUtils;
-import com.swiftdating.app.common.RangeSeekBar;
-import com.swiftdating.app.common.wheelpicker.LoopListener;
-import com.swiftdating.app.data.preference.SharedPreference;
-import com.swiftdating.app.model.FlexModel;
-import com.swiftdating.app.model.requestmodel.FilterRequest;
-import com.swiftdating.app.ui.base.BaseActivity;
-import com.swiftdating.app.ui.createAccountScreen.adapter.FlexAdapter;
-import com.swiftdating.app.ui.homeScreen.viewmodel.HomeViewModel;
-
-import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
-
 @RequiresApi(api = Build.VERSION_CODES.M)
-public class FilterActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener, OnSeekChangeListener, OnItemClickListener, View.OnScrollChangeListener, LoopListener, CommonDialogs.onProductConsume, BillingProcessor.IBillingHandler {
+public class FilterActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener, OnSeekChangeListener, OnItemClickListener, View.OnScrollChangeListener, LoopListener, CommonDialogs.onProductConsume, BaseActivity.OnPurchaseListener {
     private static final String TAG = "FilterActivity";
-    private int max, mini,noPr;
+    ProfileOfUser signinUser;
+    private int max, mini, noPr;
     private ImageView img_close, ivCloseBottomSheet;
     private BottomSheetDialog bottomSheetDialog;
     private RelativeLayout rl_relation, rl_education, rl_child, rl_politic, rl_religion;
@@ -80,7 +80,6 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
     private FilterRequest filterRequest;
     private String txt2;
     private boolean isReset;
-    private BillingProcessor bp;
     private String productId, tokenSType;
     private String[] arraydigit = {"3.9", "4.0", "4.1", "4.2", "4.3", "4.4", "4.5", "4.6", "4.7", "4.8", "4.9", "4.10", "4.11", "5.0", "5.1", "5.2", "5.3", "5.4", "5.5", "5.6", "5.7", "5.8", "5.9", "5.10", "5.11", "6.0", "6.1", "6.2", "6.3", "6.4", "6.5", "6.6", "6.7", "6.8", "6.9", "6.10", "6.11", "7.0", "7.1"};
     private RadioGroup tgGender;
@@ -110,27 +109,11 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
     private int selectedPosition;
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (!bp.handleActivityResult(requestCode, resultCode, data))
-            super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
         initViews();
-        initBillingProcess();
     }
-
-    /**
-     * **  Method to Initialize Billing Process
-     */
-    private void initBillingProcess() {
-        bp = new BillingProcessor(this, LICENSE_KEY, this);
-        bp.initialize();
-    }
-    ProfileOfUser signinUser;
 
     private void initViews() {
         isReset = false;
@@ -319,7 +302,7 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
 
         if (filterRequest != null && filterRequest.getGender() != null) {
             setGender(filterRequest.getGender());
-        }else {
+        } else {
             setGender(signinUser.getInterested());
         }
 
@@ -914,43 +897,38 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
     }
 
     @Override
-    public void onProductPurchased(String productId, TransactionDetails details) {
-        Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
-        showLoading();
-        homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1",
-                productId,
-                price,
-                Integer.parseInt(productId.split("_")[2]),
-                details.purchaseInfo.purchaseData.orderId,
-                details.purchaseInfo.purchaseData.purchaseToken,
-                CommonUtils.getDateForPurchase(details),
-                details.purchaseInfo.signature,
-                details.purchaseInfo.purchaseData.purchaseState.toString()));
-        Log.e(TAG, details.purchaseInfo.responseData);
-    }
-
-    @Override
-    public void onPurchaseHistoryRestored() {
-
-    }
-
-    @Override
-    public void onBillingError(int errorCode, Throwable error) {
-
-    }
-
-    @Override
-    public void onBillingInitialized() {
-
-    }
-
-    @Override
     public void onClickToken(String tokenType, int tokensNum, int selectedPos) {
         tokenSType = tokenType;
         selectedPosition = tokensNum;
         price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
         productId = CommonDialogs.PremiumArr[selectedPos];
-        bp.subscribe(this, productId);
+        if (client!=null&&client.isReady()){
+            setOnPurchaseListener(this);
+            client.launchBillingFlow(this,getBillingFlowParam(CommonDialogs.PremiumSkuList.get(selectedPos)));
+        }
+    }
+
+    @Override
+    public void OnSuccessPurchase(Purchase purchase) {
+        Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
+        if (client!=null&&client.isReady()){
+            showLoading();
+            client.acknowledgePurchase(getAcknowledgeParams(purchase.getPurchaseToken()), billingResult -> homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1",
+                    productId,
+                    price,
+                    Integer.parseInt(productId.split("_")[2]),
+                    purchase.getOrderId(),
+                    purchase.getPurchaseToken(),
+                    CommonUtils.getDateForPurchase(purchase.getPurchaseTime()),
+                    purchase.getSignature(),
+                    purchaseState)));
+        }
+        Log.e(TAG, ""+purchase);
+    }
+
+    @Override
+    public void OnGetPurchaseDetail(SubscriptionResponse body) {
+
     }
 
     private enum Type {

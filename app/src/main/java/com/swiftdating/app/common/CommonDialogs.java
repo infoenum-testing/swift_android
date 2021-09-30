@@ -8,17 +8,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.MaskFilter;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -31,14 +28,30 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.ViewPager;
 
-import com.anjlab.android.iab.v3.BillingProcessor;
-import com.anjlab.android.iab.v3.SkuDetails;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesResponseListener;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
+import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
+import com.swiftdating.app.BuildConfig;
+import com.swiftdating.app.R;
+import com.swiftdating.app.callbacks.OnInAppInterface;
+import com.swiftdating.app.data.network.CallRestoreApi;
+import com.swiftdating.app.data.preference.SharedPreference;
+import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
+import com.swiftdating.app.ui.base.BaseActivity;
+import com.swiftdating.app.ui.homeScreen.fragment.LikesFrament;
+import com.swiftdating.app.ui.homeScreen.fragment.SearchFragment;
 import com.swiftdating.app.ui.settingScreen.SliderAdapter;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
@@ -46,21 +59,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import com.swiftdating.app.R;
-import com.swiftdating.app.callbacks.OnInAppInterface;
-import com.swiftdating.app.data.network.CallRestoreApi;
-import com.swiftdating.app.data.preference.SharedPreference;
-import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
-import com.swiftdating.app.ui.homeScreen.fragment.LikesFrament;
-import com.swiftdating.app.ui.homeScreen.fragment.SearchFragment;
-
-import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 
 
 public class CommonDialogs {
@@ -68,17 +72,24 @@ public class CommonDialogs {
     public static final String[] timeTokenArr = new String[]{"swift_time_token_1", "swift_time_token_5", "swift_time_token_10", "swift_time_tokens_20"};
     public static final String[] crushTokenArr = new String[]{"swift_crush_token_1", "swift_crush_token_5", "swift_crush_token_10", "swift_crush_token_20"};
     public static final String[] vipTokenArr = new String[]{"swift_vip_token_1", "swift_vip_token_5", "swift_vip_token_10", "swift_vip_token_20"};
-    public static final String[] PremiumArr = new String[]{"swift_premium_1", "swift_premium_3", "swift_premium_6", "swift_premium_12"};
+    public static final String[] PremiumArr = new String[]{"swift_premium_1",/*"swift_premium",*/ "swift_premium_3", "swift_premium_6", "swift_premium_12"};
 
     public static final String[] DeluxeArr = new String[]{"deluxe_1", "deluxe_3", "deluxe_6", "deluxe_12"};
     // public static final Double[] DeluxePriceArr = new Double[]{19.99, 49.99, 79.99, 119.99};
     public static final Double[] PremiumPriceArr = new Double[]{19.99, 39.99, 59.99, 89.99};
     private static final long TIME_PERIOD = 3000;
+    private static final String TAG = "CommonDialogs";
     public static List<InAppPriceValue> timeTokenPriceList = new ArrayList<>();
     public static List<InAppPriceValue> vipTokenPriceList = new ArrayList<>();
     public static List<InAppPriceValue> crushTokenPriceList = new ArrayList<>();
     public static List<InAppPriceValue> PremiumPriceList = new ArrayList<>();
     public static List<InAppPriceValue> DeluxePriceList = new ArrayList<>();
+    /*-----------------------------------------------------------------*/
+    public static List<SkuDetails> PremiumSkuList = new ArrayList<>();
+    public static List<SkuDetails> vipTokenSkuList = new ArrayList<>();
+    public static List<SkuDetails> crushTokenSkuList = new ArrayList<>();
+    public static List<SkuDetails> timeTokenSkuList = new ArrayList<>();
+    /*-----------------------------------------------------------------*/
     public static Timer timer;
     public static boolean isDialogOpen = false;
     static Dialog dialog;
@@ -90,7 +101,8 @@ public class CommonDialogs {
     private static CommonDialogs commonDialogs;
     private static int finalI;
     private static int indexOfSelectedLayout = 0;
-    private static BillingProcessor myBp;
+    private static BillingClient myBC;
+    private static ProgressDialog progressDialog;
     private Context context;
 
     public CommonDialogs(Activity context) {
@@ -102,10 +114,8 @@ public class CommonDialogs {
             dialog.dismiss();
     }
 
-    private static final String TAG = "CommonDialogs";
-
     private static void gotoManageSubscription(Context context) {
-        String PACKAGE_NAME = context.getPackageName();
+        String PACKAGE_NAME = BuildConfig.APPLICATION_ID;
         Log.d(TAG, "gotoManageSubscription: " + PACKAGE_NAME);
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/account/subscriptions?package=" + PACKAGE_NAME));
         context.startActivity(browserIntent);
@@ -228,7 +238,6 @@ public class CommonDialogs {
         tv_no.setOnClickListener(view -> dialog.dismiss());
         return dialog;
     }
-
 
     public static Dialog newTwoButtonsDialog(Context context, final View.OnClickListener clickListener, String message) {
         dialog = new Dialog(context);
@@ -608,8 +617,6 @@ public class CommonDialogs {
         }
     }
 
-    private static ProgressDialog progressDialog;
-
     private static void showLoader(Context context) {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(context);
@@ -757,31 +764,60 @@ public class CommonDialogs {
             tv_restore.append(wordTwo);
 
             tv_restore.setOnClickListener(v -> {
-                PremiumTokenCountModel model;
-                if ((myBp != null && myBp.isInitialized())) {
+                if ((myBC != null &&myBC.isReady())) {
                     showLoader(ctx);
-                    model = checkExistingSubscriptionForPremium(myBp, ctx);
-                    if (model != null) {
-                        new CallRestoreApi().callApi(model, new SharedPreference(ctx), subscriptiontype, new onPurchaseRestore() {
-                            @Override
-                            public void onError(String msg) {
-                                Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
-                                hideLoading();
-                                dialog.dismiss();
-                            }
 
-                            @Override
-                            public void onSucces() {
-                                Toast.makeText(ctx, "Purchase Restored Successfully", Toast.LENGTH_SHORT).show();
-                                hideLoading();
-                                dialog.dismiss();
+                    myBC.queryPurchasesAsync(BillingClient.SkuType.SUBS, new PurchasesResponseListener() {
+                        @Override
+                        public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
+                            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && !list.isEmpty()){
+                                PremiumTokenCountModel model=null;
+
+                                Purchase purchase=list.get(0);
+                                double price=0;
+                                String productId=purchase.getSkus().get(0);
+                                if (PremiumSkuList!=null&&!PremiumSkuList.isEmpty())
+                                for (int i = 0; i < PremiumSkuList.size(); i++) {
+                                    if (PremiumSkuList.get(i).getSku().equalsIgnoreCase(productId)){
+                                        price=PremiumPriceArr[i];
+                                        break;
+                                    }
+                                }
+                                if (price>0) {
+                                    model=   new PremiumTokenCountModel(subscriptiontype,
+                                            productId,
+                                            price ,
+                                            Integer.parseInt(productId.split("_")[1]),
+                                            purchase.getOrderId(),
+                                            purchase.getPurchaseToken(),
+                                            CommonUtils.getDateForPurchase(purchase.getPurchaseTime()),
+                                            purchase.getSignature(),
+                                            BaseActivity.purchaseState);
+                                }
+                                if (model != null) {
+                                    new CallRestoreApi().callApi(model, new SharedPreference(ctx), subscriptiontype, new onPurchaseRestore() {
+                                        @Override
+                                        public void onError(String msg) {
+                                            Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
+                                            hideLoading();
+                                            dialog.dismiss();
+                                        }
+
+                                        @Override
+                                        public void onSucces() {
+                                            Toast.makeText(ctx, "Purchase Restored Successfully", Toast.LENGTH_SHORT).show();
+                                            hideLoading();
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                } else {
+                                    //Toast.makeText(ctx,"Purchase Restore unavailable.",Toast.LENGTH_SHORT).show();
+                                    hideLoading();
+                                    //dialog.dismiss();
+                                }
                             }
-                        });
-                    } else {
-                        //Toast.makeText(ctx,"Purchase Restore unavailable.",Toast.LENGTH_SHORT).show();
-                        hideLoading();
-                        //dialog.dismiss();
-                    }
+                        }
+                    });
                 }
             });
 
@@ -802,7 +838,7 @@ public class CommonDialogs {
         return dialog;
     }
 
-    public static CommonDialogs DeluxePurChaseDialog(Context ctx, onProductConsume clickListener) {
+    /*public static CommonDialogs DeluxePurChaseDialog(Context ctx, onProductConsume clickListener) {
 
         if (dialog == null || !dialog.isShowing()) {
             currentPage = 0;
@@ -966,9 +1002,9 @@ public class CommonDialogs {
         if (commonDialogs == null)
             commonDialogs = new CommonDialogs(((Activity) ctx));
         return commonDialogs;
-    }
+    }*/
 
-    public static void DeluxePurChaseDialogWithMessage(Context ctx, onProductConsume clickListener, String msg) {
+    /*public static void DeluxePurChaseDialogWithMessage(Context ctx, onProductConsume clickListener, String msg) {
         if (dialog == null || !dialog.isShowing()) {
             currentPage = 0;
             indexOfSelectedLayout = 0;
@@ -1117,10 +1153,10 @@ public class CommonDialogs {
             ivclose.setOnClickListener(v -> dialog.dismiss());
             dialog.show();
         }
-        /*if (commonDialogs == null)
+        *//*if (commonDialogs == null)
             commonDialogs = new CommonDialogs(((Activity) ctx));
-        return commonDialogs;*/
-    }
+        return commonDialogs;*//*
+    }*/
 
     /**
      * Method for report Dialog
@@ -1222,27 +1258,107 @@ public class CommonDialogs {
         tv_yes.setOnClickListener(v -> dialog.dismiss());
     }
 
-    public static void onBillingInitialized(BillingProcessor bp) {
-        myBp = bp;
+    /*public static void onBillingInitialized(BillingProcessor bp) {
+        myBp = bp;*//*
         setPurchaseData(vipTokenArr, vipTokenPriceList, bp);
         setPurchaseData(timeTokenArr, timeTokenPriceList, bp);
         setPurchaseData(crushTokenArr, crushTokenPriceList, bp);
-        setSubcripData(PremiumArr, PremiumPriceList, bp, PremiumPriceArr);
+        setSubcripData(PremiumArr, PremiumPriceList, bp, PremiumPriceArr);*//*
         // setSubcripData(DeluxeArr, DeluxePriceList, bp, DeluxePriceArr);
-    }
+    }*/
 
+    public static void onBillingInitialized(BillingClient bc) {
+        myBC = bc;
+        myBC.querySkuDetailsAsync(getParams(PremiumArr, BillingClient.SkuType.SUBS), new SkuDetailsResponseListener() {
+            @Override
+            public void onSkuDetailsResponse(@NonNull BillingResult billingResult, @Nullable List<SkuDetails> list) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null && !list.isEmpty()) {
+
+                    PremiumPriceList.clear();
+                    PremiumSkuList = list;
+                    Collections.sort(PremiumSkuList, new Comparator<SkuDetails>() {
+                        @Override
+                        public int compare(SkuDetails details, SkuDetails t1) {
+                            return Long.compare(details.getPriceAmountMicros(), t1.getPriceAmountMicros());
+                        }
+                    });
+                    Log.e(TAG, "onBillingInitialized: " + PremiumSkuList);
+                    for (int i = 0; i < PremiumSkuList.size(); i++)
+                        PremiumPriceList.add(new InAppPriceValue("$" + PremiumPriceArr[i] /*skuDetails.priceText*/, PremiumPriceArr[i] /*skuDetails.priceValue*/));
+                }
+            }
+        });
+        myBC.querySkuDetailsAsync(getParams(vipTokenArr, BillingClient.SkuType.INAPP), (billingResult, list) -> {
+
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null && !list.isEmpty()) {
+                String price;
+                vipTokenPriceList.clear();
+                vipTokenSkuList=list;
+                Collections.sort(vipTokenSkuList, (details, t1) -> Long.compare(details.getPriceAmountMicros(), t1.getPriceAmountMicros()));
+                for (int i = 0; i < vipTokenSkuList.size(); i++) {
+                    price = vipTokenSkuList.get(i).getPrice();
+                    price= price.substring(1);
+                    vipTokenPriceList.add(new InAppPriceValue(vipTokenSkuList.get(i).getPrice() /*skuDetails.priceText*/,Double.parseDouble(price) /*skuDetails.priceValue*/));
+                }
+                Log.e(TAG, "onBillingInitialized: " + vipTokenPriceList);
+            }
+        });
+        myBC.querySkuDetailsAsync(getParams(timeTokenArr, BillingClient.SkuType.INAPP), (billingResult, list) -> {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null && !list.isEmpty()) {
+                String price;
+                timeTokenPriceList.clear();
+                timeTokenSkuList = list;
+                Collections.sort(timeTokenSkuList, (details, t1) -> Long.compare(details.getPriceAmountMicros(), t1.getPriceAmountMicros()));
+                for (int i = 0; i < timeTokenSkuList.size(); i++) {
+                    price = timeTokenSkuList.get(i).getPrice();
+                    price = price.substring(1);
+                    timeTokenPriceList.add(new InAppPriceValue(timeTokenSkuList.get(i).getPrice() /*skuDetails.priceText*/, Double.parseDouble(price) /*skuDetails.priceValue*/));
+                }
+            }
+        });
+
+        myBC.querySkuDetailsAsync(getParams(crushTokenArr, BillingClient.SkuType.INAPP), (billingResult, list) -> {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null && !list.isEmpty()) {
+                String price;
+                crushTokenPriceList.clear();
+                crushTokenSkuList = list;
+                Collections.sort(crushTokenSkuList, (details, t1) -> Long.compare(details.getPriceAmountMicros(), t1.getPriceAmountMicros()));
+                for (int i = 0; i < crushTokenSkuList.size(); i++) {
+                    price = crushTokenSkuList.get(i).getPrice();
+                    price = price.substring(1);
+                    crushTokenPriceList.add(new InAppPriceValue(crushTokenSkuList.get(i).getPrice() /*skuDetails.priceText*/, Double.parseDouble(price) /*skuDetails.priceValue*/));
+                }
+            }
+        });
+    }
+/*
     public static void setBilling(BillingProcessor bp) {
         myBp = bp;
     }
 
-    public static void setSubcripData(String[] arr, List<InAppPriceValue> PriceList, BillingProcessor bp, Double[] pricearr) {
+    public static void setMyBC(BillingClient myBC) {
+        CommonDialogs.myBC = myBC;
+    }*/
+
+   /* public static void setSubcripData(String[] arr, List<InAppPriceValue> PriceList, BillingProcessor bp, Double[] pricearr) {
         PriceList.clear();
         //SkuDetails skuDetails;
         for (int i = 0; i < arr.length; i++) {
             String s = arr[i];
             SkuDetails skuDetails = bp.getSubscriptionListingDetails(s);
-            PriceList.add(new InAppPriceValue("$" + pricearr[i] /*skuDetails.priceText*/, pricearr[i] /*skuDetails.priceValue*/));
+            PriceList.add(new InAppPriceValue("$" + pricearr[i] *//*skuDetails.priceText*//*, pricearr[i] *//*skuDetails.priceValue*//*));
         }
+    }
+
+    public static void setSubcripData(String[] arr, List<SkuDetails> PriceList, BillingClient bp, Double[] pricearr) {
+        PriceList.clear();
+        bp.queryPurchasesAsync();
+        //SkuDetails skuDetails;
+        *//*for (int i = 0; i < arr.length; i++) {
+            String s = arr[i];
+            SkuDetails skuDetails = bp.getSubscriptionListingDetails(s);
+            PriceList.add(new InAppPriceValue("$" + pricearr[i] *//**//*skuDetails.priceText*//**//*, pricearr[i] *//**//*skuDetails.priceValue*//**//*));
+        }*//*
     }
 
     public static void setPurchaseData(String[] TokenArr, List<InAppPriceValue> TokenPriceList, BillingProcessor bp) {
@@ -1255,8 +1371,14 @@ public class CommonDialogs {
 
         }
         Log.e(TAG, "setPurchaseData:\n " + TokenPriceList);
-    }
+    }*/
 
+    private static SkuDetailsParams getParams(String[] arr, String type) {
+        SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+        params.setSkusList(Arrays.asList(arr)).setType(type);
+        return params.build();
+    }
+/*
     private static PremiumTokenCountModel checkExistingSubscriptionForPremium(BillingProcessor bp, Context ctx) {
         String productid = "";
         double price = 0.0;
@@ -1330,7 +1452,7 @@ public class CommonDialogs {
             new AlertDialog.Builder(ctx).setTitle("Nothing to restore").setMessage("No previous purchases were found").setPositiveButton("ok", null).show();
             return null;
         }
-    }
+    }*/
 
     /*
      *** Method to show dialog with 1 button

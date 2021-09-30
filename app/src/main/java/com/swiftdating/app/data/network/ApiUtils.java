@@ -2,6 +2,7 @@ package com.swiftdating.app.data.network;
 
 import java.util.HashMap;
 
+import com.swiftdating.app.common.SubscriptionResponse;
 import com.swiftdating.app.model.requestmodel.ApplyVipTokenRequest;
 import com.swiftdating.app.model.requestmodel.DeluxeTokenCountModel;
 import com.swiftdating.app.model.requestmodel.FilterRequest;
@@ -44,6 +45,7 @@ import com.swiftdating.app.model.requestmodel.createaccountmodel.CreateAccountSm
 import com.swiftdating.app.model.requestmodel.createaccountmodel.CreateAccoutAboutModel;
 import com.swiftdating.app.model.requestmodel.createaccountmodel.CreateAccoutAmbitionModel;
 import com.swiftdating.app.model.requestmodel.createaccountmodel.CreateAccoutLookingModel;
+import com.swiftdating.app.model.responsemodel.AccessTokenResponce;
 import com.swiftdating.app.model.responsemodel.FilterResponse;
 import com.swiftdating.app.model.responsemodel.PhoneLoginResponse;
 import com.swiftdating.app.model.responsemodel.VerificationResponseModel;
@@ -62,7 +64,8 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
-import retrofit2.http.Path;;
+import retrofit2.http.Path;
+import retrofit2.http.Query;;
 
 public interface ApiUtils {
 
@@ -411,5 +414,22 @@ public interface ApiUtils {
 
     @PUT("filters")
     Call<FilterResponse> setFilters(@Header("Authorization") String header, @Body HashMap<String, Object> map);
+
+    /*
+     * get Google Access Token
+     * */
+    @FormUrlEncoded
+    @POST("https://accounts.google.com/o/oauth2/token?grant_type=refresh_token&client_id=469150149014-70s9ou5i9oqqstt8h8tjft8hl7ajamcq.apps.googleusercontent.com&client_secret=wlUP0Jfo8xSeYUwKJe_Hynvl")
+    Call<AccessTokenResponce> refreshAccessToken(@Field("refresh_token") String refresh_token);
+
+    /*
+     * Get Purchase Detail
+     * */
+    @GET("https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{packageName}/purchases/subscriptions/{subscriptionId}/tokens/{token}")
+    Call<SubscriptionResponse> getPurchasesDetail(
+                                          @Path("packageName") String packageName,
+                                          @Path("subscriptionId") String subscriptionId,
+                                          @Path("token") String token,
+                                          @Query("access_token") String accessToken);
 
 }

@@ -5,13 +5,17 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
 
-import com.swiftdating.app.model.requestmodel.FilterRequest;
+import com.swiftdating.app.BuildConfig;
+import com.swiftdating.app.common.SubscriptionResponse;
 import com.swiftdating.app.model.requestmodel.ReportRequestModel;
+import com.swiftdating.app.model.responsemodel.AccessTokenResponce;
 import com.swiftdating.app.model.responsemodel.FilterResponse;
 import com.swiftdating.app.model.responsemodel.PhoneLoginResponse;
 import com.swiftdating.app.model.responsemodel.VerificationResponseModel;
@@ -458,5 +462,107 @@ public class ApiCall {
 
     }
 
+    public static void refreshAccessToken(String refresh_token,String purchaseToken,String subscriptionId, ApiCallback.RefreshTokenCallback callback) {
+        ApiUtils apiInterface = CallServer.getClient().create(ApiUtils.class);
+        Call<AccessTokenResponce> call = apiInterface.refreshAccessToken(refresh_token);
+        call.enqueue(new Callback<AccessTokenResponce>() {
+            @Override
+            public void onResponse(Call<AccessTokenResponce> call, Response<AccessTokenResponce> response) {
+                if (response.isSuccessful()) {
+                    Log.e("TAG", "onResponse: " + response.body());
+                    callback.onSuccessAccessToken(response.body(),purchaseToken,subscriptionId);
+                } else {
+                    JSONObject object = null;
+                    try {
+                        object = new JSONObject(response.errorBody().string());
+                        callback.onError(object.getString("message"));
+                    } catch (Exception e) {
+                        callback.onError("Something went wrong on Refresh Access Token");
+                        e.printStackTrace();
+                    }
+                }
+            }
 
+            @Override
+            public void onFailure(Call<AccessTokenResponce> call, Throwable t) {
+                if (t instanceof IOException) {
+                    callback.onError("Server not responding. Please try again later." + call.toString());
+                } else {
+                    t.printStackTrace();
+                    callback.onError("Something went wrong Please try again later.");
+                }
+            }
+        });
+    }
+
+    public static void getPurchaseDetails(String accessToken, String subscriptionId, String purchaseToken, ApiCallback.PurchaseDetailCallback callback) {
+        ApiUtils apiInterface = CallServer.getClient().create(ApiUtils.class);
+        Call<SubscriptionResponse> call = apiInterface.getPurchasesDetail( BuildConfig.APPLICATION_ID, subscriptionId, purchaseToken,accessToken);
+        call.enqueue(new Callback<SubscriptionResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<SubscriptionResponse> call, @NotNull Response<SubscriptionResponse> response) {
+                if (response.isSuccessful()) {
+                    Log.e("TAG", "onResponse: " + response.body());
+                    callback.onSuccessPurchaseDetail(response.body());
+                } else if (response.code() == 401) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                        JSONObject error = jsonObject.getJSONObject("error");
+                        JSONArray jsonArray = error.getJSONArray("errors");
+                        String messageStr = error.getString("message");
+                        String message = jsonArray.getJSONObject(0).getString("message");
+                        String authError = jsonArray.getJSONObject(0).getString("reason");
+                        Log.e("TAG", "onResponse:... " + authError);
+                        if (authError.equalsIgnoreCase("authError") || messageStr.equalsIgnoreCase("Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.")) {
+                            callback.refreshAccessToken(purchaseToken,subscriptionId);
+                        } else {
+                            callback.onError(message);
+                        }
+                    } catch (Exception e) {
+                        callback.onError("something wrong with subscription\n " + e.toString());
+                        e.printStackTrace();
+                    }
+                } else if (response.code() == 400) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                        JSONObject error = jsonObject.getJSONObject("error");
+                        JSONArray jsonArray = error.getJSONArray("errors");
+                        String message = jsonArray.getJSONObject(0).getString("message");
+                        if (message.equalsIgnoreCase("The purchase token is associated with a non-subscription purchase. Only subscription purchases are supported for this call.")) {
+                            callback.onError(message);
+                        } else {
+                            callback.refreshAccessToken(purchaseToken,subscriptionId);
+                        }
+                    } catch (Exception e) {
+                        callback.onError(e.getMessage());
+                        e.printStackTrace();
+                    }
+                }else {
+                    JSONObject object = null;
+                    try {
+                        object = new JSONObject(response.errorBody().string());
+                        if (object.has("message")){
+                            callback.onError(object.getString("message"));
+                        }else {
+                            JSONObject obj =object.getJSONObject("error");
+                            callback.onError(obj.getString("message"));
+                        }
+                    } catch (Exception e) {
+                        callback.onError("Something went wrong Get Purchase Detail of "+subscriptionId);
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<SubscriptionResponse> call, @NotNull Throwable t) {
+                if (t instanceof IOException) {
+                    callback.onError("Server not responding. Please try again later." + call.toString());
+                } else {
+                    t.printStackTrace();
+                    callback.onError("Something went wrong Please try again later.");
+                }
+            }
+        });
+    }
 }

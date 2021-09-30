@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,17 +33,30 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeParams;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
 import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
-
 import com.swiftdating.app.R;
+import com.swiftdating.app.common.CommonDialogs;
 import com.swiftdating.app.common.CommonUtils;
 import com.swiftdating.app.common.Global;
 import com.swiftdating.app.common.MyProgressDialog;
+import com.swiftdating.app.common.SubscriptionKeys;
+import com.swiftdating.app.common.SubscriptionResponse;
+import com.swiftdating.app.data.network.ApiCall;
+import com.swiftdating.app.data.network.ApiCallback;
 import com.swiftdating.app.data.network.Resource;
 import com.swiftdating.app.data.preference.SharedPreference;
 import com.swiftdating.app.model.NotificationModel;
+import com.swiftdating.app.model.responsemodel.AccessTokenResponce;
 import com.swiftdating.app.model.responsemodel.ProfileOfUser;
 import com.swiftdating.app.model.responsemodel.VerificationResponseModel;
 import com.swiftdating.app.ui.editProfileScreen.viewmodel.EditProfileViewModel;
@@ -51,11 +65,16 @@ import com.swiftdating.app.ui.homeScreen.fragment.LikesFrament;
 import com.swiftdating.app.ui.loginScreen.LoginActivity;
 import com.swiftdating.app.websocket.WebSocketService;
 
+import java.util.List;
 
-public abstract class BaseActivity extends AppCompatActivity {
+
+public abstract class BaseActivity extends AppCompatActivity implements PurchasesUpdatedListener, ApiCallback.PurchaseDetailCallback, ApiCallback.RefreshTokenCallback {
     public static final int PERMISSION_REQUEST_CODE_CG = 101;
+    public static final String purchaseState = "PurchasedSuccessfully";
     private static final String TAG = "BaseActivity";
     public static Activity mActivity;
+    protected static BillingClient client;
+    private static OnPurchaseListener onPurchaseListener;
     public SharedPreference sp;
     public Context mContext;
     public boolean settings = false;
@@ -163,6 +182,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     };
 
+    protected static void setOnPurchaseListener(OnPurchaseListener onPurchaseListener) {
+        BaseActivity.onPurchaseListener = onPurchaseListener;
+        Log.e(TAG, "setOnPurchaseListener: " + (BaseActivity.onPurchaseListener == null));
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -265,6 +289,16 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
+    protected void callPurchaseDetail(String subscriptionId, String purchaseToken) {
+        Log.e(TAG, "callPurchaseDetail: " + subscriptionId + "   " + purchaseToken);
+
+        if (!TextUtils.isEmpty(SubscriptionKeys.GOOGLE_ACCESS_TOKEN))
+            ApiCall.getPurchaseDetails(SubscriptionKeys.GOOGLE_ACCESS_TOKEN, subscriptionId, purchaseToken, this);
+        else {
+            callRefreshTokenApi(purchaseToken, subscriptionId);
+        }
+    }
+
     /**
      * * Method to Initialize
      */
@@ -272,8 +306,34 @@ public abstract class BaseActivity extends AppCompatActivity {
         mContext = this;
         mActivity = BaseActivity.this;
         sp = new SharedPreference(mActivity);
-        if (!WebSocketService.getInstance().isIs_opened() && sp.isloggedIn().equalsIgnoreCase("true") && isNetworkConnected())
+        if (!WebSocketService.getInstance().isIs_opened() && sp.isloggedIn().equalsIgnoreCase("true") && isNetworkConnected()) {
             WebSocketService.getInstance().connectWebSocket(getApplicationContext(), true);
+        }
+        initializeBillingClient();
+    }
+
+    protected void initializeBillingClient() {
+        Log.e(TAG, "initializeBillingClient: ");
+        if (client == null && isNetworkConnected() && sp.isloggedIn().equalsIgnoreCase("True")) {
+            Log.e(TAG, "initializeBillingClient: client == null");
+
+            Log.e(TAG, "initialize: client is Null");
+            client = BillingClient.newBuilder(mContext).enablePendingPurchases().setListener(this).build();
+            client.startConnection(new BillingClientStateListener() {
+                @Override
+                public void onBillingServiceDisconnected() {
+                    Log.e(TAG, "onBillingServiceDisconnected: ");
+//                    Toast.makeText(mContext, "BillingServiceDisconnected", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+                    Log.e(TAG, "onBillingSetupFinished: ");
+                    if (CommonDialogs.vipTokenPriceList.size() == 0 || CommonDialogs.timeTokenPriceList.size() == 0 || CommonDialogs.crushTokenPriceList.size() == 0 || CommonDialogs.PremiumPriceList.size() == 0)
+                        CommonDialogs.onBillingInitialized(client);
+                }
+            });
+        }
     }
 
     /**
@@ -494,6 +554,89 @@ public abstract class BaseActivity extends AppCompatActivity {
                         });
         android.app.AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    @Override
+    public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> list) {
+        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null && !list.isEmpty()) {
+            Log.e(TAG, "onPurchasesUpdated: " + list);
+
+            if (onPurchaseListener != null)
+                onPurchaseListener.OnSuccessPurchase(list.get(0));
+
+
+        } else {
+            Log.e(TAG, "onPurchasesUpdated: billingResultCode : " + billingResult.getResponseCode() + " billingResultMsg : " + billingResult.getDebugMessage());
+        }
+    }
+
+    @Override
+    public void onSuccessPurchaseDetail(SubscriptionResponse body) {
+        if (onPurchaseListener != null)
+            onPurchaseListener.OnGetPurchaseDetail(body);
+    }
+
+    @Override
+    public void refreshAccessToken(String purchaseToken, String subscriptionId) {
+        callRefreshTokenApi(purchaseToken, subscriptionId);
+    }
+
+    private void callRefreshTokenApi(String purchaseToken, String subscriptionId) {
+        ApiCall.refreshAccessToken(SubscriptionKeys.REFRESH_TOEKN, purchaseToken, subscriptionId, this);
+    }
+
+    @Override
+    public void onError(String error) {
+        showSnackbar(findViewById(android.R.id.content), error);
+        Log.e(TAG, "onError: " + error);
+    }
+
+    @Override
+    public void onSuccessAccessToken(AccessTokenResponce body, String purchaseToken, String subscriptionId) {
+        SubscriptionKeys.GOOGLE_ACCESS_TOKEN = body.getAccessToken();
+        callPurchaseDetail(subscriptionId, purchaseToken);
+    }
+
+    protected void queryPurchasesAsync(OnQueryPurchasesListener queryPurchasesListener) {
+        if (client.isReady()) {
+            client.queryPurchasesAsync(BillingClient.SkuType.SUBS, (billingResult, list) -> {
+                Log.e(TAG, "onQueryPurchasesResponse: " + billingResult.getResponseCode() + "   " + list);
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK ) {
+                    if (queryPurchasesListener != null) {
+                        queryPurchasesListener.OnGetSuccessQueryPurchase(true, list);
+                    }
+                } else {
+                    if (queryPurchasesListener != null) {
+                        queryPurchasesListener.OnGetSuccessQueryPurchase(false, null);
+                    }
+                }
+            });
+        } else {
+            if (queryPurchasesListener != null) {
+                queryPurchasesListener.OnGetSuccessQueryPurchase(false, null);
+            }
+        }
+    }
+
+    protected BillingFlowParams getBillingFlowParam(SkuDetails sku) {
+        return BillingFlowParams.newBuilder().setSkuDetails(sku).build();
+    }
+
+    protected ConsumeParams getConsumeParam(String purchaseToken) {
+        return ConsumeParams.newBuilder().setPurchaseToken(purchaseToken).build();
+    }
+
+    protected AcknowledgePurchaseParams getAcknowledgeParams(String purchaseToken) {
+        return AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchaseToken).build();
+    }
+    public interface OnPurchaseListener {
+        void OnSuccessPurchase(Purchase purchase);
+
+        void OnGetPurchaseDetail(SubscriptionResponse body);
+    }
+
+    public interface OnQueryPurchasesListener {
+        void OnGetSuccessQueryPurchase(boolean isSuccess, List<Purchase> list);
     }
 
     public interface MyProfileResponse {

@@ -247,6 +247,16 @@ public class SubscriptionDetailResponseModel {
             this.subscriptionForUser = subscriptionForUser;
         }
 
+        @Override
+        public String toString() {
+            return "Subscription{" +
+                    "email='" + email + '\'' +
+                    ", status='" + status + '\'' +
+                    ", isVerified='" + isVerified + '\'' +
+                    ", isPremium='" + isPremium + '\'' +
+                    ", subscriptionForUser=" + subscriptionForUser +
+                    '}';
+        }
     }
 
     public class SubscriptionForUser {
@@ -417,5 +427,25 @@ public class SubscriptionDetailResponseModel {
             this.updatedAt = updatedAt;
         }
 
+        @Override
+        public String toString() {
+            return "SubscriptionForUser{" +
+                    "id=" + id +
+                    ", userId=" + userId +
+                    ", subscriptionId='" + subscriptionId + '\'' +
+                    ", loginType='" + loginType + '\'' +
+                    ", orderId='" + orderId + '\'' +
+                    ", purchaseToken='" + purchaseToken + '\'' +
+                    ", purchaseTime='" + purchaseTime + '\'' +
+                    ", signature='" + signature + '\'' +
+                    ", purchaseState='" + purchaseState + '\'' +
+                    ", autoRenewing='" + autoRenewing + '\'' +
+                    ", price=" + price +
+                    ", subscriptionPeriod=" + subscriptionPeriod +
+                    ", subscriptionStatus='" + subscriptionStatus + '\'' +
+                    ", createdAt='" + createdAt + '\'' +
+                    ", updatedAt='" + updatedAt + '\'' +
+                    '}';
+        }
     }
 }

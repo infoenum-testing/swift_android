@@ -1,2 +1,2 @@
-include ':app', ':InAppBilling'
+include ':app'
 rootProject.name='Swift Android'

@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.lifecycle.ViewModelProviders;
@@ -31,18 +30,21 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.anjlab.android.iab.v3.BillingProcessor;
-import com.anjlab.android.iab.v3.TransactionDetails;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeResponseListener;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.SkuDetails;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.swiftdating.app.R;
-import com.swiftdating.app.callbacks.OnInAppInterface;
 import com.swiftdating.app.callbacks.OnItemClickListener;
 import com.swiftdating.app.callbacks.OnItemClickListenerType;
 import com.swiftdating.app.common.CommonDialogs;
 import com.swiftdating.app.common.CommonUtils;
+import com.swiftdating.app.common.SubscriptionResponse;
 import com.swiftdating.app.data.network.CallServer;
 import com.swiftdating.app.model.ChatModel;
 import com.swiftdating.app.model.ImageModel;
@@ -67,9 +69,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import static com.swiftdating.app.common.AppConstants.LICENSE_KEY;
-
-public class ChatWindow extends BaseActivity implements View.OnClickListener, OnItemClickListenerType, BillingProcessor.IBillingHandler, OnItemClickListener, OnInAppInterface, CommonDialogs.onClick, CommonDialogs.onProductConsume {
+public class ChatWindow extends BaseActivity implements View.OnClickListener, OnItemClickListenerType, OnItemClickListener, CommonDialogs.onClick, CommonDialogs.onProductConsume, BaseActivity.OnPurchaseListener {
 
     private final ArrayList<ChatModel> chatList = new ArrayList<>();
     private final Handler handler = new Handler();
@@ -96,7 +96,6 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
     private CoordinatorLayout bottomSheetGallery;
     private BottomSheetDialog mBottomSheetDialog;
     private ChatAdapter chatAdapter;
-    private BillingProcessor bp;
     private ChatModel messageDetail;
     private String chatUserName;
     private String imageUrl;
@@ -128,7 +127,7 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
             } else if (hours > 0) {
                 hours--;
                 min = 59;
-                sec=59;
+                sec = 59;
             } else {
                 timeExpireStr = "Time Expired";
                 tvTimeLeft.setText(timeExpireStr);
@@ -238,8 +237,8 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
      * **  Method to Initialize Billing Process
      */
     private void initBillingProcess() {
-        bp = new BillingProcessor(context, LICENSE_KEY, this);
-        bp.initialize();
+        /*bp = new BillingProcessor(context, LICENSE_KEY, this);
+        bp.initialize();*/
     }
 
     /**
@@ -985,80 +984,13 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
     public void OnItemClick(int position) {
         ivUserImage.performClick();
     }
-
+/*
     @Override
     public void OnItemClick(int position, int type, String id) {
         selectedPosition = position;
         bp.purchase(this, id);
-    }
+    }*/
 
-    @Override
-    public void onBillingInitialized() {
-        /*
-         * Called when BillingProcessor was initialized and it's ready to purchase
-         */
-        if (CommonDialogs.vipTokenPriceList.size() == 0 || CommonDialogs.timeTokenPriceList.size() == 0 || CommonDialogs.crushTokenPriceList.size() == 0 || CommonDialogs.PremiumPriceList.size() == 0 || CommonDialogs.DeluxePriceList.size() == 0) {
-            CommonDialogs.onBillingInitialized(bp);
-        }
-        CommonDialogs.setBilling(bp);
-    }
-
-    @Override
-    public void onProductPurchased(String productId, TransactionDetails details) {
-        /*
-         * Called when requested PRODUCT ID was successfully purchased
-         */
-
-       /* bp.consumePurchase(productId);
-        double price = 2.99;
-        if (productId.equalsIgnoreCase("time_token_3")) {
-            price = 1.99;
-        } else if (productId.equalsIgnoreCase("time_token_1")) {
-            price = 0.99;
-        }*/
-        Log.e("TAG", "onProductPurchased: " + details);
-        /*
-         * Called when requested PRODUCT ID was successfully purchased
-         */
-        Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
-        showLoading();
-        if (tokenSType.equalsIgnoreCase("timeToken")) {
-            bp.consumePurchase(productId);
-            homeViewModel.addTimeToken(new TimeTokenRequestModel(selectedPosition, price));
-        } else if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
-            Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
-            bp.consumePurchase(productId);
-            homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1", productId,
-                    price,
-                    selectedPosition,
-                    details.purchaseInfo.purchaseData.orderId,
-                    details.purchaseInfo.purchaseData.purchaseToken,
-                    CommonUtils.getDateForPurchase(details), details.purchaseInfo.signature,
-                    details.purchaseInfo.purchaseData.purchaseState.toString()));
-        }
-        // homeViewModel.addTimeToken(new TimeTokenRequestModel(selectedPosition, price));
-
-
-        Log.e("purchase success", details.purchaseInfo.responseData);
-    }
-
-    @Override
-    public void onBillingError(int errorCode, Throwable error) {
-        /*
-         * Called when some error occurred. See Constants class for more details
-         *
-         * Note - this includes handling the case where the user canceled the buy dialog:
-         * errorCode = Constants.BILLING_RESPONSE_RESULT_USER_CANCELED
-         */
-    }
-
-    @Override
-    public void onPurchaseHistoryRestored() {
-        /*
-         * Called when purchase history was restored and the list of all owned PRODUCT ID's
-         * was loaded from Google Play
-         */
-    }
 
     @Override
     public void callDefaultDialog(int pos) {
@@ -1091,21 +1023,57 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
     public void onClickToken(String tokenType, int tokensNum, int selectedPos) {
         tokenSType = tokenType;
         selectedPosition = tokensNum;
+        SkuDetails sku = null;
         if (tokenType.equalsIgnoreCase("timeToken")) {
             price = CommonDialogs.timeTokenPriceList.get(selectedPos).getPriceValue();
             productId = CommonDialogs.timeTokenArr[selectedPos];
+            sku = CommonDialogs.timeTokenSkuList.get(selectedPos);
             //homeViewModel.addTimeToken(new TimeTokenRequestModel(tokensNum, price));
-            bp.purchase(this, productId);
+
         } else if (tokenType.equalsIgnoreCase("PremiumPurchase")) {//DeluxePurChase
             price = CommonDialogs.PremiumPriceList.get(selectedPos).getPriceValue();
             productId = CommonDialogs.PremiumArr[selectedPos];
-            bp.subscribe(mActivity, productId);
+            sku = CommonDialogs.PremiumSkuList.get(selectedPos);
+        }
+        if (client != null && client.isReady() && sku != null) {
+            setOnPurchaseListener(ChatWindow.this);
+            client.launchBillingFlow(ChatWindow.this, getBillingFlowParam(sku));
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (!bp.handleActivityResult(requestCode, resultCode, data))
-            super.onActivityResult(requestCode, resultCode, data);
+    public void OnSuccessPurchase(Purchase purchase) {
+
+        Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
+        if (client != null && client.isReady()) {
+            showLoading();
+            Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
+            if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
+                client.acknowledgePurchase(getAcknowledgeParams(purchase.getPurchaseToken()),
+                        billingResult -> homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1", productId,
+                                price,
+                                selectedPosition,
+                                purchase.getOrderId(),
+                                purchase.getPurchaseToken(),
+                                CommonUtils.getDateForPurchase(purchase.getPurchaseTime()),
+                                purchase.getSignature(),
+                                BaseActivity.purchaseState)));
+            } else {
+                client.consumeAsync(getConsumeParam(purchase.getPurchaseToken()), new ConsumeResponseListener() {
+                    @Override
+                    public void onConsumeResponse(@NonNull BillingResult billingResult, @NonNull String s) {
+                        if (tokenSType.equalsIgnoreCase("timeToken")) {
+                            homeViewModel.addTimeToken(new TimeTokenRequestModel(selectedPosition, price));
+                        }
+                    }
+                });
+            }
+        }
+
+    }
+
+    @Override
+    public void OnGetPurchaseDetail(SubscriptionResponse body) {
+
     }
 }

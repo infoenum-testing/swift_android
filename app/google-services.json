@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "469150149014-qhd3drjp4g51htt1cibg2om1rsrf3e6k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.swiftdating.app",
+            "certificate_hash": "0364cfde8c34712eb7b8f3f02b3352c25fdf1214"
+          }
+        },
+        {
           "client_id": "469150149014-70s9ou5i9oqqstt8h8tjft8hl7ajamcq.apps.googleusercontent.com",
           "client_type": 3
         }

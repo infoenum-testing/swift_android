@@ -500,7 +500,7 @@
                         android:textAllCaps="false"
                         android:textColor="@color/primaryTextColor"
                         android:textSize="@dimen/_12ssp"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="parent" />
 
