@@ -108,16 +108,13 @@ public class WebSocketService {
             try {
 
                 uri = new URI(CallServer.SocketUrl);
-
                 mWebSocketClient = new WebSocketClient(uri) {
-
                     @Override
                     public void onOpen(ServerHandshake serverHandshake) {
                         Log.e(TAG, "Opened");
                         // session started
                         is_opened = true;
                         on_socket_opened(true);
-
                         setWebSocketHitConnect(mContext);
                     }
 
@@ -129,7 +126,6 @@ public class WebSocketService {
                         try {
 
                             JSONObject response = new JSONObject(s);
-
                             String command = response.getString("command");
 
                             if (command.equalsIgnoreCase("message")) {
@@ -310,7 +306,6 @@ public class WebSocketService {
      */
     private void readMessage(Context context, String fromid, String toid) {
         try {
-
             if (!is_opened) {
                 showErrorToast(context);
                 WebSocketService.getInstance().connectWebSocket(context, true);

@@ -113,7 +113,6 @@ public class AnswerNowActivity extends BaseActivity implements View.OnClickListe
                     case SUCCESS:
                         hideLoading();
                         if (resource.data.getSuccess()) {
-
                             if (resource.data.getError() != null && resource.data.getError().getCode().equalsIgnoreCase("401")) {
                                 String deviceToken = sp.getDeviceToken();
                                 sp.clearData();

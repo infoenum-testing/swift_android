@@ -763,61 +763,64 @@ public class CommonDialogs {
             wordTwo.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(ctx.getResources(), R.color.red_start, null)), 0, wordTwo.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             tv_restore.append(wordTwo);
 
-            tv_restore.setOnClickListener(v -> {
-                if ((myBC != null &&myBC.isReady())) {
-                    showLoader(ctx);
+            tv_restore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if ((myBC != null && myBC.isReady())) {
+                        showLoader(ctx);
 
-                    myBC.queryPurchasesAsync(BillingClient.SkuType.SUBS, new PurchasesResponseListener() {
-                        @Override
-                        public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
-                            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && !list.isEmpty()){
-                                PremiumTokenCountModel model=null;
+                        myBC.queryPurchasesAsync(BillingClient.SkuType.SUBS, new PurchasesResponseListener() {
+                            @Override
+                            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
+                                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && !list.isEmpty()) {
+                                    PremiumTokenCountModel model = null;
 
-                                Purchase purchase=list.get(0);
-                                double price=0;
-                                String productId=purchase.getSkus().get(0);
-                                if (PremiumSkuList!=null&&!PremiumSkuList.isEmpty())
-                                for (int i = 0; i < PremiumSkuList.size(); i++) {
-                                    if (PremiumSkuList.get(i).getSku().equalsIgnoreCase(productId)){
-                                        price=PremiumPriceArr[i];
-                                        break;
+                                    Purchase purchase = list.get(0);
+                                    double price = 0;
+                                    String productId = purchase.getSkus().get(0);
+                                    if (PremiumSkuList != null && !PremiumSkuList.isEmpty())
+                                        for (int i = 0; i < PremiumSkuList.size(); i++) {
+                                            if (PremiumSkuList.get(i).getSku().equalsIgnoreCase(productId)) {
+                                                price = PremiumPriceArr[i];
+                                                break;
+                                            }
+                                        }
+                                    if (price > 0) {
+                                        model = new PremiumTokenCountModel(subscriptiontype,
+                                                productId,
+                                                price,
+                                                Integer.parseInt(productId.split("_")[1]),
+                                                purchase.getOrderId(),
+                                                purchase.getPurchaseToken(),
+                                                CommonUtils.getDateForPurchase(purchase.getPurchaseTime()),
+                                                purchase.getSignature(),
+                                                BaseActivity.purchaseState);
+                                    }
+                                    if (model != null) {
+                                        new CallRestoreApi().callApi(model, new SharedPreference(ctx), subscriptiontype, new onPurchaseRestore() {
+                                            @Override
+                                            public void onError(String msg) {
+                                                Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
+                                                hideLoading();
+                                                dialog.dismiss();
+                                            }
+
+                                            @Override
+                                            public void onSucces() {
+                                                Toast.makeText(ctx, "Purchase Restored Successfully", Toast.LENGTH_SHORT).show();
+                                                hideLoading();
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                    } else {
+                                        //Toast.makeText(ctx,"Purchase Restore unavailable.",Toast.LENGTH_SHORT).show();
+                                        hideLoading();
+                                        //dialog.dismiss();
                                     }
                                 }
-                                if (price>0) {
-                                    model=   new PremiumTokenCountModel(subscriptiontype,
-                                            productId,
-                                            price ,
-                                            Integer.parseInt(productId.split("_")[1]),
-                                            purchase.getOrderId(),
-                                            purchase.getPurchaseToken(),
-                                            CommonUtils.getDateForPurchase(purchase.getPurchaseTime()),
-                                            purchase.getSignature(),
-                                            BaseActivity.purchaseState);
-                                }
-                                if (model != null) {
-                                    new CallRestoreApi().callApi(model, new SharedPreference(ctx), subscriptiontype, new onPurchaseRestore() {
-                                        @Override
-                                        public void onError(String msg) {
-                                            Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
-                                            hideLoading();
-                                            dialog.dismiss();
-                                        }
-
-                                        @Override
-                                        public void onSucces() {
-                                            Toast.makeText(ctx, "Purchase Restored Successfully", Toast.LENGTH_SHORT).show();
-                                            hideLoading();
-                                            dialog.dismiss();
-                                        }
-                                    });
-                                } else {
-                                    //Toast.makeText(ctx,"Purchase Restore unavailable.",Toast.LENGTH_SHORT).show();
-                                    hideLoading();
-                                    //dialog.dismiss();
-                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             });
 

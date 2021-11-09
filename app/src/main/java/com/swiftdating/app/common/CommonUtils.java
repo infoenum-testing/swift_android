@@ -230,7 +230,6 @@ public class CommonUtils {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date crdate = format.parse(stringDate);
-
             sd = new SimpleDateFormat("EEE, MMM d yyyy").format(crdate);
 
         } catch (ParseException e) {
@@ -248,7 +247,6 @@ public class CommonUtils {
      * @param sizeType  size of the image
      */
     public static void setImageUsingFresco(SimpleDraweeView imageView, String imagePath, int sizeType) {
-
         if (imagePath == null || imagePath.equalsIgnoreCase(""))
             imagePath = "no_image";
 

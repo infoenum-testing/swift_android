@@ -66,9 +66,7 @@ private void sharedConstructing(Context context) {
 public boolean onTouch(View v, MotionEvent event) {
         mScaleDetector.onTouchEvent(event);
         mGestureDetector.onTouchEvent(event);
-
         PointF curr = new PointF(event.getX(), event.getY());
-
         switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:
         last.set(curr);

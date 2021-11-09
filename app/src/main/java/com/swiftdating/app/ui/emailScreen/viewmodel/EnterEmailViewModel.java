@@ -19,7 +19,6 @@ public class EnterEmailViewModel extends AndroidViewModel {
 
     private MutableLiveData<SignUpRequestModel> signIn = new MutableLiveData<>();
     private LiveData<Resource<VerificationResponseModel>> signInLD;
-
     private MutableLiveData<ResendRequest> resendRequest = new MutableLiveData<>();
     private LiveData<Resource<BaseModel>> resendLD;
 

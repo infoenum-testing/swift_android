@@ -348,12 +348,15 @@ public class BirthdayFragment extends BaseFragment implements View.OnClickListen
                     strCustomDate += day < 10 ? "/0" + day : "/" + day;
                     strCustomDate += "/" + ("" + year).charAt(2) + ("" + year).charAt(3);
                     String strDate = year + "-" + month + "-" + day;
-                    CommonDialogs.alertDialogToSureBirthDate(mActivity, v -> {
-                        CommonDialogs.dismiss();
-                        getBaseActivity().showLoading();
-                        hideKeyboard();
-                        model.verifyRequest(new CreateAccountBirthModel(strDate));
-                        Log.e("TAG", "onClick: " + strDate);
+                    CommonDialogs.alertDialogToSureBirthDate(mActivity, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            CommonDialogs.dismiss();
+                            BirthdayFragment.this.getBaseActivity().showLoading();
+                            BirthdayFragment.this.hideKeyboard();
+                            model.verifyRequest(new CreateAccountBirthModel(strDate));
+                            Log.e("TAG", "onClick: " + strDate);
+                        }
                     }, "Please confirm that your birthday is " + strCustomDate + " and you are " + CommonUtils.getAge(strDate) + " years old. Your birthday cannot be changed once registration is complete.");
                 }
             } else {

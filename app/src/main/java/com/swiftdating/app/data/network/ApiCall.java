@@ -167,7 +167,8 @@ public class ApiCall {
                 if (response.isSuccessful()) {
                     try {
                         Gson gson = new Gson();
-                        WhoLikedYouReponce reponce = gson.fromJson(response.body().string(), WhoLikedYouReponce.class);
+                        WhoLikedYouReponce reponce = gson.fromJson(response.body().string(),
+                                WhoLikedYouReponce.class);
                         callBack.onSuccessSearchFilterList(reponce);
                     } catch (IOException e) {
                         callBack.onError("Something went wrong.");

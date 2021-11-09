@@ -334,8 +334,6 @@ public class AddImagesFragment extends BaseFragment implements PhotoAdapter.OnCl
                     }
                     ae.printStackTrace();
                 }
-
-
             }
 
             @Override

@@ -479,6 +479,9 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
 
     @Override
     public void onSuccessSearchFilterList(WhoLikedYouReponce response) {
+
+        Log.e("searchFilter", "onSuccessSearchFilterList: " + response.getUsers());
+
         if (getBaseActivity()!=null)
         getBaseActivity().hideLoading();
         if (list == null)
@@ -535,7 +538,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
         /*if (messge.equalsIgnoreCase("Your not a deluxe user !")) {
             CallAllUserApi(pageCount);
             //getBaseActivity().sp.removeFilter();
-        }*/
+        */
     }
 
     @Override

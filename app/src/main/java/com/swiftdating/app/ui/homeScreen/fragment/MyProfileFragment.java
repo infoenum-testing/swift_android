@@ -126,8 +126,6 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
         tv_subscribe = v.findViewById(R.id.tv_subscribe);
 
         rlRootView.setOnClickListener(vss -> MyProfileFragment.this.openPurchaseDialog());
-
-
         String[] tab_names = getResources().getStringArray(R.array.arr_premium_txt);
         List<String> titleList = new ArrayList<>();
         Collections.addAll(titleList, tab_names);

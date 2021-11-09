@@ -101,7 +101,8 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
     private val tv_likeCount by lazy { view?.findViewById<TextView>(R.id.tv_likeCount) }
 
     //   val img_vip_star = view.findViewById(R.id.img_vip_star) as ImageView
-    private val manager by lazy { CardStackLayoutManager(context, this) }
+    private val manager by lazy {
+        CardStackLayoutManager(context, this) }
     private var locationCheckCount = 0
     private var gotLocation: Boolean = false
     private var lat = ""
@@ -455,7 +456,6 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
      */
     private fun initBillingProcess() {
         if (fragClient != null && fragClient.isReady) {
-            Log.e(TAG, "initBillingProcess: Fragment client")
             if (baseActivity != null && baseActivity.sp != null)
                 homeViewModel.getSubscriptionRequest(baseActivity.sp.token)
         }
