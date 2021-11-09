@@ -42,7 +42,8 @@ class WelcomeActivity : BaseActivity() {
         tvTerms.append(wordTwo)
         tvTerms.setOnClickListener {
             startActivity(Intent(this, CommonWebViewActivity::class.java)
-                    .putExtra("url", "https://swiftdatingapp.com/terms/"))
+                   // .putExtra("url", "https://swiftdatingapp.com/terms/"))
+                    .putExtra("url", "https://amaredatingapp.com/terms/"))
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
@@ -58,7 +59,6 @@ class WelcomeActivity : BaseActivity() {
         showLoading()
         val data = MutableLiveData<Resource<VerificationResponseModel>>()
         data.value = Resource.loading(null)
-
 
         CallServer.get().apiName.completeRegistration(sp.token, map).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
