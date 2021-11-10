@@ -796,9 +796,10 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
          */
 
         Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_LONG).show();
-        getBaseActivity().showLoading();
-        if (fragClient != null && fragClient.isReady()) {
+        if (fragClient != null && fragClient.isReady()&&!TextUtils.isEmpty(tokenSType)) {
             if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
+                getBaseActivity().showLoading();
+
                 fragClient.acknowledgePurchase(getAcknowledgeParams(purchase.getPurchaseToken()),
                         billingResult -> {
                             Log.e(TAG, "OnSuccessPurchase: " + billingResult.getResponseCode());
@@ -813,6 +814,7 @@ public class MyProfileFragment extends BaseFragment implements View.OnClickListe
                                     BaseActivity.purchaseState));
                         });
             }else {
+                getBaseActivity().showLoading();
                 fragClient.consumeAsync(getConsumeParam(purchase.getPurchaseToken()), new ConsumeResponseListener() {
                     @Override
                     public void onConsumeResponse(@NonNull BillingResult billingResult, @NonNull String s) {

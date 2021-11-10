@@ -17,22 +17,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CallServer {
 
     //Live
-    public static final String BaseImage = BuildConfig.SERVER_URL;//"https://app.blackgentryapp.com/";  //For live
+    public static final String BaseImage = BuildConfig.SERVER_URL;//"https://prod.swiftdatingapp.com/";  //For live
 
     //Dev
-    //public static final String BaseImage = "http://dev.blackgentryapp.com/";  //for Dev
+    //public static final String BaseImage = "http://dev.swiftdatingapp.com/";  //for Dev
 
     //Staging
-    //public static final String BaseImage = "http://staging.blackgentryapp.com/"; // for stag
+    //public static final String BaseImage = "http://staging.swiftdatingapp.com/"; // for stag
 
     public static final String BASE_URL = (BuildConfig.SERVER_URL+"api/");
 
     // Web Socket Url for Chat
-    public static final String SocketUrl = "ws://50.17.231.64:8443";  //for production
+    public static final String SocketUrl = "ws://50.17.231.64:8443";
+    //                                      ws://50.17.231.64:8443 //for production
+//    public static final String SocketUrl = "ws://50.17.231.64:8443";  //for staging
 
     /*
     * swift
-z "ws://50.17.231.64:8443"      Development
+ "ws://50.17.231.64:8443"      Development
  "ws://52.54.232.96:8443"       Production      Production
     * */
 
@@ -40,8 +42,6 @@ z "ws://50.17.231.64:8443"      Development
     //public static final String SocketUrl = "ws://54.234.31.215:8443"; //for dev
 
     //public static final String SocketUrl = "ws://23.21.208.109:8443";  //for 3staging
-
-
     public static String serverError = "Server not responding. Please try again later.";
     public static String somethingWentWrong = "Something went wrong Please try again later.";
     private static CallServer instance;

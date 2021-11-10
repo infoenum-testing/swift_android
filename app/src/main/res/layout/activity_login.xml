@@ -10,13 +10,18 @@
     <ImageView
         android:id="@+id/ivLogo"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="90dp"
         android:layout_marginBottom="@dimen/_40sdp"
-        android:src="@drawable/logo_white"
+        android:padding="@dimen/_10sdp"
+        android:src="@drawable/amare_logo_white"
+        android:paddingEnd="@dimen/_45sdp"
+        android:paddingStart="@dimen/_45sdp"
         app:layout_constraintBottom_toTopOf="@+id/login_button_fb"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.501" />
 
     <TextView
         android:id="@+id/tvAppName"

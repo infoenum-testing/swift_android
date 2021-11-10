@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +38,8 @@ import com.swiftdating.app.common.CommonUtils;
 import com.swiftdating.app.common.SubscriptionResponse;
 import com.swiftdating.app.data.network.ApiCall;
 import com.swiftdating.app.data.network.ApiCallback;
+import com.swiftdating.app.data.network.Resource;
+import com.swiftdating.app.model.BaseModel;
 import com.swiftdating.app.model.requestmodel.PremiumTokenCountModel;
 import com.swiftdating.app.model.responsemodel.User;
 import com.swiftdating.app.model.responsemodel.WhoLikedYouReponce;
@@ -250,34 +254,37 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onProduc
 
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
 
-        homeViewModel.addPremiumResponse().observe(getViewLifecycleOwner(), resource -> {
-            if (resource == null) return;
-            switch (resource.status) {
-                case LOADING:
-                    break;
-                case SUCCESS:
-                    getBaseActivity().hideLoading();
-                    if (resource.data.getSuccess()) {
+        homeViewModel.addPremiumResponse().observe(getViewLifecycleOwner(), new Observer<Resource<BaseModel>>() {
+            @Override
+            public void onChanged(Resource<BaseModel> resource) {
+                if (resource == null) return;
+                switch (resource.status) {
+                    case LOADING:
+                        break;
+                    case SUCCESS:
+                        LikesFrament.this.getBaseActivity().hideLoading();
+                        if (resource.data.getSuccess()) {
                       /*  onBtnClick = true;
                         tv_subscribe.setVisibility(View.GONE);
                         btn_see_people.setVisibility(View.GONE);
                         recycle.setAdapter(new LikesImagesAdapter(getContext(), list, onBtnClick));*/
-                        getBaseActivity().sp.savePremium(true);
-                        setPremiumData();
-                        ((LikesImagesAdapter) Objects.requireNonNull(recycle.getAdapter())).setUnlock(onBtnClick);
-                        recycle.getAdapter().notifyDataSetChanged();
+                            LikesFrament.this.getBaseActivity().sp.savePremium(true);
+                            LikesFrament.this.setPremiumData();
+                            ((LikesImagesAdapter) Objects.requireNonNull(recycle.getAdapter())).setUnlock(onBtnClick);
+                            recycle.getAdapter().notifyDataSetChanged();
                        /* tvPremium.setVisibility(View.INVISIBLE);
                         tvUnlimitedView.setVisibility(View.INVISIBLE);*/
-                    } else if (resource.code == 401) {
-                        getBaseActivity().openActivityOnTokenExpire();
-                    } else {
-                        getBaseActivity().showSnackbar(llRootView, "Something went wrong");
-                    }
-                    break;
-                case ERROR:
-                    getBaseActivity().hideLoading();
-                    getBaseActivity().showSnackbar(llRootView, resource.message);
-                    break;
+                        } else if (resource.code == 401) {
+                            LikesFrament.this.getBaseActivity().openActivityOnTokenExpire();
+                        } else {
+                            LikesFrament.this.getBaseActivity().showSnackbar(llRootView, "Something went wrong");
+                        }
+                        break;
+                    case ERROR:
+                        LikesFrament.this.getBaseActivity().hideLoading();
+                        LikesFrament.this.getBaseActivity().showSnackbar(llRootView, resource.message);
+                        break;
+                }
             }
         });
 
@@ -689,7 +696,7 @@ public class LikesFrament extends BaseFragment implements CommonDialogs.onProduc
 
     @Override
     public void OnSuccessPurchase(Purchase purchase) {
-        if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
+        if (!TextUtils.isEmpty(tokenSType)&&tokenSType.equalsIgnoreCase("PremiumPurchase")) {
             Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_LONG).show();
             if (fragClient!=null&&fragClient.isReady()){
                 mActivity.showLoading();

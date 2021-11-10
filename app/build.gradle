@@ -6,13 +6,21 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file(getRootDir().getAbsolutePath() + '\\swift_key_store.jks')
+            storePassword '123456'
+            keyAlias 'swift'
+            keyPassword '123456'
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.swiftdating.app"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 2
+        versionCode 3
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         lintOptions {
@@ -21,20 +29,23 @@ android {
             // but continue the build even when errors are found:
             abortOnError false
         }
+        resConfigs "en"
     }
     buildTypes {
         debug {
             versionNameSuffix "-dev"
             /*versionNameSuffix "-stagging"*/
             buildConfigField 'String', 'ENVIRONMENT', '"DEV"'
-            buildConfigField "String", "SERVER_URL", '"https://staging.swiftdatingapp.com/"'
+            buildConfigField "String", "SERVER_URL", '"https://staging.amaredatingapp.com/"'
         }
         release {
             minifyEnabled true
            /* versionNameSuffix "-prod"*/
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'ENVIRONMENT', '"PROD"'
-            buildConfigField 'String', 'SERVER_URL', '"https://Prod.swiftdatingapp.com/"'
+         //   buildConfigField 'String', 'SERVER_URL', '"https://Prod.swiftdatingapp.com/"'
+            buildConfigField 'String', 'SERVER_URL', '"https://prod.amaredatingapp.com/"'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {

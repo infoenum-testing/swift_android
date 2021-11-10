@@ -117,6 +117,8 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
 
     private void initViews() {
         isReset = false;
+        setOnPurchaseListener(this);
+
         sp = new SharedPreference(this);
         signinUser = new Gson().fromJson(sp.getUser(), ProfileOfUser.class);
 
@@ -911,7 +913,7 @@ public class FilterActivity extends BaseActivity implements RadioGroup.OnChecked
     @Override
     public void OnSuccessPurchase(Purchase purchase) {
         Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
-        if (client!=null&&client.isReady()){
+        if (client!=null&&client.isReady()&&!TextUtils.isEmpty(tokenSType)){
             showLoading();
             client.acknowledgePurchase(getAcknowledgeParams(purchase.getPurchaseToken()), billingResult -> homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1",
                     productId,

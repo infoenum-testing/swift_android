@@ -104,6 +104,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         initialize();
         initBillingProcess();
         setSlider();
+        setOnPurchaseListener(this);
     }
 
     private void setSlider() {
@@ -567,15 +568,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tv_no.setOnClickListener(view15 -> dialog.dismiss());
         } else if (view == cardPrivacyPolicy) {
             startActivity(new Intent(this, CommonWebViewActivity.class)
-                    .putExtra("url", "https://swiftdatingapp.com/privacy/"));
+                    //.putExtra("url", "https://swiftdatingapp.com/privacy/"));
+                    .putExtra("url", "https://amaredatingapp.com/privacy/"));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (view == cardTermnService) {
             startActivity(new Intent(this, CommonWebViewActivity.class)
-                    .putExtra("url", "https://swiftdatingapp.com/terms/"));
+                    //.putExtra("url", "https://swiftdatingapp.com/terms/"));
+                    .putExtra("url", "https://amaredatingapp.com/terms/"));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (view == cardHelp) {
             startActivity(new Intent(this, CommonWebViewActivity.class)
-                    .putExtra("url", "https://swiftdatingapp.com/faq/"));
+                   // .putExtra("url", "https://swiftdatingapp.com/faq/"));
+                    .putExtra("url", "https://amaredatingapp.com/contact-us/"));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (view.getId() == R.id.view) {
             if (showMeSwitch.isChecked()) {
@@ -765,7 +769,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void OnSuccessPurchase(Purchase purchase) {
         Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
-        if (client!=null&&client.isReady()){
+        if (client!=null&&client.isReady()&&!TextUtils.isEmpty(tokenSType)){
             showLoading();
             client.acknowledgePurchase(getAcknowledgeParams(purchase.getPurchaseToken()), (billingResult) ->
                     homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1",

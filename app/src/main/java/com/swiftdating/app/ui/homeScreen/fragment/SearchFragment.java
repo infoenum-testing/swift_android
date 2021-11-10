@@ -553,7 +553,7 @@ public class SearchFragment extends BaseFragment implements CommonDialogs.onProd
     @Override
     public void OnSuccessPurchase(Purchase purchase) {
         Log.e(TAG, "onProductPurchased: " + purchase + "\n" + productId);
-        if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
+        if (!TextUtils.isEmpty(tokenSType)&&tokenSType.equalsIgnoreCase("PremiumPurchase")) {
             Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_LONG).show();
             if (fragClient!=null&&fragClient.isReady()){
                 getBaseActivity().showLoading();
