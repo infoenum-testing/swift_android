@@ -36,6 +36,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchaseHistoryRecord;
+import com.android.billingclient.api.PurchaseHistoryResponseListener;
 import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
@@ -54,6 +56,8 @@ import com.swiftdating.app.ui.homeScreen.fragment.LikesFrament;
 import com.swiftdating.app.ui.homeScreen.fragment.SearchFragment;
 import com.swiftdating.app.ui.settingScreen.SliderAdapter;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
+
+import org.json.JSONException;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -618,18 +622,9 @@ public class CommonDialogs {
     }
 
     private static void showLoader(Context context) {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(context);
-            if (progressDialog.getWindow() != null) {
-                progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            }
-            progressDialog.setContentView(R.layout.progress_dialog);
-            progressDialog.setIndeterminate(true);
-            progressDialog.setCancelable(false);
-            progressDialog.setCanceledOnTouchOutside(false);
+        if (progressDialog == null || !progressDialog.isShowing()) {
+            progressDialog = CommonUtils.showLoadingDialog(context);
         }
-        if (!progressDialog.isShowing())
-            progressDialog.show();
     }
 
     private static void hideLoading() {
@@ -639,18 +634,20 @@ public class CommonDialogs {
     }
 
     public static Dialog PremuimPurChaseDialog(Context ctx, final onProductConsume clickListener, SharedPreference sp) {
-        ViewPager viewPager;
-        TabLayout text_pager_indicator;
-        SliderAdapter sliderAdapter;
-        if (dialog == null || !dialog.isShowing()) {
-            currentPage = 0;
-            indexOfSelectedLayout = 0;
-            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ctx, R.style.BottomSheetDialog);
-            bottomSheetDialog.setContentView(R.layout.custom_buy_premium_dialog);
-            bottomSheetDialog.show();
-            bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
-            bottomSheetDialog.getBehavior().setDraggable(false);
-            dialog = bottomSheetDialog;
+        if (!sp.getPremium()) {
+
+            ViewPager viewPager;
+            TabLayout text_pager_indicator;
+            SliderAdapter sliderAdapter;
+            if (dialog == null || !dialog.isShowing()) {
+                currentPage = 0;
+                indexOfSelectedLayout = 0;
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ctx, R.style.BottomSheetDialog);
+                bottomSheetDialog.setContentView(R.layout.custom_buy_premium_dialog);
+                bottomSheetDialog.show();
+                bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
+                bottomSheetDialog.getBehavior().setDraggable(false);
+                dialog = bottomSheetDialog;
 /*
 
             dialog = new Dialog(ctx, R.style.PauseDialog);
@@ -667,178 +664,258 @@ public class CommonDialogs {
 
 */
 
-            LinearLayout[] layouts = new LinearLayout[4];
-            layouts[0] = dialog.findViewById(R.id.rb5Likes);
-            layouts[1] = dialog.findViewById(R.id.rb25Likes);
-            layouts[2] = dialog.findViewById(R.id.tokens10Lay);
-            layouts[3] = dialog.findViewById(R.id.tokens20Lay);
-            for (int i = 0; i < layouts.length; i++) {
-                int finalI = i;
-                layouts[i].setOnClickListener(v -> {
-                    indexOfSelectedLayout = finalI;
-                    unSelectAll(layouts);
-                    layouts[finalI].setBackgroundResource(R.drawable.vip_token_red_bg);
+                LinearLayout[] layouts = new LinearLayout[4];
+                layouts[0] = dialog.findViewById(R.id.rb5Likes);
+                layouts[1] = dialog.findViewById(R.id.rb25Likes);
+                layouts[2] = dialog.findViewById(R.id.tokens10Lay);
+                layouts[3] = dialog.findViewById(R.id.tokens20Lay);
+                for (int i = 0; i < layouts.length; i++) {
+                    int finalI = i;
+                    layouts[i].setOnClickListener(v -> {
+                        indexOfSelectedLayout = finalI;
+                        unSelectAll(layouts);
+                        layouts[finalI].setBackgroundResource(R.drawable.vip_token_red_bg);
+                    });
+                }
+                Button btn_continue = dialog.findViewById(R.id.btn_continue);
+                btn_continue.setOnClickListener(v -> {
+                    if (indexOfSelectedLayout == 0) {
+                        clickListener.onClickToken("PremiumPurchase", 1, indexOfSelectedLayout);//9.99
+                    } else if (indexOfSelectedLayout == 1) {
+                        clickListener.onClickToken("PremiumPurchase", 3, indexOfSelectedLayout);//24.99
+                    } else if (indexOfSelectedLayout == 2) {
+                        clickListener.onClickToken("PremiumPurchase", 6, indexOfSelectedLayout);//39.99
+                    } else {
+                        clickListener.onClickToken("PremiumPurchase", 12, indexOfSelectedLayout);//59.99
+                    }
+                    dialog.dismiss();
                 });
-            }
-            Button btn_continue = dialog.findViewById(R.id.btn_continue);
-            btn_continue.setOnClickListener(v -> {
-                if (indexOfSelectedLayout == 0) {
-                    clickListener.onClickToken("PremiumPurchase", 1, indexOfSelectedLayout);//9.99
-                } else if (indexOfSelectedLayout == 1) {
-                    clickListener.onClickToken("PremiumPurchase", 3, indexOfSelectedLayout);//24.99
-                } else if (indexOfSelectedLayout == 2) {
-                    clickListener.onClickToken("PremiumPurchase", 6, indexOfSelectedLayout);//39.99
-                } else {
-                    clickListener.onClickToken("PremiumPurchase", 12, indexOfSelectedLayout);//59.99
-                }
-                dialog.dismiss();
-            });
 
-            TextView[] tvToken1Price = new TextView[4];
-            if (sp != null) {
-                TextView tv_subscribe = dialog.findViewById(R.id.tv_subscribe);
-                tv_subscribe.setVisibility(sp.getPremium() ? View.VISIBLE : View.GONE);
-            }
-
-            tvToken1Price[0] = dialog.findViewById(R.id.tvToken1Price);
-            tvToken1Price[1] = dialog.findViewById(R.id.tvToken5Price);
-            tvToken1Price[2] = dialog.findViewById(R.id.tvToken10Price);
-            tvToken1Price[3] = dialog.findViewById(R.id.tvToken20Price);
-
-            TextView tv_restore = dialog.findViewById(R.id.tv_restore);
-            text_pager_indicator = dialog.findViewById(R.id.text_pager_indicator);
-
-            viewPager = dialog.findViewById(R.id.pagerSlider);
-            String[] tab_names = ctx.getResources().getStringArray(R.array.arr_premium_txt);
-            List<String> titleList = new ArrayList<>();
-            Collections.addAll(titleList, tab_names);
-            sliderAdapter = new SliderAdapter(Objects.requireNonNull(ctx), titleList, null);
-            viewPager.setAdapter(sliderAdapter);
-            text_pager_indicator.setupWithViewPager(viewPager);
-            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                TextView[] tvToken1Price = new TextView[4];
+                if (sp != null) {
+                    TextView tv_subscribe = dialog.findViewById(R.id.tv_subscribe);
+                    tv_subscribe.setVisibility(sp.getPremium() ? View.VISIBLE : View.GONE);
                 }
 
-                @Override
-                public void onPageSelected(int position) {
-                    currentPage = position;
+                tvToken1Price[0] = dialog.findViewById(R.id.tvToken1Price);
+                tvToken1Price[1] = dialog.findViewById(R.id.tvToken5Price);
+                tvToken1Price[2] = dialog.findViewById(R.id.tvToken10Price);
+                tvToken1Price[3] = dialog.findViewById(R.id.tvToken20Price);
 
+                TextView tv_restore = dialog.findViewById(R.id.tv_restore);
+                text_pager_indicator = dialog.findViewById(R.id.text_pager_indicator);
+
+                viewPager = dialog.findViewById(R.id.pagerSlider);
+                String[] tab_names = ctx.getResources().getStringArray(R.array.arr_premium_txt);
+                List<String> titleList = new ArrayList<>();
+                Collections.addAll(titleList, tab_names);
+                sliderAdapter = new SliderAdapter(Objects.requireNonNull(ctx), titleList, null);
+                viewPager.setAdapter(sliderAdapter);
+                text_pager_indicator.setupWithViewPager(viewPager);
+                viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        currentPage = position;
+
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
+                handler = new Handler();
+                Update = () -> {
+                    if (currentPage == viewPager.getAdapter().getCount()) {
+                        currentPage = 0;
+                    }
+                    viewPager.setCurrentItem(currentPage, true);
+                    currentPage++;
+                };
+
+                if (timer != null) {
+                    timer.cancel();
                 }
+                timer = new Timer();
 
-                @Override
-                public void onPageScrollStateChanged(int state) {
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        handler.post(Update);
+                    }
+                }, 0, TIME_PERIOD);
 
-                }
-            });
-            handler = new Handler();
-            Update = () -> {
-                if (currentPage == viewPager.getAdapter().getCount()) {
-                    currentPage = 0;
-                }
-                viewPager.setCurrentItem(currentPage, true);
-                currentPage++;
-            };
-
-            if (timer != null) {
-                timer.cancel();
-            }
-            timer = new Timer();
-
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    handler.post(Update);
-                }
-            }, 0, TIME_PERIOD);
-
-            String one = "Already paid for Premium?";
-            Spannable word = new SpannableString(one);
-            word.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(ctx.getResources(), R.color.grey_new, null)), 0, word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tv_restore.setText(word);
+                String one = "Already paid for Premium?";
+                Spannable word = new SpannableString(one);
+                word.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(ctx.getResources(), R.color.grey_new, null)), 0, word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                tv_restore.setText(word);
 
 
-            Spannable wordTwo = new SpannableString(" Restore Purchase.");
-            wordTwo.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(ctx.getResources(), R.color.red_start, null)), 0, wordTwo.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            tv_restore.append(wordTwo);
+                Spannable wordTwo = new SpannableString(" Restore Purchase.");
+                wordTwo.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(ctx.getResources(), R.color.red_start, null)), 0, wordTwo.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                tv_restore.append(wordTwo);
 
-            tv_restore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                tv_restore.setOnClickListener(v -> {
                     if ((myBC != null && myBC.isReady())) {
-                        showLoader(ctx);
-
-                        myBC.queryPurchasesAsync(BillingClient.SkuType.SUBS, new PurchasesResponseListener() {
+                       /* myBC.queryPurchaseHistoryAsync(BillingClient.SkuType.SUBS, new PurchaseHistoryResponseListener() {
                             @Override
-                            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
-                                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && !list.isEmpty()) {
-                                    PremiumTokenCountModel model = null;
-
-                                    Purchase purchase = list.get(0);
-                                    double price = 0;
-                                    String productId = purchase.getSkus().get(0);
-                                    if (PremiumSkuList != null && !PremiumSkuList.isEmpty())
-                                        for (int i = 0; i < PremiumSkuList.size(); i++) {
-                                            if (PremiumSkuList.get(i).getSku().equalsIgnoreCase(productId)) {
-                                                price = PremiumPriceArr[i];
-                                                break;
+                            public void onPurchaseHistoryResponse(@NonNull BillingResult billingResult,List<PurchaseHistoryRecord> list) {
+                                String id;
+                                if (list!=null) {
+                                    for (PurchaseHistoryRecord record : list) {
+                                        id = record.getSkus().get(0);
+                                        if (id.equals("swift_premium_1") || id.equals("swift_premium_3") || id.equals("swift_premium_6") || id.equals("swift_premium_12")) {
+                                            double price = 0;
+                                            if (PremiumSkuList != null && !PremiumSkuList.isEmpty())
+                                                for (int i = 0; i < PremiumSkuList.size(); i++) {
+                                                    if (PremiumSkuList.get(i).getSku().equalsIgnoreCase(id)) {
+                                                        price = PremiumPriceArr[i];
+                                                        break;
+                                                    }
+                                                }
+                                            PremiumTokenCountModel model=null;
+                                            Purchase purchase= null;
+                                            try {
+                                                purchase = new Purchase(record.getOriginalJson(),record.getSignature());
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
                                             }
-                                        }
-                                    if (price > 0) {
-                                        model = new PremiumTokenCountModel(subscriptiontype,
-                                                productId,
+                                            if (price>0&&purchase!=null) {
+                                                model = new PremiumTokenCountModel("1",
+                                                id,
                                                 price,
-                                                Integer.parseInt(productId.split("_")[1]),
+                                                Integer.parseInt(id.split("_")[2]),
                                                 purchase.getOrderId(),
                                                 purchase.getPurchaseToken(),
                                                 CommonUtils.getDateForPurchase(purchase.getPurchaseTime()),
                                                 purchase.getSignature(),
                                                 BaseActivity.purchaseState);
-                                    }
-                                    if (model != null) {
-                                        new CallRestoreApi().callApi(model, new SharedPreference(ctx), subscriptiontype, new onPurchaseRestore() {
-                                            @Override
-                                            public void onError(String msg) {
-                                                Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
-                                                hideLoading();
-                                                dialog.dismiss();
                                             }
+                                            if (model != null) {
+                                                new CallRestoreApi().callApi(model, new SharedPreference(ctx), subscriptiontype, new onPurchaseRestore() {
+                                                    @Override
+                                                    public void onError(String msg) {
+                                                        Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
+                                                        hideLoading();
+                                                        dialog.dismiss();
+                                                    }
 
-                                            @Override
-                                            public void onSucces() {
-                                                Toast.makeText(ctx, "Purchase Restored Successfully", Toast.LENGTH_SHORT).show();
+                                                    @Override
+                                                    public void onSucces() {
+                                                        Toast.makeText(ctx, "Purchase Restored Successfully", Toast.LENGTH_SHORT).show();
+                                                        hideLoading();
+                                                        dialog.dismiss();
+                                                    }
+                                                });
+                                            } else {
+                                                //Toast.makeText(ctx,"Purchase Restore unavailable.",Toast.LENGTH_SHORT).show();
                                                 hideLoading();
-                                                dialog.dismiss();
+                                                //dialog.dismiss();
                                             }
-                                        });
-                                    } else {
-                                        //Toast.makeText(ctx,"Purchase Restore unavailable.",Toast.LENGTH_SHORT).show();
-                                        hideLoading();
-                                        //dialog.dismiss();
+                                            break;
+                                        }
                                     }
+                                }else {
+                                    hideLoading();
+                                }
+                            }
+                        });*/
+                        showLoader(ctx);
+
+                        myBC.queryPurchasesAsync(BillingClient.SkuType.SUBS, new PurchasesResponseListener() {
+                            @Override
+                            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
+                                Log.e(TAG, "onQueryPurchasesResponse: "+list );
+                                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && !list.isEmpty()) {
+                                    String productId;
+                                    for (Purchase purchase : list) {
+                                         productId = purchase.getSkus().get(0);
+                                        if (productId.equals("swift_premium_1") || productId.equals("swift_premium_3") || productId.equals("swift_premium_6") || productId.equals("swift_premium_12")) {
+                                            PremiumTokenCountModel model = null;
+                                            double price = 0;
+                                            if (PremiumSkuList != null && !PremiumSkuList.isEmpty()) {
+                                                for (int i = 0; i < PremiumSkuList.size(); i++) {
+                                                    if (PremiumSkuList.get(i).getSku().equalsIgnoreCase(productId)) {
+                                                        price = PremiumPriceArr[i];
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            if (price > 0) {
+                                                model = new PremiumTokenCountModel(subscriptiontype,
+                                                        productId,
+                                                        price,
+                                                        Integer.parseInt(productId.split("_")[1]),
+                                                        purchase.getOrderId(),
+                                                        purchase.getPurchaseToken(),
+                                                        CommonUtils.getDateForPurchase(purchase.getPurchaseTime()),
+                                                        purchase.getSignature(),
+                                                        BaseActivity.purchaseState);
+                                            }
+                                            if (model != null) {
+                                                new CallRestoreApi().callApi(model, new SharedPreference(ctx), subscriptiontype, new onPurchaseRestore() {
+                                                    @Override
+                                                    public void onError(String msg) {
+                                                        hideLoading();
+                                                        showToast(msg,ctx);
+//                                                        dialog.dismiss();
+                                                    }
+
+                                                    @Override
+                                                    public void onSucces() {
+                                                        hideLoading();
+                                                        showToast("Purchase Restored Successfully",ctx);
+                                                        dialog.dismiss();
+                                                    }
+                                                });
+                                            } else {
+                                                hideLoading();
+                                                showToast("Purchase not available.",ctx);
+                                                //dialog.dismiss();
+                                            }
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    hideLoading();
+                                    showToast("Purchase not available.",ctx);
+//                                    Toast.makeText(ctx, "unable to Restore", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(ctx, "Purchase not available.", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
                     }
-                }
-            });
+                });
 
-            if (PremiumPriceList.size() > 0) {
-                for (int i = 0; i < tvToken1Price.length; i++) {
-                    if (!TextUtils.isEmpty(PremiumPriceList.get(i).getPriceTxt())) {
-                        tvToken1Price[i].setText(PremiumPriceList.get(i).getPriceTxt());
+                if (PremiumPriceList.size() > 0) {
+                    for (int i = 0; i < tvToken1Price.length; i++) {
+                        if (!TextUtils.isEmpty(PremiumPriceList.get(i).getPriceTxt())) {
+                            tvToken1Price[i].setText(PremiumPriceList.get(i).getPriceTxt());
+                        }
                     }
                 }
+                ImageView ivclose = dialog.findViewById(R.id.image_back);
+
+
+                ivclose.setOnClickListener(v -> dialog.dismiss());
+
+                dialog.show();
             }
-            ImageView ivclose = dialog.findViewById(R.id.image_back);
-
-
-            ivclose.setOnClickListener(v -> dialog.dismiss());
-
-            dialog.show();
+            return dialog;
+        } else {
+            showAlreadyPremiumUser(ctx, ctx.getString(R.string.you_have_active_subscription));
         }
-        return dialog;
+        return null;
+    }
+
+    private static void showToast(String s, Context ctx) {
+        Log.e(TAG, "showToast: "+s );
+        Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
     }
 
     /*public static CommonDialogs DeluxePurChaseDialog(Context ctx, onProductConsume clickListener) {
@@ -1296,12 +1373,12 @@ public class CommonDialogs {
             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null && !list.isEmpty()) {
                 String price;
                 vipTokenPriceList.clear();
-                vipTokenSkuList=list;
+                vipTokenSkuList = list;
                 Collections.sort(vipTokenSkuList, (details, t1) -> Long.compare(details.getPriceAmountMicros(), t1.getPriceAmountMicros()));
                 for (int i = 0; i < vipTokenSkuList.size(); i++) {
                     price = vipTokenSkuList.get(i).getPrice();
-                    price= price.substring(1);
-                    vipTokenPriceList.add(new InAppPriceValue(vipTokenSkuList.get(i).getPrice() /*skuDetails.priceText*/,Double.parseDouble(price) /*skuDetails.priceValue*/));
+                    price = price.substring(1);
+                    vipTokenPriceList.add(new InAppPriceValue(vipTokenSkuList.get(i).getPrice() /*skuDetails.priceText*/, Double.parseDouble(price) /*skuDetails.priceValue*/));
                 }
                 Log.e(TAG, "onBillingInitialized: " + vipTokenPriceList);
             }

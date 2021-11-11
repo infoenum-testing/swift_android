@@ -135,11 +135,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         } else {
             if (view == tvTermOfService) {
                 startActivity(new Intent(this, CommonWebViewActivity.class)
-                        .putExtra("url", "https://swiftdatingapp.com/terms/"));
+                       // .putExtra("url", "https://swiftdatingapp.com/terms/"));
+                        .putExtra("url", "https://amaredatingapp.com/terms/"));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             } else if (view == tvPrivacyPolicy) {
                 startActivity(new Intent(this, CommonWebViewActivity.class)
-                        .putExtra("url", "https://swiftdatingapp.com/privacy/"));
+                       // .putExtra("url", "https://swiftdatingapp.com/privacy/"));
+                        .putExtra("url", "https://amaredatingapp.com/privacy/"));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         }

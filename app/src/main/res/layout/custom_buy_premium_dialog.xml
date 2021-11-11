@@ -76,13 +76,13 @@
 
                     <ImageView
                         android:id="@+id/imageLogo"
-                        android:layout_width="@dimen/_40sdp"
+                        android:layout_width="@dimen/_150sdp"
                         android:layout_height="24dp"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:src="@drawable/logo" />
+                        android:src="@drawable/amare_premium_logo" />
 
-                    <TextView
+                    <!--<TextView
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/_20sdp"
                         android:layout_centerVertical="true"
@@ -94,7 +94,7 @@
                         android:paddingTop="1dp"
                         android:text="PREMIUM"
                         android:textColor="@color/pink"
-                        android:textSize="17sp" />
+                        android:textSize="17sp" />-->
 
 
                 </RelativeLayout>

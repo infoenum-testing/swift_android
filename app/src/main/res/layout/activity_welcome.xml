@@ -42,7 +42,7 @@
                 android:layout_width="@dimen/_130sdp"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/logo" />
+                app:srcCompat="@drawable/amare_logo_red" />
 
             <TextView
                 android:id="@+id/tv_welcome_desc"

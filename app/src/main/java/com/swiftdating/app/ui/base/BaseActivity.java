@@ -40,6 +40,7 @@ import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchaseHistoryRecord;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.androidadvance.topsnackbar.TSnackbar;
@@ -76,6 +77,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Purchase
     protected static BillingClient client;
     private static OnPurchaseListener onPurchaseListener;
     public SharedPreference sp;
+    public static boolean isPaymentLoadShow=true;
     public Context mContext;
     public boolean settings = false;
     public boolean isCardScreen = false;
@@ -292,9 +294,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Purchase
     protected void callPurchaseDetail(String subscriptionId, String purchaseToken) {
         Log.e(TAG, "callPurchaseDetail: " + subscriptionId + "   " + purchaseToken);
 
-        if (!TextUtils.isEmpty(SubscriptionKeys.GOOGLE_ACCESS_TOKEN))
+        if (!TextUtils.isEmpty(SubscriptionKeys.GOOGLE_ACCESS_TOKEN)) {
             ApiCall.getPurchaseDetails(SubscriptionKeys.GOOGLE_ACCESS_TOKEN, subscriptionId, purchaseToken, this);
-        else {
+        } else {
             callRefreshTokenApi(purchaseToken, subscriptionId);
         }
     }
@@ -560,11 +562,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Purchase
     public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> list) {
         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null && !list.isEmpty()) {
             Log.e(TAG, "onPurchasesUpdated: " + list);
-
-            if (onPurchaseListener != null)
-                onPurchaseListener.OnSuccessPurchase(list.get(0));
-
-
+            try {
+                if (onPurchaseListener != null)
+                    onPurchaseListener.OnSuccessPurchase(list.get(0));
+            } catch (Exception e) {
+                Log.e(TAG, "onPurchasesUpdated: ", e.fillInStackTrace());
+            }
         } else {
             Log.e(TAG, "onPurchasesUpdated: billingResultCode : " + billingResult.getResponseCode() + " billingResultMsg : " + billingResult.getDebugMessage());
         }
@@ -587,6 +590,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Purchase
 
     @Override
     public void onError(String error) {
+        hideLoading();
         showSnackbar(findViewById(android.R.id.content), error);
         Log.e(TAG, "onError: " + error);
     }
@@ -597,23 +601,30 @@ public abstract class BaseActivity extends AppCompatActivity implements Purchase
         callPurchaseDetail(subscriptionId, purchaseToken);
     }
 
-    protected void queryPurchasesAsync(OnQueryPurchasesListener queryPurchasesListener) {
-        if (client.isReady()) {
-            client.queryPurchasesAsync(BillingClient.SkuType.SUBS, (billingResult, list) -> {
-                Log.e(TAG, "onQueryPurchasesResponse: " + billingResult.getResponseCode() + "   " + list);
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK ) {
-                    if (queryPurchasesListener != null) {
-                        queryPurchasesListener.OnGetSuccessQueryPurchase(true, list);
-                    }
-                } else {
-                    if (queryPurchasesListener != null) {
-                        queryPurchasesListener.OnGetSuccessQueryPurchase(false, null);
-                    }
-                }
-            });
-        } else {
-            if (queryPurchasesListener != null) {
-                queryPurchasesListener.OnGetSuccessQueryPurchase(false, null);
+    protected void queryPurchasesAsync(OnQueryPurchasesListener listener) {
+        if (listener != null) {
+            if (client.isReady()) {
+                client.queryPurchasesAsync(BillingClient.SkuType.SUBS, (billingResult, list) -> {
+                    Log.e(TAG, "onQueryPurchasesResponse: " + billingResult.getResponseCode() + "   " + list);
+                    if (listener != null)
+                    listener.OnGetSuccessQueryPurchase(billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK, list);
+                });
+            } else {
+                listener.OnGetSuccessQueryPurchase(false, null);
+            }
+        }
+    }
+
+    protected void queryPurchaseHistoryAsync(OnQueryPurchasesHistoryListener listener) {
+        if (listener != null) {
+            if (client!=null&&client.isReady()) {
+                client.queryPurchaseHistoryAsync(BillingClient.SkuType.SUBS, (billingResult, list) -> {
+                    Log.e(TAG, "queryPurchaseHistoryAsyncResponse: " + billingResult.getResponseCode() + "   " + list);
+                    if (listener != null)
+                    listener.OnGetSuccessQueryPurchaseHistory(billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK, list);
+                });
+            } else {
+                listener.OnGetSuccessQueryPurchaseHistory(false, null);
             }
         }
     }
@@ -629,6 +640,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Purchase
     protected AcknowledgePurchaseParams getAcknowledgeParams(String purchaseToken) {
         return AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchaseToken).build();
     }
+
     public interface OnPurchaseListener {
         void OnSuccessPurchase(Purchase purchase);
 
@@ -637,6 +649,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Purchase
 
     public interface OnQueryPurchasesListener {
         void OnGetSuccessQueryPurchase(boolean isSuccess, List<Purchase> list);
+    }
+
+    public interface OnQueryPurchasesHistoryListener {
+        void OnGetSuccessQueryPurchaseHistory(boolean isSuccess, List<PurchaseHistoryRecord> list);
     }
 
     public interface MyProfileResponse {

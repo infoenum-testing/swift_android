@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Swift</string>
+    <string name="app_name">Amare</string>
 
     <!--    Login-->
     <string name="loginWithFb">Continue with Facebook</string>
@@ -79,15 +79,15 @@
     <string name="my_card">Profile Preview</string>
     <string name="question_headings">Skip the small talk! Enter three questions of your choice that your matches will answer.Your questions are a way to learn more about your match.Be creative fun and keep it interesting</string>
     <string name="welcome_to_app">Welcome to</string>
-    <string name="welcome_to_app_desc">Swift is the dating app designed to connect faster. We are focused on people actually connecting. We know you are tired of swiping all day and collecting matches but never truly connecting so we give matches 72 hours to make a connection and move things to real life.</string>
+    <string name="welcome_to_app_desc">Amare is the dating app designed to connect faster. We are focused on people actually connecting. We know you are tired of swiping all day and collecting matches but never truly connecting so we give matches 72 hours to make a connection and move things to real life.</string>
     <string name="what_makes_txt_1">All matches have 72 hours to get to know each other</string>
     <string name="what_makes_txt_2">More completed profiles than other apps</string>
     <string name="what_makes_txt_3">Search for people and find your true match.</string>
     <string name="what_makes_txt_4">Send Direct Messages</string>
-    <string name="terms">By using SWIFT, you agree to our </string>
+    <string name="terms">By using AMARE, you agree to our </string>
     <string name="terms2"> terms &amp; policies.</string>
     <string name="process">Process</string>
-    <string name="what_makes_txt">What makes Swift different?</string>
+    <string name="what_makes_txt">What makes Amare different?</string>
 
     <string name="process_desc">Swipe Match Set a date within 48 hours.Talk Exchange Contacts\n
         You can unmatch any step of the way.Please remember to be yourself,be friendly and date Safely.</string>
@@ -568,7 +568,7 @@
     <string name="less_than_75">You must complete 75% of your profile before sending likes.</string>
     <string name="noMatchAvailable">No matches yet. Match with some people and they will appear here.</string>
     <string name="and"> &amp;</string>
-    <string name="you_have_active_subscription">You have an active BlackGentry Premium subscription.</string>
+    <string name="you_have_active_subscription">You have an active Swift Premium subscription.</string>
     <string name="you_have_active_deluxe_subscription">You have an active Premium subscription.</string>
     <string name="likes_subscribe_deluxe_txt">Upgrade to Premium to see people who have already liked you.</string><!--Upgrade to Deluxe to search for users-->
     <string name="likes_subscribe_profile_deluxe_txt">Want a second chance? Upgrade to Premium and see the last 100 profiles you skipped.</string>

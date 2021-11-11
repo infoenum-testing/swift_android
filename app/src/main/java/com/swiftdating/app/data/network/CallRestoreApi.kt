@@ -32,20 +32,21 @@ class CallRestoreApi {
                         val responseBean: BaseModel = gson.fromJson(response.body()!!.string(), BaseModel::class.java)
                         if (responseBean.isavaiable) {
                             if (subscriptiontype == "1")
-                                spr.savePremium(false)
+                                spr.savePremium(false)/*
                             else if (subscriptiontype == "2") {
                                 spr.saveDeluxe(false)
-                            }
+                            }*/
                             onPurchaseRestore.onError("Purchase Restore unavailable.")
                         } else {
                             if (subscriptiontype == "1")
-                                spr.savePremium(true)
+                                spr.savePremium(true)/*
                             else if (subscriptiontype == "2")
-                                spr.saveDeluxe(true)
+                                spr.saveDeluxe(true)*/
                             onPurchaseRestore.onSucces()
                         }
                     } else {
-                        onPurchaseRestore.onError(response.errorBody().toString())
+                        val error= response.errorBody()?.string()
+                        onPurchaseRestore.onError(error)
                         Log.e("check1", response.errorBody().toString())
                     }
                 } catch (e: java.lang.Exception) {

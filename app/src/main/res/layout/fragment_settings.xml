@@ -711,13 +711,13 @@
 
                     <ImageView
                         android:id="@+id/imageLogo"
-                        android:layout_width="@dimen/_40sdp"
+                        android:layout_width="@dimen/_150sdp"
                         android:layout_height="24dp"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:src="@drawable/logo" />
+                        android:src="@drawable/amare_premium_logo" />
 
-                    <TextView
+                    <!--<TextView
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/_20sdp"
                         android:layout_centerVertical="true"
@@ -729,7 +729,7 @@
                         android:paddingTop="1dp"
                         android:text="PREMIUM"
                         android:textColor="@color/pink"
-                        android:textSize="17sp" />
+                        android:textSize="17sp" />-->
 
 
                 </RelativeLayout>
@@ -808,8 +808,11 @@
             <ImageView
                 android:id="@+id/logo"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/logo"
+                android:layout_height="32dp"
+               android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="15dp"
+                android:src="@drawable/amare_logo_red"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvdelete" />

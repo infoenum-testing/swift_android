@@ -502,6 +502,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     @Override
     public void onResume() {
         mActivity = (BaseActivity) getActivity();
+
         ((HomeActivity) Objects.requireNonNull(getActivity())).mToolbar.setVisibility(View.GONE);
         if (getBaseActivity().isNetworkConnected()) {
             try {
@@ -1038,7 +1039,7 @@ public class MatchFragment extends BaseFragment implements OnItemClickListenerTy
     @Override
     public void OnSuccessPurchase(Purchase purchase) {
         Log.e(TAG, "onProductPurchased: " + purchase + "\n" + productId);
-        if (tokenSType.equalsIgnoreCase("PremiumPurchase")&&fragClient!=null&&fragClient.isReady()) {
+        if (!TextUtils.isEmpty(tokenSType)&&tokenSType.equalsIgnoreCase("PremiumPurchase")&&fragClient!=null&&fragClient.isReady()) {
             Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_LONG).show();
             mActivity.showLoading();
             fragClient.acknowledgePurchase(getAcknowledgeParams(purchase.getPurchaseToken()), billingResult -> {

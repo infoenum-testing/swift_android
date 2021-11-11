@@ -85,7 +85,6 @@ public class SubscriptionResponse implements Serializable {
     @SerializedName("obfuscatedExternalProfileId")
     @Expose
     private String obfuscatedExternalProfileId;
-    private final static long serialVersionUID = -5387400595300544609L;
 
     public String getKind() {
         return kind;

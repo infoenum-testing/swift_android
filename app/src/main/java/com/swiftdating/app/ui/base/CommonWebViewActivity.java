@@ -13,6 +13,7 @@ public class CommonWebViewActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         String url = getIntent().getExtras().getString("url");
         setContentView(R.layout.activity_common_web_view);
         webview = (WebView) findViewById(R.id.webView1);

@@ -150,13 +150,12 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN, WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         setContentView(R.layout.activity_chat_window);
+        setOnPurchaseListener(this);
         context = this;
-        initialize();
-        implementListeners();
+        isExpired = getIntent().getBooleanExtra("isExpired", false);
         id = getIntent().getIntExtra("id", 0);
         chatUserName = getIntent().getStringExtra("name");
         imageUrl = getIntent().getStringExtra("image");
-        isExpired = getIntent().getBooleanExtra("isExpired", false);
         if (getIntent().hasExtra("timeLeft")) {
             timeLeft = getIntent().getLongExtra("timeLeft", 0);
         }
@@ -164,8 +163,6 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
             fromOutSide = getIntent().getBooleanExtra("outside", false);
         }
         isFromCard = getIntent().getBooleanExtra("isFromCard", false);
-        //fromOutSide = getIntent().getBooleanExtra("isFromCard", false);
-        ivMenu.setVisibility(getIntent().getBooleanExtra("isFromCard", false) ? View.INVISIBLE : View.VISIBLE);
         if ((getIntent().hasExtra("tabPos"))) {
             tabPos = getIntent().getIntExtra("tabPos", 3);
         }
@@ -175,11 +172,15 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
         if ((getIntent().hasExtra("isFromSearch"))) {
             isFromSearch = getIntent().getBooleanExtra("isFromSearch", false);
         }
+        initialize();
+        implementListeners();
+        //fromOutSide = getIntent().getBooleanExtra("isFromCard", false);
+        ivMenu.setVisibility(getIntent().getBooleanExtra("isFromCard", false) ? View.INVISIBLE : View.VISIBLE);
         clearNotification();
         subscribeModel();
         getData(getIntent());
-        initialize();
-        implementListeners();
+//        initialize();
+//        implementListeners();
         checkInternet(API_CHAT);
         registerBroadCast();
         initBillingProcess();
@@ -585,8 +586,7 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
                 tvTimeLeft.setText(timeExpireStr);
             }  //                iv_userImage.setVisibility(View.GONE);
         }
-
-        if (isfromDirect) {
+        if (isfromDirect||isFromCard) {
             tvTimeLeft.setVisibility(View.GONE);
         } else {
             tvTimeLeft.setVisibility(View.VISIBLE);
@@ -1043,12 +1043,11 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
 
     @Override
     public void OnSuccessPurchase(Purchase purchase) {
-
-        Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
-        if (client != null && client.isReady()) {
-            showLoading();
+               Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
+        if (client != null && client.isReady()&&!TextUtils.isEmpty(tokenSType)) {
             Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show();
             if (tokenSType.equalsIgnoreCase("PremiumPurchase")) {
+                showLoading();
                 client.acknowledgePurchase(getAcknowledgeParams(purchase.getPurchaseToken()),
                         billingResult -> homeViewModel.addPremiumRequest(new PremiumTokenCountModel("1", productId,
                                 price,
@@ -1059,6 +1058,7 @@ public class ChatWindow extends BaseActivity implements View.OnClickListener, On
                                 purchase.getSignature(),
                                 BaseActivity.purchaseState)));
             } else {
+                showLoading();
                 client.consumeAsync(getConsumeParam(purchase.getPurchaseToken()), new ConsumeResponseListener() {
                     @Override
                     public void onConsumeResponse(@NonNull BillingResult billingResult, @NonNull String s) {

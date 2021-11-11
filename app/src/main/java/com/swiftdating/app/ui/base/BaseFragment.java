@@ -86,6 +86,11 @@ public abstract class BaseFragment extends Fragment {
             getBaseActivity().queryPurchasesAsync(queryPurchasesListener);
         }
     }
+    protected void queryPurchaseHistoryAsync(BaseActivity.OnQueryPurchasesHistoryListener listener){
+        if (mContext instanceof BaseActivity){
+            getBaseActivity().queryPurchaseHistoryAsync(listener);
+        }
+    }
 
     protected BillingFlowParams getBillingFlowParam(SkuDetails sku){
         return BillingFlowParams.newBuilder().setSkuDetails(sku).build();

@@ -50,6 +50,8 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.swiftdating.app.R
 import com.swiftdating.app.callbacks.ReportInterface
@@ -101,8 +103,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
     private val tv_likeCount by lazy { view?.findViewById<TextView>(R.id.tv_likeCount) }
 
     //   val img_vip_star = view.findViewById(R.id.img_vip_star) as ImageView
-    private val manager by lazy {
-        CardStackLayoutManager(context, this) }
+    private val manager by lazy { CardStackLayoutManager(context, this) }
     private var locationCheckCount = 0
     private var gotLocation: Boolean = false
     private var lat = ""
@@ -456,54 +457,18 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
      */
     private fun initBillingProcess() {
         if (fragClient != null && fragClient.isReady) {
-            if (baseActivity != null && baseActivity.sp != null)
+            Log.e(TAG, "initBillingProcess: Fragment client")
+            if (baseActivity != null && baseActivity.sp != null) {
+                if (BaseActivity.isPaymentLoadShow)
+                    baseActivity.showLoading()
                 homeViewModel.getSubscriptionRequest(baseActivity.sp.token)
+            }
         }
         /*bp = BillingProcessor(context as Activity, LICENSE_KEY, this)
         bp!!.initialize()*/
 
     }
 
-
-    /**
-     * Method to check Subscription
-     */
-    private fun checkSubscription(subscriptionPeriod: Int, productId: String, purchaseToken: String) {
-        isFromGoogle = false
-        this.productId = productId
-        if (fragClient != null && fragClient.isReady) {
-            queryPurchasesAsync() { isSuccess, list ->
-                if (isSuccess) {
-                    if (!list.isNullOrEmpty()) {
-                        var count = 0
-                        for (purchase: Purchase in list) {
-                            if (purchase.skus[0].equals(productId, true) && purchase.purchaseToken == purchaseToken) {
-                                if (purchase.isAutoRenewing && !purchase.isAcknowledged) {
-                                    fragClient.acknowledgePurchase(getAcknowledgeParams(purchase.purchaseToken)) { billingResult ->
-                                       // callApiSub("Active", productId, true)
-                                    }
-                                } else if (purchase.isAcknowledged && !purchase.isAutoRenewing) {
-                                    callApiSub("Cancel", productId, false)
-                                } else if (purchase.isAutoRenewing && purchase.isAcknowledged) {
-                                    if (CommonUtils.checkIsDateExpire(subscriptionPeriod, purchase.purchaseTime)) {
-                                        callApiSub("Cancel", productId, false)
-                                    }
-                                }
-                                break
-                            } else {
-                                count++
-                            }
-                        }
-                        if (count == list.size) {
-                            callApiSub("Cancel", productId, false)
-                        }
-                    } else {
-                        callApiSub("Cancel", productId, false)
-                    }
-                }
-            }
-        }
-    }
 
     private fun callApiSub(status: String, productId: String, bool: Boolean) {
         baseActivity.sp.savePremium(bool)
@@ -512,91 +477,9 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
 
     var subscriptiontype = ""
 
-    /**
-     * Method to check Subscription
-     */
-    private fun checkExistingSubscription() {
-        if (fragClient != null && fragClient.isReady) {
-            queryPurchasesAsync() { isSuccess, list ->
-                if (isSuccess && !list.isNullOrEmpty()) {
-                    purchase = list[0]
-                    if (purchase.isAutoRenewing && !purchase.isAcknowledged) {
-                        fragClient.acknowledgePurchase(getAcknowledgeParams(purchase.purchaseToken)) { billingResult: BillingResult ->
-                            callApi(PremiumTokenCountModel(subscriptiontype, purchase.skus[0], price, purchase.skus[0].split("_").toTypedArray()[2].toInt(),
-                                    purchase.orderId,
-                                    purchase.purchaseToken,
-                                    CommonUtils.getDateForPurchase(purchase.purchaseTime),
-                                    purchase.signature,
-                                    BaseActivity.purchaseState), baseActivity.sp)
-                        }
-                    }
-                    isFromGoogle = true
-//                    callPurchaseDetail("swift_premium_1"/*purchase.skus[0]*/,"eahhgknacgkdghmdlpdlhphd.AO-J1OxPLSsnCctTutQeFs7QwbEZ23J6QUmZeuQN3dtuB0wSZ5N7tG9zEvdFbVwAV48YDijR9yfz7GhCFPxh_f6MwQrR9J_p6Q" /*purchase.purchaseToken*/)
-                }
-            }
-        }
-        /*if (fragClient.isReady) {
-            Log.e(TAG, "checkExistingSubscription: ")
-
-        *//*
-            fragClient.queryPurchasesAsync(BillingClient.SkuType.SUBS) { billingResult: BillingResult, purchases: MutableList<Purchase>? ->
-                Log.e(TAG, "checkExistingSubscription: $purchases")
-                if (!purchases.isNullOrEmpty()) {
-                    purchase = purchases[0]
-                    isFromGoogle = true
-                    callPurchaseDetail(purchase.skus[0], purchase.purchaseToken)
-//                    callPurchaseDetail(purchases.get(0).p)
-                }
-            }*//*
-
-            *//*
-                fragClient.queryPurchaseHistoryAsync(BillingClient.SkuType.SUBS) { billingResult: BillingResult, mutableList: MutableList<PurchaseHistoryRecord>? ->
-                    Log.e(TAG, "checkExistingSubscription: "+mutableList )
-                }*//*
-        }*/
-        /*
-        var productid = ""
-        var price = 0.0
-        if (bp!!.loadOwnedPurchasesFromGoogle()) {
-            if (bp!!.getSubscriptionTransactionDetails("swift_premium_1") != null ||
-                    bp!!.getSubscriptionTransactionDetails("swift_premium_3") != null ||
-                    bp!!.getSubscriptionTransactionDetails("swift_premium_6") != null ||
-                    bp!!.getSubscriptionTransactionDetails("swift_premium_12") != null) {
-                Log.e("subscribed", "subscribed")
-                when {
-                    bp!!.getSubscriptionTransactionDetails("swift_premium_1") != null -> {
-                        productid = "swift_premium_1"
-                        price = CommonDialogs.PremiumPriceList[0].priceValue
-                    }
-                    bp!!.getSubscriptionTransactionDetails("swift_premium_3") != null -> {
-                        productid = "swift_premium_3"
-                        price = CommonDialogs.PremiumPriceList[1].priceValue
-                    }
-                    bp!!.getSubscriptionTransactionDetails("swift_premium_6") != null -> {
-                        productid = "swift_premium_6"
-                        price = CommonDialogs.PremiumPriceList[2].priceValue
-                    }
-                    bp!!.getSubscriptionTransactionDetails("swift_premium_12") != null -> {
-                        productid = "swift_premium_12"
-                        price = CommonDialogs.PremiumPriceList[3].priceValue
-                    }
-                }
-                subscriptiontype = "1"
-                val c: Date = bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.purchaseData.purchaseTime
-                val df = SimpleDateFormat("yyyy-MM-dd HH:mm:sss")
-                val formattedDate = df.format(c)
-                callApi(PremiumTokenCountModel(subscriptiontype, productid, price, productid.split("_").toTypedArray()[2].toInt(),
-                        bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.purchaseData.orderId,
-                        bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.purchaseData.purchaseToken,
-                        formattedDate,
-                        bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.signature,
-                        bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.purchaseData.purchaseState.toString()), baseActivity.sp)
-
-            }
-        }*/
-    }
 
     private fun callApi(mPremiumTokenCountModel: PremiumTokenCountModel, spr: SharedPreference) {
+        Log.e(TAG, "callApi: $mPremiumTokenCountModel")
         val api = CallServer.get().apiName
         val github = Retrofit.Builder()
                 .baseUrl(CallServer.BASE_URL)
@@ -1131,6 +1014,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                 }
                 Status.SUCCESS -> {
                     if (resource.data!!.error != null && resource.data.error.code == "401") {
+                        baseActivity.hideLoading()
                         baseActivity.openActivityOnTokenExpire()
                     } else {
                         if (resource.data.subscription != null) {
@@ -1141,7 +1025,9 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
                             var productId: String = ""
                             if (isSubscribed) {
                                 productId = resource.data.subscription.subscriptionForUser.subscriptionId
-                                checkSubscription(resource.data.subscription.subscriptionForUser.subscriptionPeriod, productId, resource.data.subscription.subscriptionForUser.purchaseToken)
+                                checkSubscription(productId, resource.data.subscription.subscriptionForUser.purchaseToken)
+                            }else{
+                                baseActivity.hideLoading()
                             }
                         } else {
                             /*if (baseActivity.sp.deluxe) {
@@ -2481,7 +2367,7 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
 //        purchase.skus
         Toast.makeText(context, "Item Purchased", Toast.LENGTH_LONG).show()
         // val params = ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
-        if (fragClient != null && fragClient.isReady) {
+        if (fragClient != null && fragClient.isReady && !TextUtils.isEmpty(tokenSType)) {
             baseActivity.showLoading()
             if (tokenSType.equals("PremiumPurchase", ignoreCase = true)) {
                 fragClient.acknowledgePurchase(getAcknowledgeParams(purchase.purchaseToken)) { billingResult: BillingResult ->
@@ -2510,83 +2396,135 @@ class FindMatchFragment : BaseFragment(), CardStackListener,
         }
     }
 
-    lateinit var purchase: Purchase
-    private var isFromGoogle = false
-    override fun OnGetPurchaseDetail(body: SubscriptionResponse) {
-        var expireDate = Date(body.expiryTimeMillis.toLong())
-        var nowDate = Calendar.getInstance().time
-        if (nowDate.after(expireDate)) {
-            if (!isFromGoogle) {
-                callApiSub("Cancel", productId, false)
+    /**
+     * Method to check Subscription
+     */
+    private fun checkSubscription(productId: String, purchaseToken: String) {
+        this.productId = productId
+        if (fragClient != null && fragClient.isReady) {
+            if (baseActivity != null && BaseActivity.isPaymentLoadShow) {
+                BaseActivity.isPaymentLoadShow = false;
+                baseActivity.showLoading()
             }
-        } else {
-            if (isFromGoogle) {
-                subscriptiontype = "1"
-                // bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.purchaseData.purchaseTime
-                val productid = purchase.skus[0]
-                callApi(PremiumTokenCountModel(subscriptiontype, purchase.skus[0], price, productid.split("_").toTypedArray()[2].toInt(),
-                        body.orderId,
-                        purchase.purchaseToken,
-                        CommonUtils.getDateForPurchase(body.startTimeMillis.toLong()),
-                        purchase.signature,
-                        purchase.purchaseState.toString()), baseActivity.sp)
-            } else {
-                if (!body.isAutoRenewing) {
-                    callApiSub("Cancel", productId, false)
+            queryPurchasesAsync() { isSuccess, list ->
+                if (isSuccess) {
+                    if (!list.isNullOrEmpty()) {
+                        var count = 0
+                        for (purchase: Purchase in list) {
+                            if (purchase.skus[0].equals(productId, true) && purchase.purchaseToken == purchaseToken) {
+                                isFromGoogle = false
+                                setOnPurchaseListener(this)
+                                callPurchaseDetail(productId, purchase.purchaseToken)
+                                break
+                            } else {
+                                count++
+                            }
+                        }
+                        if (count == list.size) {
+                            callApiSub("Cancel", productId, false)
+                        }
+                    } else {
+                        callApiSub("Cancel", productId, false)
+                    }
                 } else {
-                    callApiSub("Active", productId, true)
+                    callApiSub("Cancel", productId, false)
+                }
+            }
+        }else {
+            if (baseActivity != null)
+                baseActivity.hideLoading()
+        }
+    }
+
+    /**
+     * Method to check Subscription
+     */
+    private fun checkExistingSubscription() {
+        if (fragClient != null && fragClient.isReady) {
+            queryPurchaseHistoryAsync() { isSuccess, list ->
+                if (isSuccess && !list.isNullOrEmpty()) {
+                    for (queryPurchase: PurchaseHistoryRecord in list) {
+                        purchase = Purchase(queryPurchase.originalJson, queryPurchase.signature)
+                        productId = purchase.skus[0]
+                        if (productId == "swift_premium_1" || productId == "swift_premium_3" || productId == "swift_premium_6" || productId == "swift_premium_12") {
+                            isFromGoogle = true
+                            setOnPurchaseListener(this)
+                            callPurchaseDetail(productId, purchase.purchaseToken)
+                            break
+                        }
+                    }
                 }
             }
         }
+    }
 
-        /*  val json=JSONObject(body.string())
-          val params = ConsumeParams.newBuilder().setPurchaseToken(purchaseToken).build()
-
-          homeViewModel.addPremiumRequest(PremiumTokenCountModel("1",
-                  productId, price, productId!!.split("_").toTypedArray()[2].toInt(),
-                  details!!.purchaseInfo.purchaseData.orderId,
-                  purchaseToken, CommonUtils.getDateForPurchase(json.getLong("expiryTimeMillis")),
-                  details.purchaseInfo.signature,
-                  details.purchaseInfo.purchaseData.purchaseState.toString()))*/
+    lateinit var purchase: Purchase
+    private var isFromGoogle = false
+    override fun OnGetPurchaseDetail(body: SubscriptionResponse) {
+       /* val analytic=FirebaseAnalytics.getInstance(mContext)
+        val bundle=Bundle();
+        bundle.putString("SubscriptionResponse","isFromGoogle ? = $isFromGoogle")
+        bundle.putString("autoResumeTimeMillis", "${body.autoResumeTimeMillis}")
+        bundle.putString("expiryTimeMillis", body.expiryTimeMillis)
+        bundle.putString("purchaseToken",purchase.purchaseToken)
+        analytic.logEvent(FirebaseAnalytics.Event.ADD_PAYMENT_INFO ,bundle)*/
+        val expireDate = Date(body.expiryTimeMillis.toLong())
+        val nowDate = Calendar.getInstance().time
+//        val productid = if(isFromGoogle)purchase.skus[0]else this.productId
+        if (nowDate.after(expireDate)) {
+            Log.e(TAG, "OnGetPurchaseDetail: its Expire")
+            if (!isFromGoogle) {
+                if (TextUtils.isEmpty(body.autoResumeTimeMillis)) {
+                    callApiSub("Cancel", productId, false)
+                } else {
+                    if (baseActivity != null && baseActivity.sp != null && baseActivity.sp.premium) {
+                        baseActivity.sp.savePremium(false)
+                    }
+                }
+            } else if (baseActivity != null && baseActivity.sp != null && baseActivity.sp.premium) {
+                baseActivity.sp.savePremium(false)
+            }
+        } else {
+            if (isFromGoogle) {
+                Log.e(TAG, "OnGetPurchaseDetail:>>> $isFromGoogle")
+                subscriptiontype = "1"
+                if (body.acknowledgementState == 0 && body.isAutoRenewing) {
+                    fragClient.acknowledgePurchase(getAcknowledgeParams(purchase.purchaseToken)) { billingResult: BillingResult ->
+                        homeViewModel.addPremiumRequest(PremiumTokenCountModel("1",
+                                productId,
+                                price,
+                                productId.split("_").toTypedArray()[2].toInt(),
+                                body.orderId,
+                                purchase.purchaseToken,
+                                CommonUtils.getDateForPurchase(body.startTimeMillis.toLong()),
+                                purchase.signature,
+                                BaseActivity.purchaseState))
+                    }
+                } else {
+                    if (baseActivity != null && baseActivity.sp != null) {
+                        callApi(PremiumTokenCountModel(subscriptiontype,
+                                productId,
+                                price,
+                                productId.split("_").toTypedArray()[2].toInt(),
+                                body.orderId,
+                                purchase.purchaseToken,
+                                CommonUtils.getDateForPurchase(body.startTimeMillis.toLong()),
+                                purchase.signature,
+                                BaseActivity.purchaseState),
+                                baseActivity.sp)
+                    }
+                }
+            } else {
+                if (TextUtils.isEmpty(body.autoResumeTimeMillis)) {
+                    if (baseActivity != null && baseActivity.sp != null && !baseActivity.sp.premium) {
+                        baseActivity.sp.savePremium(true)
+                    }
+                }
+            }/* else {
+                if (!body.isAutoRenewing) {
+                    callApiSub("Cancel", productId, false)
+                }
+            }*/
+        }
     }
 }
-/*
-       var productid = ""
-       var price = 0.0
-       if (bp!!.loadOwnedPurchasesFromGoogle()) {
-           if (bp!!.getSubscriptionTransactionDetails("swift_premium_1") != null ||
-                   bp!!.getSubscriptionTransactionDetails("swift_premium_3") != null ||
-                   bp!!.getSubscriptionTransactionDetails("swift_premium_6") != null ||
-                   bp!!.getSubscriptionTransactionDetails("swift_premium_12") != null) {
-               Log.e("subscribed", "subscribed")
-               when {
-                   bp!!.getSubscriptionTransactionDetails("swift_premium_1") != null -> {
-                       productid = "swift_premium_1"
-                       price = CommonDialogs.PremiumPriceList[0].priceValue
-                   }
-                   bp!!.getSubscriptionTransactionDetails("swift_premium_3") != null -> {
-                       productid = "swift_premium_3"
-                       price = CommonDialogs.PremiumPriceList[1].priceValue
-                   }
-                   bp!!.getSubscriptionTransactionDetails("swift_premium_6") != null -> {
-                       productid = "swift_premium_6"
-                       price = CommonDialogs.PremiumPriceList[2].priceValue
-                   }
-                   bp!!.getSubscriptionTransactionDetails("swift_premium_12") != null -> {
-                       productid = "swift_premium_12"
-                       price = CommonDialogs.PremiumPriceList[3].priceValue
-                   }
-               }
-               subscriptiontype = "1"
-               val c: Date = bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.purchaseData.purchaseTime
-               val df = SimpleDateFormat("yyyy-MM-dd HH:mm:sss")
-               val formattedDate = df.format(c)
-               callApi(PremiumTokenCountModel(subscriptiontype, productid, price, productid.split("_").toTypedArray()[2].toInt(),
-                       bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.purchaseData.orderId,
-                       bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.purchaseData.purchaseToken,
-                       formattedDate,
-                       bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.signature,
-                       bp!!.getSubscriptionTransactionDetails(productid)!!.purchaseInfo.purchaseData.purchaseState.toString()), baseActivity.sp)
-
-           }
-       }*/

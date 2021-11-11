@@ -66,9 +66,7 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
     lateinit var list: List<User>
     private val manager by lazy { CardStackLayoutManager(this, this) }
     //public val card_stack_viewMy by lazy { view?.findViewById<CardStackView>(R.id.card_stack_viewMy) }
-
-
-    /*   val like by lazy { view?.findViewById<ImageView>(R.id.love) }
+ /*   val like by lazy { view?.findViewById<ImageView>(R.id.love) }
        val superlike by lazy { view?.findViewById<ImageView>(R.id.superlike) }
    */
     private var CHAT_REQUEST = 10000
@@ -77,6 +75,7 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_card)
+        setOnPurchaseListener(this)
         like = findViewById(R.id.love)
         superlike = findViewById(R.id.superlike)
         init()
@@ -1001,7 +1000,7 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
 
     override fun OnSuccessPurchase(purchase: Purchase) {
         Toast.makeText(this, "Item Purchased", Toast.LENGTH_LONG).show()
-        if (client != null && client.isReady) {
+        if (client != null && client.isReady&&!TextUtils.isEmpty(tokenSType)) {
             showLoading()
             client.consumeAsync(getConsumeParam(purchase.purchaseToken)) { billingResult: BillingResult, s: String ->
                 if (tokenSType.equals("crushToken", ignoreCase = true)) {
@@ -1009,7 +1008,6 @@ class UserCardActivity : BaseActivity(), ReportInterface, CommonDialogs.onProduc
                 }
             }
         }
-
     }
 
     override fun OnGetPurchaseDetail(body: SubscriptionResponse?) {
