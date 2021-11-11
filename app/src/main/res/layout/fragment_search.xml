@@ -42,7 +42,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="@dimen/_20sdp"
         android:gravity="center"
-        android:text="Tired of swiping? Upgrade to Swift Premium to enable searching. Premium users can send Direct Messages."
+        android:text="Tired of swiping? Upgrade to Amare Premium to enable searching. Premium users can send Direct Messages."
         android:textColor="@color/grey_new"
         android:visibility="visible" />
 
